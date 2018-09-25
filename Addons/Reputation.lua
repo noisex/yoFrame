@@ -1,0 +1,126 @@
+
+local function GetXP(unit)
+	return UnitXP(unit), UnitXPMax(unit)
+	
+end
+
+local function SetTooltip(self)
+	local unit = "player"
+	
+	GameTooltip:ClearLines()
+	GameTooltip:SetOwner(self, 'ANCHOR_CURSOR', 0, -5)
+	
+	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo()
+	
+	if factionID and C_Reputation.IsFactionParagon( factionID) then
+		local currentValue, threshold, _, hasRewardPending = C_Reputation.GetFactionParagonInfo( factionID)
+		if currentValue and threshold then
+			min, max = 0, threshold
+			value = currentValue % threshold
+			if hasRewardPending then
+				value = value + threshold
+			end
+		end
+	end
+	
+	if name then
+		GameTooltip:AddLine(name)
+		GameTooltip:AddLine(' ')
+
+		local friendID, friendTextLevel, _
+		if factionID then friendID, _, _, _, _, _, friendTextLevel = GetFriendshipReputation(factionID) end
+
+		GameTooltip:AddDoubleLine(STANDING..':', (friendID and friendTextLevel) or _G['FACTION_STANDING_LABEL'..reaction], 1, 1, 1)
+		GameTooltip:AddDoubleLine(REPUTATION..':', format('%d / %d (%d%%)', value - min, max - min, (value - min) / ((max - min == 0) and max or (max - min)) * 100), 1, 1, 1)
+	end 
+	
+	GameTooltip:Show()
+end
+
+local function UpdateExp(self, event, unit)
+	local bar = self  --.Experience
+	if(not GetWatchedFactionInfo()) then return bar:Hide() end
+
+	local ID, isFriend, friendText, standingLabel
+	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo()
+
+	if factionID and C_Reputation.IsFactionParagon(factionID) then
+		local currentValue, threshold, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID)
+		if currentValue and threshold then
+			min, max = 0, threshold
+			value = currentValue % threshold
+			if hasRewardPending then
+				value = value + threshold
+			end
+		end
+	end
+	
+	local backupColor = FACTION_BAR_COLORS[1]
+	local color = FACTION_BAR_COLORS[reaction] or backupColor
+	
+	bar:SetStatusBarColor(color.r, color.g, color.b)
+		
+	bar:SetMinMaxValues(min, max)
+	bar:SetValue(value)
+	bar:Show()
+end
+
+local function EnableExp( self)
+	unit = self.unit
+	local element = self.Experience
+	if (not element or unit ~= "player") then return end
+
+	if (not element:GetStatusBarTexture()) then
+		element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]]) 
+		element:SetStatusBarColor(.901, .8, .601)
+	end
+
+	if (element:IsMouseEnabled()) then
+		element.onAlpha = element.onAlpha or 1
+		element.offAlpha = element.offAlpha or 1
+		element:SetAlpha(element.offAlpha)
+		
+		element:HookScript('OnLeave', GameTooltip_Hide)
+		element:HookScript('OnEnter', SetTooltip)
+--		element:SetScript("OnLeave", element.OnLeave or HideTooltip)
+	end
+
+	element:RegisterEvent('UPDATE_FACTION')
+	element:SetScript("OnEvent", UpdateExp)
+	
+	UpdateExp( element)
+	return true
+end
+
+local function Experience( f)
+	if not f then return end
+	local Experience = CreateFrame('StatusBar', nil, f)
+	Experience:SetStatusBarTexture( texture)
+	Experience:SetPoint('CENTER', yo_MoveExperience, 'CENTER', 0, 0)
+	Experience:SetStatusBarColor(.901, .8, .601)
+	Experience:EnableMouse(true)
+	Experience:SetWidth(6)
+	Experience:SetHeight( yo_MoveExperience:GetHeight() )
+	Experience:SetOrientation("VERTICAL")
+	Experience:SetFrameLevel(3)
+
+	local h = CreateFrame("Frame", nil, Experience)
+	h:SetFrameLevel(1)
+	h:SetPoint("TOPLEFT",-5,5)
+	h:SetPoint("BOTTOMRIGHT",5,-5)
+	CreateStyle(h, -1)
+
+	f.Experience = Experience
+end
+
+local logan = CreateFrame("Frame")
+logan:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+logan:SetScript("OnEvent", function(self, event)
+	if not yo.Addons.ArtifactPowerbar then return end
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	if (UnitLevel('player') ~= MAX_PLAYER_LEVEL) then return end  -- not yo["Addons"].Experience or
+	
+	Experience( plFrame)
+	EnableExp( plFrame)
+end)
