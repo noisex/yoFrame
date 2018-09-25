@@ -1,6 +1,7 @@
 myClass = select( 2, UnitClass( "player"))
 myColor = RAID_CLASS_COLORS[myClass]
 myColorStr = "|c" .. RAID_CLASS_COLORS[myClass].colorStr 
+myName	= UnitName( "player")
 
 dummy = function() return end	
 
