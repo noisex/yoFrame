@@ -86,10 +86,7 @@ local Shared = function(self, unit)
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-	-- Menu
 	self.menu = SpawnMenu
-
-	-- Backdrop for every units
 	CreateStyle(self, 3)
 		
 	------------------------------------------------------------------------------------------------------

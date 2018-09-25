@@ -164,7 +164,7 @@ function InitOptions()
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {	
 					RaidUtilityPanel ={	order = 1, type = "toggle",	name = "Панель рэйдовых утилит",  width = "full",	desc = "Метки на цели, на полу, пул, готовность и прочее...",},
-					Potatos = {			order = 1, type = "toggle",	name = "Потатос",  width = "full",	desc = "Включить модуль для отслеживания использования пота в бою.",},
+					Potatos = {			order = 1, type = "toggle",	name = "Потатос",  width = "full",	desc = "Включить модуль для отслеживания использования пота в бою.", hidden = true,},
 					IDInToolTip = {		order = 2, type = "toggle", name = "ID предмата, спелла, бафа и прочего в тултипе",  		width = "full",	},
 					mythicProcents = {	order = 4, type = "toggle", name = "Показывать проценты мобов в М+ при наведении курсора",  width = "full",	},
 					InfoPanels	 = {	order = 5, type = "toggle", name = "Показывать информационные панели внизу экрана", 	 width = "full",	},

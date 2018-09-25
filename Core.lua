@@ -5,10 +5,6 @@ myName	= UnitName( "player")
 
 dummy = function() return end	
 
---font = 		yo.Media.font
---fontpx	=	yo.Media.fontpx
---fontsize =	yo.Media.fontsize
-
 local function loginEvent(self, ...)
 	resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution")
 	getscreenwidth, getscreenheight = DecodeResolution(resolution)
