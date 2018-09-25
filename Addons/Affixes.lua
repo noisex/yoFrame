@@ -125,7 +125,7 @@ local function CreateLiders( self)
 			self.leaderBest.title = self.leaderBest:CreateFontString(nil, "ARTWORK")
 			self.leaderBest.title:SetFont( font, fontsize + 3, "OUTLINE")
 			self.leaderBest.title:SetTextColor( 1, 0.75, 0, 1)
-			self.leaderBest.title:SetText( "Доска почета")
+			self.leaderBest.title:SetText( "Weekly leaders")
 			self.leaderBest.title:SetPoint("BOTTOM", self.leaderBest, "TOP", -15, 10)
 		end
 
