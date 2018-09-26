@@ -216,6 +216,10 @@ yo["Chat"] = {
 	["linkOverMouse"]	= true,
 	["showVoice"]		= false,
 	["showHistory"]		= false,
+	["chatBubble"]		= "border",
+	["chatBubbleFont"]	= 8,
+	["chatBubbleShadow"]= true,
+	["chatBubbleShift"]	= 15,
 }
 
 local logan = CreateFrame("Frame")

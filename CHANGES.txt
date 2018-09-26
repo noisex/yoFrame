@@ -1,0 +1,26 @@
+commit 88b4ac3391a695458e1e827483d2f17918f7841a
+Author: noisex <noisex@ya.ru>
+Date:   Wed Sep 26 01:55:41 2018 +0300
+
+    locale
+
+commit f0996bcefdb37b02794023cc8a53fd5b7cd60b4b
+Author: noisex <noisex@ya.ru>
+Date:   Tue Sep 25 17:25:43 2018 +0300
+
+    testing commit #2
+    
+    test description
+
+commit 7f08f3a6d397153b9f2e3f422d1ccd0ee7216bbd
+Author: noisex <noisex@ya.ru>
+Date:   Tue Sep 25 17:18:02 2018 +0300
+
+    test
+
+commit 3516fb946864d578da24f1f8dcdaa214909e2ce5
+Author: noisex <noisex@ya.ru>
+Date:   Tue Sep 25 17:04:45 2018 +0300
+
+    Initial commit
+
