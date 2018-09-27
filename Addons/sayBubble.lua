@@ -32,8 +32,8 @@ local function skinBubble( self)
 		CreateStyle( self, -(shift-4), 0, 0.2, 0.4)
 	end	
 
-	self.skinned = true
-	self.run = 3
+	--self.skinned = true
+	--self.run = 3
 end
 
 local function OnUpdate( self, elapsed)
@@ -43,10 +43,24 @@ local function OnUpdate( self, elapsed)
 		self:SetScript("OnUpdate", nil)
 	end
 	
-	for _, chatBubble in pairs(C_ChatBubbles.GetAllChatBubbles()) do
-		if chatBubble and not chatBubble.skinned then
-			skinBubble( chatBubble)
-		end			
+	local _, instanceType = IsInInstance()
+	if instanceType == "party" or instanceType == "none" then
+		for _, chatBubble in pairs(C_ChatBubbles.GetAllChatBubbles( )) do
+			if chatBubble and not chatBubble.skinned then
+				skinBubble( chatBubble)
+			end			
+		end
+	elseif instanceType == "party" then
+		local numChilds = WorldFrame:GetNumChildren()
+		for i, frame in pairs( {WorldFrame:GetChildren()}) do
+			
+			if frame:GetNumRegions() then
+				print( i, frame:GetNumRegions())	
+			end
+			--if frame:GetName() then return end
+			--if not frame:GetRegions() then return end
+
+		end
 	end
 end
 
@@ -58,10 +72,14 @@ local function OnEvent( self, event, ...)
 
 		self:RegisterEvent("CHAT_MSG_SAY")
 		self:RegisterEvent("CHAT_MSG_YELL")
+		
+		--self:RegisterEvent("CHAT_MSG_PARTY")
+		--self:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 		self:RegisterEvent("CHAT_MSG_MONSTER_SAY")
 		self:RegisterEvent("CHAT_MSG_MONSTER_YELL")	
 	
 	elseif event:match( "CHAT_MSG") then
+		print(event, ...)
 		self.run = 0
 		self.last = 0
 		self:SetScript('OnUpdate', OnUpdate)

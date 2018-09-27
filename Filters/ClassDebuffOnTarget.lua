@@ -24,6 +24,10 @@ DebuffWhiteList = {
 	[SpellName(1079)] = true,	-- Rip
 	-- Hunter
 	[SpellName(3355)] = true,	-- Freezing Trap
+	[SpellName(259491)] = true,	-- Укус змеи
+	[SpellName(270339)] = true,	-- Шрапнельная бомба
+	[SpellName(271049)] = true,	-- Нестабильная бомба
+	[SpellName(270332)] = true,	-- Феромонная бомба
 	--[SpellName(131894)] = true,	-- Crows
 	-- Mage
 	[SpellName(118)] = true,	-- Polymorph
