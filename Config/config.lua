@@ -57,6 +57,7 @@ yo["Addons"] = {
 	["AutoQuestSkipScene"]			= true,
 	["AutoQuestComplete2Choice"]	= true,
 	["ObjectiveHeight"]				= 500,
+	["hideObjective"]				= false,
 	["cheloBuff"]					= false,
 }
 yo["ActionBar"] = {

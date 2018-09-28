@@ -164,8 +164,8 @@ function InitOptions()
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {	
 					RaidUtilityPanel ={	order = 1, type = "toggle",	name = "Панель рэйдовых утилит",  width = "full",	desc = "Метки на цели, на полу, пул, готовность и прочее...",},
-					Potatos = {			order = 1, type = "toggle",	name = "Потатос",  width = "full",	desc = "Включить модуль для отслеживания использования пота в бою.", hidden = true,},
-					IDInToolTip = {		order = 2, type = "toggle", name = "ID предмата, спелла, бафа и прочего в тултипе",  		width = "full",	},
+					Potatos = {			order = 2, type = "toggle",	name = "Потатос",  width = "full",	desc = "Включить модуль для отслеживания использования пота в бою.", hidden = true,},
+					IDInToolTip = {		order = 3, type = "toggle", name = "ID предмата, спелла, бафа и прочего в тултипе",  		width = "full",	},
 					mythicProcents = {	order = 4, type = "toggle", name = "Показывать проценты мобов в М+ при наведении курсора",  width = "full",	},
 					InfoPanels	 = {	order = 5, type = "toggle", name = "Показывать информационные панели внизу экрана", 	 width = "full",	},
 					BlackPanels	 = {	order = 6, type = "toggle", name = "Показывать черные панели справа и слева внизу экрана", 	 width = "full",	},
@@ -174,6 +174,8 @@ function InitOptions()
 					unitFrames={		order = 9, type = "toggle", name = "Включить юнитфрймы, а зачем аддон без них?",			 width = "full",	},					
 					-- lootbox
 					-- cooldowns
+					ObjectiveHeight = { order = 20, type = "range", 	name = "Высота списка квестов",	min = 250, max = 650, step = 1, desc = "Изменение высоты окна списка квестов. \nПо-умолчанию: 500",	}, 
+					hideObjective	= {	order = 24, type = "toggle",	name = "Прятать окно квестов в сценариях",  },		
 
 					MiniMaps = {
 						name = "Настройки миникарты",	type = "group",	order = 30,	inline = true,
@@ -187,7 +189,7 @@ function InitOptions()
 								get = function(info, r, g, b)  return strsplit( ",", yo.Addons.MMCoordColor)	end,				
 								set = function(info, r, g, b) Setlers( "Addons#MMCoordColor", strjoin(",", r, g, b)) end,},
 							MMCoordSize = {		order = 25,	type = "range", name = "Размер шрифта", min = 5, max = 16, step = 1, desc = "Размер шрифта текста координат игрока. \nПо-умолчанию: 8",
-								disabled = function() return not yo.Addons.MiniMapCoord; end,	},	
+								disabled = function() return not yo.Addons.MiniMapCoord; end,	},									
 					},	},
 					--CastWatcher = {
 					--	name = "CastWatcher", type = "group", order = 40, inline = true,
@@ -223,8 +225,7 @@ function InitOptions()
 							AutoQuestComplete2Choice = {order = 12, type = "toggle",	name = "Автовыбор наилучшей вещи по iLVL",
 								disabled = function() return not yo["Addons"].AutoQuestComplete; end,
 								desc = "Автоматически выбирать лучшую вещь, если есть выбор, исходя из большей разницы с надетой на персонаже.\n\nКроме тринек, щитов и одноручного оружия.\n\nНажать Shift при контакте с НПС для временного отключения.",},	
-							AutoQuestSkipScene = {order = 14, type = "toggle",	name = "Пропускать видюшки", 	disabled = function() return not yo["Addons"].AutoQuestComplete; end,},		
-							ObjectiveHeight = {   order = 20, type = "range", 	name = "Высота списка квестов",	min = 250, max = 650, step = 1, width = "full",	desc = "Изменение высоты окна списка квестов. \nПо-умолчанию: 500",	}, 							
+							AutoQuestSkipScene = {order = 14, type = "toggle",	name = "Пропускать видюшки", 	disabled = function() return not yo["Addons"].AutoQuestComplete; end,},									
 						},
 					},
 				},
