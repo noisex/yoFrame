@@ -429,9 +429,31 @@ end
 ------------------------------------------------------------------------------------------------------
 ---										CREATE MOVIER
 ------------------------------------------------------------------------------------------------------	
+local function CreateTempStyle(f, size, level, alpha, alphaborder) 
+    if f.shadowMove then return end
+
+	local style = {
+		bgFile =  texture,
+		edgeFile = texglow, 
+		edgeSize = 4,
+		insets = { left = 3, right = 3, top = 3, bottom = 3 }
+	}
+    local shadowMove = CreateFrame("Frame", nil, f)
+    shadowMove:SetFrameLevel(level or 0)
+    shadowMove:SetFrameStrata(f:GetFrameStrata())
+    shadowMove:SetPoint("TOPLEFT", -size, size)
+    shadowMove:SetPoint("BOTTOMRIGHT", size, -size)
+    shadowMove:SetBackdrop(style)
+    shadowMove:SetBackdropColor(.08,.08,.08, alpha or .9)
+    shadowMove:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
+    f.shadowMove = shadowMove
+    return shadowMove
+end
+
 local function CreateMovier(frame)
 	local delta = 8
-	CreateStyle( frame, delta, 0, .2, .9)
+	CreateStyle( frame, delta, 0, 0, 0)
+	CreateTempStyle( frame, delta, 0, .2, .9)
 
 	local movePartyFrame = frame.shadow
 	movePartyFrame:EnableMouse(true)
@@ -471,6 +493,12 @@ local function CreateMovier(frame)
 	end)
 
 	frame:SetScript("OnSizeChanged", function(self, w, h)	
+		if h < 10 then
+			self.shadowMove:Hide()
+		else
+			self.shadowMove:Show()
+		end
+		
 		if InCombatLockdown() then return end
 		
 		self.shadow:SetWidth( self:GetWidth() + delta * 2)

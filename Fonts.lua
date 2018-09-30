@@ -19,7 +19,7 @@ function ChangeSystemFonts( fontsSize)
 		end
 	end
 	--print(ind, rind)
-	_G["ChatBubbleFont"]:SetFont( font, 9)
+	_G["ChatBubbleFont"]:SetFont( font, 12, "OUTLINE")
 
 	_G["ChatFontNormal"]:SetFont( font, 10)
 	_G["ErrorFont"]:SetFont( font, 16)
@@ -33,7 +33,7 @@ local Fonts = CreateFrame("Frame", nil, UIParent)
 Fonts:RegisterEvent("PLAYER_ENTERING_WORLD")
 Fonts:SetScript("OnEvent", function(self, event, addon)
 	
-	if not yo["Addons"].ChangeSystemFonts then return end
+	if not yo.Addons.ChangeSystemFonts then return end
 	
 	CHAT_FONT_HEIGHTS = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
 	self:UnregisterAllEvents()
