@@ -657,18 +657,18 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 
 					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl then
 						
-						local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. " вместо ".. locLink)
+						local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. " вместо ".. locLink
 						
 						if InCombatLockdown() then
-							print( "|cffff0000После боя надень: |r" .. text
+							print( "|cffff0000После боя надень: |r" .. text)
 						else
-							print( "|cffff0000Надето: |r" .. text
+							print( "|cffff0000Надето: |r" .. text)
 
 							C_NewItems.RemoveNewItem(bagID, slotID)
 							EquipItemByName( clink)	
 						end
 					else
-						print( "|cffff0000Можно сменить: |r" .. text
+						print( "|cffff0000Можно сменить: |r" .. text)
 						ret = true	
 					end
 				else
