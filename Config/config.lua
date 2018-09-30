@@ -59,6 +59,8 @@ yo["Addons"] = {
 	["ObjectiveHeight"]				= 500,
 	["hideObjective"]				= false,
 	["cheloBuff"]					= false,
+	["equipNewItem"]				= true,
+	["equipNewItemLevel"]			= 350,
 }
 yo["ActionBar"] = {
 	["enable"]		= true,

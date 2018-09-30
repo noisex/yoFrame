@@ -212,10 +212,12 @@ function InitOptions()
 				get = function(info) return yo["Addons"][info[#info]] end ,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {
-					AutoRepair = { 				order = 1, type = "toggle", name = "Автопочинка у вендора, приоритет у гильдейского", width = "full", },
-					AutoSellGrayTrash = {		order = 2, type = "toggle",	name = "Автопродажа мусора", 			desc = "За возможные последствия автор адона ответственность не несет!",},
+					AutoRepair 				= {	order = 1, type = "toggle", name = "Автопочинка у вендора, приоритет у гильдейского", width = "full", },
+					AutoSellGrayTrash 		= {	order = 2, type = "toggle",	name = "Автопродажа мусора", 			desc = "За возможные последствия автор адона ответственность не несет!",},
 					AutoScreenOnLvlUpAndAchiv ={order = 3, type = "toggle",	name = "Автоскриншот",					desc = "Включить снятие скриншота при получении нового уровня и ачивки.",},	
-					AutoInvaitFromFriends = {	order = 4, type = "toggle",	name = "Принимать приглашение в группу",desc = "Автоматически принимать приглашение в группу от согильдийцев и друзей.",},								
+					AutoInvaitFromFriends 	= {	order = 4, type = "toggle",	name = "Принимать приглашение в группу",desc = "Автоматически принимать приглашение в группу от согильдийцев и друзей.", width = "full"},	
+					equipNewItem			= {	order = 6, type = "toggle",	name = "Пытаться надеть новую вещь",},
+					equipNewItemLevel		= {	order = 8, type = "range",	name = "но уровня не более:", min = 0, max = 800, step = 1,},
 
 					AutoQuesting = {
 						order = 30,	name = "Автоквестинг", type = "group",	inline = true,

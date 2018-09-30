@@ -655,17 +655,29 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 					local itemRarity = select( 3, GetItemInfo( clink))
 					local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
 
-					print( "|cffff0000Надето: |r" .. ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. " вместо ".. locLink)
+					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl then
+						
+						local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. " вместо ".. locLink)
+						
+						if InCombatLockdown() then
+							print( "|cffff0000После боя надень: |r" .. text
+						else
+							print( "|cffff0000Надето: |r" .. text
 
-					C_NewItems.RemoveNewItem(bagID, slotID)
-					EquipItemByName( clink)					
+							C_NewItems.RemoveNewItem(bagID, slotID)
+							EquipItemByName( clink)	
+						end
+					else
+						print( "|cffff0000Можно сменить: |r" .. text
+						ret = true	
+					end
 				else
 					ret = true
 				end
 			end
 		end
 	end
-
+	
 	slot.UpgradeIcon:SetShown( ret);
 end
 
