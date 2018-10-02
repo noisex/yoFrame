@@ -654,11 +654,10 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 
 					local itemRarity = select( 3, GetItemInfo( clink))
 					local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
+					local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. " вместо ".. locLink
 
-					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl then
-						
-						local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. " вместо ".. locLink
-						
+					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl then					
+											
 						if InCombatLockdown() then
 							print( "|cffff0000После боя надень: |r" .. text)
 						else

@@ -323,7 +323,7 @@ local Shared = function(self, unit)
 		Buffs:SetPoint( 'BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 0)
 		Buffs:SetFrameLevel( 150)
 		Buffs:SetSize( ( size + 6) * 10, size * 2)
-		Buffs.disableCooldown = true
+		Buffs.disableCooldown = false
 		--Buffs.filter = 'HARMFUL'
 		Buffs.spacing = 3
 		Buffs.num = 2
@@ -344,13 +344,13 @@ local Shared = function(self, unit)
 		end
 		self.Debuffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
+			--button.icon:SetDesaturated( true)
 			button.count:SetFont( fontpx, fontsize +4, 'OUTLINE')
 			button.count:ClearAllPoints()
 			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
-			button.count:SetTextColor( 1, 0.9, 0)
-			--button.icon:SetDesaturated( true)
+			button.count:SetTextColor( 1, 0.9, 0)			
 			button:SetAlpha( 0.8)
-			CreateStyle( button, 3)
+			--CreateStyle( button, 4, 150)
 		end	
 	end
 	

@@ -503,7 +503,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	unitFrame.tick = 0
 	
 	local unit = unitFrame.displayedUnit
-	local cols = hpColors["tapped"]  											-- дефолт колор - таппеd
+	local cols = hpColors.tapped  												-- дефолт колор - таппеd
 
 	local max, perc = UnitHealthMax( unit), 0
 	if( max ~= 0) then
@@ -511,7 +511,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	end
 
 	if UnitIsTapDenied( unit) then
-		cols = hpColors["tapped"]
+		cols = hpColors.tapped
 	
 	elseif yo.NamePlates.executePhaze and perc <= yo.NamePlates.executeProc then
 		local r, g, b = strsplit(",", yo.NamePlates.executeColor)
@@ -525,27 +525,28 @@ local function UpdateHealthColor(unitFrame, elapsed)
 		if UnitGroupRolesAssigned( "player") == "TANK" then 
 			
 			if UnitIsUnit( "player", unit .. "target") then  					-- танк, бьет тебя
-				cols = hpColors["tankGood"]
+				cols = hpColors.tankGood
 			
-			elseif UnitGroupRolesAssigned( unit .. "target") == "TANK" then  	-- танк, тьет оффтанка
-				cols = hpColors["tankOffTank"]
+			elseif UnitGroupRolesAssigned( unit .. "target") == "TANK" then  	-- танк, бьет оффтанка
+				cols = hpColors.tankOffTank
 			
 			elseif UnitInParty( unit .. "target") then							-- танк, в таргете член группы/рейда
 				
-				if UnitThreatSituation( "player", unit) and UnitThreatSituation( "player", unit) >= 3 then				-- танк, бьет тебя, но ты не в таргете
-					cols = hpColors["tankGood"]
+				local treatSit = UnitThreatSituation( "player", unit)
+				if treatSit and treatSit >= 3 then								-- танк, бьет тебя, но ты не в таргете
+					cols = hpColors.tankGood
 				else
-					cols = hpColors["tankBad"]									-- танк, бьет кого-то из группы/рейда
+					cols = hpColors.tankBad										-- танк, бьет кого-то из группы/рейда
 				end
 			else 																-- танк, бьет кого-то другого
-				cols = hpColors["tankAnother"]
+				cols = hpColors.tankAnother
 			end				
 	
 		elseif UnitIsUnit( "player", unit .. "target") then						-- соло, бьет тебя 
-			cols = hpColors["playerGood"]
+			cols = hpColors.playerGood
 		
 		else
-			cols = hpColors["playerBad"]										-- соло, бьет не тебя
+			cols = hpColors.playerBad											-- соло, бьет не тебя
 		end
 		
 	elseif UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then

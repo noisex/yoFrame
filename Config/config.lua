@@ -170,7 +170,7 @@ yo["NamePlates"] = {
 	["buffIcons"]		= "none",	-- false, all, dispell, buff
 	["classDispell"]	= true,
 	["showToolTip"]		= "none",
-	["anonceCast"]		= true,
+	["anonceCast"]		= false,
 	["showOnFrames"]	= false,
 }
 	
