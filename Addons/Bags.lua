@@ -660,13 +660,12 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 											
 						if InCombatLockdown() then
 							print( "|cffff0000После боя надень: |r" .. text)
-							C_NewItems.RemoveNewItem(bagID, slotID)
 						else
 							print( "|cffff0000Надето: |r" .. text)
-
-							C_NewItems.RemoveNewItem(bagID, slotID)
 							EquipItemByName( clink)	
 						end
+						C_NewItems.RemoveNewItem(bagID, slotID)
+
 					else
 						print( "|cffff0000Можно сменить: |r" .. text)
 						C_NewItems.RemoveNewItem(bagID, slotID)
