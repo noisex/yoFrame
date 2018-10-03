@@ -1,11 +1,11 @@
-texture	=	yo["Media"].texture
-texhl 	=	yo["Media"].texhl
-texglow = 	yo["Media"].texglow
-font 	= 	yo["Media"].font
-fontpx	=	yo["Media"].fontpx
---fontsize =	yo["Media"].fontsize
+texture	=	yo.Media.texture
+texhl 	=	yo.Media.texhl
+texglow = 	yo.Media.texglow
+font 	= 	yo.Media.font
+fontpx	=	yo.Media.fontpx
+--fontsize =	yo.Media.fontsize
 
-fontsize = yo["Chat"].fontsize
+fontsize = yo.Chat.fontsize
 
 RGBToHex1 = function(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
@@ -128,9 +128,15 @@ local function SetChatStyle(frame)
 	-- Removes crap from the bottom of the chatbox so it can go to the bottom of the screen
 	_G[chat]:SetClampedToScreen(false)
 
-	-- Stop the chat chat from fading out
-	_G[chat]:SetFading( false)
-
+	-- Stop-start the chat chat from fading out
+	if yo.Chat.fadingEnable then
+		_G[chat]:SetFading( true)
+		_G[chat]:SetTimeVisible( yo.Chat.fadingTimer)
+		_G[chat]:SetFadeDuration( 2)
+	else
+		_G[chat]:SetFading( false)
+	end
+	
 	-- Hide textures
 	for j = 1, #CHAT_FRAME_TEXTURES do
 		_G[chat..CHAT_FRAME_TEXTURES[j]]:SetTexture(nil)
@@ -360,24 +366,11 @@ local function SetupChatPosAndFont(self)
 	--ChatFrame1ButtonFrame:ClearAllPoints()
 	ChatFrame1ButtonFrame:SetPoint( "TOPRIGHT", LeftDataPanel, "TOPRIGHT", 0, 0)
 
-	--ChatFrame1ButtonFrame.upButton:GetNormalTexture():SetTexCoord(0.07, 0.93, 0.07, 0.93)
-	--ChatFrame1ButtonFrame.upButton:GetNormalTexture():SetTexture( "Interface\\Buttons\\Arrow-Up-Down")
 	FCF_SetLocked( ChatFrame1, true)
-	--ChatFrame1ButtonFrame.upButton:SetSize( 20, 20)
-	--ChatFrame1ButtonFrame.downButton:SetSize( 20, 20)
-	--ChatFrame1ButtonFrame.bottomButton:SetSize( 20, 20)
-
-	--ChatFrame1ButtonFrame.upButton:GetNormalTexture():SetSize( 10,10)
-	--print( ChatFrame1ButtonFrame.upButton:GetNormalTexture():GetTexCoord())
-
-	--ChatFrame1ButtonFrameBottomButton:ClearAllPoints()
-	--ChatFrame1ButtonFrameBottomButton:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 50, 0)
 	
 	-- Reposition battle.net popup over chat #1
-	
 	ChatAlertFrame:ClearAllPoints()
 	ChatAlertFrame:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 0, 50)
-
 	-- BNToastFrame:ClearAllPoints()
 	-- BNToastFrame:SetPoint("BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 5, 5)
 
