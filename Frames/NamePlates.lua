@@ -1,4 +1,6 @@
 local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badTypes, showToolTip
+local treatColor = {}
+local auraFilter = { "HARMFUL", "HELPFUL"}
 
 DebuffTypeColor.none = { r = 0.09, g = 0.09, b = 0.09}
 
@@ -24,7 +26,6 @@ local badMobes = {
 
 	[120651] = true,  	-- 	Взрывчатка
 	[136461] = true,	--  Порождение Г'ууна
-
 }
 
 local eTeam = {
@@ -84,8 +85,6 @@ local eTeam = {
 	[134333] = 5,	--Тупень					<Налетчики Зеленобрюшки>
 	
 }
-
-local auraFilter = { "HARMFUL", "HELPFUL"}
 
 -----------------------------------------------------------------------------------------------
 --	AURAS
@@ -484,26 +483,25 @@ local function UpdateHealth(unitFrame)
 	--end
 end
 
-local hpColors = {
-	["tapped"] 		= {	.6,	.6,		.6},
-
-	["tankGood"]	= { 0, 	1,		0},
-	["tankOffTank"]	= { 0, 	0.5,	1},
-	["tankBad"]		= { 1, 	0.5,	0.04},
-	["tankAnother"]	= { 1, 	0, 		0.5},
-	["playerGood"]	= { 1, 	0.25,	0},
-	["playerBad"] 	= { 1, 	0, 		0.5} ,
-}
-
 local function UpdateHealthColor(unitFrame, elapsed)
-	if InCombatLockdown() then unitFrame:SetScript("OnUpdate", nil) end
-
-	unitFrame.tick = ( unitFrame.tick or 1) + elapsed
-	if unitFrame.tick <= 0.5 then return end
-	unitFrame.tick = 0
+	
+	if InCombatLockdown() then 
+		unitFrame:SetScript("OnUpdate", nil) 
+	else
+		unitFrame.tick = ( unitFrame.tick or 1) + elapsed
+		if unitFrame.tick <= 0.5 then 
+			return 
+		end
+		unitFrame.tick = 0
+	end
 	
 	local unit = unitFrame.displayedUnit
-	local cols = hpColors.tapped  												-- дефолт колор - таппеd
+	local cols = { .6, .6, .6}
+	local unitTarget = unit .. "target"
+
+	local treatSit = UnitThreatSituation( "player", unit)
+	--local isTanking, status, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation( "player", unit)
+	local isTanking, status = UnitDetailedThreatSituation( "player", unit)
 
 	local max, perc = UnitHealthMax( unit), 0
 	if( max ~= 0) then
@@ -511,51 +509,40 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	end
 
 	if UnitIsTapDenied( unit) then
-		cols = hpColors.tapped
+		cols = { .6, .6, .6}
 	
 	elseif yo.NamePlates.executePhaze and perc <= yo.NamePlates.executeProc then
-		local r, g, b = strsplit(",", yo.NamePlates.executeColor)
-		cols = { r, g, b}
+		cols = {strsplit(",", yo.NamePlates.executeColor)}
 
-	elseif UnitPlayerControlled( unit) then 									-- юнит-игрок / цвет класса
+	elseif UnitPlayerControlled( unit) then 											-- юнит-игрок / цвет класса
 		cols = _G["yo_Player"].colors.class[ select( 2, UnitClass( unit))]
 
-	elseif UnitExists( unit .. "target") then
-		
-		if UnitGroupRolesAssigned( "player") == "TANK" then 
-			
-			if UnitIsUnit( "player", unit .. "target") then  					-- танк, бьет тебя
-				cols = hpColors.tankGood
-			
-			elseif UnitGroupRolesAssigned( unit .. "target") == "TANK" then  	-- танк, бьет оффтанка
-				cols = hpColors.tankOffTank
-			
-			elseif UnitInParty( unit .. "target") then							-- танк, в таргете член группы/рейда
-				
-				local treatSit = UnitThreatSituation( "player", unit)
-				if treatSit and treatSit >= 3 then								-- танк, бьет тебя, но ты не в таргете
-					cols = hpColors.tankGood
-				else
-					cols = hpColors.tankBad										-- танк, бьет кого-то из группы/рейда
-				end
-			else 																-- танк, бьет кого-то другого
-				cols = hpColors.tankAnother
-			end				
-	
-		elseif UnitIsUnit( "player", unit .. "target") then						-- соло, бьет тебя 
-			cols = hpColors.playerGood
-		
-		else
-			cols = hpColors.playerBad											-- соло, бьет не тебя
+	elseif treatSit then
+		cols = treatColor[status]
+
+		if UnitGroupRolesAssigned( "player") == "TANK" then
+			cols = treatColor[status +10]
+
+			if not isTanking and UnitGroupRolesAssigned( unitTarget) == "TANK" then  	-- танк, бьет оффтанка
+				cols = treatColor.tankOT
+
+			elseif UnitIsOtherPlayersPet( unitTarget) then								-- танк, бьет чего-то пета --see UnitPlayerOrPetInParty
+				cols = treatColor.myPet
+			end
+
+		elseif UnitIsUnit( "pet", unitTarget) then
+			cols = treatColor.myPet														-- игрок, бьет его пета
 		end
-		
-	elseif UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then
-		cols = _G["yo_Player"].colors.reaction[UnitReaction( unit, "player")]	-- цвет реакшн
+
+	elseif UnitExists( unitTarget) then
+		cols = treatColor.badGood
+
+	else 	--if UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then
+		cols = _G["yo_Player"].colors.reaction[UnitReaction( unit, "player")]			-- цвет реакшн
 	end    	
 	--print(GetTime(), unit, cols[1], cols[2], cols[3])
+	--print(unit, treatSit, isTanking, scaledPercent, rawPercent, threatValue)
 	unitFrame.healthBar:SetStatusBarColor( cols[1], cols[2], cols[3])
-	--unitFrame.healthBar.Background:SetColorTexture( cols[1], cols[2], cols[3], 0.2)
-	--unitFrame.healthBar.Background:SetColorTexture( 0.1, 0.1, 0.1, 0.9)
 	unitFrame.name:SetTextColor( cols[1], cols[2], cols[3])
 end
 
@@ -658,12 +645,11 @@ local function UpdateTheatSit( self)
 	if not yo.NamePlates.showPercTreat then return end
 
 	if UnitInRaid("player") or UnitInParty("player") then
-		local unit = self.displayedUnit
-		local isTanking, status, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation( "player", unit)
+		local isTanking, status, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation( "player", self.displayedUnit)
 	
 		if status then
 			local red, green, blue = GetThreatStatusColor( status)
-			self.threat:SetText( floor( scaledPercent) .. "%")
+			self.threat:SetText( floor( rawPercent) .. "%")
 			self.threat:SetTextColor( red, green, blue)
 		else
 			self.threat:SetText( "")
@@ -1037,7 +1023,24 @@ end
 
 local function NamePlates_OnEvent(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
-		if yo["NamePlates"].enable then
+		if yo.NamePlates.enable then
+
+			treatColor = {
+				[0]			={	strsplit(",", yo.NamePlates.c0)},
+				[1]			={	strsplit(",", yo.NamePlates.c1)},
+				[2]			={	strsplit(",", yo.NamePlates.c2)},
+				[3]			={	strsplit(",", yo.NamePlates.c3)},
+				
+				[10]		={	strsplit(",", yo.NamePlates.c0t)},
+				[11]		={	strsplit(",", yo.NamePlates.c1)},
+				[12]		={	strsplit(",", yo.NamePlates.c2)},
+				[13]		={	strsplit(",", yo.NamePlates.c3t)},
+				
+				["myPet"]	={	strsplit(",", yo.NamePlates.myPet)},
+				["tankOT"]	={ 	strsplit(",", yo.NamePlates.tankOT)},
+				["badGood"]	={ 	strsplit(",", yo.NamePlates.badGood)},
+			}
+
 			nameplateheight = yo.NamePlates.height
 			nameplatewidth 	= yo.NamePlates.width
 			auras_size		= yo.NamePlates.iconDSize
