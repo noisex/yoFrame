@@ -90,7 +90,7 @@ local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		
-		if not yo["Addons"].AutoQuest then return end
+		if not yo.Addons.AutoQuest then return end
 		
 		self:RegisterEvent("QUEST_GREETING")
 		self:RegisterEvent("GOSSIP_SHOW")	
@@ -103,21 +103,31 @@ local function OnEvent( self, event, ...)
 
 	if event == "QUEST_PROGRESS" then
 		if IsShiftKeyDown() == true then return end
-		if not yo["Addons"].AutoQuestComplete then return end
-
+		if not yo.Addons.AutoQuestComplete then return end
+		
 		--local isDaily = QuestIsDaily();
 		--local isWeekly = QuestIsWeekly();
 		--local curNum = GetNumQuestCurrencies()
+		local money = GetQuestMoneyToGet()
 		local name, texture, amount = GetQuestCurrencyInfo("required", 1)
+		local iname, itexture, numItems, quality, isUsable = GetQuestItemInfo("required", 1)
+		local shift = " |cff666666(не забывай про Шифт при контакте с НПС)|r"
 
 		if name then
-			print("|cffffff00Потрать |cff00ff00" .. amount .. " |r" .. name .. "|cffffff00 сам! :)|r")
+			print("|cffffff00Потрать |cff00ff00" .. amount .. " |r" .. name .. "|cffffff00 сам! :)|r" .. shift)
+			CloseQuest()
+		elseif money > 1 then
+			print("|cffffff00Заплати |cff00ff00" .. formatMoney( money) .. " |cffffff00этому барыге :)|r" .. shift)
+			CloseQuest()
+		elseif iname then
+			print("|cffffff00Отдай ему |cff00ff00" .. numItems .. " |r" .. iname .. "|cffffff00!|r" .. shift)
+			CloseQuest()
 		else
 			CompleteQuest()
 		end
 
 	elseif event == "CINEMATIC_START" then
-		if not yo["Addons"].AutoQuestSkipScene then return end
+		if not yo.Addons.AutoQuestSkipScene then return end
 
 		if TimerMovie == nil then
 			TimerMovie = self:CreateAnimationGroup()
@@ -134,10 +144,10 @@ local function OnEvent( self, event, ...)
 
 	elseif event == "QUEST_COMPLETE" then
 		if IsShiftKeyDown() == true then return end
-		if not yo["Addons"].AutoQuestComplete then return end
+		if not yo.Addons.AutoQuestComplete then return end
 
 		if GetNumQuestChoices() > 1 then
-			if not yo["Addons"].AutoQuestComplete2Choice then return end
+			if not yo.Addons.AutoQuestComplete2Choice then return end
 
 			local slvl, delta
 			local bestString, bestChoice, bestDelta = "", 1, -9999
@@ -178,7 +188,7 @@ local function OnEvent( self, event, ...)
 
 	elseif event == "QUEST_DETAIL" then
 		if IsShiftKeyDown() == true then return end
-		if not yo["Addons"].AutoQuest then return end
+		if not yo.Addons.AutoQuest then return end
 
 		if QuestGetAutoAccept() then
 			CloseQuest()
@@ -191,14 +201,14 @@ local function OnEvent( self, event, ...)
 
 	elseif event == "GOSSIP_SHOW" then
 		if IsShiftKeyDown() == true then return end
-		if not yo["Addons"].AutoQuest then return end
+		if not yo.Addons.AutoQuest then return end
 
 		GetAvailableQuests( GetGossipAvailableQuests())
 		GetActiveQuests( GetGossipActiveQuests())
 
 	elseif	event == "QUEST_GREETING" then
 		if IsShiftKeyDown() == true then return end
-		if not yo["Addons"].AutoQuest then return end
+		if not yo.Addons.AutoQuest then return end
 
 		for index=1, GetNumActiveQuests() do
 			local quest, isComplete = GetActiveTitle(index)
