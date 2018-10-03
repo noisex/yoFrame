@@ -3,7 +3,7 @@
 --------------------------------------------------------------------
 
 local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
-	Text:SetFont( font, fontsize, "OVERLAY")
+	Text:SetFont( font, ( fontsize or 10), "OVERLAY")
 	Text:SetHeight( LeftInfoPanel:GetHeight())
 	Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 5, 0)
 LeftInfoPanel.systemText = Text
@@ -59,7 +59,7 @@ end
 local int, int2 = 10, 1
 
 local function Update(self, t)
-	if not yo["Addons"].InfoPanels then
+	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnMouseDown", nil)
 		self:SetScript("OnEnter", nil)

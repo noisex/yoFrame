@@ -16,7 +16,7 @@ localSlots = {
 }
 	
 local function OnEvent(self, event)
-	if not yo["Addons"].InfoPanels then
+	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnUpdate", nil)
 		Text = nil

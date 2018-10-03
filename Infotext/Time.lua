@@ -2,7 +2,7 @@
 -- TIME
 --------------------------------------------------------------------
 local Text  = RightInfoPanel:CreateFontString(nil, "OVERLAY")
-	Text:SetFont( font, fontsize, "OVERLAY")
+	Text:SetFont( font, ( fontsize or 10), "OVERLAY")
 	Text:SetHeight( RightInfoPanel:GetHeight())
 	Text:SetPoint("RIGHT", RightInfoPanel, "RIGHT", -5, 0)
 	Text:SetShadowColor(0,0,0,1)
@@ -12,7 +12,7 @@ RightInfoPanel.timeText = Text
 local int = 0
 
 local function Update(self, t)
-	if not yo["Addons"].InfoPanels then
+	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnMouseDown", nil)
 		self:SetScript("OnEnter", nil)

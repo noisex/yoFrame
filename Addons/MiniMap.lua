@@ -190,7 +190,12 @@ local function CalendarPend( self, event, unit)
 	--local pend = C_Calendar.GetNumPendingInvites()
 	if unit and not UnitIsUnit("player", unit) then
 		
-		--print(unit, UnitName(unit), select( 2, UnitClass( unit)))
+		if not self.pingText then
+			self.pingText = self:CreateFontString(nil, "OVERLAY")
+			self.pingText:SetFont( font, fontsize, "OUTLINE")
+			self.pingText:SetPoint("CENTER", Minimap, "TOP", 0, -40)
+			self.pingText:Hide()			
+		end
 
 		local uclass = ( select( 2, UnitClass( unit)) or 1)
 		local sColor = "|c" .. RAID_CLASS_COLORS[ uclass].colorStr .. UnitName( unit) .. "|r"
@@ -203,10 +208,6 @@ local function CalendarPend( self, event, unit)
 end
 
 local calevent = CreateFrame("Frame", nil, Minimap)
-calevent.pingText = calevent:CreateFontString(nil, "OVERLAY")
-calevent.pingText:SetFont( font, fontsize, "OUTLINE")
-calevent.pingText:SetPoint("CENTER", Minimap, "TOP", 0, -40)
-calevent.pingText:Hide()
 --calevent:RegisterEvent("PLAYER_ENTERING_WORLD")
 --calevent:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 --calevent:RegisterEvent("CALENDAR_OPEN_EVENT")

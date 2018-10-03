@@ -172,6 +172,15 @@ yo["NamePlates"] = {
 	["showToolTip"]		= "none",
 	["anonceCast"]		= false,
 	["showOnFrames"]	= false,
+	["c0"]				= "0.753,0.212,0.212",
+	["c0t"]				= "0,1,1",
+	["c1"]				= "1,1,0.5",
+	["c2"]				= "1,0.5,0",
+	["c3"]				= "0,1,1",
+	["c3t"]				= "0.753,0.212,0.212",
+	["myPet"]			= "1,0,0.5",
+	["tankOT"]			= "0,0.5,1",
+	["badGood"]			= "1,0.5,0.5",
 }
 	
 yo["Media"] = {
@@ -223,6 +232,8 @@ yo["Chat"] = {
 	["chatBubbleFont"]	= 8,
 	["chatBubbleShadow"]= true,
 	["chatBubbleShift"]	= 15,
+	["fadingEnable"]	= true,
+	["fadingTimer"]		= 30,
 }
 
 local logan = CreateFrame("Frame")
@@ -233,7 +244,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 	local name = UnitName("player")
 	local realm = GetRealmName()
-	yo_tCfg = {}
+	local yo_tCfg = {}
 
 	if yo_AllData[realm][name].PersonalConfig then
 		yo_tCfg = yo_PersonalConfig
