@@ -707,6 +707,12 @@ function UpdateSlot( self, bagID, slotID)
 		slot.questIcon:Hide();
 	end
 
+	if Search:InSet( clink) then
+		slot.SetIcon:Show()
+	else		
+		slot.SetIcon:Hide()
+	end
+
 	if (slot.JunkIcon) then
 		if (slot.rarity) and (slot.rarity == LE_ITEM_QUALITY_POOR and not noValue)  then
 			slot.JunkIcon:Show();
@@ -1216,6 +1222,17 @@ function addon:CreateLayout( isBank)
 						JunkIcon:SetPoint("TOPLEFT", 1, 0)
 						JunkIcon:Hide()
 						f.Bags[bagID][slotID].JunkIcon = JunkIcon
+					end
+
+					if not f.Bags[bagID][slotID].SetIcon then
+						local SetIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
+						--SetIcon:SetAtlas("bags-junkcoin")
+						SetIcon:SetPoint("BOTTOMLEFT", 1, 1)
+						SetIcon:SetSize( 7, 7)
+						SetIcon:SetTexture(texture)
+						SetIcon:SetVertexColor(0, 1, 0, 1)
+						SetIcon:Hide()
+						f.Bags[bagID][slotID].SetIcon = SetIcon
 					end
 
 					f.Bags[bagID][slotID].iconTexture = _G[f.Bags[bagID][slotID]:GetName()..'IconTexture'];
