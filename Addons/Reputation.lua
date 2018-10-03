@@ -55,10 +55,17 @@ local function UpdateExp(self, event, unit)
 		end
 	end
 	
-	local backupColor = FACTION_BAR_COLORS[1]
-	local color = FACTION_BAR_COLORS[reaction] or backupColor
-	
-	bar:SetStatusBarColor(color.r, color.g, color.b)
+	--local backupColor = FACTION_BAR_COLORS[1]
+	--local color = FACTION_BAR_COLORS[reaction] or backupColor
+	--bar:SetStatusBarColor(color.r, color.g, color.b)
+	local perc
+	if value ~= max then
+		perc = ( abs(value) - abs(min)) / ( abs(max) - abs(min))
+	else
+		perc = 1
+	end
+
+	bar:SetStatusBarColor( 1 - perc, 0 + perc, 0, 0.5) 
 		
 	bar:SetMinMaxValues(min, max)
 	bar:SetValue(value)

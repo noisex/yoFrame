@@ -52,6 +52,7 @@ end
 local function UpdateAP(self, ...)
 	--print( "UpdateAP: ", self, ...)
 	local element = self   ---.ArtifactPower
+	local current, level, show, cmax, isUsable
 
 	if (not UnitHasVehicleUI('player')) then
 		azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
@@ -78,14 +79,10 @@ local function UpdateAP(self, ...)
 	element.level = level
 
 	if (show) then
-		--element:UpdateColor(isUsable)
-
-		--if (element.SetAnimatedValues) then
-		--	element:SetAnimatedValues(current, 0, cmax, level)
-		--else
-			element:SetMinMaxValues(0, cmax)
-			element:SetValue(current)
-		--end
+		local perc = current / cmax
+		element:SetStatusBarColor( 1 - perc, 0 + perc, 0, 0.5) 
+		element:SetMinMaxValues(0, cmax)
+		element:SetValue(current)
 		element:Show()
 	else
 		element:Hide()
