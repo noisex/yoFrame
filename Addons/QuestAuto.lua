@@ -108,20 +108,25 @@ local function OnEvent( self, event, ...)
 		--local isDaily = QuestIsDaily();
 		--local isWeekly = QuestIsWeekly();
 		--local curNum = GetNumQuestCurrencies()
-		local money = GetQuestMoneyToGet()
-		local name, texture, amount = GetQuestCurrencyInfo("required", 1)
-		local iname, itexture, numItems, quality, isUsable = GetQuestItemInfo("required", 1)
-		local shift = " |cff666666(не забывай про Шифт при контакте с НПС)|r"
+		
+		if (UnitLevel('player') == MAX_PLAYER_LEVEL) then 
+			local money = GetQuestMoneyToGet()
+			local name, texture, amount = GetQuestCurrencyInfo("required", 1)
+			local iname, itexture, numItems, quality, isUsable = GetQuestItemInfo("required", 1)
+			local shift = " |cff666666(не забывай про Шифт при контакте с НПС)|r"
 
-		if name then
-			print("|cffffff00Потрать |cff00ff00" .. amount .. " |r" .. name .. "|cffffff00 сам! :)|r" .. shift)
-			CloseQuest()
-		elseif money > 1 then
-			print("|cffffff00Заплати |cff00ff00" .. formatMoney( money) .. " |cffffff00этому барыге :)|r" .. shift)
-			CloseQuest()
-		elseif iname then
-			print("|cffffff00Отдай ему |cff00ff00" .. numItems .. " |r" .. iname .. "|cffffff00!|r" .. shift)
-			CloseQuest()
+			if name then
+				print("|cffff0000Потрать |cff00ff00" .. amount .. " |r" .. name .. "|cffffff00 сам! :)|r" .. shift)
+				CloseQuest()
+			elseif money > 1 then
+				print("|cffff0000Заплати |cff00ff00" .. formatMoney( money) .. " |cffffff00этому барыге :)|r" .. shift)
+				CloseQuest()
+			elseif iname then
+				print("|cffff0000Отдай ему |cff00ff00" .. numItems .. " |r" .. iname .. "|cffffff00!|r" .. shift)
+				CloseQuest()
+			else
+				CompleteQuest()
+			end
 		else
 			CompleteQuest()
 		end

@@ -1,6 +1,8 @@
+
 ----------------------------------------------------------------------------------------
 --	Test Icons
 ----------------------------------------------------------------------------------------
+--LibStub("LibButtonGlow-1.0").ShowOverlayGlow(f)
 
 local tCount = CreateFrame("Frame")
 tCount:RegisterEvent("ADDON_LOADED")
@@ -11,27 +13,91 @@ tCount:SetScript("OnEvent", function(_, _, name)
 	UIItemTooltip = UIItemTooltip or {count = true}
 end)
 
+function KeyPressed( self, key)
+	if key == "LSHIFT"
+		or key == "RSHIFT"
+		or key == "LCTRL"
+		or key == "RCTRL"
+		or key == "LALT"
+		or key == "RALT"
+		or key == "UNKNOWN"
+		--or key == "LeftButton"
+	then return end
+	local bingo = ""
+	local alt 	= IsAltKeyDown() 		and "ALT-" or ""
+	local ctrl 	= IsControlKeyDown()	and "CTRL-" or ""
+	local shift = IsShiftKeyDown() 		and "SHIFT-" or ""
+	local keyPress = alt .. ctrl .. shift .. key
+
+	if keyPress == yo.healBotka.key1 then
+		bingo = " KEY1 PRESSED"
+	elseif keyPress == yo.healBotka.key2 then
+		bingo = " KEY2 PRESSED"
+	end
+
+	print( keyPress, bingo, self.unit)
+end
 
 local function test_icon()
-	f = CreateFrame( "Frame", "yo_test", UIParent)
-	f:SetWidth(45)
-	f:SetHeight(45)
-	f:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	f = CreateFrame( "Button", "yo_test", UIParent, "SecureUnitButtonTemplate") 
+	f:SetWidth(50)
+	f:SetHeight(50)
+	f:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
 	
-	f.icon = f:CreateTexture( nil, "BORDER")
+	f.icon = f:CreateTexture( nil, "OVERLAY")
 	f.icon:SetAllPoints( f)
 	f.icon:SetTexture( 511726)
 	
 	f.outerGlow = f:CreateTexture( "OuterGlow", "ARTWORK")
-	--f.outerGlow:SetAllPoints( f)
 	f.outerGlow:SetPoint("CENTER", f)
-	f.outerGlow:SetAlpha(1)
 	f.outerGlow:SetWidth( f:GetWidth() * 2)
 	f.outerGlow:SetHeight( f:GetHeight() * 2)
 	f.outerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
 	f.outerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
+	f.outerGlow:Hide()
+
+	f:RegisterForClicks("AnyDown")
+	f:EnableMouse( true)	
+	f:EnableMouseWheel( true)
+	f:EnableKeyboard( false)
+
+	--f:SetScript("OnKeyDown", KeyPressed)
+	
+	--f:SetScript("OnMouseDown", KeyPressed)
+	--f:SetScript("OnMouseWheel", function(self, delta) if delta>0 then KeyPressed( self, "MOUSEWHEELUP") else KeyPressed( self, "MOUSEWHEELDOWN") end end)
+
+	--f:SetScript("OnLeave", function(self, ...)
+	--	f:EnableKeyboard( false)
+	--	f:SetScript("OnKeyDown", nil)
+	--	print('OnLeave')
+	--end)
+
+	--f:SetScript("OnEnter", function(self, ...)		
+	--	f:EnableKeyboard( true)
+	--	f:SetScript("OnKeyDown", KeyPressed)
+	--	print('OnEnter')
+	--end)
+	
+	local aButtonId, aModiKey, anAction = 1, "", "Омоложение"
+
+	f:SetAttribute("unit", "player")
+	f:SetAttribute("type1", "spell");
+	f:SetAttribute("spell1", "Омоложение");	
+
+	f:SetAttribute( "type2", "spell");
+	f:SetAttribute( "spell2", "Жизнецвет");	
+
+	f:SetAttribute( "shift-type1", "spell");
+	f:SetAttribute( "shift-spell1", "Восстановление");	
+
+	--f:SetAttribute( "shift-type2", "spell");
+	--f:SetAttribute( "shift-spell2", "Буйный рост");	
+
+	f:SetAttribute( "type-w2", "macro");
+	f:SetAttribute( "macrotext-w2", "/cast Буйный рост");	
+	
+	RegisterUnitWatch( f)
 	f:Show()
-	--LibStub("LibButtonGlow-1.0").ShowOverlayGlow(f)
 end
 --test_icon()
 
@@ -80,18 +146,6 @@ f:SetScript("OnEvent", function()
 					if (Mult1 and Mult2) then
 						p = Mult1 * Mult2
 					end
-
---					local itemId = GetContainerItemID( b, s)            
-
-					--local itemSpell = GetItemSpell( ID)
-            
-					--if itemSpell and itemSpell == empowering then
-					--	local sName, sLink = GetItemInfo( ID)
-					--	print( sLink .. " продано счастливому вендору...")
-					--	UseContainerItem(b, s)
-					--	PickupMerchantItem()
-					--	c = c+p
-					--end
 
 					if select(3, GetItemInfo(l))==0 and p>0 then
 						UseContainerItem(b, s)
@@ -199,33 +253,33 @@ local AchScreen = CreateFrame("Frame")
 -- Auto greed on green items(by Tekkub)
 ----------------------------------------------------------------------------------------
 
-local agog = CreateFrame("Frame", nil, UIParent)
-agog:RegisterEvent("START_LOOT_ROLL")
-agog:SetScript("OnEvent", function(_, _, id)
-	if not yo.Addons.AutoGreedOnLoot then return end
-	if not id then return end 
-	local _, _, _, quality, bop, _, _, canDE = GetLootRollItemInfo(id)
-	if quality == 2 and not bop then RollOnLoot(id, canDE and 3 or 2) end
-end)
+--local agog = CreateFrame("Frame", nil, UIParent)
+--agog:RegisterEvent("START_LOOT_ROLL")
+--agog:SetScript("OnEvent", function(_, _, id)
+--	if not yo.Addons.AutoGreedOnLoot then return end
+--	if not id then return end 
+--	local _, _, _, quality, bop, _, _, canDE = GetLootRollItemInfo(id)
+--	if quality == 2 and not bop then RollOnLoot(id, canDE and 3 or 2) end
+--end)
 
 ----------------------------------------------------------------------------------------
 -- Disenchant confirmation(tekKrush by Tekkub)
 ----------------------------------------------------------------------------------------
 
-local acd = CreateFrame("Frame")
-acd:RegisterEvent("CONFIRM_DISENCHANT_ROLL")
-acd:SetScript("OnEvent", function(self, event, id, rollType)
+--local acd = CreateFrame("Frame")
+--acd:RegisterEvent("CONFIRM_DISENCHANT_ROLL")
+--acd:SetScript("OnEvent", function(self, event, id, rollType)
 
-	if not yo.Addons.AutoDisenchantGreenLoot then return end
-	for i=1,STATICPOPUP_NUMDIALOGS do
-		local frame = _G["StaticPopup"..i]
-		if frame.which == "CONFIRM_LOOT_ROLL" and frame.data == id and frame.data2 == rollType and frame:IsVisible() then StaticPopup_OnClick(frame, 1) end
-	end
-end)
+--	if not yo.Addons.AutoDisenchantGreenLoot then return end
+--	for i=1,STATICPOPUP_NUMDIALOGS do
+--		local frame = _G["StaticPopup"..i]
+--		if frame.which == "CONFIRM_LOOT_ROLL" and frame.data == id and frame.data2 == rollType and frame:IsVisible() then StaticPopup_OnClick(frame, 1) end
+--	end
+--end)
 	
-StaticPopupDialogs["LOOT_BIND"].OnCancel = function(self, slot)
-	if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then ConfirmLootSlot(slot) end
-end
+--StaticPopupDialogs["LOOT_BIND"].OnCancel = function(self, slot)
+--	if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then ConfirmLootSlot(slot) end
+--end
 
 ----------------------------------------------------------------------------------------
 -- Quest level(yQuestLevel by yleaf)
@@ -398,6 +452,19 @@ end
 
 local autoinvite = CreateFrame("Frame", nil, UIParent)
 autoinvite:RegisterEvent("PARTY_INVITE_REQUEST")
-autoinvite:RegisterEvent("GROUP_INVITE_CONFIRMATION")
+--autoinvite:RegisterEvent("GROUP_INVITE_CONFIRMATION")
 autoinvite:SetScript("OnEvent", OnEvent)
 
+
+
+local eventcount = 0
+local Garbage = CreateFrame("Frame")
+Garbage:RegisterAllEvents()
+Garbage:SetScript("OnEvent", function(self, event)
+	eventcount = eventcount + 1
+
+	if (InCombatLockdown() and eventcount > 25000) or (not InCombatLockdown() and eventcount > 10000) or event == "PLAYER_ENTERING_WORLD" then
+		collectgarbage("collect")
+		eventcount = 0
+	end
+end)

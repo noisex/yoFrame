@@ -168,16 +168,12 @@ local function enterEvent( self)
 		end
 	end
 
-	SimpleBackground( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3)
-	CreateStyle( RightDataPanel, 3, 0)
-	RightDataPanel:SetBackdropColor( 0.07, 0.07, 0.07, 0.1)
-	RightDataPanel.shadow:SetBackdropColor( 0.07, 0.07, 0.07, 0.7)
-	
-	SimpleBackground( LeftDataPanel, 440, 175, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 3, 3)
-	CreateStyle( LeftDataPanel, 3, 0)
-	LeftDataPanel:SetBackdropColor( 0.07, 0.07, 0.07, 0.1)
-	LeftDataPanel.shadow:SetBackdropColor( 0.07, 0.07, 0.07, 0.7)
-	
+	CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
+	CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
+
+	CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 3, 3, 0.5, 0)
+	CreateStyle( LeftDataPanel, 3, 0, 0, 0.7)
+
 	SimpleBackground( RightInfoPanel, 440, 15, "BOTTOM", RightDataPanel, "BOTTOM", 0, 0)
 	CreateStyle( RightInfoPanel, 3, 0)
 
@@ -224,11 +220,10 @@ csf:SetScript("OnEvent", OnEvent)
 --print("|cFF00A2FF/kb |r - Command to ActionBar KeyBinding.")
 --print("|cFF00A2FF/cfg |r - Ingame UI config.")
 
-
-LeftInfoPanel = CreateFrame("Frame", "yo_LeftInfoPanel", UIParent)
-LeftDataPanel = CreateFrame("Frame", "yo_LeftDataPanel", UIParent)
-RightDataPanel = CreateFrame("Frame", "yo_RightDataPanel", UIParent)
-RightInfoPanel = CreateFrame("Frame", "yo_RightInfoPanel", UIParent)
+LeftInfoPanel = CreateFrame("Frame", nil, UIParent)
+LeftDataPanel = CreateFrame("Frame", nil, UIParent)
+RightDataPanel = CreateFrame("Frame", nil, UIParent)
+RightInfoPanel = CreateFrame("Frame", nil, UIParent)
 
 SlashCmdList["YOMOVE"] = ySlashCmd;
 SLASH_YOMOVE1 = "/yo";

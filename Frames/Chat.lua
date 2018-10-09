@@ -132,7 +132,7 @@ local function SetChatStyle(frame)
 	if yo.Chat.fadingEnable then
 		_G[chat]:SetFading( true)
 		_G[chat]:SetTimeVisible( yo.Chat.fadingTimer)
-		_G[chat]:SetFadeDuration( 2)
+		_G[chat]:SetFadeDuration( 10)
 	else
 		_G[chat]:SetFading( false)
 	end
@@ -747,10 +747,10 @@ SlashCmdList.TELLTARGET = function(msg)
 end
 
 ----------------------------------------------------------------------------------------
---	Play sound files system(by Tukz)
+--	Chat History
 ----------------------------------------------------------------------------------------
 local function CheckLine( array)
-	local maxLine, index = 35
+	local maxLine, index = 30
 
 	for i,v in ipairs(array) do index = i end
 
@@ -780,7 +780,8 @@ local function Chat_GetColoredChatName(chatType, chatTarget)
 	elseif ( chatType == "WHISPER" ) then
 		local info = ChatTypeInfo["WHISPER"];
 		local colorString = format("|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255);
-		return format("%s[%s] |Hplayer:%3$s|h[%3$s]|h", colorString, _G[chatType], chatTarget), colorString
+		--return format("%s[%s] |Hplayer:%3$s|h[%3$s]|h", colorString, _G[chatType], chatTarget), colorString
+		return format("%s[%s] |Hplayer:%s|h", colorString, _G[chatType], chatTarget), colorString
 	else
 		local info = ChatTypeInfo[chatType];
 		local colorString = format("|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255);
@@ -788,24 +789,25 @@ local function Chat_GetColoredChatName(chatType, chatTarget)
 	end
 end
 
-local function ChatHistory( self, event, ...)
+local function OnChatHistory( self, event, ...)
 	if yo_ChatHistory == nil then
 		yo_ChatHistory = {}
 	end
 
 	if event:match"CHAT_MSG" then
-		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17 = ...;
-		local type = strsub(event, 10);
+		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17 = ...
+		local type = strsub(event, 10)
 
-		local chatGroup = Chat_GetChatCategory(type);
+		local chatGroup = Chat_GetChatCategory(type)
 		local chatTarget
 		local englishClass = "PRIEST"
 
 		if ( chatGroup == "CHANNEL" ) then
-			chatTarget = tostring(arg8);
+			chatTarget = tostring(arg8)
 		elseif ( chatGroup == "WHISPER" or chatGroup == "BN_WHISPER" ) then
+			--print( arg2)
 			if(not(strsub(arg2, 1, 2) == "|K")) then
-				chatTarget = strupper(arg2);
+				chatTarget = strsplit( "-", arg2) --strupper(arg2);
 			else
 				chatTarget = arg2;
 			end
@@ -823,15 +825,15 @@ local function ChatHistory( self, event, ...)
 
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+
 		if not yo.Chat.showHistory then return end
 		
 		self:RegisterEvent("CHAT_MSG_GUILD")
-		--self:RegisterEvent("CHAT_MSG_CHANNEL")
-
 		self:RegisterEvent("CHAT_MSG_PARTY")
 		self:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 		self:RegisterEvent("CHAT_MSG_RAID")
 		self:RegisterEvent("CHAT_MSG_RAID_LEADER")
+		--self:RegisterEvent("CHAT_MSG_CHANNEL")
 		--self:RegisterEvent("CHAT_MSG_SAY")
 
 		CheckLine( yo_ChatHistory)
@@ -840,25 +842,34 @@ local function ChatHistory( self, event, ...)
 			
 			for ii,vv in pairs( v) do
 				local channel, sender, text, chanColor, uclass = vv[2], strsplit( "-",vv[3]), vv[1], vv[4], vv[6]
-				--print(sender, uclass) --, RAID_CLASS_COLORS[uclass].colorStr)
+				--print(channel, sender, text, chanColor, uclass) --, RAID_CLASS_COLORS[uclass].colorStr)
 
 				sender = "|c" .. RAID_CLASS_COLORS[ ( uclass or "PRIEST")].colorStr .. sender .. "|r"
 
 				local string = format("%s[%s%s]: %s|r", channel, sender, ( chanColor or "|cffffffff" ), text)
-				print( string)
+				print(string)
 			end
 		end
 	end
 end
 
+local chatHistory = CreateFrame("Frame")
+chatHistory:RegisterEvent("PLAYER_ENTERING_WORLD")
+chatHistory:SetScript("OnEvent", OnChatHistory)
+
+----------------------------------------------------------------------------------------
+--	Wisper Sound
+----------------------------------------------------------------------------------------
+
 local SoundSys = CreateFrame("Frame")
 SoundSys:RegisterEvent("PLAYER_ENTERING_WORLD")
-SoundSys:SetScript("OnEvent", ChatHistory)
+SoundSys:SetScript("OnEvent", function(self, event, ...)
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:RegisterEvent("CHAT_MSG_WHISPER")
+		self:RegisterEvent("CHAT_MSG_BN_WHISPER")
+	else
+		if InCombatLockdown() and not yo.Chat.wisperInCombat then return end
 
---SoundSys:RegisterEvent("CHAT_MSG_BN_WHISPER")
---SoundSys:HookScript("OnEvent", function(self, event, msg, ...)
---	if event == "CHAT_MSG_WHISPER" or event == "CHAT_MSG_BN_WHISPER" then
---		if (msg:sub(1,3) == "OQ,") then return false, msg, ... end
---		PlaySoundFile(C.media.whisp_sound, "Master")
---	end
---end)
+		PlaySoundFile( LSM:Fetch( "sound", yo.Chat.wisperSound), "Master")
+	end
+end)

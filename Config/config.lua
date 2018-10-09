@@ -160,7 +160,7 @@ yo["NamePlates"] = {
 	["showCastIcon"]	= true,
 	["showCastName"]	= true,
 	["showCastTarget"]	= true,
-	["showPercTreat"] 	= false,
+	["showPercTreat"] 	= "none",
 	["showArrows"]		= true,
 	["executePhaze"]	= false,
 	["executeProc"]		= 35,
@@ -234,6 +234,14 @@ yo["Chat"] = {
 	["chatBubbleShift"]	= 15,
 	["fadingEnable"]	= true,
 	["fadingTimer"]		= 30,
+	["wisperSound"]		= "Wisper",
+	["wisperInCombat"]	= true,
+}
+
+yo["healBotka"] = {
+	["enable"]			= false,
+	["key1"]			= "key",
+	["key2"]			= "key",
 }
 
 local logan = CreateFrame("Frame")

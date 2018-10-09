@@ -401,6 +401,60 @@ function nums(num)
     end
 end
 
+function CreateVirtualFrame(frame, point, size, alpha, alphaback)
+	if point == nil then point = frame end
+	if point.backdrop then return end
+
+	size = ( size or 3)
+	alpha = ( alpha or 1)
+	alphaback = ( alphaback or 0)
+
+	frame.back = frame:CreateTexture(nil, "BORDER")
+	frame.back:SetDrawLayer("BORDER", -8)
+	frame.back:SetPoint("TOPLEFT", point, "TOPLEFT", -3, 3)
+	frame.back:SetPoint("BOTTOMRIGHT", point, "BOTTOMRIGHT", 3, -3)
+	frame.back:SetColorTexture( 0.15, 0.15, 0.15, alphaback) 
+
+	frame.bordertop = frame:CreateTexture(nil, "BORDER")
+	frame.bordertop:SetPoint("TOPLEFT", point, "TOPLEFT", -size, size)
+	frame.bordertop:SetPoint("TOPRIGHT", point, "TOPRIGHT", size, size)
+	frame.bordertop:SetHeight( size)
+	frame.bordertop:SetColorTexture( 0, 0, 0, alpha)
+	frame.bordertop:SetDrawLayer("BORDER", -7)
+
+	frame.borderbottom = frame:CreateTexture(nil, "BORDER")
+	frame.borderbottom:SetPoint("BOTTOMLEFT", point, "BOTTOMLEFT", -size, -size)
+	frame.borderbottom:SetPoint("BOTTOMRIGHT", point, "BOTTOMRIGHT", size, -size)
+	frame.borderbottom:SetHeight( size)
+	frame.borderbottom:SetColorTexture( 0, 0, 0, alpha)
+	frame.borderbottom:SetDrawLayer("BORDER", -7)
+
+	frame.borderleft = frame:CreateTexture(nil, "BORDER")
+	frame.borderleft:SetPoint("TOPLEFT", point, "TOPLEFT", -size, 0)
+	frame.borderleft:SetPoint("BOTTOMLEFT", point, "BOTTOMLEFT", size, 0)
+	frame.borderleft:SetWidth( size)
+	frame.borderleft:SetColorTexture( 0, 0, 0, alpha)
+	frame.borderleft:SetDrawLayer("BORDER", -7)
+
+	frame.borderright = frame:CreateTexture(nil, "BORDER")
+	frame.borderright:SetPoint("TOPRIGHT", point, "TOPRIGHT", size, 0)
+	frame.borderright:SetPoint("BOTTOMRIGHT", point, "BOTTOMRIGHT", -size, 0)
+	frame.borderright:SetWidth( size)
+	frame.borderright:SetColorTexture( 0, 0, 0, alpha)
+	frame.borderright:SetDrawLayer("BORDER", -7)
+end
+
+function SetVirtualBorder(frame, r, g, b)
+	if not frame.bordertop then
+		CreateVirtualFrame(frame)
+	end
+
+	frame.bordertop:SetColorTexture(r, g, b)
+	frame.borderbottom:SetColorTexture(r, g, b)
+	frame.borderleft:SetColorTexture(r, g, b)
+	frame.borderright:SetColorTexture(r, g, b)
+end
+
 function CreateBorder( f)
 	if f.border then return end
 	
@@ -422,7 +476,7 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     if f.shadow then return end
 
 	local style = {
-		bgFile =  texture,
+		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
 		edgeFile = texglow, 
 		edgeSize = 4,
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
@@ -439,7 +493,7 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     return shadow
 end
 
-function CreatePanel(f, w, h, a1, p, a2, x, y)
+function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	f:SetFrameLevel( 1)
 	f:SetHeight( h)
 	f:SetWidth( w)
@@ -451,8 +505,9 @@ function CreatePanel(f, w, h, a1, p, a2, x, y)
 	  tile = false, tileSize = 0, edgeSize = 1, 
 	  insets = { left = -1, right = -1, top = -1, bottom = -1}
 	})
-	f:SetBackdropColor(.05,.05,.05, .9)
-	f:SetBackdropBorderColor(.15,.15,.15, 0)
+	f:SetBackdropColor(.05,.05,.05, alpha or .9)
+	f:SetBackdropBorderColor(.15,.15,.15, alphaborder  or 0)
+	return f
 end
 
 function frame1px(f)
@@ -465,14 +520,12 @@ function frame1px(f)
 	f:SetBackdropBorderColor(.15,.15,.15, 0)	
 end 
 
-function SimpleBackground(f, w, h, a1, p, a2, x, y)
-	local _, class = UnitClass("player")
-	local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
-	sh = h
-	sw = w
+function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
+	--local _, class = UnitClass("player")
+	--local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
 	f:SetFrameLevel(1)
-	f:SetHeight(sh)
-	f:SetWidth(sw)
+	f:SetHeight(h)
+	f:SetWidth(w)
 	f:SetFrameStrata("BACKGROUND")
 	f:SetPoint(a1, p, a2, x, y)
 	f:SetBackdrop({
@@ -481,8 +534,8 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y)
 		tile = false, tileSize = 0, edgeSize = 1, 
 		insets = { left = 1, right = 1, top = 1, bottom = 1}
 	})
-	f:SetBackdropColor(.07,.07,.07, 1)
-	f:SetBackdropBorderColor(0, 0, 0, 1)
+	f:SetBackdropColor(.07,.07,.07, alpha or 1)
+	f:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
 end
 ----------------------------------------------------------------------------------------
 --	Undress button 

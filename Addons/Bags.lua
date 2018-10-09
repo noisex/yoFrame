@@ -1803,11 +1803,19 @@ function addon:BANKFRAME_OPENED()
 	addon_Open()
 end
 
-function addon:SCRAPPING_MACHINE_SHOW()
-	addon_Open()
-end
+function addon:MERCHANT_CLOSED() addon_Close() end
 
---ScrappingMachineFrame:SetScript("OnHide", addon_Close)
+function addon:SCRAPPING_MACHINE_SHOW() addon_Open() end
+function addon:SCRAPPING_MACHINE_CLOSE() addon_Close() end
+function addon:AUCTION_HOUSE_SHOW() addon_Open() end
+function addon:AUCTION_HOUSE_CLOSED() addon_Close() end
+function addon:GUILDBANKFRAME_OPENED() addon_Open() end
+function addon:GUILDBANKFRAME_CLOSED() addon_Close() end
+function addon:TRADE_SHOW() addon_Open() end
+function addon:TRADE_CLOSED() addon_Close() end
+function addon:TRADE_SKILL_SHOW() addon_Open() end
+function addon:TRADE_SKILL_CLOSE() addon_Close() end
+
 
 function addon:BANKFRAME_CLOSED()
 	HideUIPanel(self);
@@ -1853,11 +1861,6 @@ function addon:ADDON_LOADED( addon)
 
 end
 
---ReagentBankFrame
---BankFrame:HookScript("SetItemButtonCount", function( self, ...)
-	--print( ReagentBankFrame:GetName(), self:GetName(), ...)
---end)
-
 hooksecurefunc( 'SetItemButtonCount', function( slot)
 	--print( "HOOKSEC", slot, slot:GetName())
 	if slot:GetName() then
@@ -1872,7 +1875,7 @@ function addon:PLAYER_ENTERING_WORLD()
 	addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	
 	--print( "WTF BAG!", yo["Bags"].enable)
-	if not yo["Bags"].enable then return end
+	if not yo.Bags.enable then return end
 	
 	self:InitBags()
 
@@ -1881,9 +1884,21 @@ function addon:PLAYER_ENTERING_WORLD()
 	self:RegisterEvent("PLAYERBANKBAGSLOTS_CHANGED")
 
 	-- Events for trade skill UI handling
-	--self:RegisterEvent("TRADE_SKILL_SHOW");
 	--self:RegisterEvent("OBLITERUM_FORGE_SHOW");
 	self:RegisterEvent("SCRAPPING_MACHINE_SHOW");
+	self:RegisterEvent("SCRAPPING_MACHINE_CLOSE");
+	self:RegisterEvent('AUCTION_HOUSE_SHOW')
+	self:RegisterEvent('AUCTION_HOUSE_CLOSED')
+	self:RegisterEvent('GUILDBANKFRAME_OPENED')
+	self:RegisterEvent('GUILDBANKFRAME_CLOSED')
+
+	self:RegisterEvent('TRADE_SHOW')
+	self:RegisterEvent('TRADE_CLOSED')
+
+	--self:RegisterEvent('TRADE_SKILL_SHOW')
+	--self:RegisterEvent('TRADE_SKILL_CLOSE')
+
+	self:RegisterEvent('MERCHANT_CLOSED')
 
 	---- self:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
 	-- self:RegisterEvent("BAG_CLOSED")
@@ -1926,3 +1941,104 @@ function addon:PLAYER_ENTERING_WORLD()
 	ToggleBackpack()
 	ToggleBackpack()
 end  
+
+
+	--self:RegisterDisplayEvents('displayGems', 'SOCKET_INFO_UPDATE')
+	--self:RegisterDisplayEvents('closeCombat', nil, 'PLAYER_REGEN_DISABLED')
+	--self:RegisterDisplayEvents('closeVehicle', nil, 'UNIT_ENTERED_VEHICLE')
+	--self:RegisterDisplayEvents('closeVendor', nil, 'MERCHANT_CLOSED')
+--	if not Addon.sets.displayMail then
+--		self:RegisterEvent('MAIL_SHOW', 'HideInventory') -- reverse default behaviour
+--	end
+ 
+--	function AutoDisplay:HookInterfaceEvents()
+--	-- interaction with character frame
+--	CharacterFrame:HookScript('OnShow', function()
+--		if Addon.sets.displayPlayer then
+--			Addon:ShowFrame('inventory')
+--		end
+--	end)
+
+--	CharacterFrame:HookScript('OnHide', function()
+--		if Addon.sets.displayPlayer then
+--			Addon:HideFrame('inventory')
+--		end
+--	end)
+
+--	-- interaction with merchant
+--	local canHide = true
+--	local onMerchantHide = MerchantFrame:GetScript('OnHide')
+--	local hideInventory = function()
+--		if canHide then
+--			Addon:HideFrame('inventory')
+--		end
+--	end
+
+--	MerchantFrame:SetScript('OnHide', function(...)
+--		canHide = false
+--		onMerchantHide(...)
+--		canHide = true
+--	end)
+
+--	hooksecurefunc('CloseBackpack', hideInventory)
+--	hooksecurefunc('CloseAllBags', hideInventory)
+
+--	-- backpack
+--	local oToggleBackpack = ToggleBackpack
+--	ToggleBackpack = function()
+--		if not Addon:ToggleBag('inventory', BACKPACK_CONTAINER) then
+--			oToggleBackpack()
+--		end
+--	end
+
+--	local oOpenBackpack = OpenBackpack
+--	OpenBackpack = function()
+--		if not Addon:ShowBag('inventory', BACKPACK_CONTAINER) then
+--			oOpenBackpack()
+--		end
+--	end
+
+--	-- single bag
+--	local oToggleBag = ToggleBag
+--	ToggleBag = function(bag)
+--		local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
+--		if not Addon:ToggleBag(frame, bag) then
+--			oToggleBag(bag)
+--		end
+--	end
+
+--	local oOpenBag = OpenBag
+--	OpenBag = function(bag)
+--		local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
+--		if not Addon:ShowBag(frame, bag) then
+--			oOpenBag(bag)
+--		end
+--	end
+
+--	-- all bags
+--	local oOpenAllBags = OpenAllBags
+--	OpenAllBags = function(frame)
+--		if not Addon:ShowFrame('inventory') then
+--			oOpenAllBags(frame)
+--		end
+--	end
+
+--	if ToggleAllBags then
+--		local oToggleAllBags = ToggleAllBags
+--		ToggleAllBags = function()
+--			if not Addon:ToggleFrame('inventory') then
+--				oToggleAllBags()
+--			end
+--		end
+--	end
+
+--	-- checked state
+--	local function checkIfInventoryShown(button)
+--		if Addon:IsFrameEnabled('inventory') then
+--			button:SetChecked(Addon:IsFrameShown('inventory'))
+--		end
+--	end
+
+--	hooksecurefunc('BagSlotButton_UpdateChecked', checkIfInventoryShown)
+--	hooksecurefunc('BackpackButton_UpdateChecked', checkIfInventoryShown)
+--end

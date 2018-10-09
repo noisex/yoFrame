@@ -1,3 +1,5 @@
+local errorTicker
+
 local function unitPVP( f, unit)
 
 	local status
@@ -274,9 +276,20 @@ local function OnEvent(f, event, ...)
 		rmark_update( f, unit)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		f.rCombat:Hide()
+		errorTicker = C_Timer.NewTimer( 2, function() 
+			UIErrorsFrame:Clear() 
+			UIErrorsFrame:Show()
+		end)
+	
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		f.rCombat:SetTexCoord(0.58, 0.90, 0.08, 0.41)
 		f.rCombat:Show()
+		UIErrorsFrame:Hide()
+		if errorTicker then 
+			errorTicker:Cancel() 
+			errorTicker = nil
+		end
+
 	elseif event == "PLAYER_UPDATE_RESTING"	or event == "ZONE_CHANGED_NEW_AREA" then
 		if( IsResting() and unit == 'player') then 
 			f.rCombat:SetTexCoord(0, .5, 0, .421875) 

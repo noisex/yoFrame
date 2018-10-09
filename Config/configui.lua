@@ -19,6 +19,7 @@ LSM:Register("sound", "Tick 01", "Interface\\Addons\\yoFrame\\Media\\Bip.ogg")
 LSM:Register("sound", "Tick 02", "Interface\\Addons\\yoFrame\\Media\\CSDroplet.ogg")
 LSM:Register("sound", "Applause", "Interface\\Addons\\yoFrame\\Media\\Applause.ogg")
 LSM:Register("sound", "Shotgun", "Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg")
+LSM:Register("sound", "Wisper", "Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
 
 local function Setlers( path, val)
 	p1, p2, p3, p4 = strsplit("#", path)
@@ -356,7 +357,7 @@ function InitOptions()
 					showCastIcon = 	{ width = "full",	order = 50, type = "toggle",	name = "Показывать иконку кастбара", },
 					showCastName = 	{ width = "full",	order = 52, type = "toggle",	name = "Показывать название каста", },
 					showCastTarget ={ width = "full",	order = 55, type = "toggle",	name = "Показывать имя предполагаемого таргета каста", },
-					showPercTreat = { width = "full",	order = 60, type = "toggle",	name = "Показывать проценты агро циферками ( в группе, рейде)", },
+					showPercTreat = { width = 1.5,		order = 60, type = "select", 	name = "Проценты агро циферками ( в группе):",	values = { ["none"] = "Ничего не показывать", ["scaledPercent"] = "Скалированные проценты ( 0 - 100%)", ["rawPercent"] = "Полное значение процентов ( 0 - 255%)",},},
 					showArrows = 	{ width = "full",	order = 65, type = "toggle",	name = "Показывать боковые стрелочки на таргете", },
 					blueDebuff = 	{ width = "full",	order = 66, type = "toggle",	name = "Рисовать дебафы от игрока в цвет школы абилки", },
 					classDispell = 	{ width = "full",	order = 33, type = "toggle",	name = "Диспельные, толко если твой класс может их сдиспелить ( для правых)",},
@@ -419,6 +420,8 @@ function InitOptions()
 					fadingEnable 	= {	order = 32, type = "toggle",	name = "Затухание текста чата",},
 					fadingTimer 	= {	order = 34,	type = "range", 	name = "... через секунд:", min = 5, max = 100, step = 1,
 						disabled = function( info) return not yo[info[1]].fadingEnable; end,},
+					wisperSound		= {	order = 36, type = "select", 	name = "Звук личного сообщения", dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
+					wisperInCombat	= {	order = 38, type = "toggle",	name = "Звук в бою",},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
 					--chatBubble		= {	order = 40, type = "select", 	name = "Чат-бабл:",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},
@@ -453,6 +456,23 @@ function InitOptions()
            		disabled = function() return not needReload end,           	
            		func = function() if needReload then ReloadUI() end	 end,},
 
+			healBotka = {
+				name = "Хилботка",
+				type = "group",
+				order = 200,
+				hidden = not true,
+				args = {	
+					key1	= {	order = 20, type = "keybinding",	name = "Показывать иконки 1",
+						get = function(info) return yo[info[1]][info[#info]] end ,
+						set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, },
+						
+					key2	= {	order = 22, type = "keybinding",	name = "Показывать иконки 2",
+						get = function(info) return yo[info[1]][info[#info]] end ,
+						set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, },
+				},	
+			},
+
+
 			NextOptions = {
 				name = "Следующие настройки",
 				type = "group",
@@ -460,8 +480,6 @@ function InitOptions()
 				hidden = true,
 				args = {	},	
 			},
-
-
 		};
 	};
  	

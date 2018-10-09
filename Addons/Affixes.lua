@@ -375,6 +375,7 @@ local function OnEvent( self, event, name, ...)
 
 		CheckInventoryKeystone()
 	elseif event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_PARTY" then
+		name = strlower( name)
 		if name == "!key" or name == "!ключ" or name == "!keys" then
 			local keys = CheckInventoryKeystone()
 			if keys then
@@ -382,6 +383,7 @@ local function OnEvent( self, event, name, ...)
 			end
 		end
 	elseif event == "CHAT_MSG_GUILD" then
+		name = strlower( name)
 		if name == "!key" or name == "!ключ" or name == "!keys" then
 			local keys = CheckInventoryKeystone()
 			if keys then

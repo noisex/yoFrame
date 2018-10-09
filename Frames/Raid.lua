@@ -1,21 +1,6 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF 
 
-local function OnEnter( f)
-	f.bgHlight:Show()
-	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
-	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-	GameTooltip:SetUnit( f.unit)
-	GameTooltip:Show()
-end
-
-local function OnLeave( f)
-	f.bgHlight:Hide()
-	if GameTooltip:IsShown() then
-		GameTooltip:FadeOut( 2) 
-	end
-end
-
 local UnitSpecific = {
 	player = function(self)
 		-- Player specific layout code.
@@ -66,12 +51,35 @@ local PostIconUpdate = function( self, button)
 	button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
 	CreateStyle( button, 4)
 end
+
+local function OnEnter( f)
+	f.bgHlight:Show()
+	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
+	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+	GameTooltip:SetUnit( f.unit)
+	GameTooltip:Show()
+
+	--f:EnableMouseWheel( true)
+	--f:EnableKeyboard( true)
+	--SetBindingClick( "F", f:GetName(), "cliquebuttonF")
+end
+
+local function OnLeave( f)
+	f.bgHlight:Hide()
+	if GameTooltip:IsShown() then
+		GameTooltip:FadeOut( 2) 
+	end
+
+	--f:EnableMouseWheel( false)
+	--f:EnableKeyboard( false)
+	--SetBinding("F");
+end
+
 -------------------------------------------------------------------------------------------------------
 --											SHARED
 -------------------------------------------------------------------------------------------------------
 
 local Shared = function(self, unit)
-	--local texture 		= "Interface\\AddOns\\yoFrame\\Media\\statusbar4"
 	local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 	local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
 	
@@ -83,8 +91,8 @@ local Shared = function(self, unit)
 
 	-- Register click
 	self:RegisterForClicks("AnyUp")
-	self:SetScript("OnEnter", UnitFrame_OnEnter)
-	self:SetScript("OnLeave", UnitFrame_OnLeave)
+	self:SetScript("OnEnter", OnEnter)
+	self:SetScript("OnLeave", OnLeave)
 
 	self.menu = SpawnMenu
 	CreateStyle(self, 3)
@@ -122,9 +130,9 @@ local Shared = function(self, unit)
 		self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
 	else
 		self.Health.colorHealth = true
-		self.colors.health = { 0.17, 0.17, 0.17 }
+		self.colors.health = { 0.2, 0.2, 0.2 }
 		self.Health.hbg:SetVertexColor( 0.7, 0.7, 0.7, 0.9)
-		self.Range = { insideAlpha = 1, outsideAlpha = .7, }
+		self.Range = { insideAlpha = 1, outsideAlpha = .5, }
 	end
 
 	------------------------------------------------------------------------------------------------------
@@ -316,18 +324,23 @@ local Shared = function(self, unit)
 	elseif unit == "raid" and yo.Raid.aurasRaid then
 		DeadText:SetFont( font, fontsize - 2)
 
-		local size = self:GetHeight() * 0.7
+		local size = 15	--self:GetHeight() * 0.7
 		
 		local Buffs = CreateFrame('Frame', nil, self)
-		Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -20, 0)
-		Buffs:SetPoint( 'BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 0)
+		--Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -20, 0)
+		--Buffs:SetPoint( 'BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 0)
+		Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -2, -2)
+		--Buffs:SetPoint( 'BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 0)
+		
 		Buffs:SetFrameLevel( 150)
-		Buffs:SetSize( ( size + 6) * 10, size * 2)
+		--Buffs:SetSize( ( size + 6) * 10, size * 2)
+		Buffs:SetSize( size * 10, size)
+
 		Buffs.disableCooldown = false
-		--Buffs.filter = 'HARMFUL'
-		Buffs.spacing = 3
+		----Buffs.filter = 'HARMFUL'
+		Buffs.spacing = 1
 		Buffs.num = 2
-		Buffs.disableMouse = false
+		Buffs.disableMouse = true
 		Buffs.initialAnchor = "RIGHT"
 		Buffs.size   =  size
 		Buffs['growth-x'] = 'LEFT'
@@ -406,9 +419,6 @@ local Shared = function(self, unit)
 	self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", OnChangeTarget)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", OnChangeTarget)
 		
-	self:SetScript("OnEnter", OnEnter)
-	self:SetScript("OnLeave", OnLeave)
-
 	-- Debuff highlight
 	if yo.Raid.debuffHight then
 		self.DebuffHighlightMy = self.Health:CreateTexture(nil, "OVERLAY")
@@ -421,6 +431,56 @@ local Shared = function(self, unit)
 		--self.DebuffHighlightUseTexture = true
 	end
 
+
+	self:SetAttribute("unit", "player")
+
+	if yo.healBotka.enable then
+
+		self.menu = nil
+
+		self:EnableMouseWheel( 1)
+		self:EnableKeyboard( true)
+
+		self:SetAttribute("type2", "spell");
+		self:SetAttribute("spell2", "Омоложение");	
+
+		self:SetAttribute( "type1", "spell");
+		self:SetAttribute( "spell1", "Восстановление");	
+
+		self:SetAttribute( "shift-type1", "spell");
+		self:SetAttribute( "shift-spell1", "Буйный рост");	
+
+		self:SetAttribute( "shift-type2", "spell");
+		self:SetAttribute( "shift-spell2", "Жизнецвет");
+
+		--self:SetAttribute(aModiKey .. "type" .. aButtonId, "macro");
+		--self:SetAttribute(aModiKey .. "macrotext" .. aButtonId, VUHDO_buildAssistMacroText(tUnit));
+
+		self:SetAttribute( "type-w1", "macro");
+		self:SetAttribute( "macrotext-w1", "/use буйный рост");	
+
+		self:SetAttribute("type-cliquebuttonF", "macro")
+		self:SetAttribute("macrotext-cliquebuttonF", "/use буйный рост")
+
+		local B_SET = [[self:SetBindingClick(true, "Q", self, "cliquebuttonF")]]
+		
+		local attr = B_SET	--:format(key, suffix)
+		
+		self:SetScript("OnMouseWheel", function(self, delta) if delta>0 then KeyPressed( self, "MOUSEWHEELUP") else KeyPressed( self, "MOUSEWHEELDOWN") end end)
+
+	--self:SetAttribute("_onstate-wpbinding", [[
+ --		if newstate == "on" then
+ -- 			self:SetBindingSpell(false, "SHIFT-B", "Восстановление")
+ -- 			self:SetBindingSpell(false, "SHIFT-O", "Омоложение")
+ -- 			self:SetBindingClick( "F", self:GetName(), "cliquebuttonF")
+
+ --		elseif newstate == "off" then
+ -- 			self:ClearBindings()
+ --		end
+	--]])
+	--RegisterStateDriver( self, "wpbinding", "[@mouseover] on; off")
+	end
+		
 	--if(UnitSpecific[unit]) then
 	--	return UnitSpecific[unit](self)
 	--end
@@ -576,6 +636,7 @@ logan:SetScript("OnEvent", function(self, event)
 				raid[i] = raidgroup				
 			end
 			CreateMovier( raid[1], yo.Raid.numgroups, spaicing)
+
 		else
 
 			if yo.Raid.groupingOrder == "THD" then

@@ -35,6 +35,9 @@ local function UpdateExp(self, event, owner)
 
 	local unit = "player"
 	local min, max = GetXP(unit)
+	local perc = min / max
+	
+	experience:SetStatusBarColor( 1 - perc, 0 + perc, 0, 0.5) 
 	experience:SetMinMaxValues(0, max)
 	experience:SetValue(min)
 	experience:Show()
@@ -107,7 +110,7 @@ local function Experience( f)
 	Experience.Rested = CreateFrame('StatusBar', nil, f)
 	Experience.Rested:SetStatusBarTexture( texture)
 	Experience.Rested:SetPoint('CENTER', yo_MoveExperience, 'CENTER', 0, 0)
-	Experience.Rested:SetStatusBarColor( 0, 0.5, 1, 0.4)
+	Experience.Rested:SetStatusBarColor( 0, 0.5, 1, 0.3)
 	Experience.Rested:SetWidth(6)
 	Experience.Rested:SetHeight(168)
 	Experience.Rested:SetOrientation("VERTICAL")

@@ -21,7 +21,7 @@ local badClassTypes = {
 }
 
 local badMobes = {
-	[113864] = true,	--	Дамми у ханта
+	--[130771] = true,	--	Дамми у ханта
 	--[102052] = true, 	--	Дамми у лока
 
 	[120651] = true,  	-- 	Взрывчатка
@@ -430,13 +430,6 @@ end
 --	CREATE PLATE
 -----------------------------------------------------------------------------------------------
 
-local function SetVirtualBorder(frame, r, g, b)
-	--frame.bordertop:SetColorTexture(r, g, b)
-	--frame.borderbottom:SetColorTexture(r, g, b)
-	--frame.borderleft:SetColorTexture(r, g, b)
-	--frame.borderright:SetColorTexture(r, g, b)
-end
-
 local function UpdateRaidTarget(unitFrame)
 	local icon = unitFrame.RaidTargetFrame.RaidTargetIcon
 	local index = GetRaidTargetIndex(unitFrame.displayedUnit)
@@ -458,18 +451,18 @@ local function UpdateHealth(unitFrame)
 	local unit = unitFrame.displayedUnit
 	local minHealth, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
 	local perc = minHealth / maxHealth
-	local perc_text = string.format("%d%%", math.floor(perc * 100))
+	local perc_text = string.format("%s - %d%%", ShortValue(minHealth), math.floor(perc * 100))
 
 	unitFrame.healthBar:SetValue(perc)
+	unitFrame.healthBar.perc:SetText( perc_text )
 
-	--if UnitIsUnit("player", unitFrame.displayedUnit) then
-	--	unitFrame.healthBar.value:SetText("")
-	--else
-	
-	unitFrame.healthBar.perc:SetText( perc_text)
-	unitFrame.healthBar.value:SetText( ShortValue(minHealth) .. " -")
-	--end
-
+	if yo.NamePlates.executePhaze then
+		if yo.NamePlates.executeProc >= perc * 100  then
+			unitFrame.healthBar.HightLight:Show()
+		else
+			unitFrame.healthBar.HightLight:Hide()
+		end
+	end
 	--if UnitIsPlayer(unit) then
 	--	if perc <= 0.5 and perc >= 0.2 then
 	--		SetVirtualBorder(unitFrame.healthBar, 1, 1, 0)
@@ -498,27 +491,27 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	local unit = unitFrame.displayedUnit
 	local cols = { .6, .6, .6}
 	local unitTarget = unit .. "target"
+	local treatText = ""
 
-	local treatSit = UnitThreatSituation( "player", unit)
-	--local isTanking, status, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation( "player", unit)
-	local isTanking, status = UnitDetailedThreatSituation( "player", unit)
-
-	local max, perc = UnitHealthMax( unit), 0
-	if( max ~= 0) then
-		perc = math.floor( UnitHealth( unit) / max * 100 + .5)
-	end
+	local isTanking, status, scaledPercent, rawPercent = UnitDetailedThreatSituation( "player", unit)
 
 	if UnitIsTapDenied( unit) then
 		cols = { .6, .6, .6}
-	
-	elseif yo.NamePlates.executePhaze and perc <= yo.NamePlates.executeProc then
-		cols = {strsplit(",", yo.NamePlates.executeColor)}
 
 	elseif UnitPlayerControlled( unit) then 											-- юнит-игрок / цвет класса
 		cols = _G["yo_Player"].colors.class[ select( 2, UnitClass( unit))]
 
-	elseif treatSit then
+	elseif status then
 		cols = treatColor[status]
+
+		if UnitInParty("player") then
+			if showPercTreat == "scaledPercent" then
+				treatText = floor( scaledPercent) .. "%"
+			elseif showPercTreat == "rawPercent" then
+				treatText = floor( rawPercent) .. "%"
+			end
+			unitFrame.threat:SetTextColor( cols[1], cols[2], cols[3])
+		end		
 
 		if UnitGroupRolesAssigned( "player") == "TANK" then
 			cols = treatColor[status +10]
@@ -540,12 +533,31 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	else 	--if UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then
 		cols = _G["yo_Player"].colors.reaction[UnitReaction( unit, "player")]			-- цвет реакшн
 	end    	
-	--print(GetTime(), unit, cols[1], cols[2], cols[3])
-	--print(unit, treatSit, isTanking, scaledPercent, rawPercent, threatValue)
+
+	unitFrame.threat:SetText( treatText)
 	unitFrame.healthBar:SetStatusBarColor( cols[1], cols[2], cols[3])
 	unitFrame.name:SetTextColor( cols[1], cols[2], cols[3])
 end
 
+local function ActionButton_ShowOverlayGlow(self)
+	if ( self.overlay ) then
+		if ( self.overlay.animOut:IsPlaying() ) then
+			self.overlay.animOut:Stop();
+			self.overlay.animIn:Play();
+		end
+	else
+		self.overlay = ActionButton_GetOverlayGlow();
+		local frameWidth, frameHeight = self:GetSize();
+		self.overlay:SetParent(self);
+		self.overlay:ClearAllPoints();
+		--Make the height/width available before the next frame:
+		self.overlay:SetSize( frameWidth, frameHeight);
+		--self.overlay:SetPoint("CENTER", self, "CENTER", 0, 0)
+		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .45, frameHeight * .45)
+		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .45, -frameHeight * .45);
+		self.overlay.animIn:Play();
+	end
+end
 
 local function UpdateName( unitFrame)
 	local name = GetUnitName(unitFrame.displayedUnit, false)
@@ -590,34 +602,27 @@ local function UpdateName( unitFrame)
 		
 		if UnitExists( "target") and showArrows then
 			if UnitIsUnit( unitFrame.displayedUnit, "target") then
-				--unitFrame:SetAlpha( 1)
-				unitFrame.arrowright:Show()
-				unitFrame.arrowleft:Show()
+				unitFrame.arrows:Show()
 				--unitFrame.healthBar.value:Show()
 			else
-				--unitFrame:SetAlpha( 0.7)
-				unitFrame.arrowright:Hide()
-				unitFrame.arrowleft:Hide()
+				unitFrame.arrows:Hide()
 				--unitFrame.healthBar.value:Hide()
 			end
 		else
 			if showArrows then
-				--unitFrame:SetAlpha( 1)
-				unitFrame.arrowright:Hide()
-				unitFrame.arrowleft:Hide()
+				unitFrame.arrows:Hide()
 			end
 			--unitFrame.healthBar.value:Hide()
 		end
 		
 		if mobID and ( badMobes[mobID] or eTeam[mobID]) then
-			unitFrame.healthBar.shadow:SetBackdropBorderColor( 0, 1, 1)
+			--unitFrame.healthBar.shadow:SetBackdropBorderColor( 0, 1, 1)
 			--unitFrame.healthBar.HightLight:Show()
-			unitFrame:SetAlpha( 1)
-			--ActionButton_ShowOverlayGlow( unitFrame.healthBar)
+			ActionButton_ShowOverlayGlow( unitFrame.healthBar)
 		else
-			unitFrame.healthBar.shadow:SetBackdropBorderColor( .09, .09, .09)
+			--unitFrame.healthBar.shadow:SetBackdropBorderColor( .09, .09, .09)
 			--unitFrame.healthBar.HightLight:Hide()
-			--ActionButton_HideOverlayGlow( unitFrame.healthBar)
+			ActionButton_HideOverlayGlow( unitFrame.healthBar)
 		end
 		
 		if 	--UnitClass( unitFrame.displayedUnit)
@@ -642,15 +647,19 @@ local function UpdateName( unitFrame)
 end
 
 local function UpdateTheatSit( self)
-	if not yo.NamePlates.showPercTreat then return end
+	if yo.NamePlates.showPercTreat == "none" then return end
 
 	if UnitInRaid("player") or UnitInParty("player") then
 		local isTanking, status, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation( "player", self.displayedUnit)
 	
 		if status then
-			local red, green, blue = GetThreatStatusColor( status)
-			self.threat:SetText( floor( rawPercent) .. "%")
-			self.threat:SetTextColor( red, green, blue)
+			if yo.NamePlates.showPercTreat == "scaledPercent" then
+				self.threat:SetText( floor( scaledPercent) .. "%")	
+			else
+				self.threat:SetText( floor( rawPercent) .. "%")
+			end
+			
+			self.threat:SetTextColor( GetThreatStatusColor( status))
 		else
 			self.threat:SetText( "")
 		end
@@ -666,8 +675,7 @@ local function UpdateAll(unitFrame)
 		UpdateCastBar( unitFrame.castBar)
 		UpdateBuffs(unitFrame)
 		UpdateRaidTarget(unitFrame)
-		UpdateTheatSit( unitFrame)
-
+		--UpdateTheatSit( unitFrame)
 		 
 		if UnitIsUnit("player", unitFrame.displayedUnit) then
 			unitFrame.castBar:UnregisterAllEvents()
@@ -678,191 +686,190 @@ end
 -----------------------------------------------------------------------------------------------
 -- FRAME
 -----------------------------------------------------------------------------------------------
-local function OnNamePlateCreated( f)
-	--local texture = "Interface\\AddOns\\yoFrame\\Media\\bar_dground"
-	local textureHL = "Interface\\AddOns\\yoFrame\\Media\\bar20"
-	--local texture = "Interface\\AddOns\\yoFrame\\Media\\flatsmooth" --"Interface\\AddOns\\yoFrame\\Media\\bar16"
+local function OnNamePlateCreated( frame)
 
-	f.UnitFrame = CreateFrame("Button", "$parentUnitFrame", f)
-	f.UnitFrame:SetAllPoints( f)
-	f.UnitFrame:SetFrameLevel( f:GetFrameLevel())
-	f.UnitFrame:SetScale( UIParent:GetScale())
+	local f = CreateFrame("Button", "$parentUnitFrame", frame)
+	f:SetAllPoints( frame)
+	f:SetFrameLevel( frame:GetFrameLevel())
+	f:SetScale( UIParent:GetScale())
 	
-	f.UnitFrame.healthBar = CreateFrame("StatusBar", nil, f.UnitFrame)
-	f.UnitFrame.healthBar:SetPoint("CENTER", f, "CENTER", 0, 0)
-	f.UnitFrame.healthBar:SetSize( nameplatewidth, nameplateheight)
-	--f.UnitFrame.healthBar:SetAllPoints(f.UnitFrame)
+	f.healthBar = CreateFrame("StatusBar", nil, f)
+	f.healthBar:SetPoint("CENTER", f, "CENTER", 0, 0)
+	f.healthBar:SetSize( nameplatewidth, nameplateheight)
+	--f.healthBar:SetAllPoints(f)
 
-	f.UnitFrame.healthBar:SetStatusBarTexture( texture)
-	f.UnitFrame.healthBar:SetMinMaxValues(0, 1)
-	CreateStyle( f.UnitFrame.healthBar, 3)
+	f.healthBar:SetStatusBarTexture( texture)
+	f.healthBar:SetMinMaxValues(0, 1)
+	CreateStyle( f.healthBar, 3)
 
-	f.UnitFrame.healthBar.Background = f.UnitFrame.healthBar:CreateTexture(nil, "BACKGROUND")
-	f.UnitFrame.healthBar.Background:SetAllPoints( f.UnitFrame.healthBar)
-	f.UnitFrame.healthBar.Background:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
-	f.UnitFrame.healthBar.Background:SetTexture( texture)
+	f.healthBar.Background = f.healthBar:CreateTexture(nil, "BACKGROUND")
+	f.healthBar.Background:SetAllPoints( f.healthBar)
+	f.healthBar.Background:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
+	f.healthBar.Background:SetTexture( texture)
 
-	--f.UnitFrame.healthBar.HightLight = f.UnitFrame.healthBar:CreateTexture(nil, "OVERLAY")
-	--f.UnitFrame.healthBar.HightLight:SetAllPoints( f.UnitFrame.healthBar)
-	--f.UnitFrame.healthBar.HightLight:SetVertexColor( 1, 0.5, 0, 0.2)
-	--f.UnitFrame.healthBar.HightLight:SetBlendMode( "BLEND")
-	--f.UnitFrame.healthBar.HightLight:SetTexture( textureHL)	
-	--f.UnitFrame.healthBar.HightLight:Hide()
+	local r, g, b = strsplit( "," , yo.NamePlates.executeColor)
+	local textureHL = "Interface\\AddOns\\yoFrame\\Media\\highlight2"
+	f.healthBar.HightLight = f.healthBar:CreateTexture(nil, "OVERLAY")
+   	f.healthBar.HightLight:SetPoint('TOPLEFT', f.healthBar:GetStatusBarTexture(), 'TOPLEFT')
+   	f.healthBar.HightLight:SetPoint('BOTTOMRIGHT', f.healthBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
+	f.healthBar.HightLight:SetVertexColor( r, g, b, 1)
+	f.healthBar.HightLight:SetBlendMode( "ADD")
+	f.healthBar.HightLight:SetTexture( texhl)	
+	f.healthBar.HightLight:SetAlpha( 0.4)
+	f.healthBar.HightLight:Hide()	
 	
-	f.UnitFrame.healthBar.perc = f.UnitFrame.healthBar:CreateFontString(nil, "OVERLAY")
-	f.UnitFrame.healthBar.perc:SetFont( font, fontsize, "THINOUTLINE")
-	f.UnitFrame.healthBar.perc:SetPoint("RIGHT", f.UnitFrame.healthBar, "RIGHT", -5, 0)
-	f.UnitFrame.healthBar.perc:SetTextColor(1, 1, 1)
+	f.healthBar.perc = f.healthBar:CreateFontString(nil, "OVERLAY")
+	f.healthBar.perc:SetFont( font, fontsize, "THINOUTLINE")
+	f.healthBar.perc:SetPoint("RIGHT", f.healthBar, "RIGHT", -5, 0)
+	f.healthBar.perc:SetTextColor(1, 1, 1)
 
-	f.UnitFrame.healthBar.value = f.UnitFrame.healthBar:CreateFontString(nil, "OVERLAY")
-	f.UnitFrame.healthBar.value:SetFont( font, fontsize, "THINOUTLINE")
-	f.UnitFrame.healthBar.value:SetPoint("RIGHT", f.UnitFrame.healthBar.perc, "LEFT", 0, 0)
-	f.UnitFrame.healthBar.value:SetTextColor(1, 1, 1)
+	--f.healthBar.value = f.healthBar:CreateFontString(nil, "OVERLAY")
+	--f.healthBar.value:SetFont( font, fontsize, "THINOUTLINE")
+	--f.healthBar.value:SetPoint("RIGHT", f.healthBar.perc, "LEFT", 0, 0)
+	--f.healthBar.value:SetTextColor(1, 1, 1)
 
-	f.UnitFrame.name = f.UnitFrame:CreateFontString(nil, "OVERLAY")
-	f.UnitFrame.name:SetFont( font, fontsize, "THINOUTLINE")
-	f.UnitFrame.name:SetPoint("BOTTOM", f.UnitFrame.healthBar, "TOP", 0, 2)
-	f.UnitFrame.name:SetTextColor(1, 1, 1)
+	f.name = f:CreateFontString(nil, "OVERLAY")
+	f.name:SetFont( font, fontsize, "THINOUTLINE")
+	f.name:SetPoint("BOTTOM", f.healthBar, "TOP", 0, 2)
+	f.name:SetTextColor(1, 1, 1)
 	
-	f.UnitFrame.level = f.UnitFrame.healthBar:CreateFontString(nil, "OVERLAY")
-	f.UnitFrame.level:SetFont( font, fontsize, "THINOUTLINE")
-	f.UnitFrame.level:SetTextColor(1, 1, 1)
-	f.UnitFrame.level:SetPoint("LEFT", f.UnitFrame.healthBar, "LEFT", 10, 0)
+	f.level = f.healthBar:CreateFontString(nil, "OVERLAY")
+	f.level:SetFont( font, fontsize, "THINOUTLINE")
+	f.level:SetTextColor(1, 1, 1)
+	f.level:SetPoint("LEFT", f.healthBar, "LEFT", 10, 0)
 
-	if yo.NamePlates.showPercTreat then
-		f.UnitFrame.threat = f.UnitFrame.healthBar:CreateFontString(nil, "OVERLAY")
-		f.UnitFrame.threat:SetFont( font, fontsize, "THINOUTLINE")
-		f.UnitFrame.threat:SetTextColor(1, 1, 1)
-		f.UnitFrame.threat:SetPoint("LEFT", f.UnitFrame.level, "RIGHT", 6, 0)
-	end
+	--if yo.NamePlates.showPercTreat then
+		f.threat = f.healthBar:CreateFontString(nil, "OVERLAY")
+		f.threat:SetFont( font, fontsize, "THINOUTLINE")
+		f.threat:SetTextColor(1, 1, 1)
+		f.threat:SetPoint("LEFT", f.level, "RIGHT", 6, 0)
+	--end
 			
-	f.UnitFrame.castBar = CreateFrame("StatusBar", nil, f.UnitFrame)
-	f.UnitFrame.castBar:Hide()
-	f.UnitFrame.castBar:SetPoint("TOP", f.UnitFrame.healthBar, "BOTTOM", 0, -2)
-	f.UnitFrame.castBar:SetSize( nameplatewidth, 5)
-	f.UnitFrame.castBar:SetStatusBarTexture( texture)
-	f.UnitFrame.castBar:SetStatusBarColor(1, 0.8, 0)
+	f.castBar = CreateFrame("StatusBar", nil, f)
+	f.castBar:Hide()
+	f.castBar:SetPoint("TOP", f.healthBar, "BOTTOM", 0, -2)
+	f.castBar:SetSize( nameplatewidth, 5)
+	f.castBar:SetStatusBarTexture( texture)
+	f.castBar:SetStatusBarColor(1, 0.8, 0)
 
-	f.UnitFrame.castBar.Background = f.UnitFrame.castBar:CreateTexture(nil, "BACKGROUND")
-	f.UnitFrame.castBar.Background:SetAllPoints( f.UnitFrame.castBar)
-	f.UnitFrame.castBar.Background:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
-	f.UnitFrame.castBar.Background:SetTexture( texture)
+	f.castBar.Background = f.castBar:CreateTexture(nil, "BACKGROUND")
+	f.castBar.Background:SetAllPoints( f.castBar)
+	f.castBar.Background:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
+	f.castBar.Background:SetTexture( texture)
 
-	f.UnitFrame.castBar.Time = f.UnitFrame.castBar:CreateFontString(nil, "ARTWORK")
-	f.UnitFrame.castBar.Time:SetPoint("RIGHT", f.UnitFrame.castBar, "RIGHT", -5, 0)
-	f.UnitFrame.castBar.Time:SetFont( font, fontsize - 1, "THINOUTLINE")
-	f.UnitFrame.castBar.Time:SetShadowOffset(1, -1)
-	f.UnitFrame.castBar.Time:SetTextColor(1, 1, 1)
+	f.castBar.Time = f.castBar:CreateFontString(nil, "ARTWORK")
+	f.castBar.Time:SetPoint("RIGHT", f.castBar, "RIGHT", -5, 0)
+	f.castBar.Time:SetFont( font, fontsize - 1, "THINOUTLINE")
+	f.castBar.Time:SetShadowOffset(1, -1)
+	f.castBar.Time:SetTextColor(1, 1, 1)
 
-	f.UnitFrame.castBar.Spark = f.UnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-	f.UnitFrame.castBar.Spark:SetTexture("")
+	f.castBar.Spark = f.castBar:CreateTexture(nil, "OVERLAY")
+	f.castBar.Spark:SetTexture("")
 	
-	f.UnitFrame.castBar.Text = f.UnitFrame.castBar:CreateFontString(nil, "OVERLAY")
-	f.UnitFrame.castBar.Text:SetPoint("TOP", f.UnitFrame.castBar, "BOTTOM", 0, -1)
-	f.UnitFrame.castBar.Text:SetFont( font, fontsize, "THINOUTLINE")
-	f.UnitFrame.castBar.Text:SetTextColor(1, 1, 1)
-	f.UnitFrame.castBar.Text:SetJustifyH("CENTER")
+	f.castBar.Text = f.castBar:CreateFontString(nil, "OVERLAY")
+	f.castBar.Text:SetPoint("TOP", f.castBar, "BOTTOM", 0, -1)
+	f.castBar.Text:SetFont( font, fontsize, "THINOUTLINE")
+	f.castBar.Text:SetTextColor(1, 1, 1)
+	f.castBar.Text:SetJustifyH("CENTER")
 	
 	if yo.NamePlates.showCastIcon then
-		f.UnitFrame.castBar.ibg = CreateFrame("Frame", "BACKGROUND", f.UnitFrame.castBar) 
-    	f.UnitFrame.castBar.ibg:SetPoint("BOTTOM", f.UnitFrame.healthBar,"CENTER", 0, -2);  
-    	f.UnitFrame.castBar.ibg:SetSize( yo["NamePlates"].iconCastSize, yo["NamePlates"].iconCastSize)
-		f.UnitFrame.castBar.ibg:SetFrameLevel( 10)
-		CreateStyle( f.UnitFrame.castBar.ibg, 3, 6)
+		f.castBar.ibg = CreateFrame("Frame", "BACKGROUND", f.castBar) 
+    	f.castBar.ibg:SetPoint("BOTTOM", f.healthBar,"CENTER", 0, -2);  
+    	f.castBar.ibg:SetSize( yo.NamePlates.iconCastSize, yo.NamePlates.iconCastSize)
+		f.castBar.ibg:SetFrameLevel( 10)
+		CreateStyle( f.castBar.ibg, 3, 6)
 	
-		f.UnitFrame.castBar.Icon = f.UnitFrame.castBar.ibg:CreateTexture(nil, "BORDER")
-		f.UnitFrame.castBar.Icon:SetAllPoints( f.UnitFrame.castBar.ibg)
-		f.UnitFrame.castBar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+		f.castBar.Icon = f.castBar.ibg:CreateTexture(nil, "BORDER")
+		f.castBar.Icon:SetAllPoints( f.castBar.ibg)
+		f.castBar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	end
 	
-	--f.UnitFrame.castBar.BorderShield = f.UnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-	--f.UnitFrame.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
-	--f.UnitFrame.castBar.BorderShield:SetSize(12, 12)
-	--f.UnitFrame.castBar.BorderShield:SetPoint("RIGHT", f.UnitFrame.castBar, "LEFT", -2, 0)
+	--f.castBar.BorderShield = f.castBar:CreateTexture(nil, "OVERLAY", 1)
+	--f.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
+	--f.castBar.BorderShield:SetSize(12, 12)
+	--f.castBar.BorderShield:SetPoint("RIGHT", f.castBar, "LEFT", -2, 0)
 
-	--f.UnitFrame.castBar.Flash = f.UnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-	--f.UnitFrame.castBar.Flash:SetAllPoints()
-	--f.UnitFrame.castBar.Flash:SetTexture("")
-	--f.UnitFrame.castBar.Flash:SetBlendMode("ADD")
-	--CreateStyle( f.UnitFrame.castBar, 3)
+	--f.castBar.Flash = f.castBar:CreateTexture(nil, "OVERLAY")
+	--f.castBar.Flash:SetAllPoints()
+	--f.castBar.Flash:SetTexture("")
+	--f.castBar.Flash:SetBlendMode("ADD")
+	--CreateStyle( f.castBar, 3)
 	if showArrows then
-		f.UnitFrame.arrows = CreateFrame( "Frame", nil, f.UnitFrame.healthBar)
-		f.UnitFrame.arrows:SetFrameLevel( 10)
-		f.UnitFrame.arrows:SetPoint( "CENTER")
-	
-    	f.UnitFrame.arrowleft = f.UnitFrame.arrows:CreateTexture( nil, 'ARTWORK', nil, 7)
-    	f.UnitFrame.arrowleft:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\target-arrow")
-    	f.UnitFrame.arrowleft:SetTexCoord(0,.72,0,1)
-		f.UnitFrame.arrowleft:SetSize( auras_size, auras_size)
-    	f.UnitFrame.arrowleft:SetPoint( "RIGHT", f.UnitFrame.healthBar, "LEFT", 10, 0)
-		f.UnitFrame.arrowleft:SetVertexColor( 0.8, 1, 0)
-		f.UnitFrame.arrowleft:Hide()
-	
-    	f.UnitFrame.arrowright = f.UnitFrame.arrows:CreateTexture( nil, 'ARTWORK', nil, 7)
-    	f.UnitFrame.arrowright:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\target-arrow")
-		f.UnitFrame.arrowright:SetTexCoord(.72,0,0,1)
-    	f.UnitFrame.arrowright:SetSize(  auras_size, auras_size)
-    	f.UnitFrame.arrowright:SetPoint( "LEFT", f.UnitFrame.healthBar, "RIGHT", -10, 0)
-		f.UnitFrame.arrowright:SetVertexColor( 0.8, 1, 0)
-    	f.UnitFrame.arrowright:Hide()
+		f.arrows = CreateFrame( "Frame", nil, f.healthBar)
+		f.arrows:SetFrameLevel( 10)
+		f.arrows:SetPoint( "CENTER")
+		f.arrows:Hide()
+
+    	f.arrows.arrowleft = f.arrows:CreateTexture( nil, 'ARTWORK', nil, 7)
+    	f.arrows.arrowleft:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\target-arrow")
+    	f.arrows.arrowleft:SetTexCoord(0,.72,0,1)
+		f.arrows.arrowleft:SetSize( auras_size, auras_size)
+    	f.arrows.arrowleft:SetPoint( "RIGHT", f.healthBar, "LEFT", 10, 0)
+		f.arrows.arrowleft:SetVertexColor( 0.8, 1, 0)
+			
+    	f.arrows.arrowright = f.arrows:CreateTexture( nil, 'ARTWORK', nil, 7)
+    	f.arrows.arrowright:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\target-arrow")
+		f.arrows.arrowright:SetTexCoord(.72,0,0,1)
+    	f.arrows.arrowright:SetSize(  auras_size, auras_size)
+    	f.arrows.arrowright:SetPoint( "LEFT", f.healthBar, "RIGHT", -10, 0)
+		f.arrows.arrowright:SetVertexColor( 0.8, 1, 0)
     end	
-	f.UnitFrame.RaidTargetFrame = CreateFrame("Frame", nil, f.UnitFrame)
-	f.UnitFrame.RaidTargetFrame:SetSize( auras_size +3, auras_size +3)
-	f.UnitFrame.RaidTargetFrame:SetPoint("LEFT", f.UnitFrame.healthBar, "RIGHT", 10, 0)
 
-	f.UnitFrame.RaidTargetFrame.RaidTargetIcon = f.UnitFrame.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
-	f.UnitFrame.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\yoFrame\Media\raidicons]])
-	f.UnitFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
-	f.UnitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
+	f.RaidTargetFrame = CreateFrame("Frame", nil, f)
+	f.RaidTargetFrame:SetSize( auras_size +3, auras_size +3)
+	f.RaidTargetFrame:SetPoint("LEFT", f.healthBar, "RIGHT", 10, 0)
 
-	f.UnitFrame.debuffIcons = CreateFrame("Frame", nil, f.UnitFrame)
-	f.UnitFrame.debuffIcons:SetPoint("BOTTOMLEFT", f.UnitFrame.healthBar, "TOPLEFT",  0, 12)
-	f.UnitFrame.debuffIcons:SetWidth( nameplatewidth / 2)
-	f.UnitFrame.debuffIcons:SetHeight( auras_size)
-	f.UnitFrame.debuffIcons:SetFrameLevel(f.UnitFrame:GetFrameLevel() + 20)
-	f.UnitFrame.debuffIcons.direction = "RIGHT"
+	f.RaidTargetFrame.RaidTargetIcon = f.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
+	f.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\yoFrame\Media\raidicons]])
+	f.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
+	f.RaidTargetFrame.RaidTargetIcon:Hide()
 
-	f.UnitFrame.buffIcons = CreateFrame("Frame", nil, f.UnitFrame)
-	f.UnitFrame.buffIcons:SetPoint("BOTTOMRIGHT", f.UnitFrame.healthBar, "TOPRIGHT",  0, 12)
-	f.UnitFrame.buffIcons:SetWidth( nameplatewidth / 2)
-	f.UnitFrame.buffIcons:SetHeight( aurasB_size)
-	f.UnitFrame.buffIcons:SetFrameLevel(f.UnitFrame:GetFrameLevel() + 20)
-	f.UnitFrame.buffIcons.direction = "LEFT"
+	f.debuffIcons = CreateFrame("Frame", nil, f)
+	f.debuffIcons:SetPoint("BOTTOMLEFT", f.healthBar, "TOPLEFT",  0, 12)
+	f.debuffIcons:SetWidth( nameplatewidth / 2)
+	f.debuffIcons:SetHeight( auras_size)
+	f.debuffIcons:SetFrameLevel(f:GetFrameLevel() + 20)
+	f.debuffIcons.direction = "RIGHT"
 
-	f.UnitFrame.disIcons = CreateFrame("Frame", nil, f.UnitFrame)
-	f.UnitFrame.disIcons:SetPoint("BOTTOM", f.UnitFrame.healthBar, "TOP",  0, 12)
-	f.UnitFrame.disIcons:SetWidth( iconDiSize)
-	f.UnitFrame.disIcons:SetHeight( iconDiSize)
-	f.UnitFrame.disIcons:SetFrameLevel(f.UnitFrame:GetFrameLevel() + 20)
-	f.UnitFrame.disIcons.direction = "UP"
+	f.buffIcons = CreateFrame("Frame", nil, f)
+	f.buffIcons:SetPoint("BOTTOMRIGHT", f.healthBar, "TOPRIGHT",  0, 12)
+	f.buffIcons:SetWidth( nameplatewidth / 2)
+	f.buffIcons:SetHeight( aurasB_size)
+	f.buffIcons:SetFrameLevel(f:GetFrameLevel() + 20)
+	f.buffIcons.direction = "LEFT"
 
-	f.UnitFrame.Class = CreateFrame("Frame", nil, f.UnitFrame)
-	f.UnitFrame.Class:SetPoint("BOTTOMRIGHT", f.UnitFrame.healthBar, "BOTTOMLEFT", -8, 0)
-	f.UnitFrame.Class:SetSize( 30, 30)
-	f.UnitFrame.Class.Icon = f.UnitFrame.Class:CreateTexture(nil, "OVERLAY")
-	f.UnitFrame.Class.Icon:SetAllPoints()
-	f.UnitFrame.Class.Icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-	f.UnitFrame.Class.Icon:SetTexCoord(0, 0, 0, 0)
-	--CreateStyle(f.UnitFrame.Class, 3) 
+	f.disIcons = CreateFrame("Frame", nil, f)
+	f.disIcons:SetPoint("BOTTOM", f.healthBar, "TOP",  0, 12)
+	f.disIcons:SetWidth( iconDiSize)
+	f.disIcons:SetHeight( iconDiSize)
+	f.disIcons:SetFrameLevel(f:GetFrameLevel() + 20)
+	f.disIcons.direction = "UP"
 
-	f.UnitFrame.guune = CreateFrame("Frame", nil, f.UnitFrame)
-	f.UnitFrame.guune:SetSize( 30, 30)
-	f.UnitFrame.guune:SetPoint("LEFT", f.UnitFrame.disIcons, "RIGHT", 3, 0)
-	f.UnitFrame.guune.icon = f.UnitFrame.guune:CreateTexture(nil, "OVERLAY")
-	f.UnitFrame.guune.icon:SetAllPoints()
-	f.UnitFrame.guune.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	CreateStyle(f.UnitFrame.guune, 3) 
+	f.Class = CreateFrame("Frame", nil, f)
+	f.Class:SetPoint("BOTTOMRIGHT", f.healthBar, "BOTTOMLEFT", -8, 0)
+	f.Class:SetSize( 30, 30)
+	f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")
+	f.Class.Icon:SetAllPoints()
+	f.Class.Icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+	f.Class.Icon:SetTexCoord(0, 0, 0, 0)
+	--CreateStyle(f.Class, 3) 
 
-	CastingBarFrame_OnLoad(f.UnitFrame.castBar, nil, false, true)
+	f.guune = CreateFrame("Frame", nil, f)
+	f.guune:SetSize( 30, 30)
+	f.guune:SetPoint("LEFT", f.disIcons, "RIGHT", 3, 0)
+	f.guune.icon = f.guune:CreateTexture(nil, "OVERLAY")
+	f.guune.icon:SetAllPoints()
+	f.guune.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	CreateStyle(f.guune, 3) 
+
+	CastingBarFrame_OnLoad(f.castBar, nil, false, true)
 	
-	f.UnitFrame.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
-	--f.UnitFrame.castBar:SetScript("OnUpdate", CastingBarFrame_OnUpdate)
-	--f.UnitFrame.castBar:SetScript("OnShow", CastingBarFrame_OnShow)
-	--f.UnitFrame.castBar:SetScript("OnHide", function() f.UnitFrame.castBar:Hide() end)
-	f.UnitFrame.castBar:HookScript("OnValueChanged", function() NamePlates_UpdateCastBar(f.UnitFrame.castBar) end)
+	f.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
+	f.castBar:HookScript("OnValueChanged", function() NamePlates_UpdateCastBar(f.castBar) end)
 	
-	f.UnitFrame:EnableMouse(false)
-	--f.UnitFrame:SetAlpha( 1)
+	f:EnableMouse(false)
+
+	frame.UnitFrame = f
 end
 
 function NamePlates_UpdateNamePlateOptions()
@@ -937,7 +944,7 @@ local function NamePlate_OnEvent(self, event, ...)
 			UpdateBuffs(self)
 		elseif event == "UNIT_THREAT_LIST_UPDATE" then
 			UpdateHealthColor(self, 1)
-			UpdateTheatSit( self)
+			--UpdateTheatSit( self)
 		elseif event == "UNIT_NAME_UPDATE" then
 			UpdateName(self)
 		elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "UNIT_PET" then
@@ -992,6 +999,7 @@ end
 local function SetUnit(unitFrame, unit)
 	unitFrame.unit = unit
 	unitFrame.displayedUnit = unit	 -- For vehicles
+	--:GetParent().namePlateUnitToket = unit
 	unitFrame.inVehicle = false
 	--print(unitFrame.displayedUnit, unit)
 	if unit then
