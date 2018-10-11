@@ -51,7 +51,7 @@ local function loginEvent(self, ...)
 		--UIParent:SetScale( 0.64)
 	end
 
-	if yo["General"].scriptErrors == true then
+	if yo.General.scriptErrors == true then
 		SetCVar("scriptErrors", 1)	
 	else
 		SetCVar("scriptErrors", 0)
@@ -76,11 +76,28 @@ local function loginEvent(self, ...)
 	SetCVar("nameplateSelectedAlpha", 1)
 	SetCVar("nameplateSelectedScale", 1.15)
 
+
+	SetCVar( "nameplateOtherTopInset", 0.1)
+	SetCVar( "nameplateOtherBottomInset", -1)
+
+	SetCVar( "nameplateLargeTopInset", 0.1)
+	SetCVar( "nameplateLargeBottomInset", -1)
+
+	SetCVar( "nameplateSelfTopInset", 0.1)
+	SetCVar( "nameplateSelfBottomInset", -1)
+
 	--["nameplateMaxDistance"] = { prettyName = "Nameplate Distance", description = "The max distance to show nameplates.", type = "number" },
 	--["nameplateTargetBehindMaxDistance"] = { prettyName = "Nameplate Target Behind Distance", description = "The max distance to show the target nameplate when the target is behind the camera.", type = "number" },
 
 	--["nameplateMinAlphaDistance"] = { prettyName = "Nameplate Min Alpha Distance", description = "The distance from the max distance that nameplates will reach their minimum alpha.", type = "number" },
 	--["nameplateMaxAlphaDistance"] = { prettyName = "Nameplate Max Alpha Distance", description = "The distance from the camera that nameplates will reach their maximum alpha.", type = "number" },
+	
+	--["nameplateOtherBottomInset"] = { prettyName = "Nameplate Other Bottom Inset", description = "The inset from the bottom (in screen percent) that the non-self nameplates are clamped to.", type = "number" },
+	--["nameplateOtherTopInset"] = { prettyName = "Nameplate Other Top Inset", description = "The inset from the top (in screen percent) that the non-self nameplates are clamped to.", type = "number" },
+	--["nameplateLargeBottomInset"] = { prettyName = "Nameplate Large Bottom Inset", description = "The inset from the bottom (in screen percent) that large nameplates are clamped to.", type = "number" },
+	--["nameplateLargeTopInset"] = { prettyName = "Nameplate Large Top Inset", description = "The inset from the top (in screen percent) that large nameplates are clamped to.", type = "number" },
+	
+	--["nameplateTargetRadialPosition"] = { prettyName = nil, description = "When target is off screen, position its nameplate radially around sides and bottom", type = "number"},
 
 	SetCVar("alwaysShowActionBars", 1)
 

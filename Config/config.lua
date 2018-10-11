@@ -244,6 +244,40 @@ yo["healBotka"] = {
 	["key2"]			= "key",
 }
 
+yo["fliger"] = {
+	["enable"]			= false,
+	["tDebuffEnable"]	= true,
+	["pCDEnable"]		= true,
+	["pBuffEnable"]		= true,
+	["pDebuffEnable"]	= true,
+	["tDebuffSize"]		= 35,
+	["pCDSize"]			= 25,
+	["pBuffSize"]		= 40,
+	["pDebuffSize"]		= 40,
+	["tDebuffDirect"]	= "RIGHT",
+	["pCDDirect"]		= "LEFT",	
+	["pBuffDirect"]		= "LEFT",
+	["pDebuffDirect"]	= "LEFT",
+	["pCDTimer"]		= 15,
+}
+
+yo["CTA"] = {
+	["enable"]	= true,
+	["tRole"]	= true,
+	["hRole"]	= true,
+	["dRole"]	= true,
+	["heroic"]	= true,
+	["lfr"]		= true,
+	["timer"]	= 20,
+	["setN"]	= true,
+	["setT"]	= true,
+	["setH"]	= true,
+	["setD"]	= true,
+	["hide"]	= false,
+	["nosound"]	= false,
+	["sound"]	= "Murloc"
+}
+
 local logan = CreateFrame("Frame")
 --logan:RegisterEvent("ADDON_LOADED")
 logan:RegisterEvent("PLAYER_LOGIN")

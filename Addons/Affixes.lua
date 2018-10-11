@@ -1,7 +1,9 @@
 local rowCount = 3
 local affCount = 3
 local iSize = 35
-local requestKeystoneCheck, oldKey, currentWeek
+local requestKeystoneCheck, currentWeek
+
+yo_OldKey = nil
 
 local scheduleTitle = "Расписание"
 local scheduleWeeks = { "Эта неделя", "Следующая","Через одну", "Через две" }
@@ -362,6 +364,7 @@ local function OnEvent( self, event, name, ...)
 
 	elseif event == "BAG_UPDATE" then
 		requestKeystoneCheck = true
+	
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -371,9 +374,10 @@ local function OnEvent( self, event, name, ...)
 		self:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 		self:RegisterEvent("CHAT_MSG_PARTY")
 		self:RegisterEvent("CHAT_MSG_GUILD")
-		--self:RegisterEvent("CHAT_MSG_LOOT")
+		self:RegisterEvent("CHAT_MSG_LOOT")
 
 		CheckInventoryKeystone()
+
 	elseif event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_PARTY" then
 		name = strlower( name)
 		if name == "!key" or name == "!ключ" or name == "!keys" then
@@ -390,38 +394,43 @@ local function OnEvent( self, event, name, ...)
 				SendChatMessage( keys, "GUILD")
 			end
 		end
-	--elseif event == "CHAT_MSG_LOOT" then
+	
+	elseif event == "CHAT_MSG_LOOT" then
 		
 	--	--local a = name:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
 	--	--local a = name:match("%|cff.*%|Hitem.*%[Эпохальный ключ*%]")
 	--	--local a = name:match( " стебелек")
 
 	--	local a = name:match("%|cff.*|H.*|h")
-	--	local b = name:match("Эпохальный ключ")
-	--	local c = name:match("|Hkeystone:")
-	--	local y = name:match("^Вы ")
-	--	local z = name:match("^Ваша ")
+		local b = name:match("Эпохальный ключ")
+		local c = name:match("|Hkeystone:")
+		local y = name:match("^Вы ")
+		local z = name:match("^Ваша ")
 		
 	--	--print( name, b, c, y, z, a)
-	--	if ( z or y) and ( b or c ) then
-	--		--local keys = CheckInventoryKeystone()
-	--		--print( "KEY Find: ", name, b, c, y, z)
-	--		--if keys then
-	--		print( "WIN: ", a)
+		if ( z or y) and ( b or c ) then
+			local keys = CheckInventoryKeystone()
+			print( "KEY Find: ", name, b, c, y, z)
+			if keys then
+				print( "WIN: ", b or c)
 	--			--print(keys)
 	--		--SendChatMessage( a, "PARTY")
-	--		--end
-	--	end
+			end
+		end
 
 	elseif event == "CHALLENGE_MODE_START"  or event == "CHALLENGE_MODE_RESET" then
-		--oldKey = CheckInventoryKeystone()
+		--yo_OldKey = CheckInventoryKeystone()
 
 	elseif event == "CHALLENGE_MODE_COMPLETED" then
-		--local newKey = CheckInventoryKeystone()
-		--if newKey and newKey ~= oldKey then
-			--print(newKey)
+		yo_OldKey = CheckInventoryKeystone()
+		C_Timer.After( 2, function()
+			local newKey = CheckInventoryKeystone()
+			print("OLd: ", oldkey, ". New: " , newKey)
+			if newKey and newKey ~= yo_OldKey then
+				--print(oldkey, newKey)
 			--SendChatMessage( newKey, "PARTY")
-		--end
+			end
+		end)
 	end
 end
 

@@ -68,11 +68,14 @@ Addons\ChatBar.lua
 #Addons\CheloBuff.lua
 Addons\Cooldown.lua
 Addons\CooldownFlash.lua
+Addons\CTA.lua
 Addons\Bags.lua
 Addons\HolyShards.lua
 Addons\Inspect.lua
 #Addons\FilgerSpells.lua
 #Addons\Filger.lua
+Addons\Fliger.lua
+
 Addons\FogOfWar.lua
 Addons\Experience.lua
 Addons\Loot.lua

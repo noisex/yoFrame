@@ -174,7 +174,14 @@ CreateAnchor("yo_MoveExtr", "Move Extro Button", 130, 60, 250, -200, "LEFT", "LE
 
 CreateAnchor("yo_MoveRaid", "Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
 CreateAnchor("yo_MoveAltPower", "Move Power Alt Bar", 250, 70, 0, -150, "CENTER", "TOP")
---[[
+
+CreateAnchor("P_DEBUFF",	"Player Debuff",	40,	40,-400, 150, 	"CENTER", "CENTER")
+CreateAnchor("P_BUFF", 		"Player Buff", 		40, 40,	-400, 100, 	"CENTER", "CENTER")
+CreateAnchor("P_CD", 		"Players Cooldowns",40,	40, 	-400, 000, 	"CENTER", "CENTER")
+CreateAnchor("T_DEBUFF",	"Target Debuff/Buff from player", 40, 40,	400, 100, 	"CENTER", "CENTER")
+
+CreateAnchor("yo_MoveCTA",	"Move CTA погоня за сумкой", 220, 25,	-255, -175, 	"TOPRIGHT", "TOPRIGHT")
+ --[[
 
 Anchortank = CreateFrame("Frame","Move_tank",UIParent)
 CreateAnchor(Anchortank, "Move tank", 80, 18)

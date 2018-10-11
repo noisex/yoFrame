@@ -105,8 +105,9 @@ local function BuffOnLeave( f)
 	GameTooltip:Hide()	
 end
 
-local function CreateAuraIcon(parent, index)
+function CreateAuraIcon(parent, index, noToolTip)
 	local size = parent:GetHeight()
+	local sh = ceil( size / 8)
 
 	local button = CreateFrame("Frame", nil, parent)
 	button:SetWidth( size)
@@ -117,29 +118,29 @@ local function CreateAuraIcon(parent, index)
 	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
 	button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
-	button.cd = CreateFrame("Cooldown", nil, button)
-	button.cd:SetAllPoints(button)
-	button.cd:SetReverse(true)
+	--button.cd = CreateFrame("Cooldown", nil, button)
+	--button.cd:SetAllPoints(button)
+	--button.cd:SetReverse(true)
 	
 	button.count = button:CreateFontString(nil, "OVERLAY")
-	button.count:SetFont( font, fontsize, "THINOUTLINE")
+	button.count:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
 	button.count:SetShadowOffset(1, -1)
 	button.count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -2)
 	button.count:SetTextColor( 0, 1, 0)
 	
 	button.timer = button:CreateFontString(nil, "OVERLAY")
-	button.timer:SetFont( font, fontsize, "OUTLINE")
-	--button.timer:SetShadowOffset(1, -1)
+	button.timer:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
+	button.timer:SetShadowOffset(1, -1)
 	button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
 	
-	CreateStyle( button, 3)
+	CreateStyle( button, max( 3, sh - 1))
 
-	local p1, p2, shX, shY = "LEFT", "RIGHT", 3, 0
+	local p1, p2, shX, shY = "LEFT", "RIGHT", sh, 0
 
 	if parent.direction == "LEFT" then
-		p1, p2, shX, shY = "RIGHT", "LEFT", -3, 0
+		p1, p2, shX, shY = "RIGHT", "LEFT", -sh, 0
 	elseif parent.direction == "UP" then
-		p1, p2, shX, shY = "BOTTOM", "TOP", 0, 3
+		p1, p2, shX, shY = "BOTTOM", "TOP", 0, sh
 	end
 
 	if index == 1 then
@@ -148,7 +149,7 @@ local function CreateAuraIcon(parent, index)
 		button:SetPoint( p1, parent[index-1], p2, shX, shY)
 	end
 	
-	if showToolTip ~= "none" then
+	if not noToolTip and showToolTip ~= "none" then
 		button:EnableMouse(true)
 		button:SetScript("OnEnter", BuffOnEnter)
 		button:SetScript("OnLeave", BuffOnLeave)
@@ -158,7 +159,7 @@ local function CreateAuraIcon(parent, index)
 end
 
 
-local function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index)
+function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index)
 	button.icon:SetTexture(icon)
 	button.expirationTime = expirationTime
 	button.duration = duration
@@ -176,7 +177,6 @@ local function UpdateAuraIcon(button, filter, icon, count, debuffType, duration,
 	--	button.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09)	
 		--button:SetSize(auras_size, auras_size)
 	--end	
-	
 	if count and count > 1 then
 		button.count:SetText(count)
 	else
@@ -200,7 +200,11 @@ local function UpdateAuraIcon(button, filter, icon, count, debuffType, duration,
 		else
 			button.timer:SetTextColor( 1, 1, 0)
 		end
-		button.timer:SetText( formatTime( est))
+		if est > 0.1 then
+			button.timer:SetText( formatTime( est))
+		else
+			button.timer:SetText( "")
+		end		
 	end)
 
 	button:Show()
@@ -223,14 +227,22 @@ local function UpdateBuffs(unitFrame)
 	local unit, showGuune = unitFrame.displayedUnit, nil
 	local isPlayer = UnitIsPlayer( unit)
 	local idebuff, ibuff, iDisp = 1, 1, 1
+	--local fligetTD = 1
 
 	for	j = 1, 2 do
 		filter = auraFilter[j]
 		local index = 1
 		while true do
-			local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID, _, _, _, namepmateshowall = UnitAura(unit, index, filter)
+			local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, _, _, _, namepmateshowall = UnitAura(unit, index, filter)
 			if not name then break end
 			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
+
+			--if UnitIsUnit("target", unit) and caster == "player" and nameplateShowPersonal then
+			--	if not tDebuffIcons[fligetTD] then tDebuffIcons[fligetTD] = CreateAuraIcon( tDebuffIcons, fligetTD)end			
+						
+			--	UpdateAuraIcon( tDebuffIcons[fligetTD], filter, icon, count, debuffType, duration, expirationTime, spellID, index)
+			--	fligetTD = fligetTD + 1						
+			--end
 
 			if ( caster == "player" and DebuffWhiteList[name]) or namepmateshowall then --or isStealable then
 				
@@ -276,7 +288,9 @@ local function UpdateBuffs(unitFrame)
 	for index = idebuff, #unitFrame.debuffIcons do unitFrame.debuffIcons[index]:Hide() end
 	for index = ibuff,   #unitFrame.buffIcons   do unitFrame.buffIcons[index]:Hide()   end
 	for index = iDisp,   #unitFrame.disIcons    do unitFrame.disIcons[index]:Hide()   end
-
+	
+	--for index = fligetTD,#tDebuffIcons		    do tDebuffIcons[index]:Hide()   end
+	
 	ShowGuune( unitFrame, showGuune)
 end
 
@@ -553,8 +567,9 @@ local function ActionButton_ShowOverlayGlow(self)
 		--Make the height/width available before the next frame:
 		self.overlay:SetSize( frameWidth, frameHeight);
 		--self.overlay:SetPoint("CENTER", self, "CENTER", 0, 0)
-		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .45, frameHeight * .45)
-		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .45, -frameHeight * .45);
+		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .20, frameHeight * .45)
+		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .20, -frameHeight * .45);
+		self.overlay:SetAlpha(0.2);
 		self.overlay.animIn:Play();
 	end
 end
@@ -715,7 +730,7 @@ local function OnNamePlateCreated( frame)
 	f.healthBar.HightLight:SetVertexColor( r, g, b, 1)
 	f.healthBar.HightLight:SetBlendMode( "ADD")
 	f.healthBar.HightLight:SetTexture( texhl)	
-	f.healthBar.HightLight:SetAlpha( 0.4)
+	f.healthBar.HightLight:SetAlpha( 0.2)
 	f.healthBar.HightLight:Hide()	
 	
 	f.healthBar.perc = f.healthBar:CreateFontString(nil, "OVERLAY")

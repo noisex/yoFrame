@@ -1,6 +1,68 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF 
 
+function testers(...)
+	
+end
+
+local function CreateClique()
+	Clique = CreateFrame("Frame", "yo_Clique", UIParent)
+	local header = CreateFrame( "Frame", "yo_CliqueHeader", UIParent, "SecureHandlerBaseTemplate,SecureHandlerAttributeTemplate")
+	Clique.header = header
+
+	--local set, clr = nil, nil --self:GetBindingAttributes()
+	local set, clr = {}, {}
+
+	local B_SET = [[print( "onEnter", self:GetName());self:SetBindingClick(true, %q, self, %q);]]
+	local B_CLR = [[print( "onLeaver");self:ClearBinding(%q);]]
+
+	local attr = B_SET:format( "Q", "cliquebuttonQ")
+	set[#set + 1] = attr
+	clr[#clr + 1] = B_CLR:format( "Q")
+
+	attr = B_SET:format( "A", "cliquebuttonA")
+	set[#set + 1] = attr
+	clr[#clr + 1] = B_CLR:format( "A")
+
+	attr = B_SET:format( "MOUSEWHEELDOWN", "w1")
+	set[#set + 1] = attr
+	clr[#clr + 1] = B_CLR:format( "MOUSEWHEELDOWN")
+
+	set1 = table.concat(set, "\n")
+	clr1 = table.concat(clr, "\n")
+
+	header:SetAttribute("setup_onenter", set1)
+	header:SetAttribute("setup_onleave", clr1)
+
+	local setup, remove = nil, nil --self:GetClickAttributes()
+
+	header:SetAttribute("setup_clicks", setup)
+	--header:SetAttribute("remove_clicks", remove)
+
+	header:SetAttribute("clickcast_onenter", [===[
+        local header = self:GetParent():GetFrameRef("clickcast_header")
+       	header:RunFor(self, header:GetAttribute("setup_onenter"))
+]===])
+
+	header:SetAttribute("clickcast_onleave", [===[
+        local header = self:GetParent():GetFrameRef("clickcast_header")
+        header:RunFor(self, header:GetAttribute("setup_onleave"))
+]===])
+
+	header:SetAttribute("clickcast_register", [===[
+		local button = self:GetAttribute("clickcast_button")
+
+		-- Export this frame so we can display it in the insecure environment
+		self:SetAttribute("export_register", button)
+
+		button:SetAttribute("clickcast_onenter", self:GetAttribute("clickcast_onenter"))
+		button:SetAttribute("clickcast_onleave", self:GetAttribute("clickcast_onleave"))
+		--ccframes[button] = true
+
+		--self:RunFor(button, self:GetAttribute("setup_clicks"))
+]===])
+end
+
 local UnitSpecific = {
 	player = function(self)
 		-- Player specific layout code.
@@ -58,10 +120,6 @@ local function OnEnter( f)
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	GameTooltip:SetUnit( f.unit)
 	GameTooltip:Show()
-
-	--f:EnableMouseWheel( true)
-	--f:EnableKeyboard( true)
-	--SetBindingClick( "F", f:GetName(), "cliquebuttonF")
 end
 
 local function OnLeave( f)
@@ -69,10 +127,6 @@ local function OnLeave( f)
 	if GameTooltip:IsShown() then
 		GameTooltip:FadeOut( 2) 
 	end
-
-	--f:EnableMouseWheel( false)
-	--f:EnableKeyboard( false)
-	--SetBinding("F");
 end
 
 -------------------------------------------------------------------------------------------------------
@@ -91,10 +145,7 @@ local Shared = function(self, unit)
 
 	-- Register click
 	self:RegisterForClicks("AnyUp")
-	self:SetScript("OnEnter", OnEnter)
-	self:SetScript("OnLeave", OnLeave)
 
-	self.menu = SpawnMenu
 	CreateStyle(self, 3)
 		
 	------------------------------------------------------------------------------------------------------
@@ -349,7 +400,7 @@ local Shared = function(self, unit)
 		self.Debuffs.CustomFilter = function( self, button, ...)
 			local spellID = select( 11, ...)
 			
-			if whiteList[spellID] then
+			if RaidDebuffList[spellID] then
 				return true
 			else
 				return false
@@ -372,11 +423,11 @@ local Shared = function(self, unit)
 	------------------------------------------------------------------------------------------------------	
 	if yo.Raid.healPrediction then
 		--local myBar = CreateFrame('StatusBar', nil, self.Health)
-	 --   myBar:SetPoint('TOP')    
-  --  	myBar:SetPoint('BOTTOM')
-  --  	myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-  --  	myBar:SetWidth(200)
-  --  	myBar:SetStatusBarTexture(texture)
+	 	--myBar:SetPoint('TOP')    
+  		--myBar:SetPoint('BOTTOM')
+  		--myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+  		--myBar:SetWidth(200)
+  		--myBar:SetStatusBarTexture(texture)
 
     	local otherBar = CreateFrame('StatusBar', nil, self.Health)
     	otherBar:SetPoint('TOP')
@@ -431,59 +482,44 @@ local Shared = function(self, unit)
 		--self.DebuffHighlightUseTexture = true
 	end
 
-
 	self:SetAttribute("unit", "player")
-
+	
 	if yo.healBotka.enable then
 
 		self.menu = nil
-
+--		self:SetScript("OnEnter", nil)
+--		self:SetScript("OnLeave", nil)
 		self:EnableMouseWheel( 1)
 		self:EnableKeyboard( true)
 
-		self:SetAttribute("type2", "spell");
-		self:SetAttribute("spell2", "Омоложение");	
+		--self:SetAttribute("type-cliquebuttonQ", "spell")
+		--self:SetAttribute("spell-cliquebuttonQ", "Восстановление")
 
-		self:SetAttribute( "type1", "spell");
-		self:SetAttribute( "spell1", "Восстановление");	
+		--self:SetAttribute("type-cliquebuttonA", "spell")
+		--self:SetAttribute("spell-cliquebuttonA", "Омоложение")
+	
+		--self:SetAttribute("type-w1", "spell")
+		--self:SetAttribute("spell-w1", "Буйный рост")
 
-		self:SetAttribute( "shift-type1", "spell");
-		self:SetAttribute( "shift-spell1", "Буйный рост");	
+		self:SetAttribute("type-cliquebuttonQ", "macro")
+		self:SetAttribute("macrotext-cliquebuttonQ", "/cast [@mouseover] Восстановление")
 
-		self:SetAttribute( "shift-type2", "spell");
-		self:SetAttribute( "shift-spell2", "Жизнецвет");
-
-		--self:SetAttribute(aModiKey .. "type" .. aButtonId, "macro");
-		--self:SetAttribute(aModiKey .. "macrotext" .. aButtonId, VUHDO_buildAssistMacroText(tUnit));
-
-		self:SetAttribute( "type-w1", "macro");
-		self:SetAttribute( "macrotext-w1", "/use буйный рост");	
-
-		self:SetAttribute("type-cliquebuttonF", "macro")
-		self:SetAttribute("macrotext-cliquebuttonF", "/use буйный рост")
-
-		local B_SET = [[self:SetBindingClick(true, "Q", self, "cliquebuttonF")]]
-		
-		local attr = B_SET	--:format(key, suffix)
-		
-		self:SetScript("OnMouseWheel", function(self, delta) if delta>0 then KeyPressed( self, "MOUSEWHEELUP") else KeyPressed( self, "MOUSEWHEELDOWN") end end)
-
-	--self:SetAttribute("_onstate-wpbinding", [[
- --		if newstate == "on" then
- -- 			self:SetBindingSpell(false, "SHIFT-B", "Восстановление")
- -- 			self:SetBindingSpell(false, "SHIFT-O", "Омоложение")
- -- 			self:SetBindingClick( "F", self:GetName(), "cliquebuttonF")
-
- --		elseif newstate == "off" then
- -- 			self:ClearBindings()
- --		end
-	--]])
-	--RegisterStateDriver( self, "wpbinding", "[@mouseover] on; off")
+		self:SetAttribute("type-cliquebuttonA", "macro")
+		self:SetAttribute("macrotext-cliquebuttonA", "/cast [@mouseover] Омоложение")
+	
+		self:SetAttribute("type-w1", "macro")
+		self:SetAttribute("macrotext-w1", "/cast [@mouseover] Буйный рост")
+		--/stopcasting\n
+	else
+		self.menu = SpawnMenu
+		self:SetScript("OnEnter", OnEnter)
+		self:SetScript("OnLeave", OnLeave)
 	end
 		
 	--if(UnitSpecific[unit]) then
 	--	return UnitSpecific[unit](self)
 	--end
+	self.testers = testers
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -576,6 +612,8 @@ end
 ------------------------------------------------------------------------------------------------------
 ---										MAKE RAID/PARTY FRAMES
 ------------------------------------------------------------------------------------------------------	
+--   groupheader:SetFrameRef("clickcast_header", addon.header)
+
 local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -584,7 +622,8 @@ logan:SetScript("OnEvent", function(self, event)
 	
 	if not yo.Raid.enable then return end
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
-	
+	if yo.healBotka.enable then CreateClique() end
+		
 	local unit_width = 	yo.Raid.width
 	local unit_height = yo.Raid.height
 

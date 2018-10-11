@@ -20,6 +20,7 @@ LSM:Register("sound", "Tick 02", "Interface\\Addons\\yoFrame\\Media\\CSDroplet.o
 LSM:Register("sound", "Applause", "Interface\\Addons\\yoFrame\\Media\\Applause.ogg")
 LSM:Register("sound", "Shotgun", "Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg")
 LSM:Register("sound", "Wisper", "Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
+LSM:Register("sound", "Murloc", "Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
 
 local function Setlers( path, val)
 	p1, p2, p3, p4 = strsplit("#", path)
@@ -408,7 +409,7 @@ function InitOptions()
 			},	
 
 			Chat = {
-				order = 160,	name = "Чат", type = "group",
+				order = 80,	name = "Чат", type = "group",
 				get = function(info) return yo["Chat"][info[#info]] end ,
 				set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, 
 				args = {	
@@ -429,6 +430,63 @@ function InitOptions()
 					--chatBubbleShift	= {	order = 46,	type = "range", 	name = "Уменьшить размер", min = 0, max = 15, step = 1, disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
 					--chatBubbleShadow= {	order = 42,  type = "toggle",	name = "Добавить тень у шрифта чат-бабла", 				disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
 
+				},	
+			},
+
+			fliger = {
+				order = 90, name = "Флигер ( Filger)", type = "group",
+				get = function(info) return yo[info[1]][info[#info]] end ,
+				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
+				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				args = {	
+					desc01			= {	order = 1, type = "description", name = "|cffff0000Страшно экспериментальное дело, на свой страх и вкус...", width = "full"},
+					enable 			= { width = "full",	order = 2, type = "toggle",	name = "Включить филгер", disabled = false, },
+
+					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
+					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
+					pBuffEnable		= {	order = 30, type = "toggle",name = "Player Buff", 		width = 0.75},
+					pDebuffEnable	= {	order = 40, type = "toggle",name = "Player Debuff", 	width = 0.75},
+					
+					tDebuffSize		= {	order = 12,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
+					pCDSize 		= {	order = 22,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
+					pBuffSize 		= {	order = 32,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
+					pDebuffSize		= {	order = 42,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
+					pCDTimer		= {	order = 50,	type = "range", name = "Ограничение времени",	min = 0, max = 50, step = 1, width = 1, desc = "Меньше этого времени кулдауны не показываются"},
+
+					tDebuffDirect	= {	order = 14, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
+					pCDDirect		= {	order = 24, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
+					pBuffDirect		= {	order = 34, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
+					pDebuffDirect	= {	order = 44, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
+				},	
+			},
+
+			CTA = {
+				order = 90, name = "СТА ( поиск сумки)", type = "group",
+				get = function(info) return yo[info[1]][info[#info]] end ,
+				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
+				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				args = {	
+					enable 	= { width = "full",	order = 1, type = "toggle",	name = "Включить СТА ( поиск мега-сумки с барахлом)", disabled = false, },
+
+					set00	= {	order = 02, type = "description", name = " ", width = "full"},
+					readRole= {	order = 03, type = "description", name = "Выбрать роли, которую будет отслеживать СТА:", width = "full"},
+					tRole	= {	order = 10, type = "toggle",name = "Танк",	width = 0.75},
+					hRole 	= {	order = 12, type = "toggle",name = "Хил",	width = 0.75},
+					dRole	= {	order = 14, type = "toggle",name = "ДД", 	width = 0.75},
+					
+					set01	= {	order = 20, type = "description", name = " ", width = "full"},
+					setRole	= {	order = 21, type = "description", name = "Выбрать роль, выставляемую при подключении в очередь:", width = "full"},
+					setN	= {	order = 22, type = "toggle",name = "Текущая ( не менять)",	width = 0.85},
+					setT	= {	order = 24, type = "toggle",name = "Танк",	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].setN); end,},
+					setH 	= {	order = 26, type = "toggle",name = "Хил",	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].setN); end,},
+					setD	= {	order = 28, type = "toggle",name = "ДД", 	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].setN); end,},
+
+					set02	= {	order = 29, type = "description", name = " ", width = "full"},
+					heroic	= {	order = 30, type = "toggle",name = "Проверять героик", 	width = 1},
+					lfr		= {	order = 32, type = "toggle",name = "Проверять ЛФР", 	width = 1},
+					
+					timer	= {	order = 40,	type = "range", name = "Частота проверки (сек)",	min = 1, max = 600, step = 1, width = 1},
+					sound	= {	order = 42, type = "select",name = "Звук оповещения:", dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
 				},	
 			},
 
@@ -460,7 +518,8 @@ function InitOptions()
 				name = "Хилботка",
 				type = "group",
 				order = 200,
-				hidden = not true,
+				hidden = function() return not yo.healBotka.enable end,	
+
 				args = {	
 					key1	= {	order = 20, type = "keybinding",	name = "Показывать иконки 1",
 						get = function(info) return yo[info[1]][info[#info]] end ,
@@ -471,7 +530,6 @@ function InitOptions()
 						set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, },
 				},	
 			},
-
 
 			NextOptions = {
 				name = "Следующие настройки",
