@@ -127,7 +127,7 @@ local function CreateLFRStrings( parent, id)
 	button.heal = button:CreateTexture(nil, "OVERLAY")
 	button.heal:SetPoint( "LEFT", button.tank, "RIGHT", 0, 0)
 	button.heal:SetSize(20, 20)
-	button.heal:SetTexture([[Interface\AddOns\ElvUI\yoFrame\Media\healer]])
+	button.heal:SetTexture([[Interface\AddOns\yoFrame\Media\healer]])
 
 	button.dd = button:CreateTexture(nil, "OVERLAY")
 	button.dd:SetPoint( "LEFT", button.heal, "RIGHT", 0, 0)
