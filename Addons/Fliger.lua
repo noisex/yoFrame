@@ -1,7 +1,8 @@
+local PlayerProcWhiteList = {}
 
 local function UpdateAura( self, unit)
 	--local auraFilter = { "HARMFUL", "HELPFUL"}
-	local fligerTD, fligerTB, fligerPB, fligerPD = 1, 1, 1, 1
+	local fligerTD, fligerTB, fligerPB, fligerPD, fligerProc = 1, 1, 1, 1, 1
 
 	-- DEBUFFS
 	local index = 1
@@ -52,6 +53,14 @@ local function UpdateAura( self, unit)
 			end
 		end
 
+		if yo.fliger.pProcEnable then
+			if unit == self.pProc.unit and PlayerProcWhiteList[name] then
+				if not self.pProc[fligerProc] then self.pProc[fligerProc] = CreateAuraIcon( self.pProc, fligerProc, true)end
+				UpdateAuraIcon( self.pProc[fligerProc], filter, icon, count, nil, duration, expirationTime, spellID, index)
+				fligerProc = fligerProc + 1
+			end
+		end
+
 		index = index + 1
 	end	
 
@@ -62,6 +71,7 @@ local function UpdateAura( self, unit)
 	elseif unit == "player"	then
 		for index = fligerPB,	#self.pBuff		do self.pBuff[index]:Hide()   end
 		for index = fligerPD,	#self.pDebuff	do self.pDebuff[index]:Hide()   end
+		for index = fligerProc,	#self.pProc		do self.pProc[index]:Hide()   end
 	end	
 end
 
@@ -128,11 +138,13 @@ local function MakeFligerFrame( self)
 	local pdebuffSize 	= yo.fliger.pDebuffSize
 	local tdebuffSize 	= yo.fliger.tDebuffSize
 	local pbuffSize 	= yo.fliger.pBuffSize
+	local pProcSize		= yo.fliger.pProcSize
 	local cdSize		= yo.fliger.pCDSize
 	
 	_G["P_DEBUFF"]:SetSize( pdebuffSize,pdebuffSize)
 	_G["T_DEBUFF"]:SetSize(	tdebuffSize,tdebuffSize)
 	_G["P_BUFF"]:SetSize(	pbuffSize, 	pbuffSize)
+	_G["P_PROC"]:SetSize(	pProcSize, 	pProcSize)
 	_G["P_CD"]:SetSize(		cdSize,		cdSize)
 	--CreateAnchor("T_BUFF", 		"Target Buff", 	buffSize, 	buffSize,	400, 150, 	"CENTER", "CENTER")
 
@@ -154,6 +166,16 @@ local function MakeFligerFrame( self)
 	--tBuff.unit 		= "target"
 	--tBuff.filter 	= "HELPFUL"
 	--self.tBuff 		= tBuff	
+
+	if yo.fliger.pProcEnable then
+		local pProc = CreateFrame("Frame", nil, self)
+		pProc:SetPoint("CENTER", P_PROC, "CENTER",  0, 0)
+		pProc:SetWidth( pProcSize)
+		pProc:SetHeight( pProcSize)
+		pProc.direction = yo.fliger.pProcDirect
+		pProc.unit 		= "player"
+		self.pProc 		= pProc	
+	end
 
 	if yo.fliger.pBuffEnable then
 		local pBuff = CreateFrame("Frame", nil, self)
@@ -187,6 +209,33 @@ local function MakeFligerFrame( self)
 	end
 end
 
+local function CheckTemplates( myClass, mySpec)
+
+	for i,v in pairs( templates.class[myClass][mySpec][1]["args"]) do
+		PlayerBuffWhiteList[GetSpellInfo( v.spell)] = true
+	end
+
+	for i,v in pairs( templates.class[myClass][mySpec][5]["args"]) do
+		PlayerBuffWhiteList[GetSpellInfo( v.spell)] = true
+	end
+
+	for i,v in pairs( templates.items[2]["args"]) do
+		PlayerProcWhiteList[GetSpellInfo( v.spell)] = true
+	end
+
+	for i,v in pairs( templates.items[3]["args"]) do
+		PlayerProcWhiteList[v.title] = true
+	end
+
+	for i,v in pairs( templates.items[4]["args"]) do
+		PlayerProcWhiteList[v.title] = true
+	end
+
+	for i,v in pairs( generalAzeriteTraits) do
+		PlayerProcWhiteList[GetSpellInfo( v.spell)] = true
+	end
+end
+
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -194,12 +243,14 @@ local function OnEvent( self, event, ...)
 		if not yo.fliger.enable then return end
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterUnitEvent("UNIT_AURA", "player", "target")
+		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 		if yo.fliger.pCDEnable then
 			self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 		end				
 		
 		MakeFligerFrame( self)
+		CheckTemplates( myClass, GetSpecialization())
 
 	elseif event == "UNIT_AURA" then
 		UpdateAura( self, ...)
@@ -211,6 +262,8 @@ local function OnEvent( self, event, ...)
 		if yo.fliger.pCDEnable then
 			UpdateSpels()
 		end
+	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		CheckTemplates( myClass, GetSpecialization())
 	end
 end
 

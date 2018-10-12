@@ -177,7 +177,10 @@ CreateAnchor("yo_MoveAltPower", "Move Power Alt Bar", 250, 70, 0, -150, "CENTER"
 
 CreateAnchor("P_DEBUFF",	"Player Debuff",	40,	40,-400, 150, 	"CENTER", "CENTER")
 CreateAnchor("P_BUFF", 		"Player Buff", 		40, 40,	-400, 100, 	"CENTER", "CENTER")
-CreateAnchor("P_CD", 		"Players Cooldowns",40,	40, 	-400, 000, 	"CENTER", "CENTER")
+CreateAnchor("P_PROC", 		"Player Trinket and Azerit Procs", 	40, 40,	-400, 50, 	"CENTER", "CENTER")
+
+CreateAnchor("P_CD", 		"Players Cooldowns",40,	40,	465, 178, "TOPLEFT", "BOTTOMLEFT")
+
 CreateAnchor("T_DEBUFF",	"Target Debuff/Buff from player", 40, 40,	400, 100, 	"CENTER", "CENTER")
 
 CreateAnchor("yo_MoveCTA",	"Move CTA погоня за сумкой", 220, 25,	-255, -175, 	"TOPRIGHT", "TOPRIGHT")

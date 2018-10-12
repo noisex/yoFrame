@@ -37,7 +37,7 @@ Config\configui.lua
 Filters\ClassDebuffOnTarget.lua
 Filters\RaidAuras.lua
 Filters\RaidSpels.lua
-
+Filters\TriggerTemplatesData.lua
 
 Fonts.lua
 Move.lua

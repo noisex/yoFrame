@@ -447,17 +447,21 @@ function InitOptions()
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
 					pBuffEnable		= {	order = 30, type = "toggle",name = "Player Buff", 		width = 0.75},
 					pDebuffEnable	= {	order = 40, type = "toggle",name = "Player Debuff", 	width = 0.75},
+					pProcEnable		= {	order = 50, type = "toggle",name = "Player Procs", 	width = 0.75},
 					
 					tDebuffSize		= {	order = 12,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
 					pCDSize 		= {	order = 22,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
 					pBuffSize 		= {	order = 32,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
 					pDebuffSize		= {	order = 42,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
-					pCDTimer		= {	order = 50,	type = "range", name = "Ограничение времени",	min = 0, max = 50, step = 1, width = 1, desc = "Меньше этого времени кулдауны не показываются"},
-
+					pProcSize		= {	order = 52,	type = "range", name = "Размер иконки",	min = 10, max = 50, step = 1, width = 0.75},
+					
 					tDebuffDirect	= {	order = 14, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
 					pCDDirect		= {	order = 24, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
 					pBuffDirect		= {	order = 34, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
 					pDebuffDirect	= {	order = 44, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
+					pProcDirect		= {	order = 54, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
+
+					pCDTimer		= {	order = 99,	type = "range", name = "Ограничение времени",	min = 0, max = 50, step = 1, width = 1, desc = "Меньше этого времени кулдауны не показываются"},
 				},	
 			},
 
