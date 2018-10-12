@@ -465,8 +465,8 @@ PlayerBuffWhiteList = {
 		[SpellName(116849)] = true, -- Life Cocoon
 		[SpellName(22812)]  = true, -- Barkskin
 	-- Азерит
-		[SpellName(273842)]  = true, -- Тайны глубин белая
-		[SpellName(273843)]  = true, -- Тайны глубин черная
+		--[SpellName(273842)]  = true, -- Тайны глубин белая
+		--[SpellName(273843)]  = true, -- Тайны глубин черная
 
 		[SpellName(273406)]  = true, -- Гууун, темная сделка
 		

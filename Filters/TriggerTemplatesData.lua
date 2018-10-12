@@ -1,6 +1,103 @@
 local WeakAuras = WeakAuras
-local L = WeakAuras.L
+--local L = WeakAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
+	L = {}
+	L["Abilities"] = "Abilities"
+	L["Ability Charges"] = "Ability Charges"
+	L["Add Triggers"] = "Add Triggers"
+	L["Always Active"] = "Always Active"
+	L["Always Show"] = "Always Show"
+	L["Always show the aura, highlight it if debuffed."] = "Always show the aura, highlight it if debuffed."
+	L["Always show the aura, turns grey if on cooldown."] = "Always show the aura, turns grey if on cooldown."
+	L["Always show the aura, turns grey if the debuff not active."] = "Always show the aura, turns grey if the debuff not active."
+	L["Always shows the aura, grey if buff not active."] = "Always shows the aura, grey if buff not active."
+	L["Always shows the aura, highlight it if buffed."] = "Always shows the aura, highlight it if buffed."
+	L["Always shows the aura, highlight while proc is active, blue on insufficient resources."] = "Always shows the aura, highlight while proc is active, blue on insufficient resources."
+	L["Always shows the aura, highlight while proc is active, blue when not usable."] = "Always shows the aura, highlight while proc is active, blue when not usable."
+	L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."
+	L["Always shows the aura, turns grey if on cooldown."] = "Always shows the aura, turns grey if on cooldown."
+	L["Always shows the aura, turns grey if the ability is not usable and red when out of range."] = "Always shows the aura, turns grey if the ability is not usable and red when out of range."
+	L["Always shows the aura, turns grey if the ability is not usable."] = "Always shows the aura, turns grey if the ability is not usable."
+	L["Always shows the aura, turns grey when on cooldown, blue when unusable."] = "Always shows the aura, turns grey when on cooldown, blue when unusable."
+	L["Always shows the aura, turns grey when on zero charges, blue when not usable."] = "Always shows the aura, turns grey when on zero charges, blue when not usable."
+	L["Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."] = "Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."
+	L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."] = "Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."
+	L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."] = "Always shows the aura, turns greys on zero charges, blue on insufficient resources."
+	L["Always shows the aura, turns red when out of range, blue on insufficient resources."] = "Always shows the aura, turns red when out of range, blue on insufficient resources."
+	L["Always shows the aura, turns red when out of range."] = "Always shows the aura, turns red when out of range."
+	L["Back"] = "Back"
+	L["Basic Show On Cooldown"] = "Basic Show On Cooldown"
+	L["Bloodlust/Heroism"] = "Bloodlust/Heroism"
+	L["buff"] = "buff"
+	L["Buff"] = "Buff"
+	L["Buffs"] = "Buffs"
+	L["Cancel"] = "Cancel"
+	L["Cast"] = "Cast"
+	L["Charge and Buff Tracking"] = "Charge and Buff Tracking"
+	L["Charge and Debuff Tracking"] = "Charge and Debuff Tracking"
+	L["Charge Tracking"] = "Charge Tracking"
+	L["cooldown"] = "cooldown"
+	L["Cooldown Tracking"] = "Cooldown Tracking"
+	L["Create Auras"] = "Create Auras"
+	L["Debuffs"] = "Debuffs"
+	L["Enchants"] = "Enchants"
+	L["General"] = "General"
+	L["General Azerite Traits"] = "General Azerite Traits"
+	L["Health"] = "Health"
+	L["Highlight while buffed, red when out of range."] = "Highlight while buffed, red when out of range."
+	L["Highlight while buffed."] = "Highlight while buffed."
+	L["Highlight while debuffed, red when out of range."] = "Highlight while debuffed, red when out of range."
+	L["Highlight while debuffed."] = "Highlight while debuffed."
+	L["Hold CTRL to create multiple auras at once"] = "Hold CTRL to create multiple auras at once"
+	L["Keeps existing triggers intact"] = "Keeps existing triggers intact"
+	L["Next"] = "Next"
+	L["On Procc Trinkets (Buff)"] = "On Procc Trinkets (Buff)"
+	L["On Use Trinkets (Buff)"] = "On Use Trinkets (Buff)"
+	L["On Use Trinkets (CD)"] = "On Use Trinkets (CD)"
+	L["Only show the aura if the target has the debuff."] = "Only show the aura if the target has the debuff."
+	L["Only show the aura when the item is on cooldown."] = "Only show the aura when the item is on cooldown."
+	L["Only shows the aura if the target has the buff."] = "Only shows the aura if the target has the buff."
+	L["Only shows the aura when the ability is on cooldown."] = "Only shows the aura when the ability is on cooldown."
+	L["Pet alive"] = "Pet alive"
+	L["Pet Behavior"] = "Pet Behavior"
+	L["PvP Azerite Traits"] = "PvP Azerite Traits"
+	L["PvP Talents"] = "PvP Talents"
+	L["PVP Trinkets (Buff)"] = "PVP Trinkets (Buff)"
+	L["PVP Trinkets (CD)"] = "PVP Trinkets (CD)"
+	L["Replace all existing triggers"] = "Replace all existing triggers"
+	L["Replace Triggers"] = "Replace Triggers"
+	L["Resources"] = "Resources"
+	L["Resources and Shapeshift Form"] = "Resources and Shapeshift Form"
+	L["Runes"] = "Runes"
+	L["Shapeshift Form"] = "Shapeshift Form"
+	L["Show Charges and Check Usable"] = "Show Charges and Check Usable"
+	L["Show Charges with Proc Tracking"] = "Show Charges with Proc Tracking"
+	L["Show Charges with Range Tracking"] = "Show Charges with Range Tracking"
+	L["Show Charges with Usable Check"] = "Show Charges with Usable Check"
+	L["Show Cooldown and Buff"] = "Show Cooldown and Buff"
+	L["Show Cooldown and Buff and Check for Target"] = "Show Cooldown and Buff and Check for Target"
+	L["Show Cooldown and Buff and Check Usable"] = "Show Cooldown and Buff and Check Usable"
+	L["Show Cooldown and Check for Target"] = "Show Cooldown and Check for Target"
+	L["Show Cooldown and Check for Target & Proc Tracking"] = "Show Cooldown and Check for Target & Proc Tracking"
+	L["Show Cooldown and Check Usable"] = "Show Cooldown and Check Usable"
+	L["Show Cooldown and Check Usable & Target"] = "Show Cooldown and Check Usable & Target"
+	L["Show Cooldown and Check Usable, Proc Tracking"] = "Show Cooldown and Check Usable, Proc Tracking"
+	L["Show Cooldown and Check Usable, Target & Proc Tracking"] = "Show Cooldown and Check Usable, Target & Proc Tracking"
+	L["Show Cooldown and Debuff"] = "Show Cooldown and Debuff"
+	L["Show Cooldown and Debuff and Check for Target"] = "Show Cooldown and Debuff and Check for Target"
+	L["Show Cooldown and Proc Tracking"] = "Show Cooldown and Proc Tracking"
+	L["Show Cooldown and Totem Information"] = "Show Cooldown and Totem Information"
+	L["Show Only if Buffed"] = "Show Only if Buffed"
+	L["Show Only if Debuffed"] = "Show Only if Debuffed"
+	L["Show Only if on Cooldown"] = "Show Only if on Cooldown"
+	L["Show Totem and Charge Information"] = "Show Totem and Charge Information"
+	L["Specific Azerite Traits"] = "Specific Azerite Traits"
+	L["Stagger"] = "Stagger"
+	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."
+	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."
+	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."
+	L["Unknown Item"] = "Unknown Item"
+	L["Unknown Spell"] = "Unknown Spell"
 
 -- The templates tables are created on demand
 templates =
@@ -26,7 +123,7 @@ templates =
       VoidElf = {}
     },
     general = {
-      title = L["General"],
+      title = "General",
       icon = 136116,
       args = {}
     },
@@ -51,7 +148,7 @@ local powerTypes =
     [16] = {name = POWER_TYPE_ARCANE_CHARGES, icon = "Interface\\Icons\\spell_arcane_arcane01"},
     [17] = {name = POWER_TYPE_FURY_DEMONHUNTER, icon = 1344651},
     [18] = {name = POWER_TYPE_PAIN, icon = 1247265},
-    [99] = {name = L["Stagger"], icon = "Interface\\Icons\\monk_stance_drunkenox"}
+    [99] = {name = "Stagger", icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
 generalAzeriteTraits = {
@@ -120,7 +217,7 @@ local pvpAzeriteTraits = {
 templates.class.WARRIOR = {
   [1] = { -- Arms
     [1] = {
-      title = L["Buffs"],
+      title = "Buffs",
       args = {
         { spell = 248622, type = "buff", unit = "player", talent = 16}, -- In For The Kill
         { spell = 197690, type = "buff", unit = "player", talent = 12}, -- Defensive Stance
@@ -141,7 +238,7 @@ templates.class.WARRIOR = {
       icon = 458972
     },
     [2] = {
-      title = L["Debuffs"],
+      title = "Debuffs",
       args = {
         { spell = 115804, type = "debuff", unit = "target"}, -- Mortal Wounds
         { spell = 772, type = "debuff", unit = "target", talent = 9}, -- Rend
@@ -156,7 +253,7 @@ templates.class.WARRIOR = {
       icon = 464973
     },
     [3] = {
-      title = L["Abilities"],
+      title = "Abilities",
       args = {
         { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge
         { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
@@ -193,7 +290,7 @@ templates.class.WARRIOR = {
       icon = 132355
     },
     [5] = {
-      title = L["Specific Azerite Traits"],
+      title = "Specific Azerite Traits",
       args = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
         { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
@@ -219,7 +316,7 @@ templates.class.WARRIOR = {
   },
   [2] = { -- Fury
     [1] = {
-      title = L["Buffs"],
+      title = "Buffs",
       args = {
         { spell = 262232, type = "buff", unit = "player", talent = 1}, -- War Machine
         { spell = 32216, type = "buff", unit = "player", talent = 5}, -- Victorious
@@ -4360,16 +4457,16 @@ end);
 
 
 -- Enrich Display templates with default values
-for regionType, regionData in pairs(WeakAuras.regionOptions) do
-  if (regionData.templates) then
-    for _, item in ipairs(regionData.templates) do
-      for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
-        if (item.data[k] == nil) then
-          item.data[k] = v;
-        end
-      end
-    end
-  end
-end
+-- for regionType, regionData in pairs(WeakAuras.regionOptions) do
+  -- if (regionData.templates) then
+    -- for _, item in ipairs(regionData.templates) do
+      -- for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
+        -- if (item.data[k] == nil) then
+          -- item.data[k] = v;
+        -- end
+      -- end
+    -- end
+  -- end
+-- end
 
-WeakAuras.triggerTemplates = templates;
+-- WeakAuras.triggerTemplates = templates;

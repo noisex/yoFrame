@@ -1,6 +1,12 @@
 yo_CTA = {}
 local tRole, hRole, dRole, heroic, lfr, timer
 
+local function isRaidFinderDungeonDisplayable(id)
+	local name, typeID, subtypeID, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(id);
+	local myLevel = UnitLevel("player");
+	return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel;
+end
+
 local function CreateLFRFrame( self)
 
 	tRole 	= yo.CTA.tRole
@@ -10,27 +16,33 @@ local function CreateLFRFrame( self)
 	lfr 		= yo.CTA.lfr
 	timer 	= yo.CTA.timer
 
-   local frame = CreateFrame("Frame", nil, self)
-   frame:EnableMouse(true)
-   frame:SetMovable(true)
-   frame:RegisterForDrag("LeftButton", "RightButton")
-   frame:Hide()
-   CreatePanel( frame, 220, 10, "CENTER", yo_MoveCTA, "CENTER", 0, 0, 0, 0)
-   CreateStyle( frame, 3, 0, 0.4, 0.6)
+	local frame = CreateFrame("Frame", nil, self)
+	frame:EnableMouse(true)
+	frame:SetMovable(true)
+	frame:RegisterForDrag("LeftButton", "RightButton")
+	frame:Hide()
+	CreatePanel( frame, 220, 10, "CENTER", yo_MoveCTA, "CENTER", 0, 0, 0, 0)
+	CreateStyle( frame, 3, 0, 0.4, 0.6)
 
-   frame.close = CreateFrame("Button", nil, frame)
-   frame.close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
-   frame.close:SetFrameLevel(frame:GetFrameLevel() + 10)
-   frame.close:SetWidth(  8)
+	frame.title = frame:CreateFontString(nil, "OVERLAY", frame)
+	frame.title:SetPoint("TOP")
+	frame.title:SetFont( font, fontsize -1, "THINOUTLINE")
+	frame.title:SetText( "Призыв к оружию")
+	frame.title:SetTextColor( 0.75, .5, 0)
+
+	frame.close = CreateFrame("Button", nil, frame)
+	frame.close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
+	frame.close:SetFrameLevel(frame:GetFrameLevel() + 10)
+	frame.close:SetWidth(  8)
 	frame.close:SetHeight( 8)
 	frame.close:SetNormalTexture("Interface\\Addons\\yoFrame\\Media\\close")
 	frame.close:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
 	frame.close:EnableMouse(true)
 
 	frame.nosound = CreateFrame("Button", nil, frame)
-   frame.nosound:SetPoint("RIGHT", frame.close, "LEFT", 4, 0)
-   frame.nosound:SetFrameLevel(frame:GetFrameLevel() + 10)
-   frame.nosound:SetWidth(  22)
+	frame.nosound:SetPoint("RIGHT", frame.close, "LEFT", 4, 0)
+	frame.nosound:SetFrameLevel(frame:GetFrameLevel() + 10)
+	frame.nosound:SetWidth(  22)
 	frame.nosound:SetHeight( 22)
 	frame.nosound:SetNormalTexture("Interface\\Addons\\yoFrame\\Media\\ArrowRight")
 	if yo.CTA.nosound then
@@ -72,13 +84,14 @@ local function CreateLFRFrame( self)
 		self:GetNormalTexture():SetVertexColor( 1, 0, 0, 1)
 		self:GetParent():Hide()
 		yo.CTA.hide = true
+		yo_CTA = {}
 	end)
 
 	frame.close:SetScript("OnEnter", function(self, ...)
 		self:GetNormalTexture():SetVertexColor( 1, 0, 0, 1)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
-		GameTooltip:SetText("Свернуть")
+		GameTooltip:SetText("Закрыть")
 		GameTooltip:AddLine("Закрыть СТА до следующего входа в игру или смены персонажа", 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
@@ -88,23 +101,23 @@ local function CreateLFRFrame( self)
 		GameTooltip:Hide()
 	end)
 
-   frame:SetScript("OnDragStart", function(self) 
-      self:StartMoving() 
-   end)
+	frame:SetScript("OnDragStart", function(self) 
+		self:StartMoving() 
+	end)
 
-   frame:SetScript("OnDragStop", function(self) 
-      self:StopMovingOrSizing() 
-      yo_MoveCTA:ClearAllPoints()
-      yo_MoveCTA:SetPoint( self:GetPoint())
-      SetAnchPosition( yo_MoveCTA, self)
-   end) 
-   self.LFRFrame = frame
+	frame:SetScript("OnDragStop", function(self) 
+		self:StopMovingOrSizing() 
+		yo_MoveCTA:ClearAllPoints()
+		yo_MoveCTA:SetPoint( self:GetPoint())
+		SetAnchPosition( yo_MoveCTA, self)
+	end) 
+	self.LFRFrame = frame
 end
 
 local function CreateLFRStrings( parent, id)
-   local button = CreateFrame("Button", nil, parent)
-   button:SetFrameLevel(parent:GetFrameLevel() + 10)
-   button:SetWidth( parent:GetWidth() - 10)
+	local button = CreateFrame("Button", nil, parent)
+	button:SetFrameLevel(parent:GetFrameLevel() + 10)
+	button:SetWidth( parent:GetWidth() - 10)
 	button:SetHeight( 20)
 	button:EnableMouse(true)
 
@@ -167,7 +180,6 @@ local function CreateLFRStrings( parent, id)
 		end		
 	end)
 
-
 	if id == 1 then
 		button:SetPoint( "TOPLEFT", parent, "TOPLEFT", 5, -15)
 	else
@@ -178,26 +190,26 @@ local function CreateLFRStrings( parent, id)
 end
 
 local function UpdateStrings(self)
-   local id = 1
-   for k,v in pairs( yo_CTA) do
-   	if v.tank or v.heal or v.dd then
-      	if not self.LFRFrame[id] then self.LFRFrame[id] = CreateLFRStrings( self.LFRFrame, id) end
+	local id = 1
+	for k,v in pairs( yo_CTA) do
+	if v.tank or v.heal or v.dd then
+		if not self.LFRFrame[id] then self.LFRFrame[id] = CreateLFRStrings( self.LFRFrame, id) end
 
-      	self.LFRFrame[id].id = k
-      	self.LFRFrame[id].mode = v.mode
-     		self.LFRFrame[id].name:SetText(v.name) -- .. " (" .. k .. ")")
-     		self.LFRFrame[id].icon:SetTexture(v.icon)
-     		self.LFRFrame[id].tank:SetDesaturated( not v.tank)
-     		self.LFRFrame[id].heal:SetDesaturated( not v.heal)
-     		self.LFRFrame[id].dd:SetDesaturated( not v.dd)
+			self.LFRFrame[id].id = k
+			self.LFRFrame[id].mode = v.mode
+			self.LFRFrame[id].name:SetText(v.name) -- .. " (" .. k .. ")")
+			self.LFRFrame[id].icon:SetTexture(v.icon)
 
-     		self.LFRFrame[id].tank:SetShown( v.tank)
-     		self.LFRFrame[id].heal:SetShown( v.heal)
-     		self.LFRFrame[id].dd:SetShown( v.dd)
-      	id = id + 1
-      end
-   end
-   self.LFRFrame:SetHeight( ( id - 1) * 21 + 20)
+			self.LFRFrame[id].tank:SetShown( v.tank)
+			self.LFRFrame[id].heal:SetShown( v.heal)
+			self.LFRFrame[id].dd:SetShown( v.dd)
+
+			self.LFRFrame[id]:Show()
+			id = id + 1
+		end
+	end
+	self.LFRFrame:SetHeight( ( id - 1) * 21 + 20)
+	for index = id, #self.LFRFrame do self.LFRFrame[index]:Hide() end
 end
 
 
@@ -212,104 +224,116 @@ end
 
 local function CheckLFR( self, ...)
 	--if yo.CTA.hide == true then return end
+	LFDQueueFrame_Update();
+	LFRQueueFrame_Update();
+	RequestLFDPlayerLockInfo();		
 
-   local newDate, update = false, false
-   local index = 0
+   	local newDate, update = false, false
+   	local index = 0
+   	local id = 1671
 
-   if heroic and not yo.CTA.hide then
-   	local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(1671, 1)
-   	--if eligible and itemCount > 0 then
-      	if not yo_CTA[1671] then yo_CTA[1671] = {} end
-			yo_CTA[1671]["name"] = "Хероический рендом"
-			yo_CTA[1671]["mode"] = LE_LFG_CATEGORY_LFD
-			yo_CTA[1671]["icon"] = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-HEROIC"	--252188
+   	if heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then		
+		local checkTank, checkHeal, checkDD	
+		if not yo_CTA[id] then yo_CTA[id] = {} end
+		yo_CTA[id]["name"] = "Хероический рендом"
+		yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFD
+		yo_CTA[id]["icon"] = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-HEROIC"	--252188
 
-      	if tRole then
-      		if ( forTank and not yo_CTA[1671]["tank"]) then newDate, update = true, true end
-      		if ( yo_CTA[1671]["tank"] and not forTank ) then update = true end
-      		yo_CTA[1671]["tank"] = true and forTank or nil
-      		if forTank then index = index + 1 end
-      	end
+		for shortageIndex = 1, 1 do --LFG_ROLE_NUM_SHORTAGE_TYPES do
+			local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, shortageIndex)
+			if eligible and itemCount > 0 then
 
-      	if hRole then
-				if ( forHealer and not yo_CTA[1671]["heal"]) then newDate, update = true, true end
-				if ( yo_CTA[1671]["heal"] and not forHealer) then update = true end
-				yo_CTA[1671]["heal"] = true and forHealer or nil
-				if forHealer then index = index + 1 end
-      	end
+				if tRole and forTank then 
+					checkTank = true
+					index = index + 1					
+				end
 
-      	if dRole then
-      		if ( forDamage and not yo_CTA[1671]["dd"]) then newDate, update = true, true end
-      		if ( yo_CTA[1671]["dd"] and not forDamage) then update = true end
-      		yo_CTA[1671]["dd"] = true and forDamage or nil
-      		if forDamage then index = index + 1 end
-      	end
-   	--end
-   end
+				if hRole and forHealer then 
+					checkHeal = true
+					index = index + 1 
+				end
 
-   if lfr and not yo.CTA.hide then
-   	for i = 1, GetNumRFDungeons() do
-      	local id, name,  _, _, level = GetRFDungeonInfo(i)
-      	if level == MAX_PLAYER_LEVEL then
-         	local eligible, forTank, forHealer, forDamage, itemCount = GetLFGRoleShortageRewards(id, 1)
-         	--if eligible and itemCount > 0 then
-            	if not yo_CTA[id] then yo_CTA[id] = {} end
+				if dRole and forDamage then 
+					checkDD = true
+					index = index + 1 			
+				end	
+			end	
+			--print( floor(GetTime()),  " id = ",id, forTank, forHealer, forDamage, itemCount, " Heroic")
+		end
 
-            	local icon = select( 11, GetLFGDungeonInfo(id)) 
-            	yo_CTA[id]["icon"] = icon
-            	yo_CTA[id]["name"] = name
-            	yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFR
-
-      			if tRole then
-      				if ( forTank and not yo_CTA[id]["tank"]) then newDate, update = true, true end
-      				if ( yo_CTA[id]["tank"] and not forTank ) then update = true end
-      				yo_CTA[id]["tank"] = true and forTank or nil
-      				if forTank then index = index + 1 end
-      			end      	
-
-      			if hRole then
-						if ( forHealer and not yo_CTA[id]["heal"]) then newDate, update = true, true end
-						if ( yo_CTA[id]["heal"] and not forHealer) then update = true end
-						yo_CTA[id]["heal"] = true and forHealer or nil
-						if forHealer then index = index + 1 end
-      			end
-
-      			if dRole then
-      				if ( forDamage and not yo_CTA[id]["dd"]) then newDate, update = true, true end
-      				if ( yo_CTA[id]["dd"] and not forDamage) then update = true end
-      				yo_CTA[id]["dd"] = true and forDamage or nil
-      				if forDamage then index = index + 1 end
-      			end					
-				--end
-      	end
+		if checkTank and checkTank ~= yo_CTA[id]["tank"] then newDate = true end
+		if checkHeal and checkHeal ~= yo_CTA[id]["heal"] then newDate = true end
+		if checkDD   and checkDD   ~= yo_CTA[id]["dd"]   then newDate = true end
+		yo_CTA[id]["tank"], yo_CTA[id]["heal"], yo_CTA[id]["dd"] = checkTank, checkHeal, checkDD
    	end
-   end
 
-   if index == 0 or UnitInParty("player") or UnitInRaid("player") or yo.CTA.hide then
-   	self.LFRFrame:Hide()
-   else
-   	self.LFRFrame:Show()
-   end
+	if lfr and not yo.CTA.hide then
+		for i = 1, GetNumRFDungeons() do
+			local id, name,  _, _, level = GetRFDungeonInfo(i)
+			if isRaidFinderDungeonDisplayable(id) then
+				local checkTank, checkHeal, checkDD	
+				if not yo_CTA[id] then yo_CTA[id] = {} end
+				yo_CTA[id]["icon"] = select( 11, GetLFGDungeonInfo(id)) 
+				yo_CTA[id]["name"] = name
+				yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFR
+
+				for shortageIndex = 1, 1 do --LFG_ROLE_NUM_SHORTAGE_TYPES do
+					local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, shortageIndex)
+					if eligible and itemCount > 0 then
+						if tRole and forTank then 
+							checkTank = true
+							index = index + 1					
+						end
+
+						if hRole and forHealer then 
+							checkHeal = true
+							index = index + 1 
+						end
+
+						if dRole and forDamage then 
+							checkDD = true
+							index = index + 1 			
+						end	
+					end      		
+					--print( floor(GetTime()),  " id = ",id, forTank, forHealer, forDamage, itemCount, " ", name)
+				end	
+
+				if checkTank and checkTank ~= yo_CTA[id]["tank"] then newDate = true end
+				if checkHeal and checkHeal ~= yo_CTA[id]["heal"] then newDate = true end
+				if checkDD   and checkDD   ~= yo_CTA[id]["dd"]   then newDate = true end
+				yo_CTA[id]["tank"] = true and checkTank or false 
+				yo_CTA[id]["heal"] = true and checkHeal or false 
+				yo_CTA[id]["dd"]   = true and checkDD or false 
+			end	
+		end
+	end
+	--print("...........................")
+
+	if index == 0 or UnitInParty("player") or UnitInRaid("player") or yo.CTA.hide then
+		self.LFRFrame:Hide()
+	else
+		self.LFRFrame:Show()
+	end
 
    if newDate and ( not UnitInParty("player") or not UnitInRaid("player")) and not yo.CTA.nosound then
 		PlaySoundFile( LSM:Fetch( "sound", yo.CTA.sound))
-      --PlaySoundFile([[Sound\Creature\BabyMurloc\BabyMurlocA.ogg]],"Master");
+	  --PlaySoundFile([[Sound\Creature\BabyMurloc\BabyMurlocA.ogg]],"Master");
    end
 
-   if update then
-   	UpdateStrings( self)
-   end
+	--if update then 
+		UpdateStrings( self)
+	--end
 
-   C_Timer.After( timer, function(self) CheckLFR( _G["yo_CTAFrame"]) end)
+	C_Timer.After( timer, function(self) CheckLFR( _G["yo_CTAFrame"]) end)
 end
 
 local function OnEvent( self, event, ...)
-   if event == "PLAYER_ENTERING_WORLD" then
-   	if not yo.CTA.enable then return end
-      self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-      CreateLFRFrame( self)
-      CheckLFR( self)      
-   end
+	if event == "PLAYER_ENTERING_WORLD" then
+		if not yo.CTA.enable then return end
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		CreateLFRFrame( self)
+		CheckLFR( self)      
+	end
 end
 
 local cta = CreateFrame("Frame", "yo_CTAFrame", UIParent)

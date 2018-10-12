@@ -105,7 +105,7 @@ local function BuffOnLeave( f)
 	GameTooltip:Hide()	
 end
 
-function CreateAuraIcon(parent, index, noToolTip)
+function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 	local size = parent:GetHeight()
 	local sh = ceil( size / 8)
 
@@ -124,14 +124,23 @@ function CreateAuraIcon(parent, index, noToolTip)
 	
 	button.count = button:CreateFontString(nil, "OVERLAY")
 	button.count:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
-	button.count:SetShadowOffset(1, -1)
-	button.count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -2)
+	button.count:SetShadowOffset(1, -1)	
 	button.count:SetTextColor( 0, 1, 0)
-	
+	if timerPosition == "BOTTOM" then
+		button.count:SetPoint("TOPRIGHT", button, "TOPRIGHT", 6, 6)
+	else
+		button.count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -2)
+	end
+
 	button.timer = button:CreateFontString(nil, "OVERLAY")
 	button.timer:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
 	button.timer:SetShadowOffset(1, -1)
-	button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
+	if timerPosition == "BOTTOM" then
+		button.timer:SetPoint("CENTER", button, "BOTTOM", 0, 0)	
+	else
+		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)	
+	end
+	
 	
 	CreateStyle( button, max( 3, sh - 1))
 
@@ -195,7 +204,7 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 			return
 		end
 		
-		if est <= 5 then
+		if est <= 2 then
 			button.timer:SetTextColor( 1, 0, 0)
 		else
 			button.timer:SetTextColor( 1, 1, 0)
