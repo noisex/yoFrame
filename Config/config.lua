@@ -61,6 +61,7 @@ yo["Addons"] = {
 	["cheloBuff"]					= false,
 	["equipNewItem"]				= true,
 	["equipNewItemLevel"]			= 350,
+	["afk"]							= false,
 }
 yo["ActionBar"] = {
 	["enable"]		= true,

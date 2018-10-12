@@ -122,17 +122,17 @@ local function CreateLFRStrings( parent, id)
 	button.tank = button:CreateTexture(nil, "OVERLAY")
 	button.tank:SetPoint( "RIGHT", button, "RIGHT", -30, 0)
 	button.tank:SetSize(20, 20)
-	button.tank:SetTexture([[Interface\AddOns\ElvUI\media\textures\tank]])
+	button.tank:SetTexture([[Interface\AddOns\yoFrame\Media\tank]])
 
 	button.heal = button:CreateTexture(nil, "OVERLAY")
 	button.heal:SetPoint( "LEFT", button.tank, "RIGHT", 0, 0)
 	button.heal:SetSize(20, 20)
-	button.heal:SetTexture([[Interface\AddOns\ElvUI\media\textures\healer]])
+	button.heal:SetTexture([[Interface\AddOns\ElvUI\yoFrame\Media\healer]])
 
 	button.dd = button:CreateTexture(nil, "OVERLAY")
 	button.dd:SetPoint( "LEFT", button.heal, "RIGHT", 0, 0)
 	button.dd:SetSize(14, 14)
-	button.dd:SetTexture([[Interface\AddOns\ElvUI\media\textures\dps]])
+	button.dd:SetTexture([[Interface\AddOns\yoFrame\Media\dps]])
 
 	button:SetScript("OnClick", function(self, ...)
 		local cate = GetLFGCategoryForID( self.id);
@@ -211,14 +211,14 @@ end
 
 
 local function CheckLFR( self, ...)
-	if yo.CTA.hide == true then return end
+	--if yo.CTA.hide == true then return end
 
    local newDate, update = false, false
    local index = 0
 
-   if heroic then
+   if heroic and not yo.CTA.hide then
    	local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(1671, 1)
-   	if eligible and itemCount > 0 then
+   	--if eligible and itemCount > 0 then
       	if not yo_CTA[1671] then yo_CTA[1671] = {} end
 			yo_CTA[1671]["name"] = "Хероический рендом"
 			yo_CTA[1671]["mode"] = LE_LFG_CATEGORY_LFD
@@ -241,18 +241,18 @@ local function CheckLFR( self, ...)
       	if dRole then
       		if ( forDamage and not yo_CTA[1671]["dd"]) then newDate, update = true, true end
       		if ( yo_CTA[1671]["dd"] and not forDamage) then update = true end
-      		yo_CTA[1671]["dd"]   = true and forDamage or nil
+      		yo_CTA[1671]["dd"] = true and forDamage or nil
       		if forDamage then index = index + 1 end
       	end
-   	end
+   	--end
    end
 
-   if lfr then
+   if lfr and not yo.CTA.hide then
    	for i = 1, GetNumRFDungeons() do
       	local id, name,  _, _, level = GetRFDungeonInfo(i)
       	if level == MAX_PLAYER_LEVEL then
          	local eligible, forTank, forHealer, forDamage, itemCount = GetLFGRoleShortageRewards(id, 1)
-         	if eligible and itemCount > 0 then
+         	--if eligible and itemCount > 0 then
             	if not yo_CTA[id] then yo_CTA[id] = {} end
 
             	local icon = select( 11, GetLFGDungeonInfo(id)) 
@@ -277,15 +277,15 @@ local function CheckLFR( self, ...)
       			if dRole then
       				if ( forDamage and not yo_CTA[id]["dd"]) then newDate, update = true, true end
       				if ( yo_CTA[id]["dd"] and not forDamage) then update = true end
-      				yo_CTA[id]["dd"]   = true and forDamage or nil
+      				yo_CTA[id]["dd"] = true and forDamage or nil
       				if forDamage then index = index + 1 end
       			end					
-				end
+				--end
       	end
    	end
    end
 
-   if index == 0 or UnitInParty("player")  or UnitInRaid("player") then
+   if index == 0 or UnitInParty("player") or UnitInRaid("player") or yo.CTA.hide then
    	self.LFRFrame:Hide()
    else
    	self.LFRFrame:Show()

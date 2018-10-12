@@ -173,7 +173,8 @@ function InitOptions()
 					BlackPanels	 	= {	order = 6, type = "toggle", name = "Показывать черные панели справа и слева внизу экрана", 	width = "full",	},
 					FlashIconCooldown={ order = 7, type = "toggle", name = "Показывать икноку откатившегося спела в центра экрана",	width = "full",	},
 					ArtifactPowerbar= {	order = 8, type = "toggle", name = "Показывать азеритовую палку и палку репутации/опыта",	width = "full",	},
-					unitFrames		= {	order = 9, type = "toggle", name = "Включить юнитфрймы, а зачем аддон без них?",			width = "full",	},					
+					unitFrames		= {	order = 9, type = "toggle", name = "Включить юнитфрймы, а зачем аддон без них?",			width = "full",	},
+					afk				= {	order =10, type = "toggle", name = "Включить АФК анимацию",									width = "full",	},
 					-- lootbox
 					-- cooldowns
 					ObjectiveHeight = { order = 20, type = "range", 	name = "Высота списка квестов",	min = 250, max = 650, step = 1, desc = "Изменение высоты окна списка квестов. \nПо-умолчанию: 500",	}, 
