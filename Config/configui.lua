@@ -492,6 +492,8 @@ function InitOptions()
 					
 					timer	= {	order = 40,	type = "range", name = "Частота проверки (сек)",	min = 1, max = 600, step = 1, width = 1},
 					sound	= {	order = 42, type = "select",name = "Звук оповещения:", dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
+					expand	= {	order = 44, type = "toggle",name = "Запускать свернутым",},
+					nosound	= {	order = 45, type = "toggle",name = "Запускать без звука",},
 				},	
 			},
 

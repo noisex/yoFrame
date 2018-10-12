@@ -279,6 +279,7 @@ yo["CTA"] = {
 	["setD"]	= true,
 	["hide"]	= false,
 	["nosound"]	= false,
+	["expand"]	= false,
 	["sound"]	= "Murloc"
 }
 

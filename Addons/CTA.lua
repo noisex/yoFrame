@@ -39,8 +39,48 @@ local function CreateLFRFrame( self)
 	frame.close:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
 	frame.close:EnableMouse(true)
 
+	frame.expand = CreateFrame("Button", nil, frame)
+	frame.expand:SetPoint("RIGHT", frame.close, "LEFT", -5, 0)
+	frame.expand:SetFrameLevel(frame:GetFrameLevel() + 10)
+	frame.expand:SetWidth(  10)
+	frame.expand:SetNormalTexture("Interface\\Addons\\yoFrame\\Media\\hot_flat_16_16")	
+	frame.expand:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
+	if yo.CTA.expand then		
+		frame.expand:SetHeight( 10)
+	else
+		frame.expand:SetHeight( 5)
+	end
+	frame.expand:EnableMouse(true)
+
+	frame.expand:SetScript("OnEnter", function(self, ...)		
+		self:GetNormalTexture():SetVertexColor( 1, 1, 0, 1)
+		GameTooltip:ClearLines()
+		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
+		if yo.CTA.expand then
+			GameTooltip:SetText("Развернуть")
+		else
+			GameTooltip:SetText("Свернуть")
+		end		
+		GameTooltip:Show()
+	end)
+
+	frame.expand:SetScript("OnLeave", function(self, ...)
+		frame.expand:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
+		GameTooltip:Hide()
+	end)
+
+	frame.expand:SetScript("OnClick", function(self, ...)
+		yo.CTA.expand = not yo.CTA.expand
+		if yo.CTA.expand then
+			frame.expand:SetHeight( 10)
+		else
+			frame.expand:SetHeight( 5)
+		end
+		UpdateStrings( _G["yo_CTAFrame"])
+	end)
+
 	frame.nosound = CreateFrame("Button", nil, frame)
-	frame.nosound:SetPoint("RIGHT", frame.close, "LEFT", 4, 0)
+	frame.nosound:SetPoint("RIGHT", frame.expand, "LEFT", 3, 1)
 	frame.nosound:SetFrameLevel(frame:GetFrameLevel() + 10)
 	frame.nosound:SetWidth(  22)
 	frame.nosound:SetHeight( 22)
@@ -189,27 +229,32 @@ local function CreateLFRStrings( parent, id)
 	return button
 end
 
-local function UpdateStrings(self)
-	local id = 1
-	for k,v in pairs( yo_CTA) do
-	if v.tank or v.heal or v.dd then
-		if not self.LFRFrame[id] then self.LFRFrame[id] = CreateLFRStrings( self.LFRFrame, id) end
+function UpdateStrings(self)
+	if not yo.CTA.expand then
+		local id = 1
+		for k,v in pairs( yo_CTA) do
+		if v.tank or v.heal or v.dd then
+			if not self.LFRFrame[id] then self.LFRFrame[id] = CreateLFRStrings( self.LFRFrame, id) end
 
-			self.LFRFrame[id].id = k
-			self.LFRFrame[id].mode = v.mode
-			self.LFRFrame[id].name:SetText(v.name) -- .. " (" .. k .. ")")
-			self.LFRFrame[id].icon:SetTexture(v.icon)
+				self.LFRFrame[id].id = k
+				self.LFRFrame[id].mode = v.mode
+				self.LFRFrame[id].name:SetText(v.name) -- .. " (" .. k .. ")")
+				self.LFRFrame[id].icon:SetTexture(v.icon)
 
-			self.LFRFrame[id].tank:SetShown( v.tank)
-			self.LFRFrame[id].heal:SetShown( v.heal)
-			self.LFRFrame[id].dd:SetShown( v.dd)
+				self.LFRFrame[id].tank:SetShown( v.tank)
+				self.LFRFrame[id].heal:SetShown( v.heal)
+				self.LFRFrame[id].dd:SetShown( v.dd)
 
-			self.LFRFrame[id]:Show()
-			id = id + 1
+				self.LFRFrame[id]:Show()
+				id = id + 1
+			end
 		end
+		self.LFRFrame:SetHeight( ( id - 1) * 23 + 14)
+		for index = id, #self.LFRFrame do self.LFRFrame[index]:Hide() end
+	else
+		self.LFRFrame:SetHeight( 14)
+		for index = 1, #self.LFRFrame do self.LFRFrame[index]:Hide() end
 	end
-	self.LFRFrame:SetHeight( ( id - 1) * 21 + 20)
-	for index = id, #self.LFRFrame do self.LFRFrame[index]:Hide() end
 end
 
 
