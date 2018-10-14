@@ -9,9 +9,6 @@ end
 
 local function CreateLFRFrame( self)
 
-	tRole 	= yo.CTA.tRole
-	hRole		= yo.CTA.hRole
-	dRole		= yo.CTA.dRole
 	heroic	= yo.CTA.heroic
 	lfr 		= yo.CTA.lfr
 	timer 	= yo.CTA.timer
@@ -23,6 +20,21 @@ local function CreateLFRFrame( self)
 	frame:Hide()
 	CreatePanel( frame, 220, 10, "CENTER", yo_MoveCTA, "CENTER", 0, 0, 0, 0)
 	CreateStyle( frame, 3, 0, 0.4, 0.6)
+
+	frame.tank = frame:CreateTexture(nil, "OVERLAY")
+	frame.tank:SetPoint( "TOPLEFT", frame, "TOPLEFT", 5, -2)
+	frame.tank:SetSize(12, 12)
+	frame.tank:SetTexture([[Interface\AddOns\yoFrame\Media\tank]])
+
+	frame.heal = frame:CreateTexture(nil, "OVERLAY")
+	frame.heal:SetPoint( "LEFT", frame.tank, "RIGHT", 0, 0)
+	frame.heal:SetSize(12, 12)
+	frame.heal:SetTexture([[Interface\AddOns\yoFrame\Media\healer]])
+
+	frame.dd = frame:CreateTexture(nil, "OVERLAY")
+	frame.dd:SetPoint( "LEFT", frame.heal, "RIGHT", 0, 0)
+	frame.dd:SetSize(10, 10)
+	frame.dd:SetTexture([[Interface\AddOns\yoFrame\Media\dps]])
 
 	frame.title = frame:CreateFontString(nil, "OVERLAY", frame)
 	frame.title:SetPoint("TOP")
@@ -39,14 +51,54 @@ local function CreateLFRFrame( self)
 	frame.close:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
 	frame.close:EnableMouse(true)
 
+	frame.expand = CreateFrame("Button", nil, frame)
+	frame.expand:SetPoint("RIGHT", frame.close, "LEFT", -5, 0)
+	frame.expand:SetFrameLevel(frame:GetFrameLevel() + 10)
+	frame.expand:SetWidth(  10)
+	frame.expand:SetNormalTexture("Interface\\Addons\\yoFrame\\Media\\hot_flat_16_16")	
+	frame.expand:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
+	if yo.CTA.expand then		
+		frame.expand:SetHeight( 10)
+	else
+		frame.expand:SetHeight( 5)
+	end
+	frame.expand:EnableMouse(true)
+
+	frame.expand:SetScript("OnEnter", function(self, ...)		
+		self:GetNormalTexture():SetVertexColor( 1, 1, 0, 1)
+		GameTooltip:ClearLines()
+		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
+		if yo.CTA.expand then
+			GameTooltip:SetText("Развернуть")
+		else
+			GameTooltip:SetText("Свернуть")
+		end		
+		GameTooltip:Show()
+	end)
+
+	frame.expand:SetScript("OnLeave", function(self, ...)
+		frame.expand:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
+		GameTooltip:Hide()
+	end)
+
+	frame.expand:SetScript("OnClick", function(self, ...)
+		yo.CTA.expand = not yo.CTA.expand
+		if yo.CTA.expand then
+			frame.expand:SetHeight( 10)
+		else
+			frame.expand:SetHeight( 5)
+		end
+		UpdateStrings( _G["yo_CTAFrame"])
+	end)
+
 	frame.nosound = CreateFrame("Button", nil, frame)
-	frame.nosound:SetPoint("RIGHT", frame.close, "LEFT", 4, 0)
+	frame.nosound:SetPoint("RIGHT", frame.expand, "LEFT", 3, 1)
 	frame.nosound:SetFrameLevel(frame:GetFrameLevel() + 10)
 	frame.nosound:SetWidth(  22)
 	frame.nosound:SetHeight( 22)
 	frame.nosound:SetNormalTexture("Interface\\Addons\\yoFrame\\Media\\ArrowRight")
 	if yo.CTA.nosound then
-			frame.nosound:GetNormalTexture():SetVertexColor( 0.5, .5, .5, 1)
+			frame.nosound:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
 		else
 			frame.nosound:GetNormalTexture():SetVertexColor( 0, 1, 0, 1)
 		end		
@@ -124,7 +176,6 @@ local function CreateLFRStrings( parent, id)
 	button.icon = button:CreateTexture(nil, "OVERLAY")
 	button.icon:SetPoint( "TOPLEFT", button, "TOPLEFT")
 	button.icon:SetSize(35, 20)
-	--button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
 	button.name = button:CreateFontString(nil, "OVERLAY")
 	button.name:SetFont( font, fontsize, "THINOUTLINE")
@@ -189,27 +240,35 @@ local function CreateLFRStrings( parent, id)
 	return button
 end
 
-local function UpdateStrings(self)
-	local id = 1
-	for k,v in pairs( yo_CTA) do
-	if v.tank or v.heal or v.dd then
-		if not self.LFRFrame[id] then self.LFRFrame[id] = CreateLFRStrings( self.LFRFrame, id) end
 
-			self.LFRFrame[id].id = k
-			self.LFRFrame[id].mode = v.mode
-			self.LFRFrame[id].name:SetText(v.name) -- .. " (" .. k .. ")")
-			self.LFRFrame[id].icon:SetTexture(v.icon)
 
-			self.LFRFrame[id].tank:SetShown( v.tank)
-			self.LFRFrame[id].heal:SetShown( v.heal)
-			self.LFRFrame[id].dd:SetShown( v.dd)
 
-			self.LFRFrame[id]:Show()
-			id = id + 1
+function UpdateStrings(self)
+	if not yo.CTA.expand then
+		local id = 1
+		for k,v in pairs( yo_CTA) do
+		if v.tank or v.heal or v.dd then
+			if not self.LFRFrame[id] then self.LFRFrame[id] = CreateLFRStrings( self.LFRFrame, id) end
+
+				self.LFRFrame[id].id = k
+				self.LFRFrame[id].mode = v.mode
+				self.LFRFrame[id].name:SetText(v.name) -- .. " (" .. k .. ")")
+				self.LFRFrame[id].icon:SetTexture(v.icon)
+
+				self.LFRFrame[id].tank:SetShown( v.tank)
+				self.LFRFrame[id].heal:SetShown( v.heal)
+				self.LFRFrame[id].dd:SetShown( v.dd)
+
+				self.LFRFrame[id]:Show()
+				id = id + 1
+			end
 		end
+		self.LFRFrame:SetHeight( ( id - 1) * 23 + 14)
+		for index = id, #self.LFRFrame do self.LFRFrame[index]:Hide() end
+	else
+		self.LFRFrame:SetHeight( 14)
+		for index = 1, #self.LFRFrame do self.LFRFrame[index]:Hide() end
 	end
-	self.LFRFrame:SetHeight( ( id - 1) * 21 + 20)
-	for index = id, #self.LFRFrame do self.LFRFrame[index]:Hide() end
 end
 
 
@@ -222,11 +281,27 @@ end
 --yo_CTA[1671]["icon"] = 252188
 
 
+
 local function CheckLFR( self, ...)
 	--if yo.CTA.hide == true then return end
 	LFDQueueFrame_Update();
 	LFRQueueFrame_Update();
 	RequestLFDPlayerLockInfo();		
+
+	local _, tRealRole, hRealRole, dRealRole = GetLFGRoles()
+	if yo.CTA.nRole then
+		tRole 	= tRealRole
+		hRole	= hRealRole
+		dRole	= dRealRole
+	else
+		tRole 	= yo.CTA.tRole
+		hRole	= yo.CTA.hRole
+		dRole	= yo.CTA.dRole
+	end
+	
+	self.LFRFrame.tank:SetShown( tRole )
+	self.LFRFrame.heal:SetShown( hRole)
+	self.LFRFrame.dd:SetShown( dRole)	
 
    	local newDate, update = false, false
    	local index = 0
@@ -258,7 +333,6 @@ local function CheckLFR( self, ...)
 					index = index + 1 			
 				end	
 			end	
-			--print( floor(GetTime()),  " id = ",id, forTank, forHealer, forDamage, itemCount, " Heroic")
 		end
 
 		if checkTank and checkTank ~= yo_CTA[id]["tank"] then newDate = true end
@@ -295,7 +369,6 @@ local function CheckLFR( self, ...)
 							index = index + 1 			
 						end	
 					end      		
-					--print( floor(GetTime()),  " id = ",id, forTank, forHealer, forDamage, itemCount, " ", name)
 				end	
 
 				if checkTank and checkTank ~= yo_CTA[id]["tank"] then newDate = true end
@@ -307,7 +380,6 @@ local function CheckLFR( self, ...)
 			end	
 		end
 	end
-	--print("...........................")
 
 	if index == 0 or UnitInParty("player") or UnitInRaid("player") or yo.CTA.hide then
 		self.LFRFrame:Hide()
@@ -317,22 +389,23 @@ local function CheckLFR( self, ...)
 
    if newDate and ( not UnitInParty("player") or not UnitInRaid("player")) and not yo.CTA.nosound then
 		PlaySoundFile( LSM:Fetch( "sound", yo.CTA.sound))
-	  --PlaySoundFile([[Sound\Creature\BabyMurloc\BabyMurlocA.ogg]],"Master");
    end
 
 	--if update then 
-		UpdateStrings( self)
+	UpdateStrings( self)
 	--end
 
 	C_Timer.After( timer, function(self) CheckLFR( _G["yo_CTAFrame"]) end)
 end
+
+
 
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if not yo.CTA.enable then return end
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		CreateLFRFrame( self)
-		CheckLFR( self)      
+		CheckLFR( self)      	
 	end
 end
 

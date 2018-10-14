@@ -1,4 +1,8 @@
+local lib = LibStub("LibCooldown")
+if not lib then error("CooldownFlash requires LibCooldown") return end
+
 local PlayerProcWhiteList = {}
+local PlayerCDWhiteList = {}
 
 local function UpdateAura( self, unit)
 	--local auraFilter = { "HARMFUL", "HELPFUL"}
@@ -75,64 +79,35 @@ local function UpdateAura( self, unit)
 	end	
 end
 
-local numTabs, totalspellnum
-yo_spellsCD = {}
-
-local function parsespellbook(spellbook)
-	i = 1
-	while true do
-		skilltype, id = GetSpellBookItemInfo(i, spellbook)
-		--if id == 132469 then
-			--print("dasdasdsadsadsad")
-		--end
-		name = GetSpellBookItemName(i, spellbook)
-		if name and skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL and not IsPassiveSpell(i, spellbook) and id ~= 125439 then
-			yo_spellsCD[id] = true
-		end
-		i = i + 1
-		if i >= totalspellnum then i = 1 break end
-		
-		if (id == 88625 or id == 88625 or id == 88625) and (skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL) then
-		   yo_spellsCD[88625] = true
-		   yo_spellsCD[88684] = true
-		   yo_spellsCD[88685] = true
-		end
-	end
-end
-
-local function UpdateSpels()
-	numTabs = GetNumSpellTabs()
-	totalspellnum = 0
-	for i=1,numTabs do
-		local numSpells = select(4, GetSpellTabInfo(i))
-		totalspellnum = totalspellnum + numSpells
-	end
-	parsespellbook(BOOKTYPE_SPELL)	
-end
-
-
-local function UpdateCD(self)
-	local now = GetTime()
+local function UpdatePCD( watched)
+	local frame = _G["yo_Fliger"]
 	local fligerPCD = 1
+	local icon
+	
+	--if watched then tprint(watched) end
 
-	for id in next, yo_spellsCD do
-		local starttime, duration, enabled = GetSpellCooldown(id)
-		
-		if starttime ~= 0 and duration > yo.fliger.pCDTimer then
+	for id, val in pairs( watched) do
+		local starttime = val.start
+		local duration = val.duration
+		local class = val.class
+		local expirationTime = starttime + duration
+		if class == "item" then
+			icon = select( 10, GetItemInfo( id))
+		else
+			icon = select( 3, GetSpellInfo( id))
+		end
+		--print( class, id, starttime, duration, icon)		
 
-			--local timeleft = starttime + duration - now
-			local expirationTime = starttime + duration
-			local _, _, icon = GetSpellInfo( id)
-
-			if not self.pCD[fligerPCD] then self.pCD[fligerPCD] = CreateAuraIcon( self.pCD, fligerPCD, true, "BOTTOM")end				
-			UpdateAuraIcon( self.pCD[fligerPCD], "HELPFUL", icon, 0, nil, duration, expirationTime, id, fligerPCD)
+		if starttime ~= 0 and duration  >= yo.fliger.pCDTimer then			
+			--print(id, val.start, val.duration)
+			if not frame.pCD[fligerPCD] then frame.pCD[fligerPCD] = CreateAuraIcon( frame.pCD, fligerPCD, true, "BOTTOM")end				
+			UpdateAuraIcon( frame.pCD[fligerPCD], "HELPFUL", icon, 0, nil, duration, expirationTime, id, fligerPCD)
 			fligerPCD = fligerPCD + 1
 		end
-	end	
+	end
 
-	for index = fligerPCD,	#self.pCD	do self.pCD[index]:Hide() end
+	for index = fligerPCD,	#frame.pCD	do frame.pCD[index]:Hide() end	
 end
-
 
 local function MakeFligerFrame( self)
 	local pdebuffSize 	= yo.fliger.pDebuffSize
@@ -204,8 +179,7 @@ local function MakeFligerFrame( self)
 		pCD:SetHeight( cdSize)
 		pCD.direction 	= yo.fliger.pCDDirect
 		pCD.unit 		= "player"
-		self.pCD 		= pCD
-		UpdateSpels()
+		self.pCD 		= pCD		
 	end
 end
 
@@ -217,6 +191,14 @@ local function CheckTemplates( myClass, mySpec)
 	for i,v in pairs( templates.class[myClass][mySpec][5]["args"]) do
 		PlayerBuffWhiteList[GetSpellInfo( v.spell)] = true
 	end
+
+	--PlayerCDWhiteList = {}
+	--for i,v in pairs( templates.class[myClass][mySpec][3]["args"]) do
+	--	local starttime, duration = GetSpellCooldown( GetSpellInfo( v.spell))
+	--	if starttime then
+	--		PlayerCDWhiteList[GetSpellInfo( v.spell)] = v.icon
+	--	end		
+	--end
 
 	for i,v in pairs( templates.items[2]["args"]) do
 		PlayerProcWhiteList[GetSpellInfo( v.spell)] = true
@@ -242,10 +224,10 @@ local function OnEvent( self, event, ...)
 		if not yo.fliger.enable then return end
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterUnitEvent("UNIT_AURA", "player", "target")
-		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 		if yo.fliger.pCDEnable then
-			self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+			lib:RegisterCallback("start", function( id, duration, class, watched) UpdatePCD( watched) end)
+			lib:RegisterCallback("stop", function(id, class, watched) UpdatePCD( watched) end)
 		end				
 		
 		MakeFligerFrame( self)
@@ -255,12 +237,6 @@ local function OnEvent( self, event, ...)
 		UpdateAura( self, ...)
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		UpdateAura( self, "target")
-	elseif event == "SPELL_UPDATE_COOLDOWN" then
-		UpdateCD( self)
-	elseif event == "LEARNED_SPELL_IN_TAB" then
-		if yo.fliger.pCDEnable then
-			UpdateSpels()
-		end
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		CheckTemplates( myClass, GetSpecialization())
 	end
@@ -268,7 +244,6 @@ end
 
 local Fliger = CreateFrame("Frame", "yo_Fliger", UIParent)
 Fliger:RegisterEvent("PLAYER_ENTERING_WORLD")
-Fliger:RegisterEvent("LEARNED_SPELL_IN_TAB")
 Fliger:SetScript("OnEvent", OnEvent)
 
 --CreateAnchor("SPECIAL_P_BUFF_ICON_Anchor", "SPECIAL_P_BUFF",	C["filger"].buffs_size, C["filger"].buffs_size,			-300, -50, "CENTER", "CENTER")

@@ -252,6 +252,7 @@ RaidDebuffList = {
 	[265360] = true, -- Roiling Deceit
 	[265662] = true, -- Corruptor's Pact
 	[265646] = true, -- Will of the Corruptor
+	[272146] = true, -- Аннигиляция
 	-- G'huun
 	[263436] = true, -- Imperfect Physiology
 	[263227] = true, -- Putrid Blood
@@ -261,4 +262,5 @@ RaidDebuffList = {
 	[267430] = true, -- Torment
 	[263235] = true, -- Blood Feast
 	[270287] = true, -- Blighted Ground
+	[270447] = true,  -- growing-corruption
 }

@@ -246,7 +246,7 @@ yo["healBotka"] = {
 }
 
 yo["fliger"] = {
-	["enable"]			= false,
+	["enable"]			= true,
 	["tDebuffEnable"]	= true,
 	["pCDEnable"]		= true,
 	["pBuffEnable"]		= true,
@@ -263,6 +263,7 @@ yo["fliger"] = {
 	["pBuffDirect"]		= "LEFT",
 	["pDebuffDirect"]	= "LEFT",
 	["pCDTimer"]		= 15,
+	["checkBags"]		= false,
 }
 
 yo["CTA"] = {
@@ -270,6 +271,7 @@ yo["CTA"] = {
 	["tRole"]	= true,
 	["hRole"]	= true,
 	["dRole"]	= true,
+	["nRole"]	= true,
 	["heroic"]	= true,
 	["lfr"]		= true,
 	["timer"]	= 20,
@@ -279,6 +281,7 @@ yo["CTA"] = {
 	["setD"]	= true,
 	["hide"]	= false,
 	["nosound"]	= false,
+	["expand"]	= false,
 	["sound"]	= "Murloc"
 }
 

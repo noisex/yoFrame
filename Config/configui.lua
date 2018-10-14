@@ -461,6 +461,7 @@ function InitOptions()
 					pDebuffDirect	= {	order = 44, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
 					pProcDirect		= {	order = 54, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
 
+					checkBags		= {	order = 55, type = "toggle",name = "Проверять кулдауны предметов, включая сумку) - ТУПИТ!!!", width = "full"},
 					pCDTimer		= {	order = 99,	type = "range", name = "Ограничение времени",	min = 0, max = 50, step = 1, width = 1, desc = "Меньше этого времени кулдауны не показываются"},
 				},	
 			},
@@ -474,13 +475,14 @@ function InitOptions()
 					enable 	= { width = "full",	order = 1, type = "toggle",	name = "Включить СТА ( поиск мега-сумки с барахлом)", disabled = false, },
 
 					set00	= {	order = 02, type = "description", name = " ", width = "full"},
-					readRole= {	order = 03, type = "description", name = "Выбрать роли, которую будет отслеживать СТА:", width = "full"},
-					tRole	= {	order = 10, type = "toggle",name = "Танк",	width = 0.75},
-					hRole 	= {	order = 12, type = "toggle",name = "Хил",	width = 0.75},
-					dRole	= {	order = 14, type = "toggle",name = "ДД", 	width = 0.75},
+					readRole= {	order = 03, type = "description", name = "Выбрать роли, которые будет отслеживать СТА:", width = "full"},
+					nRole	= {	order = 09, type = "toggle",name = "Текущая ( не менять)",	width = 0.85, desc = "Выставляется автоматически в соответсвии со значение выставленном в... ну, в том окошке, где выставляются роли... Для каждого пеоснажа своё, само собой.",},
+					tRole	= {	order = 10, type = "toggle",name = "Танк",	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].nRole); end,},
+					hRole 	= {	order = 12, type = "toggle",name = "Хил",	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].nRole); end,},
+					dRole	= {	order = 14, type = "toggle",name = "ДД", 	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].nRole); end,},
 					
 					set01	= {	order = 20, type = "description", name = " ", width = "full"},
-					setRole	= {	order = 21, type = "description", name = "Выбрать роль, выставляемую при подключении в очередь:", width = "full"},
+					setRole	= {	order = 21, type = "description", name = "Выбрать роль, выставляемые при подключении в очередь:", width = "full"},
 					setN	= {	order = 22, type = "toggle",name = "Текущая ( не менять)",	width = 0.85},
 					setT	= {	order = 24, type = "toggle",name = "Танк",	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].setN); end,},
 					setH 	= {	order = 26, type = "toggle",name = "Хил",	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].setN); end,},
@@ -492,6 +494,8 @@ function InitOptions()
 					
 					timer	= {	order = 40,	type = "range", name = "Частота проверки (сек)",	min = 1, max = 600, step = 1, width = 1},
 					sound	= {	order = 42, type = "select",name = "Звук оповещения:", dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
+					expand	= {	order = 44, type = "toggle",name = "Запускать свернутым",},
+					nosound	= {	order = 45, type = "toggle",name = "Запускать без звука",},					
 				},	
 			},
 
