@@ -240,6 +240,7 @@ local function CreateLFRStrings( parent, id)
 	return button
 end
 
+<<<<<<< HEAD
 
 
 
@@ -259,6 +260,24 @@ function UpdateStrings(self)
 				self.LFRFrame[id].heal:SetShown( v.heal)
 				self.LFRFrame[id].dd:SetShown( v.dd)
 
+=======
+function UpdateStrings(self)
+	if not yo.CTA.expand then
+		local id = 1
+		for k,v in pairs( yo_CTA) do
+		if v.tank or v.heal or v.dd then
+			if not self.LFRFrame[id] then self.LFRFrame[id] = CreateLFRStrings( self.LFRFrame, id) end
+
+				self.LFRFrame[id].id = k
+				self.LFRFrame[id].mode = v.mode
+				self.LFRFrame[id].name:SetText(v.name) -- .. " (" .. k .. ")")
+				self.LFRFrame[id].icon:SetTexture(v.icon)
+
+				self.LFRFrame[id].tank:SetShown( v.tank)
+				self.LFRFrame[id].heal:SetShown( v.heal)
+				self.LFRFrame[id].dd:SetShown( v.dd)
+
+>>>>>>> f284e8dc294029c7fd5ea68f45abe066b6ce4a34
 				self.LFRFrame[id]:Show()
 				id = id + 1
 			end
