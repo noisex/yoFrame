@@ -168,7 +168,7 @@ end
 
 function addon:PLAYER_ENTERING_WORLD()
 	addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	
+
 	addon:RegisterEvent("LEARNED_SPELL_IN_TAB")
 	addon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	addon:RegisterEvent("PLAYER_TALENT_UPDATE")
@@ -224,9 +224,4 @@ end
 addon:Hide()
 addon:SetScript("OnUpdate", onupdate)
 addon:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
-
---addon:RegisterEvent("LEARNED_SPELL_IN_TAB")
---addon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
---addon:RegisterEvent("BAG_UPDATE_COOLDOWN")
 addon:RegisterEvent("PLAYER_ENTERING_WORLD")
---addon:RegisterEvent("PLAYER_TALENT_UPDATE")
