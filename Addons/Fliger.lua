@@ -96,8 +96,6 @@ local function UpdatePCD( watched)
 		else
 			icon = select( 3, GetSpellInfo( id))
 		end
-		--print( class, id, starttime, duration, icon)		
-
 		if starttime ~= 0 and duration  >= yo.fliger.pCDTimer then			
 			--print(id, val.start, val.duration)
 			if not frame.pCD[fligerPCD] then frame.pCD[fligerPCD] = CreateAuraIcon( frame.pCD, fligerPCD, true, "BOTTOM")end				
