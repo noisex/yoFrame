@@ -1,41 +1,15 @@
-local WeakAuras = WeakAuras
---local L = WeakAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 	L = {}
 	L["Abilities"] = "Abilities"
 	L["Ability Charges"] = "Ability Charges"
 	L["Add Triggers"] = "Add Triggers"
-	L["Always Active"] = "Always Active"
-	L["Always Show"] = "Always Show"
-	L["Always show the aura, highlight it if debuffed."] = "Always show the aura, highlight it if debuffed."
-	L["Always show the aura, turns grey if on cooldown."] = "Always show the aura, turns grey if on cooldown."
-	L["Always show the aura, turns grey if the debuff not active."] = "Always show the aura, turns grey if the debuff not active."
-	L["Always shows the aura, grey if buff not active."] = "Always shows the aura, grey if buff not active."
-	L["Always shows the aura, highlight it if buffed."] = "Always shows the aura, highlight it if buffed."
-	L["Always shows the aura, highlight while proc is active, blue on insufficient resources."] = "Always shows the aura, highlight while proc is active, blue on insufficient resources."
-	L["Always shows the aura, highlight while proc is active, blue when not usable."] = "Always shows the aura, highlight while proc is active, blue when not usable."
-	L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."
-	L["Always shows the aura, turns grey if on cooldown."] = "Always shows the aura, turns grey if on cooldown."
-	L["Always shows the aura, turns grey if the ability is not usable and red when out of range."] = "Always shows the aura, turns grey if the ability is not usable and red when out of range."
-	L["Always shows the aura, turns grey if the ability is not usable."] = "Always shows the aura, turns grey if the ability is not usable."
-	L["Always shows the aura, turns grey when on cooldown, blue when unusable."] = "Always shows the aura, turns grey when on cooldown, blue when unusable."
-	L["Always shows the aura, turns grey when on zero charges, blue when not usable."] = "Always shows the aura, turns grey when on zero charges, blue when not usable."
-	L["Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."] = "Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."
-	L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."] = "Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."
-	L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."] = "Always shows the aura, turns greys on zero charges, blue on insufficient resources."
-	L["Always shows the aura, turns red when out of range, blue on insufficient resources."] = "Always shows the aura, turns red when out of range, blue on insufficient resources."
-	L["Always shows the aura, turns red when out of range."] = "Always shows the aura, turns red when out of range."
 	L["Back"] = "Back"
-	L["Basic Show On Cooldown"] = "Basic Show On Cooldown"
 	L["Bloodlust/Heroism"] = "Bloodlust/Heroism"
 	L["buff"] = "buff"
 	L["Buff"] = "Buff"
 	L["Buffs"] = "Buffs"
 	L["Cancel"] = "Cancel"
 	L["Cast"] = "Cast"
-	L["Charge and Buff Tracking"] = "Charge and Buff Tracking"
-	L["Charge and Debuff Tracking"] = "Charge and Debuff Tracking"
-	L["Charge Tracking"] = "Charge Tracking"
 	L["cooldown"] = "cooldown"
 	L["Cooldown Tracking"] = "Cooldown Tracking"
 	L["Create Auras"] = "Create Auras"
@@ -44,58 +18,21 @@ local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = 
 	L["General"] = "General"
 	L["General Azerite Traits"] = "General Azerite Traits"
 	L["Health"] = "Health"
-	L["Highlight while buffed, red when out of range."] = "Highlight while buffed, red when out of range."
-	L["Highlight while buffed."] = "Highlight while buffed."
-	L["Highlight while debuffed, red when out of range."] = "Highlight while debuffed, red when out of range."
-	L["Highlight while debuffed."] = "Highlight while debuffed."
-	L["Hold CTRL to create multiple auras at once"] = "Hold CTRL to create multiple auras at once"
-	L["Keeps existing triggers intact"] = "Keeps existing triggers intact"
 	L["Next"] = "Next"
 	L["On Procc Trinkets (Buff)"] = "On Procc Trinkets (Buff)"
 	L["On Use Trinkets (Buff)"] = "On Use Trinkets (Buff)"
 	L["On Use Trinkets (CD)"] = "On Use Trinkets (CD)"
-	L["Only show the aura if the target has the debuff."] = "Only show the aura if the target has the debuff."
-	L["Only show the aura when the item is on cooldown."] = "Only show the aura when the item is on cooldown."
-	L["Only shows the aura if the target has the buff."] = "Only shows the aura if the target has the buff."
-	L["Only shows the aura when the ability is on cooldown."] = "Only shows the aura when the ability is on cooldown."
 	L["Pet alive"] = "Pet alive"
 	L["Pet Behavior"] = "Pet Behavior"
 	L["PvP Azerite Traits"] = "PvP Azerite Traits"
 	L["PvP Talents"] = "PvP Talents"
 	L["PVP Trinkets (Buff)"] = "PVP Trinkets (Buff)"
 	L["PVP Trinkets (CD)"] = "PVP Trinkets (CD)"
-	L["Replace all existing triggers"] = "Replace all existing triggers"
-	L["Replace Triggers"] = "Replace Triggers"
 	L["Resources"] = "Resources"
-	L["Resources and Shapeshift Form"] = "Resources and Shapeshift Form"
 	L["Runes"] = "Runes"
 	L["Shapeshift Form"] = "Shapeshift Form"
-	L["Show Charges and Check Usable"] = "Show Charges and Check Usable"
-	L["Show Charges with Proc Tracking"] = "Show Charges with Proc Tracking"
-	L["Show Charges with Range Tracking"] = "Show Charges with Range Tracking"
-	L["Show Charges with Usable Check"] = "Show Charges with Usable Check"
-	L["Show Cooldown and Buff"] = "Show Cooldown and Buff"
-	L["Show Cooldown and Buff and Check for Target"] = "Show Cooldown and Buff and Check for Target"
-	L["Show Cooldown and Buff and Check Usable"] = "Show Cooldown and Buff and Check Usable"
-	L["Show Cooldown and Check for Target"] = "Show Cooldown and Check for Target"
-	L["Show Cooldown and Check for Target & Proc Tracking"] = "Show Cooldown and Check for Target & Proc Tracking"
-	L["Show Cooldown and Check Usable"] = "Show Cooldown and Check Usable"
-	L["Show Cooldown and Check Usable & Target"] = "Show Cooldown and Check Usable & Target"
-	L["Show Cooldown and Check Usable, Proc Tracking"] = "Show Cooldown and Check Usable, Proc Tracking"
-	L["Show Cooldown and Check Usable, Target & Proc Tracking"] = "Show Cooldown and Check Usable, Target & Proc Tracking"
-	L["Show Cooldown and Debuff"] = "Show Cooldown and Debuff"
-	L["Show Cooldown and Debuff and Check for Target"] = "Show Cooldown and Debuff and Check for Target"
-	L["Show Cooldown and Proc Tracking"] = "Show Cooldown and Proc Tracking"
-	L["Show Cooldown and Totem Information"] = "Show Cooldown and Totem Information"
-	L["Show Only if Buffed"] = "Show Only if Buffed"
-	L["Show Only if Debuffed"] = "Show Only if Debuffed"
-	L["Show Only if on Cooldown"] = "Show Only if on Cooldown"
-	L["Show Totem and Charge Information"] = "Show Totem and Charge Information"
 	L["Specific Azerite Traits"] = "Specific Azerite Traits"
 	L["Stagger"] = "Stagger"
-	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."
-	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."
-	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."
 	L["Unknown Item"] = "Unknown Item"
 	L["Unknown Spell"] = "Unknown Spell"
 
@@ -131,25 +68,38 @@ templates =
     },
   }
 
-local powerTypes =
-  {
-    [0] = { name = POWER_TYPE_MANA, icon = "Interface\\Icons\\inv_elemental_mote_mana" },
-    [1] = { name = POWER_TYPE_RED_POWER, icon = "Interface\\Icons\\spell_misc_emotionangry"},
-    [2] = { name = POWER_TYPE_FOCUS, icon = "Interface\\Icons\\ability_hunter_focusfire"},
-    [3] = { name = POWER_TYPE_ENERGY, icon = "Interface\\Icons\\spell_shadow_shadowworddominate"},
-    [4] = { name = COMBO_POINTS, icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01"},
-    [6] = { name = RUNIC_POWER, icon = "Interface\\Icons\\inv_sword_62"},
-    [7] = { name = SOUL_SHARDS_POWER, icon = "Interface\\Icons\\inv_misc_gem_amethyst_02"},
-    [8] = { name = POWER_TYPE_LUNAR_POWER, icon = "Interface\\Icons\\ability_druid_eclipseorange"},
-    [9] = { name = HOLY_POWER, icon = "Interface\\Icons\\achievement_bg_winsoa"},
-    [11] = {name = POWER_TYPE_MAELSTROM, icon = 135990},
-    [12] = {name = CHI, icon = "Interface\\Icons\\ability_monk_healthsphere"},
-    [13] = {name = POWER_TYPE_INSANITY, icon = "Interface\\Icons\\spell_priest_shadoworbs"},
-    [16] = {name = POWER_TYPE_ARCANE_CHARGES, icon = "Interface\\Icons\\spell_arcane_arcane01"},
-    [17] = {name = POWER_TYPE_FURY_DEMONHUNTER, icon = 1344651},
-    [18] = {name = POWER_TYPE_PAIN, icon = 1247265},
-    [99] = {name = "Stagger", icon = "Interface\\Icons\\monk_stance_drunkenox"}
-  }
+PlayerBuffWhiteListAll= {
+  [126389]  = true, -- Goblin Glider [Goblin Glider Kit]
+  [54861]   = true, -- Nitro Boosts
+  [55001]   = true, -- Parachute
+  [173260]  = true, -- Shieldtronic Shield
+  [156136]  = true, -- Stealth Field [Stealthman 54]
+  [116849]  = true, -- Life Cocoon
+  [47788]   = true, -- Guardian Spirit
+  [33206]   = true, -- Pain Suppression
+  [102342]  = true, -- Ironbark
+  [31821]   = true, -- Aura Mastery
+  [1022]    = true, -- Blessing of Protection
+  [6940]    = true, -- Blessing of Sacrifice
+  [204018]  = true, -- Blessing of Spellwarding
+  [114030]  = true, -- Vigilance
+  [97463]   = true, -- Rallying Cry
+  [64901]   = true, -- Symbol of Hope
+  [29166]   = true, -- Innervate
+  [8178]    = true, -- Grounding Totem
+  [116841]  = true, -- Tiger's Lust
+  [65081]   = true, -- Body and Soul
+  [121557]  = true, -- Angelic Feather
+  [77764]   = true, -- Stampeding Roar
+  [1044]    = true, -- Blessing of Freedom
+  [57934]   = true, -- Tricks of the Trade
+  [130]     = true, -- Slow Fall
+  [1706]    = true, -- Levitate
+  [35079]   = true, -- Misdirection
+  [102351]  = true, -- Cenarion Ward
+}
+
+
 
 generalAzeriteTraits = {
   { spell = 279928, type = "buff", unit = "player"}, --Earthlink
@@ -200,17 +150,17 @@ generalAzeriteTraits = {
   { spell = 280573, type = "buff", unit = "player"}, --Reorigination Array
 }
 
-local pvpAzeriteTraits = {
-  { spell = 280876, type = "buff", unit = "player"}, --Anduin's Dedication
-  { spell = 280809, type = "buff", unit = "player"}, --Sylvanas' Resolve
-  { spell = 280855, type = "debuff", unit = "target"}, --Battlefield Precision
-  { spell = 280817, type = "debuff", unit = "target"}, --Battlefield Focus
-  { spell = 280858, type = "buff", unit = "player"}, --Stand As One
-  { spell = 280830, type = "buff", unit = "player"}, --Liberator's Might
-  { spell = 280780, type = "buff", unit = "player"}, --Glory in Battle
-  { spell = 280861, type = "buff", unit = "player"}, --Last Gift
-  { spell = 280787, type = "buff", unit = "player"}, --Retaliatory Fury
-}
+--local pvpAzeriteTraits = {
+--  { spell = 280876, type = "buff", unit = "player"}, --Anduin's Dedication
+--  { spell = 280809, type = "buff", unit = "player"}, --Sylvanas' Resolve
+--  { spell = 280855, type = "debuff", unit = "target"}, --Battlefield Precision
+--  { spell = 280817, type = "debuff", unit = "target"}, --Battlefield Focus
+--  { spell = 280858, type = "buff", unit = "player"}, --Stand As One
+--  { spell = 280830, type = "buff", unit = "player"}, --Liberator's Might
+--  { spell = 280780, type = "buff", unit = "player"}, --Glory in Battle
+--  { spell = 280861, type = "buff", unit = "player"}, --Last Gift
+--  { spell = 280787, type = "buff", unit = "player"}, --Retaliatory Fury
+--}
 
 -- Collected by WeakAurasTemplateCollector:
 
@@ -3889,43 +3839,6 @@ templates.class.DEATHKNIGHT = {
   },
 }
 
--- General Section
-tinsert(templates.general.args, {
-  title = L["Health"],
-  icon = "Interface\\Icons\\inv_alchemy_70_red",
-  type = "health"
-});
-tinsert(templates.general.args, {
-  title = L["Cast"],
-  icon = 136209,
-  type = "cast"
-});
-tinsert(templates.general.args, {
-  title = L["Always Active"],
-  icon = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura78",
-  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_alwaystrue = true}}}
-});
-
-tinsert(templates.general.args, {
-  title = L["Pet alive"],
-  icon = "Interface\\Icons\\ability_hunter_pet_raptor",
-  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_HasPet = true}}}
-});
-
-tinsert(templates.general.args, {
-  title = L["Pet Behavior"],
-  icon = "Interface\\Icons\\Ability_hunter_pet_assist",
-  triggers = {[1] = { trigger = { type = "status", event = "Pet Behavior", unevent = "auto", use_behavior = true, behavior = "assist"}}}
-});
-
-tinsert(templates.general.args, {
-  spell = 2825, type = "buff", unit = "player",
-  forceOwnOnly = true,
-  ownOnly = nil,
-  overideTitle = L["Bloodlust/Heroism"],
-  spellIds = {2825, 32182, 80353, 264667}}
-);
-
 -- Items section
 templates.items[1] = {
   title = L["Enchants"],
@@ -4042,239 +3955,6 @@ templates.items[4] = {
   }
 }
 
-templates.items[5] = {
-  title = L["PVP Trinkets (Buff)"],
-  args = {
-    { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
-    { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},
-    { spell = 278819, type = "buff", unit = "player", titleItemPrefix = 161474}, -- on use
-    { spell = 277179, type = "buff", unit = "player", titleItemPrefix = 161674}, -- on use
-    { spell = 277181, type = "buff", unit = "player", titleItemPrefix = 161676},
-    { spell = 277187, type = "buff", unit = "player", titleItemPrefix = 161675},-- on use
-  }
-}
-
-templates.items[6] = {
-  title = L["PVP Trinkets (CD)"],
-  args = {
-    { spell = 161474, type = "item"}, --on use
-    { spell = 161674, type = "item"}, --on use
-    { spell = 161675, type = "item"}, --on use
-  }
-}
-
--- Meta template for Power triggers
-local function createSimplePowerTemplate(powertype)
-  local power = {
-    title = powerTypes[powertype].name,
-    icon = powerTypes[powertype].icon,
-    type = "power",
-    powertype = powertype,
-  }
-  return power;
-end
-
-------------------------------
--- PVP Talents
--------------------------------
-
-for _, class in pairs(templates.class) do
-  for _, spec in pairs(class) do
-  -- TODO 8.0
-  -- tinsert(spec[5].args, { spell = 195710, type = "ability"}) -- Honorable Medallion
-  -- tinsert(spec[5].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
-  end
-end
-
-for _, class in pairs(templates.class) do
-  for _, spec in pairs(class) do
-    spec[4] = {
-      title = L["General Azerite Traits"],
-      args = CopyTable(generalAzeriteTraits),
-      icon = 2065624
-    }
-    spec[6] = {
-      title = L["PvP Azerite Traits"],
-      args = CopyTable(pvpAzeriteTraits),
-      icon = 236396
-    }
-  end
-end
-
--------------------------------
--- Hardcoded trigger templates
--------------------------------
-
--- Warrior
-for i = 1, 3 do
-  tinsert(templates.class.WARRIOR[i][8].args, createSimplePowerTemplate(1));
-end
-
--- Paladin
-tinsert(templates.class.PALADIN[3][8].args, createSimplePowerTemplate(9));
-for i = 1, 3 do
-  tinsert(templates.class.PALADIN[i][8].args, createSimplePowerTemplate(0));
-end
-
--- Hunter
-for i = 1, 3 do
-  tinsert(templates.class.HUNTER[i][8].args, createSimplePowerTemplate(2));
-end
-
--- Rogue
-for i = 1, 3 do
-  tinsert(templates.class.ROGUE[i][8].args, createSimplePowerTemplate(3));
-  tinsert(templates.class.ROGUE[i][8].args, createSimplePowerTemplate(4));
-end
-
--- Priest
-for i = 1, 3 do
-  tinsert(templates.class.PRIEST[i][8].args, createSimplePowerTemplate(0));
-end
-tinsert(templates.class.PRIEST[3][8].args, createSimplePowerTemplate(13));
-
--- Shaman
-for i = 1, 3 do
-  tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(0));
-end
-for i = 1, 2 do
-  tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(11));
-end
-
--- Mage
-tinsert(templates.class.MAGE[1][8].args, createSimplePowerTemplate(16));
-for i = 1, 3 do
-  tinsert(templates.class.MAGE[i][8].args, createSimplePowerTemplate(0));
-end
-
--- Warlock
-for i = 1, 3 do
-  tinsert(templates.class.WARLOCK[i][8].args, createSimplePowerTemplate(0));
-  tinsert(templates.class.WARLOCK[i][8].args, createSimplePowerTemplate(7));
-end
-
--- Monk
-tinsert(templates.class.MONK[1][8].args, createSimplePowerTemplate(3));
-tinsert(templates.class.MONK[2][8].args, createSimplePowerTemplate(0));
-tinsert(templates.class.MONK[3][8].args, createSimplePowerTemplate(3));
-tinsert(templates.class.MONK[3][8].args, createSimplePowerTemplate(12));
-
-templates.class.MONK[1][9] = {
-  title = L["Ability Charges"],
-  args = {
-    { spell = 115072, type = "ability", charges = true}, -- Expel Harm
-  },
-  icon = 627486,
-};
-
-templates.class.MONK[2][9] = {
-  title = L["Ability Charges"],
-  args = {
-  },
-  icon = 1242282,
-};
-
-templates.class.MONK[3][9] = {
-  title = L["Ability Charges"],
-  args = {
-  },
-  icon = 606543,
-};
-
--- Druid
-for i = 1, 4 do
-  -- Shapeshift Form
-  tinsert(templates.class.DRUID[i][8].args, {
-    title = L["Shapeshift Form"],
-    icon = 132276,
-    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
-  });
-end
-
--- Astral Power
-tinsert(templates.class.DRUID[1][8].args, createSimplePowerTemplate(8));
-
-for i = 1, 4 do
-  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(0)); -- Mana
-  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(1)); -- Rage
-  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(3)); -- Energy
-  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(4)); -- Combo Points
-end
-
--- Efflorescence aka Mushroom
-tinsert(templates.class.DRUID[4][3].args,  {spell = 145205, type = "totem"});
-
--- Demon Hunter
-tinsert(templates.class.DEMONHUNTER[1][8].args, createSimplePowerTemplate(17));
-tinsert(templates.class.DEMONHUNTER[2][8].args, createSimplePowerTemplate(18));
-
--- Death Knight
-for i = 1, 3 do
-  tinsert(templates.class.DEATHKNIGHT[i][8].args, createSimplePowerTemplate(6));
-
-  tinsert(templates.class.DEATHKNIGHT[i][8].args, {
-    title = L["Runes"],
-    icon = "Interface\\Icons\\spell_deathknight_frozenruneweapon",
-    triggers = {[1] = { trigger = { type = "status", event = "Death Knight Rune", unevent = "auto"}}}
-  });
-end
-
-------------------------------
--- Hardcoded race templates
--------------------------------
-
--- Every Man for Himself
-tinsert(templates.race.Human, { spell = 59752, type = "ability" });
--- Stoneform
-tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Dwarf, { spell = 65116, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Shadow Meld
-tinsert(templates.race.NightElf, { spell = 58984, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.NightElf, { spell = 58984, type = "buff", titleSuffix = L["Buff"]});
--- Escape Artist
-tinsert(templates.race.Gnome, { spell = 20589, type = "ability" });
--- Gift of the Naaru
-tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Dark Flight
-tinsert(templates.race.Worgen, { spell = 68992, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Worgen, { spell = 68992, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Quaking Palm
-tinsert(templates.race.Pandaren, { spell = 107079, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Pandaren, { spell = 107079, type = "buff", titleSuffix = L["buff"]});
--- Blood Fury
-tinsert(templates.race.Orc, { spell = 20572, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Orc, { spell = 20572, type = "buff", unit = "player", titleSuffix = L["buff"]});
---Cannibalize
-tinsert(templates.race.Scourge, { spell = 20577, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Scourge, { spell = 20578, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- War Stomp
-tinsert(templates.race.Tauren, { spell = 20549, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Tauren, { spell = 20549, type = "buff", titleSuffix = L["buff"]});
---Beserking
-tinsert(templates.race.Troll, { spell = 26297, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Troll, { spell = 26297, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Arcane Torment
-tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.BloodElf, { spell = 69179, type = "buff", titleSuffix = L["buff"]});
--- Pack Hobgoblin
-tinsert(templates.race.Goblin, { spell = 69046, type = "ability" });
--- Rocket Barrage
-tinsert(templates.race.Goblin, { spell = 69041, type = "ability" });
-
--- Arcane Pulse
-tinsert(templates.race.Nightborne, { spell = 260364, type = "ability" });
--- Cantrips
-tinsert(templates.race.Nightborne, { spell = 255661, type = "ability" });
--- Light's Judgment
-tinsert(templates.race.LightforgedDraenei, { spell = 255647, type = "ability" });
--- Forge of Light
-tinsert(templates.race.LightforgedDraenei, { spell = 259930, type = "ability" });
--- Bull Rush
-tinsert(templates.race.HighmountainTauren, { spell = 255654, type = "ability" });
---Spatial Rift
-tinsert(templates.race.VoidElf, { spell = 256948, type = "ability" });
-
 ------------------------------
 -- Helper code for options
 -------------------------------
@@ -4316,50 +3996,10 @@ local function handleItem(item)
         waitingForItemInfo = true;
       end
     end
-    if (item.type ~= "item") then
-      local spell = Spell:CreateFromSpellID(item.spell);
-      if (not spell:IsSpellEmpty()) then
-        spell:ContinueOnSpellLoad(function()
-          item.description = GetSpellDescription(spell:GetSpellID());
-        end);
-      end
-      item.description = GetSpellDescription(item.spell);
-    end
-  end
-  if (item.talent) then
-    item.load = item.load or {};
-    if type(item.talent) == "table" then
-      item.load.talent = { multi = {} };
-      for _,v in pairs(item.talent) do
-        item.load.talent.multi[v] = true;
-      end
-      item.load.use_talent = false;
-    else
-      item.load.talent = {
-        single = item.talent;
-        multi = {};
-      };
-      item.load.use_talent = true;
-    end
-  end
-  if (item.pvptalent) then
-    item.load = item.load or {};
-    item.load.use_pvptalent = true;
-    item.load.pvptalent = {
-      single = item.pvptalent;
-      multi = {};
-    }
   end
   return waitingForItemInfo;
 end
 
-local function addLoadCondition(item, loadCondition)
-  -- No need to deep copy here, templates are read-only
-  item.load = item.load or {};
-  for k, v in pairs(loadCondition) do
-    item.load[k] = v;
-  end
-end
 
 local delayedEnrichDatabase = false;
 local itemInfoReceived = CreateFrame("frame")
@@ -4379,25 +4019,7 @@ local function enrichDatabase()
           use_class = true, class = { single = className, multi = {} },
           use_spec = true, spec = { single = specIndex, multi = {}}
         };
-        for _, item in pairs(section.args) do
-          if(handleItem(item)) then
-            waitingForItemInfo = true;
-          end
-          addLoadCondition(item, loadCondition);
-        end
       end
-    end
-  end
-
-  for raceName, race in pairs(templates.race) do
-    local loadCondition = {
-      use_race = true, race = { single = raceName, multi = {} }
-    };
-    for _, item in pairs(race) do
-      if (handleItem(item)) then
-        waitingForItemInfo = true;
-      end
-      addLoadCondition(item, loadCondition);
     end
   end
 
@@ -4422,27 +4044,6 @@ local function enrichDatabase()
   end
 end
 
-local function fixupIcons()
-  for className, class in pairs(templates.class) do
-    for specIndex, spec in pairs(class) do
-      for _, section in pairs(spec) do
-        for _, item in pairs(section.args) do
-          if (item.spell and (not item.type ~= "item")) then
-            local icon = select(3, GetSpellInfo(item.spell));
-            if (icon) then
-              item.icon = icon;
-            end
-          end
-        end
-      end
-    end
-  end
-end
-
-local fixupIconsFrame = CreateFrame("frame");
-fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
-fixupIconsFrame:SetScript("OnEvent", fixupIcons);
-
 enrichDatabase();
 
 itemInfoReceived:SetScript("OnEvent", function()
@@ -4454,19 +4055,3 @@ itemInfoReceived:SetScript("OnEvent", function()
     end)
   end
 end);
-
-
--- Enrich Display templates with default values
--- for regionType, regionData in pairs(WeakAuras.regionOptions) do
-  -- if (regionData.templates) then
-    -- for _, item in ipairs(regionData.templates) do
-      -- for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
-        -- if (item.data[k] == nil) then
-          -- item.data[k] = v;
-        -- end
-      -- end
-    -- end
-  -- end
--- end
-
--- WeakAuras.triggerTemplates = templates;

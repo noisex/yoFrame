@@ -24,9 +24,10 @@ local function UpdateAura( self, unit)
 		end
 		
 		if yo.fliger.pDebuffEnable then
-			if unit == self.pDebuff.unit and RaidDebuffList[spellID] then
-				if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, true, "BOTTOM")end
-				UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index)
+			if unit == self.pDebuff.unit and not blackSpells[spellID] then
+			--if unit == self.pDebuff.unit and RaidDebuffList[spellID] then
+				if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM")end
+				UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
 				fligerPD = fligerPD + 1						
 			end
 		end
@@ -188,6 +189,10 @@ local function CheckTemplates( myClass, mySpec)
 
 	for i,v in pairs( templates.class[myClass][mySpec][5]["args"]) do
 		PlayerBuffWhiteList[GetSpellInfo( v.spell)] = true
+	end
+
+	for i,v in pairs( PlayerBuffWhiteListAll) do
+		PlayerBuffWhiteList[GetSpellInfo( i)] = v
 	end
 
 	--PlayerCDWhiteList = {}

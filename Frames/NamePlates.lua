@@ -97,7 +97,8 @@ local function BuffOnEnter( f)
 		GameTooltip:SetOwner( f, "ANCHOR_NONE", 0, 0)
 		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	end	
-	GameTooltip:SetUnitAura( f:GetParent():GetParent().displayedUnit, f.id, f.filter)
+	GameTooltip:SetUnitAura( f.unit, f.id, f.filter)
+		--( f:GetParent():GetParent().displayedUnit, f.id, f.filter)
 	GameTooltip:Show()
 end
 
@@ -168,12 +169,13 @@ function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 end
 
 
-function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index)
+function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 	button.icon:SetTexture(icon)
 	button.expirationTime = expirationTime
 	button.duration = duration
 	button.spellID = spellID
 	button.filter = filter
+	button.unit = unit
 	button.id = index
 	button.tick = 1
 
@@ -259,7 +261,7 @@ local function UpdateBuffs(unitFrame)
 
 				if not unitFrame.debuffIcons[idebuff] then	unitFrame.debuffIcons[idebuff] = CreateAuraIcon(unitFrame.debuffIcons, idebuff)	end
 										
-				UpdateAuraIcon(unitFrame.debuffIcons[idebuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index)
+				UpdateAuraIcon(unitFrame.debuffIcons[idebuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 				idebuff = idebuff + 1
 			
 			elseif spellID == 277242 then showGuune = true
@@ -272,7 +274,7 @@ local function UpdateBuffs(unitFrame)
 
 						if not unitFrame.disIcons[iDisp] then unitFrame.disIcons[iDisp] = CreateAuraIcon(unitFrame.disIcons, iDisp)end			
 						
-						UpdateAuraIcon(unitFrame.disIcons[iDisp], filter, icon, count, debuffType, duration, expirationTime, spellID, index)
+						UpdateAuraIcon(unitFrame.disIcons[iDisp], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 						iDisp = iDisp + 1		
 					end
 				end
@@ -284,7 +286,7 @@ local function UpdateBuffs(unitFrame)
 
 						if not unitFrame.buffIcons[ibuff] then unitFrame.buffIcons[ibuff] = CreateAuraIcon(unitFrame.buffIcons, ibuff) end
 				
-						UpdateAuraIcon(unitFrame.buffIcons[ibuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index)
+						UpdateAuraIcon(unitFrame.buffIcons[ibuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 						ibuff = ibuff + 1
 					end
 				end

@@ -33,9 +33,8 @@ raid_spells = {
     [171140] = 24, --Shadow Lock
 	[171138] = 24, --Shadow Lock if used from pet bar
 	[119910] = 24, -- warloc new pet 
-
 	--[30283]	= 60, -- warlocl stun
-	
+	--[20608] = 1800, -- реинкорнация шаман
 	
 	--[46968] =  40, -- shockwave
 --[[	-- Battle rez

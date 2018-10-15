@@ -410,3 +410,5 @@ end
 local cta = CreateFrame("Frame", "yo_CTAFrame", UIParent)
 cta:RegisterEvent("PLAYER_ENTERING_WORLD")
 cta:SetScript("OnEvent", OnEvent)
+
+--self:RegisterEvent("LFG_ROLE_UPDATE");

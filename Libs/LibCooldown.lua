@@ -69,45 +69,9 @@ end
 local numTabs, totalspellnum
 
 local function parsespellbook(spellbook)
-	-- local mySpec = GetSpecialization()
-	-- spells = {}
-	--for i,v in pairs( templates.class[myClass][mySpec][3]["args"]) do
-	--	local starttime, duration = GetSpellCooldown( GetSpellInfo( v.spell))
-		
-	--	--print(starttime, v.spell, GetSpellInfo( v.spell))
-
-	--	if starttime then
-	--		--spells[v.spell] = true
-	--		spells[GetSpellInfo( v.spell)] = true
-	--		--print( GetSpellInfo( v.spell))
-	--	end	
-	--end
-	--i = 1
-	--while true do
-	--	skilltype, id = GetSpellBookItemInfo(i, "spell ")
-	--	if not skilltype then break end
-
-	--	name = GetSpellInfo( id)
-	--	print(  GetSpellTabInfo(2))
-	--	print(name, skilltype, id, IsPassiveSpell(i, "spell "))
-	----	if name and skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL and not IsPassiveSpell(i, spellbook) then
-	----		spells[id] = true
-	----	end
-	--	i = i + 1
-	----	if i >= totalspellnum then i = 1 break end
-		
-	----	if (id == 88625 or id == 88625 or id == 88625) and (skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL) then
-	----	   spells[88625] = true
-	----	   spells[88684] = true
-	----	   spells[88685] = true
-	----	end
-	--end
 	spells = {}
-
 	local _, _, _, max1 = GetSpellTabInfo(1) 
 	local _, _, _, max2 = GetSpellTabInfo(2)
-	--local _, _, _, max3 = GetSpellTabInfo(3)
-	--local _, _, _, max3 = GetSpellTabInfo(4)
 	local max = max1 + max2 + 3
 
 	for i = 1, max do
@@ -132,7 +96,7 @@ function addon:LEARNED_SPELL_IN_TAB()
 end
 
 function addon:SPELL_UPDATE_COOLDOWN()
-	now = GetTime()
+	local now = GetTime()
 
 	for id in next, spells do
 		local starttime, duration, enabled = GetSpellCooldown(id)
@@ -155,8 +119,9 @@ function addon:SPELL_UPDATE_COOLDOWN()
 	end
 end
 
-function addon:BAG_UPDATE_COOLDOWN()
+function addon:BAG_UPDATE_COOLDOWN( slot)
 	for id  in next, items do
+		--print("Bags: ", id, slot)
 		local starttime, duration, enabled = GetItemCooldown(id)
 		if enabled == 1 and duration > 10 then
 			start(id, starttime, duration, "item", duration)
@@ -185,8 +150,10 @@ end
 hooksecurefunc("UseInventoryItem", function(slot)
 	local link = GetInventoryItemLink("player", slot) or ""
 	local id = string.match(link, ":(%w+).*|h%[(.+)%]|h")
+	id = tonumber( id)
 	if id and not items[id] then
 		items[id] = true
+		--print("Invent: ", id)
 	end
 end)
 
@@ -196,6 +163,7 @@ hooksecurefunc("UseContainerItem", function(bag, slot)
 	id = tonumber( id)
 	if id and not items[id] then
 		items[id] = true
+		--print("Contain: ", id)
 	end
 end)
 

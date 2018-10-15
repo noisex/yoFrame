@@ -440,9 +440,9 @@ function InitOptions()
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {	
-					desc01			= {	order = 1, type = "description", name = "|cffff0000Страшно экспериментальное дело, на свой страх и вкус...", width = "full"},
-					enable 			= { width = "full",	order = 2, type = "toggle",	name = "Включить филгер", disabled = false, },
-
+					enable 			= { width = "full",	order = 1, type = "toggle",	name = "Включить филгер", disabled = false, },
+					desc01			= {	order = 2, type = "description", name = "|cffff0000Страшно экспериментальное дело, на свой страх и вкус...", width = "full"},
+					
 					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
 					pBuffEnable		= {	order = 30, type = "toggle",name = "Player Buff", 		width = 0.75},
@@ -461,7 +461,7 @@ function InitOptions()
 					pDebuffDirect	= {	order = 44, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
 					pProcDirect		= {	order = 54, type = "select",name = "Рост:", values = {["RIGHT"] = "Вправо", ["LEFT"] = "Влево", ["UP"] = "Вверх", ["DOWN"] = "Вниз"}, width = 0.7},
 
-					checkBags		= {	order = 55, type = "toggle",name = "Проверять кулдауны предметов, включая сумку) - ТУПИТ!!!", width = "full"},
+					checkBags		= {	order = 55, type = "toggle",name = "Проверять кулдауны предметов с панелей команд - тупит на потах!!!", width = "full"},
 					pCDTimer		= {	order = 99,	type = "range", name = "Ограничение времени",	min = 0, max = 50, step = 1, width = 1, desc = "Меньше этого времени кулдауны не показываются"},
 				},	
 			},
