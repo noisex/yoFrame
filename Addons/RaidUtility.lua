@@ -145,35 +145,43 @@ local function doRUP()
 		if i == 11 then
 			sB[i]:SetBackdropColor( 0, 0.76 ,1, 1)
 			sB[i]:SetPoint("TOPRIGHT", RUPanel, "TOPRIGHT", -3, -3)
-			sB[i]:SetAttribute("macrotext", [[/wm 1]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 1
+/wm 1]])
 		elseif i == 12 then
 			sB[i]:SetBackdropColor( 0.58, 0.86, 0.49,1)
 			sB[i]:SetPoint( "RIGHT", sB[11], "LEFT", -2, 0)
-			sB[i]:SetAttribute("macrotext", [[/wm 2]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 2
+/wm 2]])
 		elseif i == 13 then
 			sB[i]:SetBackdropColor( 0.6, 0.47, 0.85,1) 
 			sB[i]:SetPoint( "TOP", sB[11], "BOTTOM", 0, -2)
-			sB[i]:SetAttribute("macrotext", [[/wm 3]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 3
+/wm 3]])
 		elseif i == 14 then
 			sB[i]:SetBackdropColor( 0.77, 0.12 , 0.23, 1)  
 			sB[i]:SetPoint( "TOP", sB[12], "BOTTOM", 0, -2)
-			sB[i]:SetAttribute("macrotext", [[/wm 4]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 4
+/wm 4]])
 		elseif i == 15 then
 			sB[i]:SetPoint( "TOP", sB[13], "BOTTOM", 0, -2) 
 			sB[i]:SetBackdropColor( 1, 0.91, 0.2, 1)
-			sB[i]:SetAttribute("macrotext", [[/wm 5]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 5
+/wm 5]])
 		elseif i == 16 then
 			sB[i]:SetPoint( "TOP", sB[14], "BOTTOM", 0, -2) 
 			sB[i]:SetBackdropColor(  1, 0.49, 0.04, 1)
-			sB[i]:SetAttribute("macrotext", [[/wm 6]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 6
+/wm 6]])
 		elseif i == 17 then
 			sB[i]:SetPoint( "TOP", sB[15], "BOTTOM", 0, -2) 
 			sB[i]:SetBackdropColor( 0.8, 0.87, 0.9, 1)
-			sB[i]:SetAttribute("macrotext", [[/wm 7]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 7
+/wm 7]])
 		elseif i == 18 then
 			sB[i]:SetPoint( "TOP", sB[16], "BOTTOM", 0, -2)
 			sB[i]:SetBackdropColor( 0.29, 0.29, 0.29, 1) 
-			sB[i]:SetAttribute("macrotext", [[/wm 8]])
+			sB[i]:SetAttribute("macrotext", [[/cwm 8
+/wm 8]])
 		elseif i == 19 then
 			sB[i]:SetPoint( "TOPRIGHT", sB[17], "BOTTOMRIGHT", 0, -2)
 			sB[i]:SetWidth( 50)
