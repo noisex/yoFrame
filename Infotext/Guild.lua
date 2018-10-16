@@ -53,7 +53,7 @@ Stat:SetFrameLevel(3)
 local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 Text:SetFont( font, fontsize, "OVERLAY")
 Text:SetHeight(LeftInfoPanel:GetHeight())
-Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 175, 0)
+Text:SetPoint("RIGHT", LeftInfoPanel, "RIGHT", -150, 0)
 Stat:SetAllPoints(Text)
 Stat:SetParent(Text:GetParent())
 LeftInfoPanel.guildText = Text

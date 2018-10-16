@@ -375,7 +375,7 @@ local Shared = function(self, unit)
 	elseif unit == "raid" and yo.Raid.aurasRaid then
 		DeadText:SetFont( font, fontsize - 2)
 
-		local size = 15	--self:GetHeight() * 0.7
+		local size = 20	--self:GetHeight() * 0.7
 		
 		local Buffs = CreateFrame('Frame', nil, self)
 		--Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -20, 0)

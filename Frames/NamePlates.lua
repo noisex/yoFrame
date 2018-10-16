@@ -179,15 +179,9 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 	button.id = index
 	button.tick = 1
 
-	--if --filter == "HELPFUL" and debuffType ~= nil then
-
 	local color = DebuffTypeColor[debuffType] or DebuffTypeColor.none
 	button.shadow:SetBackdropBorderColor(color.r, color.g, color.b)	
-		--button:SetSize(auras_size * 1.3, auras_size * 1.3)
-	--else
-	--	button.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09)	
-		--button:SetSize(auras_size, auras_size)
-	--end	
+
 	if count and count > 1 then
 		button.count:SetText(count)
 	else
@@ -211,6 +205,7 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 		else
 			button.timer:SetTextColor( 1, 1, 0)
 		end
+
 		if est > 0.1 then
 			button.timer:SetText( formatTime( est))
 		else
@@ -238,7 +233,6 @@ local function UpdateBuffs(unitFrame)
 	local unit, showGuune = unitFrame.displayedUnit, nil
 	local isPlayer = UnitIsPlayer( unit)
 	local idebuff, ibuff, iDisp = 1, 1, 1
-	--local fligetTD = 1
 
 	for	j = 1, 2 do
 		filter = auraFilter[j]
@@ -247,13 +241,6 @@ local function UpdateBuffs(unitFrame)
 			local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, _, _, _, namepmateshowall = UnitAura(unit, index, filter)
 			if not name then break end
 			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
-
-			--if UnitIsUnit("target", unit) and caster == "player" and nameplateShowPersonal then
-			--	if not tDebuffIcons[fligetTD] then tDebuffIcons[fligetTD] = CreateAuraIcon( tDebuffIcons, fligetTD)end			
-						
-			--	UpdateAuraIcon( tDebuffIcons[fligetTD], filter, icon, count, debuffType, duration, expirationTime, spellID, index)
-			--	fligetTD = fligetTD + 1						
-			--end
 
 			if ( caster == "player" and DebuffWhiteList[name]) or namepmateshowall then --or isStealable then
 				
@@ -299,8 +286,6 @@ local function UpdateBuffs(unitFrame)
 	for index = idebuff, #unitFrame.debuffIcons do unitFrame.debuffIcons[index]:Hide() end
 	for index = ibuff,   #unitFrame.buffIcons   do unitFrame.buffIcons[index]:Hide()   end
 	for index = iDisp,   #unitFrame.disIcons    do unitFrame.disIcons[index]:Hide()   end
-	
-	--for index = fligetTD,#tDebuffIcons		    do tDebuffIcons[index]:Hide()   end
 	
 	ShowGuune( unitFrame, showGuune)
 end

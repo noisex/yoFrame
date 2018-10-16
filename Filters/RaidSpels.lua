@@ -28,15 +28,17 @@ raid_spells = {
     [96231]  = 15, --Rebuke
     [15487]  = 45, --Silence
     [1766]   = 15, --Kick
-    [57994] = 12, --Wind Shear
-    [6552]  = 15, --Pummel
+    [57994]  = 12, --Wind Shear
+    [6552]   = 15, --Pummel
     [171140] = 24, --Shadow Lock
 	[171138] = 24, --Shadow Lock if used from pet bar
 	[119910] = 24, -- warloc new pet 
-	--[30283]	= 60, -- warlocl stun
-	--[20608] = 1800, -- реинкорнация шаман
 	
-	--[46968] =  40, -- shockwave
+	--[46968]  = 40, -- shockwave
+	--[30283]	 = 60, -- warlocl stun
+	--[28730]  = 90, -- волшебный поток
+	--[20608] = 1800, -- реинкорнация шаман
+
 --[[	-- Battle rez
 	[20484] = 600,	-- Rebirth
 	[61999] = 600,	-- Raise Ally

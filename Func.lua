@@ -224,17 +224,59 @@ end
 function formatTime( s)
 	local day, hour, minute = 86400, 3600, 60
 	if s >= day then
-		return format("%dd", floor(s/day + 0.5)), s % day
+		return format("%dд", floor(s/day + 0.5)), s % day
 	elseif s >= hour then
-		return format("%dh", floor(s/hour + 0.5)), s % hour
+		return format("%dч", floor(s/hour + 0.5)), s % hour
 	elseif s >= minute then
-		return format("%dm", floor(s/minute + 0.5)), s % minute
+		return format("%dм", floor(s/minute + 0.5)), s % minute
 	elseif s >= minute / 12 then
 		return floor(s + 0.5), (s * 100 - floor(s * 100))/100
 	end
 	return format("%.1f", s), (s * 100 - floor(s * 100))/100
 end
 
+function formatTimeSec( s)
+	local day, hour, minute = 86400, 3600, 60
+	if s == -1 then
+		return "< 1 минуты", s
+	elseif s >= day then
+		return format("%dд", floor(s/day + 0.5)), s % day
+	elseif s >= hour then
+		return format("%dч", floor(s/hour + 0.5)), s % hour
+	elseif s >= minute then
+		return format("%dм", floor(s/minute + 0.5)), s % minute
+	--elseif s >= minute / 12 then
+	--	return floor(s + 0.5), (s * 100 - floor(s * 100))/100
+	end
+	return format("%dc", s), (s * 100 - floor(s * 100))/100
+end
+
+function SecondsToClock(seconds)
+  local seconds = tonumber(seconds)
+
+  if seconds <= 0 then
+    --return "00:00:00";
+    return "< 1 минуты";
+  else
+    hours = format("%02.f", math.floor(seconds/3600))
+    mins =  format("%02.f", math.floor(seconds/60 - (hours*60)));
+    secs =  format("%02.f", math.floor(seconds - hours*3600 - mins *60));
+
+    if hours == "00" then
+    	hours = ""
+    else
+    	hours = hours.."ч "
+    end
+
+    if mins == "00" then
+    	mins = ""
+    else
+    	mins = mins.."м "
+    end
+
+    return hours..mins..secs .. "c"
+  end
+end
 
 function commav(amount)
   local formatted = amount
@@ -435,5 +477,6 @@ strip.model = DressUpModel
 function GameTooltipOnLeave()
 	GameTooltip:Hide() 
 end
+
 
 

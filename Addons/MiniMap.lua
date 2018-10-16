@@ -86,7 +86,7 @@ local function MiniInit()
 	--Zone Text
 	MinimapZoneTextButton:ClearAllPoints()
 	MinimapZoneTextButton:SetFrameStrata("MEDIUM")
-	MinimapZoneTextButton:SetPoint("TOP", Minimap, "TOP", 0, 5)
+	MinimapZoneTextButton:SetPoint("TOP", Minimap, "TOP", 0, 2)
 	--MinimapZoneTextButton:SetAlpha(0.7)
 	
 	--dungeon info

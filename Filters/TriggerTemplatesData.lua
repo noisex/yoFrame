@@ -97,9 +97,8 @@ PlayerBuffWhiteListAll= {
   [1706]    = true, -- Levitate
   [35079]   = true, -- Misdirection
   [102351]  = true, -- Cenarion Ward
+  [114018]  = true, -- Shroud of Concealment
 }
-
-
 
 generalAzeriteTraits = {
   { spell = 279928, type = "buff", unit = "player"}, --Earthlink

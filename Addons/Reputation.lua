@@ -8,7 +8,7 @@ local function SetTooltip(self)
 	local unit = "player"
 	
 	GameTooltip:ClearLines()
-	GameTooltip:SetOwner(self, 'ANCHOR_CURSOR', 0, -5)
+	GameTooltip:SetOwner(self, self.tooltipAnchor) -- 'ANCHOR_CURSOR', 0, -5)
 	
 	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo()
 	
@@ -24,14 +24,16 @@ local function SetTooltip(self)
 	end
 	
 	if name then
-		GameTooltip:AddLine(name)
-		GameTooltip:AddLine(' ')
-
 		local friendID, friendTextLevel, _
 		if factionID then friendID, _, _, _, _, _, friendTextLevel = GetFriendshipReputation(factionID) end
-
-		GameTooltip:AddDoubleLine(STANDING..':', (friendID and friendTextLevel) or _G['FACTION_STANDING_LABEL'..reaction], 1, 1, 1)
-		GameTooltip:AddDoubleLine(REPUTATION..':', format('%d / %d (%d%%)', value - min, max - min, (value - min) / ((max - min == 0) and max or (max - min)) * 100), 1, 1, 1)
+		local backupColor = FACTION_BAR_COLORS[1]
+		local color = FACTION_BAR_COLORS[reaction] or backupColor
+		
+		GameTooltip:AddLine(name)
+		GameTooltip:AddDoubleLine(STANDING..':', (friendID and friendTextLevel) or _G['FACTION_STANDING_LABEL'..reaction], 1, 1, 1, color.r, color.g, color.b)
+		GameTooltip:AddLine(' ')
+		GameTooltip:AddDoubleLine('Осталось:', format('%s (%d%%)', nums( max - value), (max - value) / ((max - min == 0) and max or (max - min)) * 100), 1, 1, 1, 0, 1, 0)
+		GameTooltip:AddDoubleLine(REPUTATION..':', format('%s / %s', nums( value - min), nums( max - min)), 1, 1, 1, 0, 1, 1)
 	end 
 	
 	GameTooltip:Show()

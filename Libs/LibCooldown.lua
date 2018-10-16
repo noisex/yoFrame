@@ -78,7 +78,8 @@ local function parsespellbook(spellbook)
    		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
    		--print(i, spellName, spellID)
    		local isPassive = IsPassiveSpell( i, "spell");
-   
+   		--local cd = GetSpellBaseCooldown( spellID)
+
    		if spellID and not isPassive and spellID ~= 125439 and spellID ~= 83958 then
    			spells[spellID] = true
    	    	--print( i, spellName, spellID)
@@ -99,7 +100,12 @@ function addon:SPELL_UPDATE_COOLDOWN()
 	local now = GetTime()
 
 	for id in next, spells do
-		local starttime, duration, enabled = GetSpellCooldown(id)
+		local enabled = 1
+		local charge, maxCharge, starttime, duration = GetSpellCharges( id)
+		
+		if not charge or charge > 0 then -- or charge == maxCharge then --  then
+			starttime, duration, enabled = GetSpellCooldown(id)
+		end
 		
 		if starttime == nil then
 			watched[id] = nil

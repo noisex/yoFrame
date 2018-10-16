@@ -91,7 +91,7 @@ end
 
 local CreateBar = function()
 	local bar = CreateFrame("Statusbar", nil, UIParent)
-	bar:SetFrameStrata("HIGH")
+	--bar:SetFrameStrata("MEDIUM")
 	bar:SetSize(186 + 28, 20)
 	
 	bar:SetStatusBarTexture( texture)

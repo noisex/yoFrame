@@ -1,7 +1,7 @@
 --------------------------------------------------------------------
 -- DURABILITY
 --------------------------------------------------------------------
-localSlots = {
+local localSlots = {
 	[1] = {1, "Head", 1000},
 	[2] = {3, "Shoulder", 1000},
 	[3] = {5, "Chest", 1000},
@@ -31,7 +31,7 @@ local function OnEvent(self, event)
 		Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 		Text:SetFont( font, fontsize, "OVERLAY")
 		Text:SetHeight(LeftInfoPanel:GetHeight())
-		Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 80, 0)
+		Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 120, 0)
 		LeftInfoPanel.durText = Text
 	end
 	
@@ -51,7 +51,13 @@ local function OnEvent(self, event)
 	table.sort(localSlots, function(a, b) return a[3] < b[3] end)
 
 	if Total > 0 then
-		Text:SetText("Armor: ".. myColorStr ..floor(localSlots[1][3]*100).."%" )
+		if localSlots[1][3] <= 0.1 then
+			Text:SetText("Armor: ".. "|cffff0000" ..floor(localSlots[1][3]*100).."%" )
+		elseif localSlots[1][3] <= 0.3 then
+			Text:SetText("Armor: ".. "|cffff1000" ..floor(localSlots[1][3]*100).."%" )
+		else
+			Text:SetText("Armor: ".. myColorStr ..floor(localSlots[1][3]*100).."%" )
+		end
 	else
 		Text:SetText("Armor: ".. myColorStr..": 100%")
 	end

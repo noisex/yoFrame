@@ -32,7 +32,7 @@ Stat:SetFrameLevel(3)
 local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 Text:SetFont( font, fontsize, "OVERLAY")
 Text:SetHeight(LeftInfoPanel:GetHeight())
-Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 250, 0)
+Text:SetPoint("RIGHT", LeftInfoPanel, "RIGHT", -30, 0)
 Stat:SetParent(Text:GetParent())
 LeftInfoPanel.friendText = Text
 

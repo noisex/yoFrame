@@ -1,5 +1,5 @@
 yo_CTA = {}
-local tRole, hRole, dRole, heroic, lfr, timer
+local tRole, hRole, dRole, timer
 
 local function isRaidFinderDungeonDisplayable(id)
 	local name, typeID, subtypeID, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(id);
@@ -7,12 +7,21 @@ local function isRaidFinderDungeonDisplayable(id)
 	return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel;
 end
 
+local function GetLFGQuiueCheck( self, id, modeLFG)
+	local id = id or self.id
+	local modeLFG = modeFLFG or self.mode
+	local cate = GetLFGCategoryForID( id);
+	local mode, subMode = GetLFGMode( cate or modeLFG, id)
+	
+	if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
+		self.name:SetTextColor(0, 1, 0, 1)
+	else
+		self.name:SetTextColor( .7, .7, .7, 1)
+	end	
+	return mode, ( cate or modeLFG)
+end
+
 local function CreateLFRFrame( self)
-
-	heroic	= yo.CTA.heroic
-	lfr 		= yo.CTA.lfr
-	timer 	= yo.CTA.timer
-
 	local frame = CreateFrame("Frame", nil, self)
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
@@ -118,7 +127,7 @@ local function CreateLFRFrame( self)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
 		GameTooltip:SetText("Звук")
-		GameTooltip:AddLine("Отключить звук до следующего входа в игру или смены персонажа", 1, 1, 1, 1)
+		GameTooltip:AddLine("Отключить звук до следующего входа в игру.", 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
 
@@ -144,7 +153,7 @@ local function CreateLFRFrame( self)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
 		GameTooltip:SetText("Закрыть")
-		GameTooltip:AddLine("Закрыть СТА до следующего входа в игру или смены персонажа", 1, 1, 1, 1)
+		GameTooltip:AddLine("Закрыть СТА до следующего входа в игру.\n(Повторно можно запустить из меню настроек СТА)", 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
 
@@ -166,16 +175,24 @@ local function CreateLFRFrame( self)
 	self.LFRFrame = frame
 end
 
+
 local function CreateLFRStrings( parent, id)
 	local button = CreateFrame("Button", nil, parent)
 	button:SetFrameLevel(parent:GetFrameLevel() + 10)
-	button:SetWidth( parent:GetWidth() - 10)
+	button:SetWidth( parent:GetWidth() - 4)
 	button:SetHeight( 20)
 	button:EnableMouse(true)
+	button:SetBackdrop({
+		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
+        edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1, 
+		insets = {left = 1, right = 1, top = 1, bottom = 1} 
+	})
+	button:SetBackdropBorderColor(.15,.15,.15, 0)
+	button:SetBackdropColor(.15,.15,.15, 0)
 
 	button.icon = button:CreateTexture(nil, "OVERLAY")
-	button.icon:SetPoint( "TOPLEFT", button, "TOPLEFT")
-	button.icon:SetSize(35, 20)
+	button.icon:SetPoint( "LEFT", button, "LEFT", 2, 0)
+	button.icon:SetSize(35, 18)
 
 	button.name = button:CreateFontString(nil, "OVERLAY")
 	button.name:SetFont( font, fontsize, "THINOUTLINE")
@@ -184,7 +201,7 @@ local function CreateLFRStrings( parent, id)
 	button.name:SetTextColor( .7, .7, .7, 1)
 
 	button.tank = button:CreateTexture(nil, "OVERLAY")
-	button.tank:SetPoint( "RIGHT", button, "RIGHT", -30, 0)
+	button.tank:SetPoint( "RIGHT", button, "RIGHT", -32, 0)
 	button.tank:SetSize(20, 20)
 	button.tank:SetTexture([[Interface\AddOns\yoFrame\Media\tank]])
 
@@ -197,6 +214,12 @@ local function CreateLFRStrings( parent, id)
 	button.dd:SetPoint( "LEFT", button.heal, "RIGHT", 0, 0)
 	button.dd:SetSize(14, 14)
 	button.dd:SetTexture([[Interface\AddOns\yoFrame\Media\dps]])
+
+	if id == 1 then
+		button:SetPoint( "TOPLEFT", parent, "TOPLEFT", 2, -15)
+	else
+		button:SetPoint( "TOPLEFT", parent[id-1], "BOTTOMLEFT", 0, -2)
+	end
 
 	button:SetScript("OnClick", function(self, ...)
 		local cate = GetLFGCategoryForID( self.id);
@@ -218,28 +241,57 @@ local function CreateLFRStrings( parent, id)
 
 	button:SetScript("OnEnter", function(self, ...)
 		self.name:SetTextColor( 1, .75, 0, 1)
+		self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b, .9)
+
+		GameTooltip:ClearLines()
+		GameTooltip:SetOwner(self, self) --"ANCHOR_TOPLEFT", 0, 0)
+		GameTooltip:SetText( GetLFGDungeonInfo(self.id))
+		
+		mode = GetLFGQuiueCheck( self)
+		if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
+			GameTooltip:AddLine( "Состояние очереди: " .. mode)
+			GameTooltip:AddLine( " ")
+			for index = 1,  GetLFGDungeonNumEncounters( self.id) do
+				local bossName, _, isKilled = GetLFGDungeonEncounterInfo( self.id, index)
+				GameTooltip:AddLine((isKilled and "|cffff0000" or "|cff00991a") .. bossName)			
+			end
+
+			for i=1, NUM_LE_LFG_CATEGORYS do
+				local hasdata,  _, tankNeeds, healerNeeds, dpsNeeds, totalTanks, totalHealers, totalDPS, _, _, _, averageWait, tankWait, healerWait, damageWait, myWait, queuedTime, activeID = GetLFGQueueStats( i)
+				if hasdata then
+					GameTooltip:AddLine( "Ищем...")
+					GameTooltip:AddLine( "|cffff0000Tанков: " .. tankNeeds .. " |cff00ff00 Хилов: " .. healerNeeds .. " |cff00ffff Дамагеров: " .. dpsNeeds)
+					local timeWaite =  SecondsToClock( GetTime() - queuedTime)
+					GameTooltip:AddLine( "В очереди: " .. timeWaite)
+					GameTooltip:AddLine( "Время ожидания: " ..  SecondsToClock( myWait) .. " (" ..  SecondsToClock( averageWait) .. ")")
+					
+				end
+			end
+			
+			--GameTooltip:AddLine(" TW " .. tankWait .. " HW " ..  myWait .. " DDW " ..  damageWait)
+			--local inParty, joined, queued, noPartialClear, achievements, lfgComment, slotCount, _, leader, tank, healer, dps = GetLFGInfoServer( self.mode, 1);
+			--print( inParty, joined, queued, noPartialClear, achievements, lfgComment, slotCount, _, leader, tank, healer, dps )
+			--local hasData,  leaderNeeds, tankNeeds, healerNeeds, dpsNeeds, totalTanks, totalHealers, totalDPS, instanceType, instanceSubType, instanceName, averageWait, tankWait, healerWait, damageWait, myWait, queuedTime = GetLFGQueueStats( self.mode, 1);
+			--print(hasData,  leaderNeeds, tankNeeds, healerNeeds, dpsNeeds, totalTanks, totalHealers, totalDPS, instanceType, instanceSubType, instanceName, averageWait, tankWait, healerWait, damageWait, myWait, queuedTime)
+			--1732 true 0 1 5 18 2 5 18 1 3 Алый спуск 630 -1 1335 627 627 136715.846 1732			
+		end
+		
+		GameTooltip:Show()
 	end)
 
 	button:SetScript("OnLeave", function(self, ...)
-		local cate = GetLFGCategoryForID( self.id);
-		local mode, subMode = GetLFGMode( cate or self.mode, self.id)
-
-		if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
-			self.name:SetTextColor(0, 1, 0, 1)
-		else
-			self.name:SetTextColor( .7, .7, .7, 1)
-		end		
-	end)
-
-	if id == 1 then
-		button:SetPoint( "TOPLEFT", parent, "TOPLEFT", 5, -15)
-	else
-		button:SetPoint( "TOPLEFT", parent[id-1], "BOTTOMLEFT", 0, -2)
-	end
+		self:SetBackdropBorderColor(.15,.15,.15, 0)
+		GetLFGQuiueCheck( self)
+		GameTooltip:Hide()
+	end)	
 
 	return button
 end
 
+--hooksecurefunc( "QueueStatusEntry_SetUpLFG", function(self, ...)
+--	print( "we eher")
+--	print(entry, category, queuedList)
+--end) 
 
 function UpdateStrings(self)
 	if not yo.CTA.expand then
@@ -257,6 +309,7 @@ function UpdateStrings(self)
 				self.LFRFrame[id].heal:SetShown( v.heal)
 				self.LFRFrame[id].dd:SetShown( v.dd)
 
+				GetLFGQuiueCheck( self.LFRFrame[id])
 				self.LFRFrame[id]:Show()
 				id = id + 1
 			end
@@ -266,19 +319,8 @@ function UpdateStrings(self)
 	else
 		self.LFRFrame:SetHeight( 14)
 		for index = 1, #self.LFRFrame do self.LFRFrame[index]:Hide() end
-	end
+	end	
 end
-
-
---yo_CTA[1671] = {}
---yo_CTA[1671]["name"] = "Хероический рендом в погоне за сумкой"
---yo_CTA[1671]["mode"] = LE_LFG_CATEGORY_LFD
---yo_CTA[1671]["tank"] = true
---yo_CTA[1671]["heal"] = false
---yo_CTA[1671]["dd"]   = true
---yo_CTA[1671]["icon"] = 252188
-
-
 
 local function CheckLFR( self, ...)
 	--if yo.CTA.hide == true then return end
@@ -305,7 +347,7 @@ local function CheckLFR( self, ...)
    	local index = 0
    	local id = 1671
 
-   	if heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then		
+   	if yo.CTA.heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then		
 		local checkTank, checkHeal, checkDD	
 		if not yo_CTA[id] then yo_CTA[id] = {} end
 		yo_CTA[id]["name"] = "Хероический рендом"
@@ -339,7 +381,7 @@ local function CheckLFR( self, ...)
 		yo_CTA[id]["tank"], yo_CTA[id]["heal"], yo_CTA[id]["dd"] = checkTank, checkHeal, checkDD
    	end
 
-	if lfr and not yo.CTA.hide then
+	if yo.CTA.lfr and not yo.CTA.hide then
 		for i = 1, GetNumRFDungeons() do
 			local id, name,  _, _, level = GetRFDungeonInfo(i)
 			if isRaidFinderDungeonDisplayable(id) then
@@ -393,17 +435,26 @@ local function CheckLFR( self, ...)
 	UpdateStrings( self)
 	--end
 
-	C_Timer.After( timer, function(self) CheckLFR( _G["yo_CTAFrame"]) end)
+	timer = C_Timer.NewTimer( yo.CTA.timer, function(self) CheckLFR( _G["yo_CTAFrame"]) end)
 end
 
-
+function resetCTAtimer( self)
+	if timer then
+		timer:Cancel()
+	end
+	CheckLFR( _G["yo_CTAFrame"])
+end
 
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if not yo.CTA.enable then return end
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		self:RegisterEvent("LFG_ROLE_UPDATE");
+		self:RegisterEvent("LFG_UPDATE");
 		CreateLFRFrame( self)
-		CheckLFR( self)      	
+		resetCTAtimer()
+	elseif event == "LFG_ROLE_UPDATE" or event == "LFG_UPDATE" then
+		resetCTAtimer()
 	end
 end
 
@@ -411,4 +462,25 @@ local cta = CreateFrame("Frame", "yo_CTAFrame", UIParent)
 cta:RegisterEvent("PLAYER_ENTERING_WORLD")
 cta:SetScript("OnEvent", OnEvent)
 
---self:RegisterEvent("LFG_ROLE_UPDATE");
+--local nextMaintenance
+--local function GetNextMaintenance()
+--	if not nextMaintenance then
+--		local region = GetCVar('portal')
+--		local maintenanceWeekDay = (region == 'us' and 3)
+--			or (region == 'eu' and 4)
+--			or (region == 'kr' and 5)
+--			or (region == 'tw' and 6)
+--			or 7
+--		local dailyReset = time() + GetQuestResetTime()
+--		local resetWeekday = tonumber(date('%w', dailyReset)) + 1
+--		nextMaintenance = dailyReset + ((maintenanceWeekDay - resetWeekday)%7)*24*60*60
+--		-- print('next weekly reset', date('%d.%m.%Y', nextMaintenance))
+--	end
+--	return nextMaintenance
+--end
+-- ...
+--_, numDefeated = GetLFGDungeonNumEncounters(dungeonID)
+--if numDefeated ~= 0 then
+--	dungeonReset = GetNextMaintenance() - time()
+--	dungeons[dungeonName.." (LFR)|"..dungeonID] = format("%s|%s|%s|%s", dungeonReset, time(), numDefeated, available)
+--end

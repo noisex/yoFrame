@@ -187,7 +187,7 @@ function InitOptions()
 							MMColectIcons 	= {	order = 5,  type = "toggle",	name = "Собирать и убирать иконки с миникарты", width = "full"},
 							MiniMapCoord 	= {	order = 10, type = "toggle",	name = "Координаты на миникарте", 	desc = "Отображать коорднаты игрока на миникате.",},
 							MiniMapHideText = {	order = 15, type = "toggle",	name = "Прятать название локации", 	desc = "Показывать название текущейлокации только при наведении мышкой на миникарту.",},
-							MMCoordColor 	= {	order = 20, type = "color",	name = "Цвет текста координат", 	desc = "Цвет текста коорднат игрока на миникате.",
+							MMCoordColor 	= {	order = 20, type = "color",	name = "Цвет текста координат", 		desc = "Цвет текста коорднат игрока на миникате.",
 								disabled = function() return not yo.Addons.MiniMapCoord; end,
 								get = function(info, r, g, b)  return strsplit( ",", yo.Addons.MMCoordColor)	end,				
 								set = function(info, r, g, b) Setlers( "Addons#MMCoordColor", strjoin(",", r, g, b)) end,},
@@ -297,11 +297,11 @@ function InitOptions()
 					enable 			= {	order = 1,  type = "toggle", name = "Включить рэйдфрэймы", width = "full", disabled = false,},					
 					classcolor 		= {	order = 10, type = "select", name = "Раскрасить фрейм игрока в:",	values = {[1] = "Цвет класса", [2] = "Цвет здоровья (градиент)", [3] = "В темненькое"},},
 					groupingOrder 	= {	order = 15, type = "select", name = "Сортировать:",	values = {["ID"] = "По ID игрока", ["GROUP"] = "По группам", ["TDH"] = "Танк Дамагер Хил", ["THD"] = "Танк Хил Дамагер"},},
-					width 			= {	order = 20,	type = "range", name = "Ширина рэйдового",	min = 60, max = 150, step = 1,},
-					height 			= {	order = 25,	type = "range", name = "Высота рейдового",	min = 20, max = 80, step = 1,},
-					numgroups 		= {	order = 30,	type = "range", name = "Количество колонок (групп)", min = 4, 	max = 8, step = 1,},	
-					spaicing 		= {	order = 35,	type = "range", name = "Растояние между фрэймами",	min = 0, 	max = 20, step = 1,},	
-					partyScale 		= {	order = 40,	type = "range", name = "Фрейм группы больше в:",	min = 1, 	max = 3, step = .1,},		
+					width 			= {	order = 20,	type = "range",  name = "Ширина рэйдового",	min = 60, max = 150, step = 1,},
+					height 			= {	order = 25,	type = "range",  name = "Высота рейдового",	min = 20, max = 80, step = 1,},
+					numgroups 		= {	order = 30,	type = "range",  name = "Количество колонок (групп)", min = 4, 	max = 8, step = 1,},	
+					spaicing 		= {	order = 35,	type = "range",  name = "Растояние между фрэймами",	min = 0, 	max = 20, step = 1,},	
+					partyScale 		= {	order = 40,	type = "range",  name = "Фрейм группы больше в:",	min = 1, 	max = 3, step = .1,},		
 					showHPValue 	= {	order = 45, type = "select", name = "Здоровье игрока:",	values = {["[DDG]"] = "Не показывать", ["[per]"] = "Только процент", ["[hp]"] = "ХП | Процент"},},
 					--spaicer1 = {		order = 45, type = "description",	name = "",	},
 					manacolorClass 	= {	order = 50, type = "toggle", name = "Манабар в цвет класса",},	
@@ -471,7 +471,7 @@ function InitOptions()
 				get = function(info) return yo[info[1]][info[#info]] end ,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
-				args = {	
+				args = {
 					enable 	= { width = "full",	order = 1, type = "toggle",	name = "Включить СТА ( поиск мега-сумки с барахлом)", disabled = false, },
 
 					set00	= {	order = 02, type = "description", name = " ", width = "full"},
@@ -495,8 +495,11 @@ function InitOptions()
 					timer	= {	order = 40,	type = "range", name = "Частота проверки (сек)",	min = 1, max = 600, step = 1, width = 1},
 					sound	= {	order = 42, type = "select",name = "Звук оповещения:", dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
 					expand	= {	order = 44, type = "toggle",name = "Запускать свернутым",},
-					nosound	= {	order = 45, type = "toggle",name = "Запускать без звука",},					
-				},	
+					nosound	= {	order = 45, type = "toggle",name = "Запускать без звука",},	
+
+					launch 	= {	order = 99, type = "execute",name = "Запустить заново", disabled = function( info) return ( not yo[info[1]].enable or not yo[info[1]].hide); end,
+						func = function() yo.CTA.hide = false resetCTAtimer() end,},	
+				},
 			},
 
 			ResetConfig = {

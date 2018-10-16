@@ -5,7 +5,6 @@ local PlayerProcWhiteList = {}
 local PlayerCDWhiteList = {}
 
 local function UpdateAura( self, unit)
-	--local auraFilter = { "HARMFUL", "HELPFUL"}
 	local fligerTD, fligerTB, fligerPB, fligerPD, fligerProc = 1, 1, 1, 1, 1
 
 	-- DEBUFFS
