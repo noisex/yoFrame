@@ -496,7 +496,7 @@ function InitOptions()
 					sound	= {	order = 42, type = "select",name = "Звук оповещения:", dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
 					expand	= {	order = 44, type = "toggle",name = "Запускать свернутым",},
 					nosound	= {	order = 45, type = "toggle",name = "Запускать без звука",},	
-
+					hideLast= {	order = 47, type = "toggle",name = "Не показывать, если убит ласт босс", width = "full"},	
 					launch 	= {	order = 99, type = "execute",name = "Запустить заново", disabled = function( info) return ( not yo[info[1]].enable or not yo[info[1]].hide); end,
 						func = function() yo.CTA.hide = false resetCTAtimer() end,},	
 				},

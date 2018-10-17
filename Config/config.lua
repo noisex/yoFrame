@@ -282,7 +282,8 @@ yo["CTA"] = {
 	["hide"]	= false,
 	["nosound"]	= false,
 	["expand"]	= false,
-	["sound"]	= "Murloc"
+	["sound"]	= "Murloc",
+	["hideLast"]= false,
 }
 
 local logan = CreateFrame("Frame")

@@ -254,27 +254,20 @@ end
 function SecondsToClock(seconds)
   local seconds = tonumber(seconds)
 
-  if seconds <= 0 then
-    --return "00:00:00";
+  if seconds <= 0 then   --return "00:00:00";
     return "< 1 минуты";
   else
-    hours = format("%02.f", math.floor(seconds/3600))
-    mins =  format("%02.f", math.floor(seconds/60 - (hours*60)));
-    secs =  format("%02.f", math.floor(seconds - hours*3600 - mins *60));
+    hours = format("%d", math.floor(seconds/3600))
+    mins =  format("%d", math.floor(seconds/60 - (hours*60)));
+    secs =  format("%d", math.floor(seconds - hours*3600 - mins *60));
 
-    if hours == "00" then
-    	hours = ""
-    else
-    	hours = hours.."ч "
-    end
-
-    if mins == "00" then
-    	mins = ""
-    else
-    	mins = mins.."м "
-    end
-
-    return hours..mins..secs .. "c"
+	--hours = format("%02.f", math.floor(seconds/3600))
+    --mins =  format("%02.f", math.floor(seconds/60 - (hours*60)));
+    --secs =  format("%02.f", math.floor(seconds - hours*3600 - mins *60));
+    hours = hours == "0" and "" or ( hours .. "ч ")
+	mins = mins == "0" and "" or ( mins .. "м ")
+	secs = secs == "0" and "" or ( secs .. "c")
+    return hours..mins..secs
   end
 end
 

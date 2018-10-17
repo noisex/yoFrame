@@ -198,7 +198,8 @@ local function OnEvent( f, event, unit, ...)
 		f.inCombat = false
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		f.inCombat = true
-	elseif event == "ENCOUNTER_END" then		
+	elseif event == "ENCOUNTER_END" then
+		stopCast( f, unit, ...)
 		if f.cfgname == "BCB" then			
 			f.unit = "target"
 		end

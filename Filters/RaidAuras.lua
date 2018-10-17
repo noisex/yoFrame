@@ -264,4 +264,6 @@ RaidDebuffList = {
 	[263235] = true, -- Blood Feast
 	[270287] = true, -- Blighted Ground
 	[270447] = true,  -- growing-corruption
+
+	[160029] = true, -- Воскрешение
 }
