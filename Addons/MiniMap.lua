@@ -1,10 +1,12 @@
+local addonName, ns = ...
+local L = ns.L
 
-local A, L = ...
+--local A, L = ...
 
-L.addonName       = A
-L.dragFrames      = {}
-L.addonColor      = "00FFAA00"
-L.addonShortcut   = "rmm"
+--L.addonName       = A
+--L.dragFrames      = {}
+--L.addonColor      = "00FFAA00"
+--L.addonShortcut   = "rmm"
 
 local cfg = {
   	scale = 1,
@@ -61,7 +63,7 @@ local function MiniInit()
 	MinimapCluster:SetPoint(unpack(cfg.point))
 
 	--Minimap
-	local mediapath = "interface\\addons\\"..A.."\\Media\\"
+	local mediapath = "interface\\addons\\yoFrame\\Media\\"
 	--Minimap:SetMaskTexture(mediapath.."mask2")
 	Minimap:ClearAllPoints()
 	Minimap:SetPoint("CENTER")
@@ -270,9 +272,6 @@ coordFrame:SetScript("OnUpdate",coordUpdate)
 
 
 local int = 0
-L_MAP_CURSOR = "Курсор: "
-L_MAP_BOUNDS = "Вне карты!"
-
 local coords = CreateFrame("Frame", "CoordsFrame", WorldMapFrame)
 coords:SetFrameLevel(90)
 coords.PlayerText = coords:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -283,7 +282,7 @@ coords.PlayerText:SetText(UnitName("player")..": 0,0")
 coords.MouseText = coords:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 coords.MouseText:SetJustifyH("LEFT")
 coords.MouseText:SetPoint("BOTTOMLEFT", coords.PlayerText, "TOPLEFT", 0, 5)
-coords.MouseText:SetText(L_MAP_CURSOR..": 0,0")
+coords.MouseText:SetText(L["MAP_CURSOR"]..": 0,0")
 
 WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
 	int = int + 1
@@ -303,7 +302,7 @@ WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
 		if x ~= 0 and y ~= 0 then
 			coords.PlayerText:SetText(UnitName("player")..": "..x..","..y)
 		else
-			coords.PlayerText:SetText(UnitName("player")..": ".."|cffff0000"..L_MAP_BOUNDS.."|r")
+			coords.PlayerText:SetText(UnitName("player")..": ".."|cffff0000"..L["MAP_BOUNDS"].."|r")
 			--coords.PlayerText:SetText("")
 		end
 
@@ -318,9 +317,9 @@ WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
 		if adjustedX >= 0 and adjustedY >= 0 and adjustedX <= 1 and adjustedY <= 1 then
 			adjustedX = math.floor(100 * adjustedX)
 			adjustedY = math.floor(100 * adjustedY)
-			coords.MouseText:SetText( L_MAP_CURSOR..adjustedX..","..adjustedY)
+			coords.MouseText:SetText( L["MAP_CURSOR"]..adjustedX..","..adjustedY)
 		else
-			--coords.MouseText:SetText( L_MAP_CURSOR.."|cffff0000"..L_MAP_BOUNDS.."|r")
+			--coords.MouseText:SetText( L_MAP_CURSOR.."|cffff0000"..L["MAP_BOUNDS"].."|r")
 			coords.MouseText:SetText( "")
 		end
 		int = 0

@@ -60,7 +60,7 @@ local function enableRC( f, unit, name)
 		
 		f:SetScript("OnEnter", function(this)
 			GameTooltip:SetOwner(this, "ANCHOR_BOTTOMLEFT", 0, 0)
-			GameTooltip:SetText("Разбудить коричневого", 0, 1, 0)
+			GameTooltip:SetText( READY_CHECK, 0, 1, 0)
 			GameTooltip:Show()
 		end)
 		f:SetScript("OnLeave", GameTooltipOnLeave)
@@ -133,9 +133,9 @@ function hp_update( f, unit)
 	if not UnitIsConnected( unit) then
 		thText = "Off"
 	elseif UnitIsDead( unit) then
-        thText = "Трупик"
+        thText = "Dead"
 	elseif UnitIsGhost( unit) then
-        thText = "Каспер"
+        thText = "Ghost"
 	else
 		if unit == "targettarget" or unit == "pet"  or unit == "focus" then
 			--thText = math.ceil( UnitHealth( unit) / UnitHealthMax( unit) * 100) .. "%"
@@ -356,8 +356,8 @@ local function makeInspect( uf, unit, name)
 
 		f:SetScript("OnEnter", function(this)
 			GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
-			GameTooltip:SetText("Инфокнопочка", 1, 1, 1)
-			GameTooltip:AddLine(" <Left-click> Инспектик\n<Right-click> Раздевалочка", 0, 1, 0)
+			--GameTooltip:SetText("Info Button", 1, 1, 1)
+			GameTooltip:AddLine(" <Left-click> " ..INSPECT .." \n<Right-click> " .. DRESSUP_FRAME, 0, 1, 0)
 			GameTooltip:Show()
 		end)
 		

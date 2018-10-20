@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 ----------------------------------------------------------------------------------------
 --	Based on oUF_ArtifactPower(by Rainrider)
 ----------------------------------------------------------------------------------------
@@ -6,11 +9,11 @@ local function ShowTooltip(element)
 	element:SetAlpha(element.onAlpha)
 	GameTooltip:SetOwner(element)
 	GameTooltip:SetText(element.name, HIGHLIGHT_FONT_COLOR:GetRGB())
-	GameTooltip:AddLine("Уровень: " .. element.traitsLearned)
+	GameTooltip:AddLine( L["LEVEL"]  .. element.traitsLearned)
 	--GameTooltip:AddLine("")
-	GameTooltip:AddLine( "|cff00ff96Осталось: " .. commav(element.powerForNextTrait - element.power) .. "|r\n\n|cff0090ffСобрал: " .. commav( element.totalPower) .. "|r\n|c008250ffВсего: " .. commav( element.powerForNextTrait) .. "|r")
+	GameTooltip:AddLine( "|cff00ff96" .. L["Left"] .. commav(element.powerForNextTrait - element.power) .. "|r\n\n|cff0090ff" .. L["Collected"] .. commav( element.totalPower) .. "|r\n|c008250ff" .. L["Totals"] .. commav( element.powerForNextTrait) .. "|r")
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine( "Можно изучить |cff00ff96" .. element.numTraitsLearnable .. "|r особенностей.")
+	GameTooltip:AddLine( L["CANLEARN"] .." |cff00ff96" .. element.numTraitsLearnable .. "|r "..L["features"])
 	GameTooltip:Show()
 end
 
@@ -100,7 +103,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	if not yo["Addons"].ArtifactPowerbar then return end
+	if not yo.Addons.ArtifactPowerbar then return end
 	
 	ArtifactPower( plFrame)
 	EnableAP( plFrame)

@@ -367,7 +367,7 @@ local function doRUP()
  
 	local LeaveButtonText = LeaveButton:CreateFontString(nil,"OVERLAY",LeaveButton)
 	LeaveButtonText:SetFont( font,fontsize,"OUTLINE")
-	LeaveButtonText:SetText( "Ливнуть")
+	LeaveButtonText:SetText( PARTY_LEAVE)
 	LeaveButtonText:SetPoint("CENTER")
 	LeaveButtonText:SetJustifyH("CENTER")
 	
@@ -392,7 +392,7 @@ local function doRUP()
  
 	local DisbandButtonText = DisbandButton:CreateFontString(nil,"OVERLAY",DisbandButton)
 	DisbandButtonText:SetFont( font,fontsize,"OUTLINE")
-	DisbandButtonText:SetText( "Разогнать всех")
+	DisbandButtonText:SetText( TEAM_DISBAND)
 	DisbandButtonText:SetTextColor( 1, 0.5, 0)
 	DisbandButtonText:SetPoint("CENTER")
 	DisbandButtonText:SetJustifyH("CENTER")

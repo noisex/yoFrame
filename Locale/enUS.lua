@@ -97,7 +97,7 @@ L["iconSize"]= "Icon size"
 L["iconoffsetX"]= "Offset icon X"
 L["iconoffsetY"]= "Offset icon Y"
 L["iconincombat"]= "Show icon in combat"
-L["classcolor"]= "Castbar in class color"
+L["CBclasscolor"]= "Castbar in class color"
 
 L["treatborder"]= "Interrupt color border"
 L["DESC_BCB_TREAT"] = "Castbar border in cast-interapt possible color"
@@ -250,6 +250,93 @@ L["scaledPercent"] 	= "scaledPercent ( 0 - 100%)"
 L["rawPercent"] 	= "rawPercent ( 0 - 255%)"
 L["UND_CURCOR"] 	= "Under cursor"
 L["IN_CONNER"] 	= "In the default corner"
+
+---------------------------------------------
+
+L["SCIP_VIDEO"] = "|cffffff00Autoquest: |cff00ffff I missed the awesome video, what a pity ... |r"
+L["DONT_SHIFT"] = "|cff666666 (do not forget about Shift when contacting NPC)|r"
+L["MAKE_CHOICE"] = "|cffff0000Select the award yourself somehow...|r"
+
+L["Y_STATUS"] = "Your Status:"
+L["Y_STATUS_DC"] = "Your Status: Not Finished"
+L["Y_STATUS_C"] = "Your Status: Completed"
+
+L["CLASS"] = "Class"
+L["BAG"] = "Bag"
+L["BANK"] = "Bank"
+L["TOTAL"] = "Total"
+
+L["Expand"] 	= "Expand"
+L["Collapse"] 	= "Collapse"
+L["Sound"] 	= "Sound"
+L["Sound_OFF"] 	= "Disable sound until the next entry into the game."
+L["Close"] 	= "Close"
+L["Close_OFF"] 	= "Close CTA until the next entry into the game.\n(You can re-run from the addon settings menu)"
+L["Role"] = "Role:"
+L["Not enough"] 	= "Not enough:"
+L["In the queue"] 	= "In the queue:"
+L["Waiting"] 	= "Waiting:"
+L["HRENDOM"] 	= "Heroic random"
+
+L["MAP_CURSOR"] = "Cursor: "
+L["MAP_BOUNDS"] = "Outside the map!"
+
+L["Bagzy and banksy"]	= "Bagzy and banksy"
+L["Busy"] 	= "Busy"
+L["Free"] 	= "Free"
+L["Friends"] 	= "Friends"
+
+L["For the game"] 	= "For the game: "
+L["Received"] 	= "Received:"
+L["Spent"] 	= "Spent:"
+L["Loss"] 	= "Loss:"
+L["Profit"] 	= "Profit:"
+L["General information"] 	= "General information: "
+
+L["Fog of war"] = "Fog of war"
+
+L["JUNKSOLD"] 	= "Junk sold, earned:"
+L["REMONT"] 	= "Repaired:"
+L["NOMONEY"] 	= "|cffff0000Where is the money, Lebowski ?! There is no money even for repairs! You have played all my life !!!!!"
+
+L["Left"] 	= "Left:"
+L["Collected"] 	= "Gathered:"
+L["Rest"] 	= "Rest:"
+L["Totals"] 	= "Total:"
+
+L["LEVEL"] 	= "Level: "
+L["CANLEARN"] 	= "Can learn"
+L["features"] 	= "features."
+
+L["instead"] 	= " instead "
+L["put on"] 	= "|cffff0000After combat wear it: |r"
+L["weared"] 	= "|cffff0000Weared: |r"
+L["can change"] 	= "|cffff0000Can change: |r"
+						
+L["Money"] 	= "Money"
+L["Skill Points"] 	= "Skill Points"
+L["Expirience"] 	= "Expirience"
+L["Currency"] 	= "Currency"
+L["Reward"] 	= "Reward"
+L["Choice"] 	= "Choice"
+L["Better than"] 	= "Better than"
+L["Quest"] 	= "Quest"
+L["Your choice"] 	= "Your choice"
+
+L["Spend"] 	= "Spend"
+L["myself"] 	= "myself! :)"
+L["Pay"] 	= "Pay"
+L["this huckster"] 	= "this huckster"
+L["Give it to him"] 	= "Give it to him"
+L["on"] 	= " on "
+L["from"] 	= "from"
+
+
+
+
+
+
+
 
 ns.L = L
 end

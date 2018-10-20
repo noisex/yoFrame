@@ -19,11 +19,11 @@ function formatMoney(money)
 	local silver = mod(floor(math.abs(money) / 100), 100)
 	local copper = mod(floor(math.abs(money)), 100)
 	if gold ~= 0 then
-		return format("%s".."|cffffd700г|r".." %s".."|cffc7c7cfс|r".." %s".."|cffeda55fз|r", gold, silver, copper)
+		return format("%s".."|cffffd700g|r".." %s".."|cffc7c7cfs|r".." %s".."|cffeda55fc|r", gold, silver, copper)
 	elseif silver ~= 0 then
-		return format("%s".."|cffc7c7cfс|r".." %s".."|cffeda55fз|r", silver, copper)
+		return format("%s".."|cffc7c7cfs|r".." %s".."|cffeda55fc|r", silver, copper)
 	else
-		return format("%s".."|cffeda55fз|r", copper)
+		return format("%s".."|cffeda55fc|r", copper)
 	end
 end
 
@@ -224,11 +224,11 @@ end
 function formatTime( s)
 	local day, hour, minute = 86400, 3600, 60
 	if s >= day then
-		return format("%dд", floor(s/day + 0.5)), s % day
+		return format("%dd", floor(s/day + 0.5)), s % day
 	elseif s >= hour then
-		return format("%dч", floor(s/hour + 0.5)), s % hour
+		return format("%dh", floor(s/hour + 0.5)), s % hour
 	elseif s >= minute then
-		return format("%dм", floor(s/minute + 0.5)), s % minute
+		return format("%dm", floor(s/minute + 0.5)), s % minute
 	elseif s >= minute / 12 then
 		return floor(s + 0.5), (s * 100 - floor(s * 100))/100
 	end
@@ -238,24 +238,24 @@ end
 function formatTimeSec( s)
 	local day, hour, minute = 86400, 3600, 60
 	if s == -1 then
-		return "< 1 минуты", s
+		return LESS_THAN_ONE_MINUTE, s
 	elseif s >= day then
-		return format("%dд", floor(s/day + 0.5)), s % day
+		return format("%dd", floor(s/day + 0.5)), s % day
 	elseif s >= hour then
-		return format("%dч", floor(s/hour + 0.5)), s % hour
+		return format("%dh", floor(s/hour + 0.5)), s % hour
 	elseif s >= minute then
-		return format("%dм", floor(s/minute + 0.5)), s % minute
+		return format("%dm", floor(s/minute + 0.5)), s % minute
 	--elseif s >= minute / 12 then
 	--	return floor(s + 0.5), (s * 100 - floor(s * 100))/100
 	end
-	return format("%dc", s), (s * 100 - floor(s * 100))/100
+	return format("%ds", s), (s * 100 - floor(s * 100))/100
 end
 
 function SecondsToClock(seconds)
   local seconds = tonumber(seconds)
 
   if seconds <= 0 then   --return "00:00:00";
-    return "< 1 минуты";
+    return LESS_THAN_ONE_MINUTE;
   else
     hours = format("%d", math.floor(seconds/3600))
     mins =  format("%d", math.floor(seconds/60 - (hours*60)));
@@ -264,9 +264,9 @@ function SecondsToClock(seconds)
 	--hours = format("%02.f", math.floor(seconds/3600))
     --mins =  format("%02.f", math.floor(seconds/60 - (hours*60)));
     --secs =  format("%02.f", math.floor(seconds - hours*3600 - mins *60));
-    hours = hours == "0" and "" or ( hours .. "ч ")
-	mins = mins == "0" and "" or ( mins .. "м ")
-	secs = secs == "0" and "" or ( secs .. "c")
+    hours = hours == "0" and "" or ( hours .. "h ")
+	mins = mins == "0" and "" or ( mins .. "m ")
+	secs = secs == "0" and "" or ( secs .. "s")
     return hours..mins..secs
   end
 end
@@ -453,7 +453,7 @@ end
 --	Undress button 
 ----------------------------------------------------------------------------------------
 local strip = CreateFrame("Button", "DressUpFrameUndressButton", DressUpFrame, "UIPanelButtonTemplate")
-strip:SetText( "Раздевашка")
+strip:SetText( "DRESS OFF")
 strip:SetHeight(22)
 strip:SetWidth(strip:GetTextWidth() + 40)
 strip:SetPoint("RIGHT", DressUpFrameResetButton, "LEFT", -40, 0)

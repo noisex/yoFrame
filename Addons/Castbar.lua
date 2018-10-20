@@ -223,7 +223,7 @@ local function OnEvent( f, event, unit, ...)
 		stopCast( f, unit, ...)
 	elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
 		f:SetStatusBarColor( 1, 0, 0, 1)
-		--f.nameText:SetText( f.nameText:GetText() .. "|cffff0000 (прервано)")
+		--f.nameText:SetText( f.nameText:GetText() .. "|cffff0000 (interupt)")
 		--f.bgcBar:SetVertexColor( 1, 0, 0, 1)
 		--stopCast( f, unit, ...)
 		--print(GetTime(), f, unit, ...)

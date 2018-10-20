@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 local Stat = CreateFrame("Frame")
 Stat:EnableMouse(true)
 Stat:SetFrameStrata("BACKGROUND")
@@ -11,7 +14,7 @@ local OldMoney	= 0
 local function FormatTooltipMoney(money)
 	local gold, silver, copper = abs(money / 10000), abs(mod(money / 100, 100)), abs(mod(money, 100))
 	local cash = ""
-	cash = format("%s".."|cffffd700г|r".." %d".."|cffc7c7cfс|r".." %d".."|cffeda55fз|r", commav( floor( gold)), silver, copper)		
+	cash = format("%s".."|cffffd700g|r".." %d".."|cffc7c7cfs|r".." %d".."|cffeda55fc|r", commav( floor( gold)), silver, copper)		
 	return cash
 end	
 
@@ -39,7 +42,7 @@ local function newConfigData()
 end
 
 local function OnEvent(self, event)
-	if not yo["Addons"].InfoPanels then
+	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnMouseDown", nil)
 		self:SetScript("OnEnter", nil)
@@ -86,17 +89,17 @@ local function OnEvent(self, event)
 			GameTooltip:ClearAllPoints()
 			GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
 			GameTooltip:ClearLines()
-			GameTooltip:AddLine("За игру: ")
-			GameTooltip:AddDoubleLine("Получено:", formatMoney(Profit), 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine("Потрачено:", formatMoney(Spent), 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddLine(L["For the game"])
+			GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine(L["Spent"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
 			if Profit < Spent then
-				GameTooltip:AddDoubleLine("Убыль:", formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
+				GameTooltip:AddDoubleLine(L["Loss"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
 			elseif (Profit-Spent)>0 then
-				GameTooltip:AddDoubleLine("Прибыль:", formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
+				GameTooltip:AddDoubleLine(L["Profit"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
 			end				
 			GameTooltip:AddLine' '								
 			
-			GameTooltip:AddLine("Общая информация: ")
+			GameTooltip:AddLine(L["General information"])
 			--GameTooltip:AddDoubleLine( UnitName("player"), FormatTooltipMoney( NewMoney), 1, 1, 1, 1, 1, 1)
 			
 			for k, v in pairs ( yo_AllData) do
@@ -117,7 +120,7 @@ local function OnEvent(self, event)
 				end
 			end
 			GameTooltip:AddLine' '	
-			GameTooltip:AddDoubleLine( "Всего:", FormatTooltipMoney( totalMoney), 1, 1, 0, 0, 1, 0)
+			GameTooltip:AddDoubleLine( L["TOTAL"], FormatTooltipMoney( totalMoney), 1, 1, 0, 0, 1, 0)
 			
 			for i = 1, MAX_WATCHED_TOKENS do
 				local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
@@ -148,7 +151,7 @@ Stat:SetScript("OnMouseDown", function( self)
 	if IsShiftKeyDown() then
 		yo_AllData = nil
 		newConfigData()
-		print("|cffff0000Все данные сброшены.|r")
+		print("|cffff0000All data reset.|r")
 	else
 		if isOpen then
 			OpenAllBags()		

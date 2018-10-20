@@ -5,12 +5,10 @@ local requestKeystoneCheck, currentWeek
 
 yo_OldKey = nil
 
-local scheduleTitle = "Расписание"
-local scheduleWeeks = { "Эта неделя", "Следующая","Через одну", "Через две" }
-local scheduleMissingKeystone = "Требуется 7+ Ключ в сумке для получения текущих аффиксов"
+local scheduleTitle = "Schedule"
 
-MYTHIC_PLUS_INCOMPLETE_WEEKLY_KEYSTONE = "Дуй в ключи и не ной!!!"
-MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE   = "Просто иди в ключи,\n там все поймешь..."
+MYTHIC_PLUS_INCOMPLETE_WEEKLY_KEYSTONE = "Don`t cry, go fight!!!"
+MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE   = "Just go to keys,\nthere you will understand everything ..."
 
 local mythicRewards = {
 --	{"Level","End","Weekly","Azer Weekly"},
@@ -26,7 +24,6 @@ local mythicRewards = {
 }
 
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
--- уСИЛИВАЮЩИЙ = 7
 
 local affixWeeksLegs = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
     [1] = {[1]=6,[2]=3,[3]=9,[4]=16},
@@ -292,7 +289,7 @@ local function Blizzard_ChallengesUI( self)
 	local title2 = frame:CreateFontString(nil, "ARTWORK")--, "GameFontNormalMed1")
 	title2:SetFont( font, fontsize + 3, "OUTLINE")
 	title2:SetTextColor(1, 0.75, 0, 1)
-	title2:SetText( "Награды")
+	title2:SetText( "Rewards")
 	title2:SetPoint("TOP", line3, "BOTTOM", 0, 0)
 
 	local line4 = frame:CreateTexture(nil, "ARTWORK")
@@ -397,12 +394,7 @@ local function OnEvent( self, event, name, ...)
 	
 	elseif event == "CHAT_MSG_LOOT" then
 		
-	--	--local a = name:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
-	--	--local a = name:match("%|cff.*%|Hitem.*%[Эпохальный ключ*%]")
-	--	--local a = name:match( " стебелек")
-
-	--	local a = name:match("%|cff.*|H.*|h")
-		local b = name:match("Эпохальный ключ")
+		--local b = name:match("Эпохальный ключ")
 		local c = name:match("|Hkeystone:")
 		local y = name:match("^Вы ")
 		local z = name:match("^Ваша ")
@@ -413,8 +405,7 @@ local function OnEvent( self, event, name, ...)
 			print( "KEY Find: ", name, b, c, y, z)
 			if keys then
 				print( "WIN: ", b or c)
-	--			--print(keys)
-	--		--SendChatMessage( a, "PARTY")
+			--SendChatMessage( a, "PARTY")
 			end
 		end
 

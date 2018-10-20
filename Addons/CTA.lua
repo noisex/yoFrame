@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 local yo_CTA = {}
 local tRole, hRole, dRole, timer
 
@@ -54,7 +57,7 @@ local function CreateLFRFrame( self)
 	frame.title = frame:CreateFontString(nil, "OVERLAY", frame)
 	frame.title:SetPoint("TOP")
 	frame.title:SetFont( font, fontsize -1, "THINOUTLINE")
-	frame.title:SetText( "Призыв к оружию")
+	frame.title:SetText( "CTA")
 	frame.title:SetTextColor( 0.75, .5, 0)
 
 	frame.close = CreateFrame("Button", nil, frame)
@@ -84,9 +87,9 @@ local function CreateLFRFrame( self)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
 		if yo.CTA.expand then
-			GameTooltip:SetText("Развернуть")
+			GameTooltip:SetText( L["Expand"])
 		else
-			GameTooltip:SetText("Свернуть")
+			GameTooltip:SetText( L["Collapse"])
 		end		
 		GameTooltip:Show()
 	end)
@@ -132,8 +135,8 @@ local function CreateLFRFrame( self)
 		self:GetNormalTexture():SetVertexColor( 1, 1, 0, 1)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
-		GameTooltip:SetText("Звук")
-		GameTooltip:AddLine("Отключить звук до следующего входа в игру.", 1, 1, 1, 1)
+		GameTooltip:SetText( L["Sound"])
+		GameTooltip:AddLine( L["Sound_OFF"], 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
 
@@ -158,8 +161,8 @@ local function CreateLFRFrame( self)
 		self:GetNormalTexture():SetVertexColor( 1, 0, 0, 1)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
-		GameTooltip:SetText("Закрыть")
-		GameTooltip:AddLine("Закрыть СТА до следующего входа в игру.\n(Повторно можно запустить из меню настроек СТА)", 1, 1, 1, 1)
+		GameTooltip:SetText( L["Close"])
+		GameTooltip:AddLine( L["Close_OFF"], 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
 
@@ -253,9 +256,9 @@ local function CreateLFRStrings( parent, id)
 				GameTooltip:AddDoubleLine( " ", (isKilled and "|cffff0000" or "|cff00991a") .. bossName)			
 		end
 		local _, tRealRole, hRealRole, dRealRole = GetLFGRoles()
-		local realRoles = ( tRealRole and "|cffff1000Танк " or "") .. ( hRealRole and "|cff00ff00Хил " or "") .. ( dRealRole and "|cff00ffffДД" or "") 
+		local realRoles = ( tRealRole and "|cffff1000" .. L["tank"] .. " " or "") .. ( hRealRole and "|cff00ff00" ..L["heal"] .." " or "") .. ( dRealRole and "|cff00ffff".. L["dd"] or "") 
 		GameTooltip:AddLine( " ")
-		GameTooltip:AddDoubleLine( "Роль:", realRoles)
+		GameTooltip:AddDoubleLine( L["Role"], realRoles)
 
 		local mode = CheckLFGQueueMode( self)
 		if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
@@ -265,18 +268,18 @@ local function CreateLFRStrings( parent, id)
 				if hasdata then
 					--GameTooltip:AddLine( " ")
 					tankNeeds = tankNeeds > 0 and ( "|cffff1000T: " .. tankNeeds) or ""
-					healerNeeds = healerNeeds > 0 and ( " |cff00ff00 Х: " .. healerNeeds) or ""
-					dpsNeeds = dpsNeeds > 0 and ( " |cff00ffff Д: " .. dpsNeeds) or ""
-					GameTooltip:AddDoubleLine( "Не хватает:", tankNeeds .. healerNeeds .. dpsNeeds)
+					healerNeeds = healerNeeds > 0 and ( " |cff00ff00 H: " .. healerNeeds) or ""
+					dpsNeeds = dpsNeeds > 0 and ( " |cff00ffff D: " .. dpsNeeds) or ""
+					GameTooltip:AddDoubleLine( L["Not enough"], tankNeeds .. healerNeeds .. dpsNeeds)
 					
 					local timeWaite =  SecondsToClock( GetTime() - queuedTime)
 					GameTooltip:AddLine( " ")
-					GameTooltip:AddDoubleLine( "В очереди:", timeWaite)
-					GameTooltip:AddDoubleLine( "Ожидание:",  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")					
+					GameTooltip:AddDoubleLine( L["In the queue"], timeWaite)
+					GameTooltip:AddDoubleLine( L["Waiting"],  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")					
 				end
 			end		
 		end
-		
+
 		GameTooltip:Show()
 		--self.name:SetTextColor(myColor.r, myColor.g, myColor.b, .9)
 		self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b, .9)
@@ -347,7 +350,7 @@ local function CheckLFR( self, ...)
    	if yo.CTA.heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then		
 		local checkTank, checkHeal, checkDD	
 		if not yo_CTA[id] then yo_CTA[id] = {} end
-		yo_CTA[id]["name"] = "Хероический рендом"
+		yo_CTA[id]["name"] = L["HRENDOM"]
 		yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFD
 		yo_CTA[id]["icon"] = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-HEROIC"	--252188
 

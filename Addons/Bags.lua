@@ -1,4 +1,7 @@
-local F, C = unpack(select(2, ...))
+local addonName, ns = ...
+local L = ns.L
+
+--local F, C = unpack(select(2, ...))
 
 local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
@@ -109,8 +112,13 @@ end
 function addon:UpdateSearch()
 	if self.Instructions then self.Instructions:SetShown(self:GetText() == "") end
 	local MIN_REPEAT_CHARACTERS = 3;
-	local searchString = ConvertER( self:GetText())
-	--local searchString = self:GetText();
+	local searchString
+	if GetLocale() == "ruRU" then
+		searchString = ConvertER( self:GetText())
+	else
+		searchString = self:GetText()
+	end
+	
 	local prevSearchString = SEARCH_STRING;
 	if (len(searchString) > MIN_REPEAT_CHARACTERS) then
 		local repeatChar = true;
@@ -654,20 +662,20 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 
 					local itemRarity = select( 3, GetItemInfo( clink))
 					local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
-					local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. " вместо ".. locLink
+					local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. L["instead"].. locLink
 
 					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl then					
 											
 						if InCombatLockdown() then
-							print( "|cffff0000После боя надень: |r" .. text)
+							print( L["put on"] .. text)
 						else
-							print( "|cffff0000Надето: |r" .. text)
+							print( L["weared"] .. text)
 							EquipItemByName( clink)	
 						end
 						C_NewItems.RemoveNewItem(bagID, slotID)
 
 					else
-						print( "|cffff0000Можно сменить: |r" .. text)
+						print( L["can change"] .. text)
 						C_NewItems.RemoveNewItem(bagID, slotID)
 						ret = true	
 					end
@@ -1456,8 +1464,8 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsButton:SetPushedTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
 		SetInside( f.bagsButton:GetPushedTexture())
-		f.bagsButton.ttText = "Панель сумок"
-		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", "Правый клик изменение настроек сумки.")
+		f.bagsButton.ttText = BAGSLOTTEXT
+		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", BAG_SETTINGS_TOOLTIP)
 		f.bagsButton:SetScript("OnEnter", addon.Tooltip_Show)
 		f.bagsButton:SetScript("OnLeave", addon.Tooltip_Hide)
 		f.bagsButton:SetScript('OnClick', function() ToggleFrame(f.ContainerHolder) end)
@@ -1475,8 +1483,8 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsSortButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
 		SetInside( f.bagsSortButton:GetPushedTexture())
 		f.bagsSortButton:RegisterForClicks('anyUp')
-		f.bagsSortButton.ttText = "|cffFFFFFFЛевый клик: |rСложить реагенты в банк."
-		f.bagsSortButton.ttText2 = "|cffFFFFFFПравый клик: |rСортировать банк."
+		f.bagsSortButton.ttText = "|cffFFFFFF" ..KEY_BUTTON1 .. ": |r" .. REAGENTBANK_DEPOSIT
+		f.bagsSortButton.ttText2 = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. BAG_CLEANUP_BANK
 		f.bagsSortButton:SetScript("OnEnter", addon.Tooltip_Show)
 		f.bagsSortButton:SetScript("OnLeave", addon.Tooltip_Hide)
 		f.bagsSortButton:SetScript('OnClick', function( self, button)
@@ -1504,7 +1512,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.purchaseBagButton:GetPushedTexture():SetTexCoord(unpack( f.texCoord))
 		SetInside( f.purchaseBagButton:GetPushedTexture())
 		--f.purchaseBagButton:StyleButton(nil, true)
-		f.purchaseBagButton.ttText = "Прикупить банку"
+		f.purchaseBagButton.ttText = BANK_BAG_PURCHASE
 		f.purchaseBagButton:SetScript("OnEnter", self.Tooltip_Show)
 		f.purchaseBagButton:SetScript("OnLeave", self.Tooltip_Hide)
 		f.purchaseBagButton:SetScript("OnClick", function()
@@ -1597,14 +1605,14 @@ function addon:CreateBagFrame( Bag, isBank)
 				BankFrame.selectedTab = 2
 				f.holderFrame:Hide()
 				f.reagentFrame:Show()
-				f.bagsSortButton.ttText2 = "|cffFFFFFFПравый клик: |rСортировать реагенты."
+				f.bagsSortButton.ttText2 = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. BAG_CLEANUP_REAGENT_BANK
 				f.bankToggle.text:SetText( REAGENT_BANK)
 				--addon:CreateLayout( true)
 			else
 				BankFrame.selectedTab = 1
 				f.reagentFrame:Hide()
 				f.holderFrame:Show()
-				f.bagsSortButton.ttText2 = "|cffFFFFFFПравый клик: |rСортировать банк."
+				f.bagsSortButton.ttText2 = "|cffFFFFFF"..KEY_BUTTON2 ..": |r"..BAG_CLEANUP_BANK
 				f.bankToggle.text:SetText( BANK)
 			end
 			addon.CreateLayout( self, true)
@@ -1657,8 +1665,8 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsButton:SetPushedTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
 		SetInside( f.bagsButton:GetPushedTexture())
-		f.bagsButton.ttText = "Панель сумок"
-		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", "Правый клик по сумке для изменения настроек сумки.")
+		f.bagsButton.ttText = BAGSLOTTEXT
+		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", BAG_SETTINGS_TOOLTIP)
 		f.bagsButton:SetScript("OnEnter", addon.Tooltip_Show)
 		f.bagsButton:SetScript("OnLeave", addon.Tooltip_Hide)
 		f.bagsButton:SetScript('OnClick', function() ToggleFrame(f.ContainerHolder) end)
@@ -1676,8 +1684,8 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsSortButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
 		SetInside( f.bagsSortButton:GetPushedTexture())
 		f.bagsSortButton:RegisterForClicks('anyUp')
-		f.bagsSortButton.ttText = "|cffFFFFFFЛевый клик: |rСортировать сумки."
-		f.bagsSortButton.ttText2 = "|cffFFFFFFПравый клик: |rСложить реагенты в банк."
+		f.bagsSortButton.ttText = "|cffFFFFFF" ..KEY_BUTTON1 .. ": |r" .. BAG_CLEANUP_BANK
+		f.bagsSortButton.ttText2 = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. REAGENTBANK_DEPOSIT
 		f.bagsSortButton:SetScript("OnEnter", addon.Tooltip_Show)
 		f.bagsSortButton:SetScript("OnLeave", addon.Tooltip_Hide)
 		f.bagsSortButton:SetScript('OnClick', function( self, button)
@@ -1689,7 +1697,7 @@ function addon:CreateBagFrame( Bag, isBank)
 				SortBags()
 			end
 		end)
-
+		
 		--Search
 		f.editBox = CreateFrame('EditBox', Bag..'EditBox', f);
 		f.editBox:SetFrameLevel(f.editBox:GetFrameLevel() + 2);

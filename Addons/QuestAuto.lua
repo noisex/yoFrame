@@ -1,14 +1,16 @@
+local addonName, ns = ...
+local L = ns.L
 
 QuestTypesIndex = {
 	[0] = "",           --default
-	[1] =  " |cff00ff00Группа|r",		--Group
-	[41] = " |cffff0000ПвП|r",			--PvP
-	[62] = " |cff00ff00Рэйд|r",			--Raid
-	[81] = " |cff0080ffПодземелье|r",	--Dungeon
-	[83] = " |cffff7000Легенда|r", 		--Legendary
-	[85] = " |cff8000ffГероик|r",		--Heroic 
-	[98] = " |cffff8000Сценарий|r", 	--Scenario QUEST_TYPE_SCENARIO
-	[102]= " |cff0080ffАкаунт|r", 		-- Account
+	[1] =  " |cff00ff00Group|r",		--Group
+	[41] = " |cffff0000PvP|r",			--PvP
+	[62] = " |cff00ff00Raid|r",			--Raid
+	[81] = " |cff0080ffDungeon|r",	--Dungeon
+	[83] = " |cffff7000Legendary|r", 		--Legendary
+	[85] = " |cff8000ffHeroic|r",		--Heroic 
+	[98] = " |cffff8000Scenario|r", 	--Scenario QUEST_TYPE_SCENARIO
+	[102]= " |cff0080ffAccount|r", 		-- Account
 }
 
 local WeaponTypes = {
@@ -113,16 +115,15 @@ local function OnEvent( self, event, ...)
 			local money = GetQuestMoneyToGet()
 			local name, texture, amount = GetQuestCurrencyInfo("required", 1)
 			local iname, itexture, numItems, quality, isUsable = GetQuestItemInfo("required", 1)
-			local shift = " |cff666666(не забывай про Шифт при контакте с НПС)|r"
 
 			if name then
-				print("|cffff0000Потрать |cff00ff00" .. amount .. " |r" .. name .. "|cffffff00 сам! :)|r" .. shift)
+				print("|cffff0000"..L["Spend"].." |cff00ff00" .. amount .. " |r" .. name .. "|cffffff00 "..L["myself"].."|r" .. L["DONT_SHIFT"])
 				CloseQuest()
 			elseif money > 1 then
-				print("|cffff0000Заплати |cff00ff00" .. formatMoney( money) .. " |cffffff00этому барыге :)|r" .. shift)
+				print("|cffff0000"..L["Pay"].." |cff00ff00" .. formatMoney( money) .. " |cffffff00"..L["this huckster"].."|r" .. L["DONT_SHIFT"])
 				CloseQuest()
 			elseif iname then
-				print("|cffff0000Отдай ему |cff00ff00" .. numItems .. " |r" .. iname .. "|cffffff00!|r" .. shift)
+				print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. iname .. "|cffffff00!|r" .. L["DONT_SHIFT"])
 				CloseQuest()
 			else
 				CompleteQuest()
@@ -140,7 +141,7 @@ local function OnEvent( self, event, ...)
 			TimerMovie.anim:SetDuration(0.5)
 			TimerMovie:SetLooping("REPEAT")
 			TimerMovie:SetScript("OnLoop", function(self, event, ...)
-				print("|cffffff00Автоквест: |cff00ffffПропустил потрясающее видео, какая жалость...|r")
+				print( L["SCIP_VIDEO"])
 				CinematicFrame_CancelCinematic()
 				TimerMovie:Stop()
 			end)
@@ -166,7 +167,7 @@ local function OnEvent( self, event, ...)
 				local azeritItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
 
 				if ignorTypes[itemEquipLoc] == true or azeritItem then
-					print( "|cffff0000Выбери награду сам уж как-нибудь...|r")
+					print( L["MAKE_CHOICE"])
 					return
 				end
 
@@ -181,7 +182,7 @@ local function OnEvent( self, event, ...)
 	   				if delta > bestDelta then
 	   					bestDelta = delta
 	   					bestChoice = i
-	   					bestString = "|cffff0000Наш выбор: |r ".. _G[itemEquipLoc] .. " |c" .. hexColor.. "[".. clvl .. "]|r " .. itemLink .. " ( " .. clvl - slvl .. " от [" .. slvl.. "])|r"
+	   					bestString = "|cffff0000"..L["Your choice"]..": |r ".. _G[itemEquipLoc] .. " |c" .. hexColor.. "[".. clvl .. "]|r " .. itemLink .. " ( " .. clvl - slvl .. " "..L["from"].." [" .. slvl.. "])|r"
 	   				end
 	   			end
 			end
@@ -259,10 +260,9 @@ local function OnEvent( self, event, ...)
 
 		local qString = ""
 
-		--print( "|cffffff00Квест: " .. cHeader .. " [" .. level .."] " .. tagString .. " " .. cHeader .. questTitle)
-		
+	
 		if #questObjectives > 1 then
-			print( "|cffffff00Задание: |r|cff00ffff" .. questObjectives)
+			print( "|cffffff00"..L["Quest"]..": |r|cff00ffff" .. questObjectives)
 		end
 
 		if GetNumQuestLogChoices() > 0 then
@@ -282,17 +282,17 @@ local function OnEvent( self, event, ...)
 				end
 
 	   			if slvl and slvl < ilvl then
-	   				bestString = " |cffff0000Лучше чем [" .. slvl .. "] " .. " на " .. ilvl - slvl .. "|r"
+	   				bestString = " |cffff0000"..L["Better than"].." [" .. slvl .. "] " .. L["on"] .. ilvl - slvl .. "|r"
 	   			end
 
-				print( "|cffffff00Выбор #" .. i ..": |r" .. " [|c" ..hexColor .. ilvl .. "|r] " .. ( _G[itemEquipLoc] or "") .. " " .. itemLink .. bestString)	
+				print( "|cffffff00"..L["Choice"].." #" .. i ..": |r" .. " [|c" ..hexColor .. ilvl .. "|r] " .. ( _G[itemEquipLoc] or "") .. " " .. itemLink .. bestString)	
 			end	
 		end	
 
 		if GetNumQuestLogRewards() > 0 then
 			for i = 1, GetNumQuestLogRewards() do
 				if GetQuestLogItemLink("reward", i) then
-					print( "|cffffff00Награда #" .. i ..": |r" .. GetQuestLogItemLink("reward", i).. "|r")	
+					print( "|cffffff00"..L["Reward"].." #" .. i ..": |r" .. GetQuestLogItemLink("reward", i).. "|r")	
 				end
 			end
 		end
@@ -303,23 +303,23 @@ local function OnEvent( self, event, ...)
 
 				if currencyID then
 					local link = GetCurrencyLink( currencyID, numItems or 10)
-					print( "|cffffff00Валютка: |r" .. numItems .. " x " .. ( link or name).. "|r")
+					print( "|cffffff00"..L["Currency"]..": |r" .. numItems .. " x " .. ( link or name).. "|r")
 				end
 			end		
 		end
 
 		if GetQuestLogRewardXP() > 0 then
-			qString =  qString ..  "|cffffff00Опыт: |r|cff0080ff" .. commav( GetQuestLogRewardXP()) .. "|r "
+			qString =  qString ..  "|cffffff00"..L["Expirience"]..": |r|cff0080ff" .. commav( GetQuestLogRewardXP()) .. "|r "
 		end
 
 		local skillName, icon, points = GetQuestLogRewardSkillPoints()
 		if skillName then
-			qString =  qString .. "|cffffff00Очки умений: |r+" .. points .. " " .. skillName.. "|r "
+			qString =  qString .. "|cffffff00"..L["Skill Points"]..": |r+" .. points .. " " .. skillName.. "|r "
 		end
 
 
 		if GetQuestLogRewardMoney() > 0 then
-			 qString =  qString .. "|cffffff00Денюжка: |r" .. formatMoney( GetQuestLogRewardMoney()).. "|r "
+			 qString =  qString .. "|cffffff00"..L["Money"]..": |r" .. formatMoney( GetQuestLogRewardMoney()).. "|r "
 		end
 
 		print( qString)

@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 --local T, C, L, _ = unpack(select(2, ...))
 --if C.map.fog_of_war ~= true then return end
 
@@ -251,7 +254,7 @@ frame:SetPoint("TOPRIGHT", WorldMapFrame, "TOPRIGHT", -200, 0)
 
 frame.f = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 frame.f:SetPoint("LEFT", frame, "RIGHT", 0, 0)
-frame.f:SetText( "Туман войны")
+frame.f:SetText( L["Fog of war"])
 frame.f:Show()
 
 -- Handle clicks

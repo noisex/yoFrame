@@ -1,3 +1,5 @@
+local addonName, ns = ...
+local L = ns.L
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)
@@ -12,15 +14,15 @@ local function SetTooltip(self)
 	GameTooltip:SetOwner(self, self.tooltipAnchor) --'ANCHOR_BOTTOM', 0, -5)
 	GameTooltip:AddLine(COMBAT_XP_GAIN.." "..format(LEVEL_GAINED, UnitLevel("player")))
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine("Осталось:", "|cff00ff00" .. nums( max - min) .. " ( " .. floor((max - min) / max * 100 + 0.5) .. "%)")
+	GameTooltip:AddDoubleLine(L["Left"], "|cff00ff00" .. nums( max - min) .. " ( " .. floor((max - min) / max * 100 + 0.5) .. "%)")
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine("Собрано:", "|cff00ff96" .. nums(min, min / max * 100) .. " ( " .. floor((min) / max * 100 + 0.5) .. "%)")	
+	GameTooltip:AddDoubleLine( L["Collected"], "|cff00ff96" .. nums(min, min / max * 100) .. " ( " .. floor((min) / max * 100 + 0.5) .. "%)")	
 
 	if(self.rested) then
-		GameTooltip:AddDoubleLine( "Отдых: ", "|cff0090ff" .. nums( self.rested) .. " ( " .. floor( self.rested / max * 100 + .5).. "%)")
+		GameTooltip:AddDoubleLine( L["Rest"], "|cff0090ff" .. nums( self.rested) .. " ( " .. floor( self.rested / max * 100 + .5).. "%)")
 	end
 
-	GameTooltip:AddDoubleLine("Всего:",  nums( max))
+	GameTooltip:AddDoubleLine(L["Totals"],  nums( max))
 	GameTooltip:Show()
 end
 

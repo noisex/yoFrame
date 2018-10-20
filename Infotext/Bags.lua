@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 --------------------------------------------------------------------
  -- BAGS
 --------------------------------------------------------------------
@@ -37,12 +40,12 @@ local function OnEvent(self, event)
 		GameTooltip:ClearAllPoints()
 		GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
 		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine("Сумки авоськи")
+		GameTooltip:AddDoubleLine(L["Bagzy and banksy"])
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine("Всего:",total,0, 0.6, 1, 1, 1, 1)
+		GameTooltip:AddDoubleLine( L["TOTAL"],total,0, 0.6, 1, 1, 1, 1)
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine("Занято:",used,0, 0.6, 1, 1, 1, 1)
-		GameTooltip:AddDoubleLine("Свободно:",free,0, 0.6, 1, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["Busy"],used,0, 0.6, 1, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["Free"],free,0, 0.6, 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
 

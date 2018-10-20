@@ -67,8 +67,7 @@ local function Setlers( path, val)
 	end
 end
 
-local function tr( path)
-	
+local function tr( path)	
 	if not L[path] or L[path] == "" then
 		print( "|cffff0000UNKNOWN LOCALE : |cff00ffff" .. path)
 		L[path] = "|cffff0000UNKNOWN LOCALE"

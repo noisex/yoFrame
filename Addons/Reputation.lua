@@ -1,3 +1,5 @@
+local addonName, ns = ...
+local L = ns.L
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)
@@ -32,7 +34,7 @@ local function SetTooltip(self)
 		GameTooltip:AddLine(name)
 		GameTooltip:AddDoubleLine(STANDING..':', (friendID and friendTextLevel) or _G['FACTION_STANDING_LABEL'..reaction], 1, 1, 1, color.r, color.g, color.b)
 		GameTooltip:AddLine(' ')
-		GameTooltip:AddDoubleLine('Осталось:', format('%s (%d%%)', nums( max - value), (max - value) / ((max - min == 0) and max or (max - min)) * 100), 1, 1, 1, 0, 1, 0)
+		GameTooltip:AddDoubleLine(L["Left"], format('%s (%d%%)', nums( max - value), (max - value) / ((max - min == 0) and max or (max - min)) * 100), 1, 1, 1, 0, 1, 0)
 		GameTooltip:AddDoubleLine(REPUTATION..':', format('%s / %s', nums( value - min), nums( max - min)), 1, 1, 1, 0, 1, 1)
 	end 
 	

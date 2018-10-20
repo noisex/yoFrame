@@ -1,3 +1,5 @@
+local addonName, ns = ...
+local L = ns.L
 
 StaticPopupDialogs.SET_BN_BROADCAST = {
 	text = BN_BROADCAST_TOOLTIP,
@@ -214,9 +216,9 @@ local function BuildBNTable(total)
 			elseif client == owString then
 				BNTableOW[#BNTableOW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-Overwatch", "Ovirva4zzz", isGameAFK, isGameBusy }
 			elseif client == bsapString then
-				BNTableBSAp[#BNTableBSAp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", "В мобильном", isAFK, isDND}
+				BNTableBSAp[#BNTableBSAp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", "In MobilApps", isAFK, isDND}
 			elseif client == appString then
-				BNTableApp[#BNTableApp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", "В приложении", isAFK, isDND }
+				BNTableApp[#BNTableApp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", "In Apps", isAFK, isDND }
 			else
 				BNTableWoW[#BNTableWoW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK,  isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-WoW", "World of Warcraft", isGameAFK, isGameBusy }
 			end
@@ -344,7 +346,7 @@ Stat:SetScript("OnEnter", function(self)
 	local zonec, classc, levelc, realmc, info, grouped
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
 	GameTooltip:ClearLines()
-	GameTooltip:AddDoubleLine("Друзьяшки", format(totalOnlineString, totalonline, totalfriends),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
+	GameTooltip:AddDoubleLine(L["Friends"], format(totalOnlineString, totalonline, totalfriends),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
 	if onlineFriends > 0 then
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddLine(worldOfWarcraftString)

@@ -1,3 +1,5 @@
+local addonName, ns = ...
+local L = ns.L
 
 ----------------------------------------------------------------------------------------
 --	Test Icons
@@ -158,7 +160,7 @@ f:SetScript("OnEvent", function()
 	
 		if c>0 then
 			local g, s, c = math.floor(c/10000) or 0, math.floor((c%10000)/100) or 0, c%100
-			DEFAULT_CHAT_FRAME:AddMessage("Хлам продан, заработано: ".." |cffffffff"..g.."|cffffd700г|r".." |cffffffff"..s.."|cffc7c7cfс|r".." |cffffffff"..c.."|cffeda55fм|r"..".",255,255,0)
+			DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." |cffffffff"..g.."|cffffd700g|r".." |cffffffff"..s.."|cffc7c7cfs|r".." |cffffffff"..c.."|cffeda55fc|r"..".",255,255,0)
 		end
 	end
 	
@@ -174,9 +176,9 @@ f:SetScript("OnEvent", function()
 				local c = cost%100
 				local s = math.floor((cost%10000)/100)
 				local g = math.floor(cost/10000)
-				DEFAULT_CHAT_FRAME:AddMessage("Отремонтированно на : ".." |cffffffff"..g.."|cffffd700г|r".." |cffffffff"..s.."|cffc7c7cfс|r".." |cffffffff"..c.."|cffeda55fм|r"..".",255,255,0)
+				DEFAULT_CHAT_FRAME:AddMessage(L["REMONT"] .." |cffffffff"..g.."|cffffd700g|r".." |cffffffff"..s.."|cffc7c7cfs|r".." |cffffffff"..c.."|cffeda55fc|r"..".",255,255,0)
 			else
-				DEFAULT_CHAT_FRAME:AddMessage("|cffff0000Где деньги, Лебовски?! Нет денег даже на ремонт! Ты исполрил всю мою жизнь!!!!!",255,0,0)
+				DEFAULT_CHAT_FRAME:AddMessage( L["NOMONEY"],255,0,0)
 			end
 		end
 	end		
@@ -361,7 +363,7 @@ local function addAuraSource(self, func, unit, index, filter)
 				src = format("|cff%02x%02x%02x%s|r", color[1] * 255, color[2] * 255, color[3] * 255, src)
 			end
 		end
-		self:AddDoubleLine( "Автор:", src)
+		self:AddDoubleLine( "Caster:", src)
 		self:Show()
 	end
 end

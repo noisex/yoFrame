@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 ----------------------------------------------------------------------------------------
 --	Based on oUF_ArtifactPower(by Rainrider)
 ----------------------------------------------------------------------------------------
@@ -13,9 +16,9 @@ local function ShowTooltip(element)
 			--GameTooltip:AddLine(AZERITE_POWER_TOOLTIP_BODY:format(azeriteItem:GetItemName()))
 			GameTooltip:AddDoubleLine( azeriteItem:GetItemName(), "|cff00ffff" .. element.level )
 			GameTooltip:AddLine( " ")
-			GameTooltip:AddDoubleLine( "Осталось:", "|cff00ff00" .. nums( element.max - element.current) .. "|r (" .. floor( ( element.max - element.current) / element.max * 100 + .5) .. "%)")
-			GameTooltip:AddDoubleLine( "Собрано:",	"|cff00ffff" .. nums( element.current ) .. "|r (" .. floor( element.current / element.max * 100 + .5) .. "%)")
-			GameTooltip:AddDoubleLine( "Всего:", nums( element.max ))
+			GameTooltip:AddDoubleLine( L["Left"], "|cff00ff00" .. nums( element.max - element.current) .. "|r (" .. floor( ( element.max - element.current) / element.max * 100 + .5) .. "%)")
+			GameTooltip:AddDoubleLine( L["Collected"],	"|cff00ffff" .. nums( element.current ) .. "|r (" .. floor( element.current / element.max * 100 + .5) .. "%)")
+			GameTooltip:AddDoubleLine( L["Totals"], nums( element.max ))
 			GameTooltip:Show()
 		end)
 	elseif (HasArtifactEquipped()) then

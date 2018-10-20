@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 ----------------------------------------------------------------------------------------
 --	Based on aTooltip(by ALZA)
 ----------------------------------------------------------------------------------------
@@ -663,9 +666,9 @@ local function SetHyperlink(tooltip, refString)
 		if year < 10 then year = "0"..year end
 
 		if client == "ruRU" then
-			tooltip:AddLine("Ваш статус: Завершено "..day.."/"..month.."/"..year, 0, 1, 0)
+			tooltip:AddLine(L["Y_STATUS_C"]..day.."/"..month.."/"..year, 0, 1, 0)
 		else
-			tooltip:AddLine("Ваш статус: Завершено "..month.."/"..day.."/"..year, 0, 1, 0)
+			tooltip:AddLine(L["Y_STATUS_C"]..month.."/"..day.."/"..year, 0, 1, 0)
 		end
 
 		if earnedBy then
@@ -679,9 +682,9 @@ local function SetHyperlink(tooltip, refString)
 			end
 		end
 	elseif numCriteria == 0 then
-		tooltip:AddLine("Ваш статус: Не закончено")
+		tooltip:AddLine(L["Y_STATUS_DC"])
 	else
-		tooltip:AddLine("Ваш статус:")
+		tooltip:AddLine(L["Y_STATUS"])
 		for i = 1, numCriteria, 2 do
 			for a = 0, 1 do
 				output[a].text = nil
@@ -1298,7 +1301,7 @@ EMPTY_SOCKET_RED = "|cffFF4040"..EMPTY_SOCKET_RED.."|r"
 EMPTY_SOCKET_YELLOW = "|cffffff40"..EMPTY_SOCKET_YELLOW.."|r"
 EMPTY_SOCKET_BLUE = "|cff6060ff"..EMPTY_SOCKET_BLUE.."|r"
 
-GUILD_ACHIEVEMENT = "Уведомл. для гильдии"
+--GUILD_ACHIEVEMENT = "Уведомл. для гильдии"
 
 local ttext
 local replace = {
@@ -1321,6 +1324,19 @@ local replaceclass = {
 	["Рыцарь смерти"] = "|cffC41F3BРыцарь смерти|r",
 	["Чернокнижник"] = "|cff9482C9Чернокнижник|r",
 	["Шаман"] = "|cff0070DEШаман|r",
+
+	["Warrior"] = "|cffC79C6EWarrior|r",
+	["Druid"] = "|cffFF7D0ADruid|r",
+	["Priest"] = "|cffFFFFFFPriest|r",
+	["Mage"] = "|cff69CCF0Mage|r",
+	["Monk"] = "|cff00FF96Monk|r",
+	["Hunter"] = "|cffABD473Hunter|r",
+	["Demon hunter"] = "|cffA330C9Demon hunter|r",
+	["Paladin"] = "|cffF58CBAPaladin|r",
+	["Rogue"] = "|cffFFF569Rogue|r",
+	["Death knight"] = "|cffC41F3BDeath knight|r",
+	["Warlock"] = "|cff9482C9Warlock|r",
+	["Shaman"] = "|cff0070DEShaman|r",
 }
 
 local function Translate(text)
@@ -1346,7 +1362,7 @@ local function UpdateTooltip(self)
 	local tname = self:GetName()
 	for i = 3, self:NumLines() do
 		ttext = _G[tname.."TextLeft"..i]
-		local class = ttext:GetText() and (string.find(ttext:GetText(), "Класс") or string.find(ttext:GetText(), "Требуется"))
+		local class = ttext:GetText() and (string.find(ttext:GetText(), L["CLASS"]) or string.find(ttext:GetText(), "Требуется"))
 		if ttext then ttext:SetText(Translate(ttext:GetText())) end
 		if ttext and class then ttext:SetText(TranslateClass(ttext:GetText())) end
 		ttext = _G[tname.."TextRight"..i]
@@ -1376,10 +1392,10 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 			local cY, cW = "|cffffff00", "|cffffffff"
 
 			if numBank and numBank > 0 then
-				itemBank = cW .. " ( Сумка: " .. numBag .. ", Банк: " .. numBank .. ")"
+				itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
 			end
 			
-			item_count = cY .. "Всего: ".. cW ..numTotal .. itemBank
+			item_count = cY .. L["TOTAL"] ..": ".. cW ..numTotal .. itemBank
 		end
 
 		self:AddLine(item_count)
