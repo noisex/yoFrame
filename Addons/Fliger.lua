@@ -214,9 +214,11 @@ local function CheckTemplates( myClass, mySpec)
 		PlayerProcWhiteList[v.title] = true
 	end
 
-	for i,v in pairs( generalAzeriteTraits) do
-		PlayerProcWhiteList[GetSpellInfo( v.spell)] = true
-	end
+	if yo.fliger.gAzetit then
+		for i,v in pairs( generalAzeriteTraits) do
+			PlayerProcWhiteList[GetSpellInfo( v.spell)] = true
+		end
+	end	
 end
 
 local function OnEvent( self, event, ...)

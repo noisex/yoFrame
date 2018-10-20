@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 local bind, oneBind, localmacros = CreateFrame("Frame", "HoverBind", UIParent), true, 0
 
 -- SLASH COMMAND
@@ -216,10 +219,10 @@ SlashCmdList.MOUSEOVERBIND = function()
 		function bind:Deactivate(save)
 			if save then
 				SaveBindings(2)
-				print("|cff00a2ffИзменения настроек клавиш были сохранены.|r")
+				print(L["BIND_SAVE"])
 			else
 				LoadBindings(2)
-				print("|cffff9900Изменения настроек клавиш были отменены.|r")
+				print(L["BIND_ESC"])
 			end
 			self.enabled = false
 			self:HideFrame()
@@ -227,8 +230,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 		end
 
 		StaticPopupDialogs.KEYBIND_MODE = {
-			--text = "Hover your mouse over any actionbutton to bind it. Press the escape key or right click to clear the current actionbutton's keybinding.",
-			text = "Наведите мышь над иконкой панели команд что бы назначить клавишу действия.\n \'Escape\' или правый клик мышью для очистки текущего значения ",
+			text = L["BIND_DESC"],
 			button1 = APPLY,
 			button2 = CANCEL,
 			OnAccept = function() bind:Deactivate(true) ReloadUI() end,

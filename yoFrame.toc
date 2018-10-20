@@ -7,6 +7,9 @@
 ## SavedVariablesPerCharacter: yo_Position, yo_PersonalConfig, yo_ChatHistory
 
 Func.lua
+Locale\locale.lua
+Locale\ruRU.lua
+Locale\enUS.lua
 
 Libs\rLib\core.lua
 Libs\rLib\dragframe.lua

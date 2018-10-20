@@ -105,7 +105,7 @@ function AnchorsReset()
 end
 
 function ySlashCmd(cmd)
-	if InCombatLockdown() then print("Неее, только не в бою, неа...") return end
+	if InCombatLockdown() then print("No, not in comabt only...") return end
 	if (cmd:match"reset") then
 		AnchorsReset()
 	else
@@ -181,7 +181,7 @@ CreateAnchor("P_PROC", 		"Player Trinket and Azerit Procs", 	40, 40,	-450, -100,
 CreateAnchor("P_CD", 		"Players Cooldowns",				40,	40,	465, 178, 	"TOPLEFT", "BOTTOMLEFT")
 CreateAnchor("T_DEBUFF",	"Target Debuff/Buff from player", 	40, 40,	450, 0, 	"CENTER", "CENTER")
 
-CreateAnchor("yo_MoveCTA",	"Move CTA погоня за сумкой", 220, 25,	-255, -175, 	"TOPRIGHT", "TOPRIGHT")
+CreateAnchor("yo_MoveCTA",	"Move CTA", 220, 25,	-255, -175, 	"TOPRIGHT", "TOPRIGHT")
  --[[
 
 Anchortank = CreateFrame("Frame","Move_tank",UIParent)

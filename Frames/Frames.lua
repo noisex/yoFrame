@@ -236,6 +236,10 @@ function initFrame( f)
 	--print( powerType, powerToken, r, g, b)
 	--f.healthBar:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
 	--f.healthBar.bgHealth:SetVertexColor(0.3,0.3,0.3,0.9)
+	
+	--f.healthBar:SetStatusBarColor( f.colr / 8, f.colg / 8, f.colb / 8, 0.8)
+	--f.healthBar.bgHealth:SetVertexColor( f.colr, f.colg, f.colb, 1)
+
 	f.powerBar:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
 	f.powerBar.powerText:SetTextColor( f.colr, f.colg, f.colb, 1)
 

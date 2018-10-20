@@ -105,11 +105,11 @@ local function OnEvent( self, event, ...)
 		if IsShiftKeyDown() == true then return end
 		if not yo.Addons.AutoQuestComplete then return end
 		
-		--local isDaily = QuestIsDaily();
-		--local isWeekly = QuestIsWeekly();
-		--local curNum = GetNumQuestCurrencies()
-		
-		if (UnitLevel('player') == MAX_PLAYER_LEVEL) then 
+		local isDaily = QuestIsDaily();
+		local isWeekly = QuestIsWeekly();
+		--print( isWeekly, isDaily)
+
+		if ( isDaily or isWeekly) then --or (UnitLevel('player') == MAX_PLAYER_LEVEL) then 
 			local money = GetQuestMoneyToGet()
 			local name, texture, amount = GetQuestCurrencyInfo("required", 1)
 			local iname, itexture, numItems, quality, isUsable = GetQuestItemInfo("required", 1)
@@ -215,14 +215,17 @@ local function OnEvent( self, event, ...)
 		if IsShiftKeyDown() == true then return end
 		if not yo.Addons.AutoQuest then return end
 
-		for index=1, GetNumActiveQuests() do
+		local numActiveQuests = GetNumActiveQuests();
+		local numAvailableQuests = GetNumAvailableQuests();
+
+		for index=1, numActiveQuests do
 			local quest, isComplete = GetActiveTitle(index)
 			if isComplete then
 				SelectActiveQuest(index)
 			end
 		end
 
-   		for index=1, GetNumAvailableQuests() do
+   		for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do   --index=1, GetNumAvailableQuests() do
            	local isTrivial, isDaily, isRepeatable, isIgnored = GetAvailableQuestInfo(index)
 			if (isIgnored) then return end 
 			

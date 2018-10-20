@@ -1,3 +1,15 @@
+local addonName, ns = ...
+-- constants
+local L = ns.L
+
+myClass = select( 2, UnitClass( "player"))
+myColor = RAID_CLASS_COLORS[myClass]
+myColorStr = "|c" .. RAID_CLASS_COLORS[myClass].colorStr 
+myName	= UnitName( "player")
+myRealm = GetRealmName()
+
+dummy = function() return end	
+
 yo = {} 
 yo_AllConfig = {}
 yo_AllData = {}
@@ -264,6 +276,7 @@ yo["fliger"] = {
 	["pDebuffDirect"]	= "LEFT",
 	["pCDTimer"]		= 15,
 	["checkBags"]		= false,
+	["gAzerit"]			= true,
 }
 
 yo["CTA"] = {
