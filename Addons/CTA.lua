@@ -57,7 +57,7 @@ local function CreateLFRFrame( self)
 	frame.title = frame:CreateFontString(nil, "OVERLAY", frame)
 	frame.title:SetPoint("TOP")
 	frame.title:SetFont( font, fontsize -1, "THINOUTLINE")
-	frame.title:SetText( "CTA")
+	frame.title:SetText( format( LFG_CALL_TO_ARMS, " "))
 	frame.title:SetTextColor( 0.75, .5, 0)
 
 	frame.close = CreateFrame("Button", nil, frame)
@@ -350,7 +350,7 @@ local function CheckLFR( self, ...)
    	if yo.CTA.heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then		
 		local checkTank, checkHeal, checkDD	
 		if not yo_CTA[id] then yo_CTA[id] = {} end
-		yo_CTA[id]["name"] = L["HRENDOM"]
+		yo_CTA[id]["name"] = CALENDAR_TYPE_HEROIC_DUNGEON
 		yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFD
 		yo_CTA[id]["icon"] = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-HEROIC"	--252188
 

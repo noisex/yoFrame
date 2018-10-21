@@ -93,6 +93,7 @@ Addons\RaidCooldowns.lua
 Addons\RaidUtility.lua
 Addons\Reputation.lua
 #Addons\sayBubble.lua
+Addons\ScrollText.lua
 Addons\Scripts.lua
 Addons\TalkingHead.lua
 Addons\ToolTip.lua

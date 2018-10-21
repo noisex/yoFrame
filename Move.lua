@@ -182,6 +182,9 @@ CreateAnchor("P_CD", 		"Players Cooldowns",				40,	40,	465, 178, 	"TOPLEFT", "BO
 CreateAnchor("T_DEBUFF",	"Target Debuff/Buff from player", 	40, 40,	450, 0, 	"CENTER", "CENTER")
 
 CreateAnchor("yo_MoveCTA",	"Move CTA", 220, 25,	-255, -175, 	"TOPRIGHT", "TOPRIGHT")
+
+CreateAnchor("yo_MoveSBT",	"Move Combat Text", 200, 150,	300, -100, 	"CENTER", "CENTER")
+
  --[[
 
 Anchortank = CreateFrame("Frame","Move_tank",UIParent)

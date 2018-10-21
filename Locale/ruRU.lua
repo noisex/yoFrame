@@ -98,7 +98,7 @@ L["iconSize"]= "Размер иконки"
 L["iconoffsetX"]= "Смещение иконки X"
 L["iconoffsetY"]= "Смещение иконки Y"
 L["iconincombat"]= "Показывать иконку в бою"
-L["classcolor"]= "Кастбар в цвет класса"
+L["CBclasscolor"]= "Кастбар в цвет класса"
 L["treatborder"]= "Сбивательный ободок"
 L["DESC_BCB_TREAT"] = "Бордер кастаба в цвет возможности сбить каст"
 L["DESC_BCB_CC"] = "Кастбар в цвет класса или в цвет возможности сбития каста"
@@ -329,6 +329,8 @@ L["this huckster"] 	= "этому барыге"
 L["Give it to him"] 	= "Отдай ему"
 L["on"] 	= " на "
 L["from"] 	= "от"
+
+L["stbEnable"]	=	"scrollingCoombatText ( test)"
 --[[
 L[""] 	= "
 L["DESC"] 	= 

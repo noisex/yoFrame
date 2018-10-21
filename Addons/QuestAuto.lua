@@ -3,13 +3,13 @@ local L = ns.L
 
 QuestTypesIndex = {
 	[0] = "",           --default
-	[1] =  " |cff00ff00Group|r",		--Group
+	[1] =  " |cff00ff00"..PARTY.."|r",		--Group
 	[41] = " |cffff0000PvP|r",			--PvP
-	[62] = " |cff00ff00Raid|r",			--Raid
-	[81] = " |cff0080ffDungeon|r",	--Dungeon
-	[83] = " |cffff7000Legendary|r", 		--Legendary
-	[85] = " |cff8000ffHeroic|r",		--Heroic 
-	[98] = " |cffff8000Scenario|r", 	--Scenario QUEST_TYPE_SCENARIO
+	[62] = " |cff00ff00"..LFG_TYPE_RAID.."|r",			--Raid
+	[81] = " |cff0080ff" ..LFG_TYPE_DUNGEON.. "|r",
+	[83] = " |cffff7000"..LOOT_JOURNAL_LEGENDARIES.."|r", 		--Legendary
+	[85] = " |cff8000ff"..ITEM_HEROIC.."|r",		--Heroic 
+	[98] = " |cffff8000"..TRACKER_HEADER_SCENARIO.."|r", 	--Scenario QUEST_TYPE_SCENARIO
 	[102]= " |cff0080ffAccount|r", 		-- Account
 }
 

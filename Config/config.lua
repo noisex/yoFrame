@@ -74,6 +74,7 @@ yo["Addons"] = {
 	["equipNewItem"]				= true,
 	["equipNewItemLevel"]			= 350,
 	["afk"]							= false,
+	["stbEnable"]					= false,
 }
 yo["ActionBar"] = {
 	["enable"]		= true,
@@ -298,6 +299,7 @@ yo["CTA"] = {
 	["sound"]	= "Murloc",
 	["hideLast"]= false,
 }
+
 
 local logan = CreateFrame("Frame")
 --logan:RegisterEvent("ADDON_LOADED")
