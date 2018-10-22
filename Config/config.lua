@@ -205,6 +205,7 @@ yo["Media"] = {
 	["texglow"] 	= "Interface\\AddOns\\yoFrame\\Media\\glowTex",
 	["font"]     	= [=[Interface\AddOns\yoFrame\Media\qFont.ttf]=],
 	["fontpx"]   	= [=[Interface\AddOns\yoFrame\Media\pxFont.ttf]=],
+	["fonkthik"]	= [=[Interface\AddOns\yoFrame\Media\thik.ttf]=],
 	["fontsize"] 	= 10,
 	["sysfontsize"]	= 10,
 	["AutoScale"] 	= "auto",
@@ -378,15 +379,16 @@ logan:SetScript("OnEvent", function(self, event)
 			end
 		end
 	end
-	dgtexture= 	yo.Media.dgtexture
-	texture = 	yo.Media.texture
-	texhl 	=	yo.Media.texhl
-	texglow = 	yo.Media.texglow
-	font = 		yo.Media.font
-	fontpx	=	yo.Media.fontpx
-	fontsize =	yo.Media.fontsize
-	fontstyle = "OUTLINE"
-	sysfontsize=yo.Media.sysfontsize
+	dgtexture	= 	yo.Media.dgtexture
+	texture 	= 	yo.Media.texture
+	texhl 		=	yo.Media.texhl
+	texglow 	= 	yo.Media.texglow
+	font 		= 	yo.Media.font
+	fontpx		=	yo.Media.fontpx
+	fontsize 	=	yo.Media.fontsize
+	fontstyle 	= 	"OUTLINE"
+	sysfontsize	=	yo.Media.sysfontsize
+	fonkthik 	= 	yo.Media.fonkthik
 
 	--myClass = select( 2, UnitClass( "player"))
 	--myColor = RAID_CLASS_COLORS[myClass]

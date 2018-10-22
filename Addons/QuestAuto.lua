@@ -226,14 +226,14 @@ local function OnEvent( self, event, ...)
 			end
 		end
 
-   		for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do   --index=1, GetNumAvailableQuests() do
-           	local isTrivial, isDaily, isRepeatable, isIgnored = GetAvailableQuestInfo(index)
-			if (isIgnored) then return end 
+   		for index=1, numAvailableQuests do -- index=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
+           	local isTrivial, isDaily, isRepeatable, isLegendary  = GetAvailableQuestInfo(index)
+			--if (isIgnored) then return end 
 			
            	if isTrivial ~= true then --and not ( isDaily == LE_QUEST_FREQUENCY_DAILY or isDaily == LE_QUEST_FREQUENCY_WEEKLY ) then
             	SelectAvailableQuest(index)
             else
-				print("|cffff0000SKIP_IT: |r" .. titleText)
+				print("|cffff0000SKIP_IT: |r", isTrivial ) --.. titleText)
             end
    		end
    		

@@ -53,19 +53,18 @@ end
 
 local function CreateSBT( self)
 
-	local sbtD = CreateFrame("ScrollingMessageFrame", nil, self) --, "FloatingChatFrameTemplate")	--, maxTempIndex);
+	local sbtD = CreateFrame("ScrollingMessageFrame", nil, self) 
 	sbtD:SetAllPoints( yo_MoveSBT)
-	--sbtD:SetSize( frameD:GetSize())	
 	sbtD:SetInsertMode( "TOP")
-	sbtD:SetMaxLines( 50)
+	sbtD:SetMaxLines( 25)
 	sbtD:SetFading( true)
 
-	sbtD:SetFont( font, fontsize + 8, "OUTLINE")
-	sbtD:SetShadowColor( 0, 0, 0, 1)
+	sbtD:SetFont( fonkthik, fontsize + 12, "OUTLINE")
+	sbtD:SetShadowColor( 0.3, 0.3, 0.3, 1)
 	sbtD:SetShadowOffset( 1, -1)
 	sbtD:SetJustifyH("LEFT")
 	--sbtD:SetTimeVisible(C.combattext.time_visible)
-	--sbtD:SetSpacing(5)
+	--sbtD:SetSpacing( 4)
 	--sbtD:EnableMouse(true)
 	--sbtD:SetMovable(true)
 	--sbtD:SetResizable(true)
@@ -76,28 +75,29 @@ local function CreateSBT( self)
 	--sbtD:RegisterForDrag("LeftButton")
 	--sbtD:SetScript("OnDragStart", sbtD.StartMoving)
 	--sbtD:SetScript("OnDragStop", sbtD.StopMovingOrSizing)
-	--	f:SetScript("OnSizeChanged", function(self)
-			--self:SetMaxLines(math.floor(self:GetHeight() / (C.combattext.icon_size * 1.5)))
-			--self:Clear()
-	--	end)
+	--sbtD:SetScript("OnSizeChanged", function(self)
+		--self:SetMaxLines(math.floor(self:GetHeight() / (C.combattext.icon_size * 1.5)))
+		--self:Clear()
+	--end)
 	sbtD:Show()
 	self.sbtD = sbtD
 end
 
 
 local function OnUpdate(self, elapled)
-	self.tick = self.tick + elapled
-	if self.tick < 1.5 then return end
 
+	self.tick = self.tick + elapled
+	if self.tick < 1.4 then return end
 	self.tick = 0
+
 	for spellID, data in pairs( spam) do
 	
 		local crit = data.crit and "|cffff0000*|r" or "  "
 		local text = crit .. commav( data.amount) .. crit
-		local tick = data.tick <= 1 and "" or " (" .. data.tick .. ") "
+		local tick = data.tick <= 1 and "" or " |cffffffffx" .. data.tick
 
 		if not icons[spellID] then
-			icons[spellID] = "|T".. select( 3, GetSpellInfo( spellID))..":13:13:0:0:44:44:4:40:4:40)|t"
+			icons[spellID] = "|T".. select( 3, GetSpellInfo( spellID))..":10:10:0:0:44:44:4:40:4:40)|t"
 		end
 		local icon = icons[spellID]
 
@@ -105,13 +105,14 @@ local function OnUpdate(self, elapled)
 			schools[spellID] = GetBitSchool( data.school)
 		end
 		local cols = schools[spellID]
+		
+		spam[spellID] = nil
 
 		if data.type == 1 then
-			self.sbtD:AddMessage( format( "%s %s %s %s", self.rt, icon, text,  tick), cols[2], cols[3], cols[4], 1, true)
+			self.sbtD:AddMessage( format( "%s %s %s %s", self.rt, icon, text,  tick), cols[2], cols[3], cols[4], nil, true)
 		else
-			self.sbtD:AddMessage( format( "%s      %s %s %s", self.rt, text, icon,  tick), cols[2], cols[3], cols[4], 1, true)
-		end
-		spam[spellID] = nil
+			self.sbtD:AddMessage( format( "          %s %s %s", text, icon,  tick), cols[2], cols[3], cols[4], nil, false)
+		end		
 	end
 end
 
@@ -122,26 +123,30 @@ local function CombatLogEvent( self, ...)
 		local subEvent = select( 2, ...)
 
 		if subEvent == "SPELL_DAMAGE" 
-			--or subEvent == "SPELL_PERIODIC_DAMAGE" 
+			or subEvent == "SPELL_PERIODIC_DAMAGE" 
 			then
 
 			local spellID = select( 12, ...)
 			ClearSpam( spellID)
 
 			spam[spellID] = {
-				["crit"] 	= select( 21, ...),
+				["crit"] 	= spam[spellID].crit and spam[spellID].crit or select( 21, ...),
 				["amount"] 	= spam[spellID].amount + select( 15, ...),
 				["tick"] 	= spam[spellID].tick + 1,
 				["school"]	= select( 14, ...),
 				["type"]	= 1,
 			}
+			--print( spellID, spam[spellID].amount, spam[spellID].tick)
 
-		elseif subEvent == "SPELL_HEAL" then
+		elseif subEvent == "SPELL_HEAL" 
+			or subEvent == "SPELL_PERIODIC_HEAL" 
+			then
+
 			local spellID = select( 12, ...)
 			ClearSpam( spellID)
 
 			spam[spellID] = {
-				["crit"] 	= select( 18, ...),
+				["crit"] 	= spam[spellID].crit and spam[spellID].crit or select( 18, ...),
 				["amount"] 	= spam[spellID].amount + select( 15, ...),
 				["tick"] 	= spam[spellID].tick + 1,
 				["school"]	= select( 14, ...),
@@ -177,11 +182,12 @@ local function OnEvent( self, event, ...)
 		spam = {}
 		self.tick = 10
 		--self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		self:SetScript("OnUpdate", OnUpdate)		
+		self:SetScript("OnUpdate", OnUpdate)
 
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		--self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		self:SetScript("OnUpdate", nil)		
+		
+		--self:SetScript("OnUpdate", nil)		
 	
 	elseif event == "PLAYER_TARGET_CHANGED" or event == "RAID_TARGET_UPDATE" then
 		CheckRT( self)
