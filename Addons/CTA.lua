@@ -135,7 +135,7 @@ local function CreateLFRFrame( self)
 		self:GetNormalTexture():SetVertexColor( 1, 1, 0, 1)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
-		GameTooltip:SetText( L["Sound"])
+		GameTooltip:SetText( SOUND)
 		GameTooltip:AddLine( L["Sound_OFF"], 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
@@ -161,7 +161,7 @@ local function CreateLFRFrame( self)
 		self:GetNormalTexture():SetVertexColor( 1, 0, 0, 1)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
-		GameTooltip:SetText( L["Close"])
+		GameTooltip:SetText( CLOSE)
 		GameTooltip:AddLine( L["Close_OFF"], 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
@@ -256,9 +256,9 @@ local function CreateLFRStrings( parent, id)
 				GameTooltip:AddDoubleLine( " ", (isKilled and "|cffff0000" or "|cff00991a") .. bossName)			
 		end
 		local _, tRealRole, hRealRole, dRealRole = GetLFGRoles()
-		local realRoles = ( tRealRole and "|cffff1000" .. L["tank"] .. " " or "") .. ( hRealRole and "|cff00ff00" ..L["heal"] .." " or "") .. ( dRealRole and "|cff00ffff".. L["dd"] or "") 
+		local realRoles = ( tRealRole and INLINE_TANK_ICON or "") .. ( hRealRole and INLINE_HEALER_ICON or "") .. ( dRealRole and INLINE_DAMAGER_ICON or "") 
 		GameTooltip:AddLine( " ")
-		GameTooltip:AddDoubleLine( L["Role"], realRoles)
+		GameTooltip:AddDoubleLine( YOUR_ROLE, realRoles)
 
 		local mode = CheckLFGQueueMode( self)
 		if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
@@ -266,16 +266,17 @@ local function CreateLFRStrings( parent, id)
 			for i=1, NUM_LE_LFG_CATEGORYS do
 				local hasdata,  _, tankNeeds, healerNeeds, dpsNeeds, totalTanks, totalHealers, totalDPS, _, _, _, averageWait, tankWait, healerWait, damageWait, myWait, queuedTime, activeID = GetLFGQueueStats( i)
 				if hasdata then
-					--GameTooltip:AddLine( " ")
-					tankNeeds = tankNeeds > 0 and ( "|cffff1000T: " .. tankNeeds) or ""
-					healerNeeds = healerNeeds > 0 and ( " |cff00ff00 H: " .. healerNeeds) or ""
-					dpsNeeds = dpsNeeds > 0 and ( " |cff00ffff D: " .. dpsNeeds) or ""
-					GameTooltip:AddDoubleLine( L["Not enough"], tankNeeds .. healerNeeds .. dpsNeeds)
+
+					tankNeeds 	= tankNeeds > 0 and 	( " |cff00ffff" .. INLINE_TANK_ICON ..": " .. tankNeeds) or ""
+					healerNeeds = healerNeeds > 0 and 	( " |cff00ff00" .. INLINE_HEALER_ICON .. ": " .. healerNeeds) or ""
+					dpsNeeds 	= dpsNeeds > 0 and 		( " |cffff1100" .. INLINE_DAMAGER_ICON .. ": " .. dpsNeeds) or ""
+
+					GameTooltip:AddDoubleLine( FRIENDS_FRIENDS_WAITING, tankNeeds .. healerNeeds .. dpsNeeds)
 					
 					local timeWaite =  SecondsToClock( GetTime() - queuedTime)
 					GameTooltip:AddLine( " ")
-					GameTooltip:AddDoubleLine( L["In the queue"], timeWaite)
-					GameTooltip:AddDoubleLine( L["Waiting"],  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")					
+					GameTooltip:AddDoubleLine( QUEUED_STATUS_QUEUED, timeWaite)
+					GameTooltip:AddDoubleLine( AVERAGE_WAIT_TIME,  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")					
 				end
 			end		
 		end
@@ -391,25 +392,25 @@ local function CheckLFR( self, ...)
 				yo_CTA[id]["name"] = name
 				yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFR
 
-				for shortageIndex = 1, 1 do --LFG_ROLE_NUM_SHORTAGE_TYPES do
-					local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, shortageIndex)
-					if eligible and itemCount > 0 then
-						if tRole and forTank then 
-							checkTank = true
-							index = index + 1					
-						end
+				--for shortageIndex = 1, 1 do --LFG_ROLE_NUM_SHORTAGE_TYPES do
+				local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, 1)
+				if eligible and itemCount > 0 then
+					if tRole and forTank then 
+						checkTank = true
+						index = index + 1					
+					end
 
-						if hRole and forHealer then 
-							checkHeal = true
-							index = index + 1 
-						end
+					if hRole and forHealer then 
+						checkHeal = true
+						index = index + 1 
+					end
 
-						if dRole and forDamage then 
-							checkDD = true
-							index = index + 1 			
-						end	
-					end      		
-				end	
+					if dRole and forDamage then 
+						checkDD = true
+						index = index + 1 			
+					end	
+				end      		
+				--end	
 
 				if checkTank and checkTank ~= yo_CTA[id]["tank"] then newDate = true end
 				if checkHeal and checkHeal ~= yo_CTA[id]["heal"] then newDate = true end

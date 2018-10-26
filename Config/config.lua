@@ -74,7 +74,7 @@ yo["Addons"] = {
 	["equipNewItem"]				= true,
 	["equipNewItemLevel"]			= 350,
 	["afk"]							= false,
-	["stbEnable"]					= false,
+	["stbEnable"]					= true,
 }
 yo["ActionBar"] = {
 	["enable"]		= true,
@@ -195,6 +195,7 @@ yo["NamePlates"] = {
 	["myPet"]			= "1,0,0.5",
 	["tankOT"]			= "0,0.5,1",
 	["badGood"]			= "1,0.5,0.5",
+	["glowTarget"]		= true,
 }
 	
 yo["Media"] = {
@@ -205,7 +206,6 @@ yo["Media"] = {
 	["texglow"] 	= "Interface\\AddOns\\yoFrame\\Media\\glowTex",
 	["font"]     	= [=[Interface\AddOns\yoFrame\Media\qFont.ttf]=],
 	["fontpx"]   	= [=[Interface\AddOns\yoFrame\Media\pxFont.ttf]=],
-	["fonkthik"]	= [=[Interface\AddOns\yoFrame\Media\thik.ttf]=],
 	["fontsize"] 	= 10,
 	["sysfontsize"]	= 10,
 	["AutoScale"] 	= "auto",
@@ -379,7 +379,7 @@ logan:SetScript("OnEvent", function(self, event)
 			end
 		end
 	end
-	dgtexture	= 	yo.Media.dgtexture
+	
 	texture 	= 	yo.Media.texture
 	texhl 		=	yo.Media.texhl
 	texglow 	= 	yo.Media.texglow
@@ -388,10 +388,4 @@ logan:SetScript("OnEvent", function(self, event)
 	fontsize 	=	yo.Media.fontsize
 	fontstyle 	= 	"OUTLINE"
 	sysfontsize	=	yo.Media.sysfontsize
-	fonkthik 	= 	yo.Media.fonkthik
-
-	--myClass = select( 2, UnitClass( "player"))
-	--myColor = RAID_CLASS_COLORS[myClass]
-	--myColorStr = "|c" .. RAID_CLASS_COLORS[myClass].colorStr 
-	--print(myColorStr .. myClass)
 end)

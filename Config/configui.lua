@@ -372,7 +372,8 @@ function InitOptions()
 					showCastTarget ={ width = "full",	order = 55, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showPercTreat = { width = 1.5,		order = 60, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],},},
 					showArrows = 	{ width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					blueDebuff = 	{ width = "full",	order = 66, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					glowTarget= 	{ width = "full",	order = 66, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					blueDebuff = 	{ width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					classDispell = 	{ width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
 
 					showToolTip = {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},

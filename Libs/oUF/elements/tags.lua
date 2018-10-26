@@ -84,8 +84,11 @@ local _ENV = {
 		end
 		return string.format('|cff%02x%02x%02x', r * 255, g * 255, b * 255)
 	end,
-	ColorGradient = oUF.ColorGradient,
 }
+_ENV.ColorGradient = function(...)
+	return _ENV._FRAME:ColorGradient(...)
+end
+
 local _PROXY = setmetatable(_ENV, {__index = _G})
 
 local tagStrings = {
@@ -577,8 +580,10 @@ Used to update all tags on a frame.
 * self - the unit frame from which to update the tags
 --]]
 local function Update(self)
-	for _, fs in next, self.__tags do
-		fs:UpdateTag()
+	if(self.__tags) then
+		for _, fs in next, self.__tags do
+			fs:UpdateTag()
+		end
 	end
 end
 
@@ -720,6 +725,7 @@ local function Tag(self, fs, tagstr, ...)
 				end
 
 				_ENV._COLORS = parent.colors
+				_ENV._FRAME = parent
 				return self:SetFormattedText(
 					format,
 					args[1](parent.unit, realUnit) or ''
@@ -735,6 +741,7 @@ local function Tag(self, fs, tagstr, ...)
 				end
 
 				_ENV._COLORS = parent.colors
+				_ENV._FRAME = parent
 				return self:SetFormattedText(
 					format,
 					args[1](unit, realUnit) or '',
@@ -751,6 +758,7 @@ local function Tag(self, fs, tagstr, ...)
 				end
 
 				_ENV._COLORS = parent.colors
+				_ENV._FRAME = parent
 				return self:SetFormattedText(
 					format,
 					args[1](unit, realUnit) or '',
@@ -768,6 +776,7 @@ local function Tag(self, fs, tagstr, ...)
 				end
 
 				_ENV._COLORS = parent.colors
+				_ENV._FRAME = parent
 				for i, func in next, args do
 					tmp[i] = func(unit, realUnit) or ''
 				end
@@ -819,7 +828,7 @@ Used to unregister a tag from a unit frame.
 * fs   - the font string holding the tag (FontString)
 --]]
 local function Untag(self, fs)
-	if(not fs) then return end
+	if(not fs or not self.__tags) then return end
 
 	unregisterEvents(fs)
 	for _, timers in next, eventlessUnits do

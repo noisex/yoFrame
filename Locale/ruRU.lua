@@ -330,7 +330,17 @@ L["Give it to him"] 	= "Отдай ему"
 L["on"] 	= " на "
 L["from"] 	= "от"
 
-L["stbEnable"]	=	"scrollingCoombatText ( test)"
+L["stbEnable"]	=	"Включить скроллинг текст боя"
+
+L["glowTarget"]	=	"Показывать бегущую анимацию на таргете"
+
+L["completion1"] = "Закрыли вовремя |cff8787ED%s [%s]|r за |cff00ffff%s|r. Осталось %s от таймера, и отстали от +2 на %s."
+L["completion2"] = "Закрыли вовремя |cff8787ED%s [%s]|r +2 за |cff00ffff%s|r. Осталось %s от +2 таймера, и отстали от +3 на %s."
+L["completion3"] = "Закрыли вовремя |cff8787ED%s [%s]|r +3 за |cff00ffff%s|r. Осталось %s от +3 таймера."
+
+L["completion0"] = "|cff8787ED[%s] %s|r окончили за |cffff0000%s|r, вы отстали на %s от общего лимита времени."
+
+
 --[[
 L[""] 	= "
 L["DESC"] 	= 

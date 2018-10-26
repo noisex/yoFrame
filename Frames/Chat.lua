@@ -775,16 +775,16 @@ local function Chat_GetColoredChatName(chatType, chatTarget)
 		local colorString = format("|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255);
 		local chanNum, channelName = GetChannelName(chatTarget);
 		--return format("%s|Hchannel:channel:%d|h[%d. %s]|h|r", colorString, chanNum, chanNum, gsub(channelName, "%s%-%s.*", ""));	--The gsub removes zone-specific markings (e.g. "General - Ironforge" to "General")
-		return format("%s|Hchannel:channel:%d|h[%d]|h", colorString, chanNum, chanNum), colorString --, gsub(channelName, "%s%-%s.*", ""));	--The gsub removes zone-specific markings (e.g. "General - Ironforge" to "General")
+		return format("%s|Hchannel:channel:%d|h[%d]|h", colorString, chanNum, chanNum), colorString, info --, gsub(channelName, "%s%-%s.*", ""));	--The gsub removes zone-specific markings (e.g. "General - Ironforge" to "General")
 	elseif ( chatType == "WHISPER" ) then
 		local info = ChatTypeInfo["WHISPER"];
 		local colorString = format("|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255);
 		--return format("%s[%s] |Hplayer:%3$s|h[%3$s]|h", colorString, _G[chatType], chatTarget), colorString
-		return format("%s[%s] |Hplayer:%s|h", colorString, _G[chatType], chatTarget), colorString
+		return format("%s[%s] |Hplayer:%s|h", colorString, _G[chatType], chatTarget), colorString, info
 	else
 		local info = ChatTypeInfo[chatType];
 		local colorString = format("|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255);
-		return format("%s|Hchannel:%s|h[%s]|h", colorString, chatType, _G[chatType]), colorString;
+		return format("%s|Hchannel:%s|h[%s]|h", colorString, chatType, _G[chatType]), colorString, info
 	end
 end
 
@@ -811,7 +811,7 @@ local function OnChatHistory( self, event, ...)
 				chatTarget = arg2;
 			end
 		end
-		local chanName, chanColor = Chat_GetColoredChatName( chatGroup, chatTarget)
+		local chanName, chanColor, cols = Chat_GetColoredChatName( chatGroup, chatTarget)
 		--print( chatGroup, chatTarget)
 		--local text, sender, _, channel, _, _, _, _, _, _, _, senderGUID = ...
 		if arg12 then
@@ -819,7 +819,7 @@ local function OnChatHistory( self, event, ...)
 		end
 		
 		--SaveLine( text, chanName, sender, chanColor, senderGUID, englishClass)
-		SaveLine( arg1, chanName, arg2, chanColor, arg12, englishClass)
+		SaveLine( arg1, chanName, arg2, chanColor, arg12, englishClass, cols)
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
@@ -840,13 +840,14 @@ local function OnChatHistory( self, event, ...)
 		for i,v in ipairs( yo_ChatHistory ) do
 			
 			for ii,vv in pairs( v) do
-				local channel, sender, text, chanColor, uclass = vv[2], strsplit( "-",vv[3]), vv[1], vv[4], vv[6]
+				local channel, sender, text, chanColor, uclass, cols = vv[2], strsplit( "-",vv[3]), vv[1], vv[4], vv[6], vv[7]
 				--print(channel, sender, text, chanColor, uclass) --, RAID_CLASS_COLORS[uclass].colorStr)
 
 				sender = "|c" .. RAID_CLASS_COLORS[ ( uclass or "PRIEST")].colorStr .. sender .. "|r"
+				cols = cols or ( { ["r"] = 1, ["g"] = 1,["b"] = 1})
 
 				local string = format("%s[%s%s]: %s|r", channel, sender, ( chanColor or "|cffffffff" ), text)
-				print(string)
+				DEFAULT_CHAT_FRAME:AddMessage( string, cols.r, cols.g, cols.b)
 			end
 		end
 	end

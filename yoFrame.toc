@@ -29,6 +29,7 @@ Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\AceAddon-3.0\AceAddon-3.0.xml
 Libs\AceConfig-3.0\AceConfig-3.0.xml
 Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
+Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml
 
 Libs\oUF\oUF.xml
 Libs\healthprediction.lua
@@ -65,6 +66,7 @@ Addons\Affixes.lua
 Addons\Aura.lua
 Addons\AzeritPower.lua
 Addons\AuraMarker.lua
+Addons\AzeriteTooltip.lua
 Addons\CastBar.lua
 #Addons\CastWatcher.lua
 Addons\ChatBar.lua

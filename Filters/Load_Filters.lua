@@ -1,0 +1,4 @@
+ClassDebuffOnTarget.lua
+RaidAuras.lua
+RaidSpels.lua
+TriggerTemplatesData.lua

@@ -2,6 +2,10 @@ local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	
 local treatColor = {}
 local auraFilter = { "HARMFUL", "HELPFUL"}
 
+local aGlow = LibStub("LibCustomGlow-1.0", true)
+local glowStart = aGlow.PixelGlow_Start
+local glowStop = aGlow.PixelGlow_Stop
+
 DebuffTypeColor.none = { r = 0.09, g = 0.09, b = 0.09}
 
 local badClassTypes = {
@@ -22,7 +26,7 @@ local badClassTypes = {
 
 local badMobes = {
 	--[130771] = true,	--	Дамми у ханта
-	--[102052] = true, 	--	Дамми у лока
+	--[123352] = true, 	--	Дамми у лока
 
 	[120651] = true,  	-- 	Взрывчатка
 	[136461] = true,	--  Порождение Г'ууна
@@ -549,27 +553,6 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	unitFrame.name:SetTextColor( cols[1], cols[2], cols[3])
 end
 
-local function ActionButton_ShowOverlayGlow(self)
-	if ( self.overlay ) then
-		if ( self.overlay.animOut:IsPlaying() ) then
-			self.overlay.animOut:Stop();
-			self.overlay.animIn:Play();
-		end
-	else
-		self.overlay = ActionButton_GetOverlayGlow();
-		local frameWidth, frameHeight = self:GetSize();
-		self.overlay:SetParent(self);
-		self.overlay:ClearAllPoints();
-		--Make the height/width available before the next frame:
-		self.overlay:SetSize( frameWidth, frameHeight);
-		--self.overlay:SetPoint("CENTER", self, "CENTER", 0, 0)
-		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .20, frameHeight * .45)
-		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .20, -frameHeight * .45);
-		self.overlay:SetAlpha(0.2);
-		self.overlay.animIn:Play();
-	end
-end
-
 local function UpdateName( unitFrame)
 	local name = GetUnitName(unitFrame.displayedUnit, false)
 	if name then
@@ -614,26 +597,30 @@ local function UpdateName( unitFrame)
 		if UnitExists( "target") and showArrows then
 			if UnitIsUnit( unitFrame.displayedUnit, "target") then
 				unitFrame.arrows:Show()
+				--function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key)
+				glowStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
 				--unitFrame.healthBar.value:Show()
 			else
 				unitFrame.arrows:Hide()
+				glowStop( unitFrame.healthBar, 1)
 				--unitFrame.healthBar.value:Hide()
 			end
 		else
 			if showArrows then
 				unitFrame.arrows:Hide()
+				glowStop( unitFrame.healthBar, 1)
 			end
 			--unitFrame.healthBar.value:Hide()
 		end
 		
 		if mobID and ( badMobes[mobID] or eTeam[mobID]) then
+			glowStart( unitFrame.healthBar, {0.95, 0.1, 0.1, 1}, 12, 0.2, 12, 3, 0, 0, false, 2)
 			--unitFrame.healthBar.shadow:SetBackdropBorderColor( 0, 1, 1)
 			--unitFrame.healthBar.HightLight:Show()
-			ActionButton_ShowOverlayGlow( unitFrame.healthBar)
 		else
+			glowStop( unitFrame.healthBar, 2)
 			--unitFrame.healthBar.shadow:SetBackdropBorderColor( .09, .09, .09)
 			--unitFrame.healthBar.HightLight:Hide()
-			ActionButton_HideOverlayGlow( unitFrame.healthBar)
 		end
 		
 		if 	--UnitClass( unitFrame.displayedUnit)
@@ -865,6 +852,10 @@ local function OnNamePlateCreated( frame)
 	f.Class.Icon:SetTexCoord(0, 0, 0, 0)
 	--CreateStyle(f.Class, 3) 
 
+	--f.Shine = CreateFrame("Frame", "$parentShine", f.healthBar, "AutoCastShineTemplate")
+	--f.Shine:SetPoint("CENTER", f.healthBar, "CENTER", 0, 0)
+	--f.Shine:SetSize( nameplatewidth, nameplateheight)
+
 	f.guune = CreateFrame("Frame", nil, f)
 	f.guune:SetSize( 30, 30)
 	f.guune:SetPoint("LEFT", f.disIcons, "RIGHT", 3, 0)
@@ -1073,6 +1064,10 @@ local function NamePlates_OnEvent(self, event, ...)
 			classDispell	= yo.NamePlates.classDispell
 			showToolTip		= yo.NamePlates.showToolTip
 			
+			if not yo.NamePlates.glowTarget then
+				glowStart = dummy
+				glowStop = dummy
+			end
 			badTypes = classDispell and badClassTypes[myClass] or badClassTypes["HUNTER"]
 	
 			HideBlizzard()
@@ -1111,3 +1106,113 @@ local NamePlatesFrame = CreateFrame("Frame", "yo_NamePlatesFrame", UIParent)
 	NamePlatesFrame:RegisterEvent("RAID_TARGET_UPDATE")
 	NamePlatesFrame:RegisterEvent("UNIT_FACTION")
 	NamePlatesFrame:SetScript("OnEvent", NamePlates_OnEvent)
+
+
+	--NamePlatesFrame:SetScript("OnUpdate", AutoCastShine_OnUpdate)
+--local function ActionButton_ShowOverlayGlow(self)
+--	if ( self.overlay ) then
+--		if ( self.overlay.animOut:IsPlaying() ) then
+--			self.overlay.animOut:Stop();
+--			self.overlay.animIn:Play();
+--		end
+--	else
+--		self.overlay = ActionButton_GetOverlayGlow();
+--		local frameWidth, frameHeight = self:GetSize();
+--		self.overlay:SetParent(self);
+--		self.overlay:ClearAllPoints();
+--		--Make the height/width available before the next frame:
+--		self.overlay:SetSize( frameWidth, frameHeight);
+--		--self.overlay:SetPoint("CENTER", self, "CENTER", 0, 0)
+--		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .20, frameHeight * .45)
+--		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .20, -frameHeight * .45);
+--		self.overlay:SetAlpha(0.2);
+--		self.overlay.animIn:Play();
+--	end
+--end
+
+--local AUTOCAST_SHINE_R = .95;
+--local AUTOCAST_SHINE_G = .95;
+--local AUTOCAST_SHINE_B = .32;
+
+--local AUTOCAST_SHINE_SPEEDS = { 2, 4, 6, 8 };
+--local AUTOCAST_SHINE_TIMERS = { 0, 0, 0, 0 };
+--local AUTOCAST_SHINES = {};
+
+--local function AutoCastShine_AutoCastStart(button, r, g, b)
+--	local button = _G[ button:GetName() .. "Shine"]
+
+--	if ( AUTOCAST_SHINES[button] ) then
+--		return;
+--	end
+
+--	AUTOCAST_SHINES[button] = true;
+
+--	if ( not r ) then
+--		r, g, b = AUTOCAST_SHINE_R, AUTOCAST_SHINE_G, AUTOCAST_SHINE_B;
+--	end
+
+--	for _, sparkle in next, button.sparkles do
+--		sparkle:Show();
+--		sparkle:SetVertexColor(r, g, b);
+--	end
+--end
+
+--local function AutoCastShine_AutoCastStop(button)
+--	local button = _G[ button:GetName() .. "Shine"]
+
+--	AUTOCAST_SHINES[button] = nil;
+
+--	for _, sparkle in next, button.sparkles do
+--		sparkle:Hide();
+--	end
+--end
+
+--local function AutoCastShine_OnUpdate(self, elapsed)
+--	for i in next, AUTOCAST_SHINE_TIMERS do
+--		AUTOCAST_SHINE_TIMERS[i] = AUTOCAST_SHINE_TIMERS[i] + elapsed;
+--		if ( AUTOCAST_SHINE_TIMERS[i] > AUTOCAST_SHINE_SPEEDS[i]*4 ) then
+--			AUTOCAST_SHINE_TIMERS[i] = 0;
+--		end
+--	end
+
+--	for button in next, AUTOCAST_SHINES do
+--		self = button;
+--		--self = _G[self:GetName() .. "Shine"]
+--		local parent, distance, heightce = self, self:GetWidth(), self:GetHeight();
+
+--		-- This is local to this function to save a lookup. If you need to use it elsewhere, might wanna make it global and use a local reference.
+--		local AUTOCAST_SHINE_SPACING = 6;
+
+--		for i = 1, 4 do
+--			local timer = AUTOCAST_SHINE_TIMERS[i];
+--			local speed = AUTOCAST_SHINE_SPEEDS[i];
+
+--			if ( timer <= speed ) then
+--				local basePosition = timer/speed*distance;
+--				self.sparkles[0+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
+--				self.sparkles[4+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
+--				self.sparkles[8+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
+--				self.sparkles[12+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
+--			elseif ( timer <= speed*2 ) then
+--				local basePosition = (timer-speed)/speed*distance;
+--				self.sparkles[0+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
+--				self.sparkles[4+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
+--				self.sparkles[8+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
+--				self.sparkles[12+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
+--			elseif ( timer <= speed*3 ) then
+--				local basePosition = (timer-speed*2)/speed*distance;
+--				self.sparkles[0+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
+--				self.sparkles[4+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
+--				self.sparkles[8+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
+--				self.sparkles[12+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
+--			else
+--				local basePosition = (timer-speed*3)/speed*distance;
+--				self.sparkles[0+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
+--				self.sparkles[4+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
+--				self.sparkles[8+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
+--				self.sparkles[12+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
+--			end
+--		end
+--	end
+--end
+
