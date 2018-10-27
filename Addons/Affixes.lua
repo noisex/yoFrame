@@ -1,9 +1,13 @@
 local rowCount = 3
 local affCount = 3
 local iSize = 35
-local requestKeystoneCheck, currentWeek
+local requestKeystoneCheck, currentWeek, registered
 
-yo_OldKey = nil
+local challengeMapID
+local TIME_FOR_3 = 0.6
+local TIME_FOR_2 = 0.8
+
+yo_OldKey, yo_OldKey2 = nil, nil
 
 local scheduleTitle = "Schedule"
 
@@ -363,17 +367,21 @@ local function OnEvent( self, event, name, ...)
 		requestKeystoneCheck = true
 	
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-		self:RegisterEvent("ADDON_LOADED")
-		self:RegisterEvent("BAG_UPDATE")
+		if not registered then
+			self:RegisterEvent("ADDON_LOADED")
+			self:RegisterEvent("BAG_UPDATE")
 	
-		self:RegisterEvent("CHAT_MSG_PARTY_LEADER")
-		self:RegisterEvent("CHAT_MSG_PARTY")
-		self:RegisterEvent("CHAT_MSG_GUILD")
-		self:RegisterEvent("CHAT_MSG_LOOT")
-
-		CheckInventoryKeystone()
+			self:RegisterEvent("CHAT_MSG_PARTY_LEADER")
+			self:RegisterEvent("CHAT_MSG_PARTY")
+			self:RegisterEvent("CHAT_MSG_GUILD")
+			self:RegisterEvent("CHAT_MSG_LOOT")	
+			registered = true
+		end
+		
+		challengeMapID = C_ChallengeMode.GetActiveChallengeMapID()
+		yo_OldKey = CheckInventoryKeystone()
 
 	elseif event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_PARTY" then
 		name = strlower( name)
@@ -410,27 +418,57 @@ local function OnEvent( self, event, name, ...)
 		end
 
 	elseif event == "CHALLENGE_MODE_START"  or event == "CHALLENGE_MODE_RESET" then
-		--yo_OldKey = CheckInventoryKeystone()
+		challengeMapID = C_ChallengeMode.GetActiveChallengeMapID()
+		yo_OldKey = CheckInventoryKeystone()
 
 	elseif event == "CHALLENGE_MODE_COMPLETED" then
-		yo_OldKey = CheckInventoryKeystone()
+
+		if not challengeMapID then return end
+
+		local mapID, level, time, onTime, keystoneUpgradeLevels = C_ChallengeMode.GetCompletionInfo()
+		local name, _, timeLimit = C_ChallengeMode.GetMapUIInfo(challengeMapID)
+
+		timeLimit = timeLimit * 1000
+		local timeLimit2 = timeLimit * TIME_FOR_2
+		local timeLimit3 = timeLimit * TIME_FOR_3
+
+		print(name, level, timeFormatMS(time), timeFormatMS(time - timeLimit))
+
+		if time <= timeLimit3 then
+			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion3"], level, name, timeFormatMS(time), timeFormatMS(timeLimit3 - time)), 255/255, 215/255, 1/255) 
+		elseif time <= timeLimit2 then
+			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion2"], level, name, timeFormatMS(time), timeFormatMS(timeLimit2 - time), timeFormatMS(time - timeLimit3)), 199/255, 199/255, 199/255)
+		elseif onTime then
+			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion1"], level, name, timeFormatMS(time), timeFormatMS(timeLimit - time), timeFormatMS(time - timeLimit2)), 237/255, 165/255, 95/255)
+		else
+			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion0"], ( name or "BAD DUNGE"), level, timeFormatMS(time), timeFormatMS(time - timeLimit)), 255/255, 32/255, 32/255)
+		end
+
+		yo_OldKey2 = CheckInventoryKeystone()
 		C_Timer.After( 2, function()
 			local newKey = CheckInventoryKeystone()
-			print("OLd: ", oldkey, ". New: " , newKey)
+			print("OLd: ", yo_OldKey, ". OLd2: ", yo_OldKey2, ". New: " , newKey)
 			if newKey and newKey ~= yo_OldKey then
-				--print(oldkey, newKey)
-			--SendChatMessage( newKey, "PARTY")
+				--print(yo_OldKey, newKey)
+				--SendChatMessage( newKey, "PARTY")
 			end
 		end)
 	end
 end
 
+
+local logan = CreateFrame("Frame", "yo_WeeklyAffixes", UIParent)
+	logan:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+	logan:RegisterEvent("CHALLENGE_MODE_COMPLETED");
+    logan:RegisterEvent("CHALLENGE_MODE_RESET");
+    logan:RegisterEvent("CHALLENGE_MODE_START")
+	logan:SetScript("OnEvent", OnEvent)
+
+
 ----------------------------------------------------------------------------------
 ---			ObjectiveTracker ( Angry KeyStone)
 ----------------------------------------------------------------------------------
-
-local TIME_FOR_3 = 0.6
-local TIME_FOR_2 = 0.8
 
 local function timeFormat(seconds)
 	local hours = floor(seconds / 3600)
@@ -556,12 +594,3 @@ end
 hooksecurefunc("Scenario_ChallengeMode_UpdateTime", UpdateTime)
 hooksecurefunc("Scenario_ChallengeMode_ShowBlock", ShowBlock)
 hooksecurefunc("ScenarioTrackerProgressBar_SetValue", ProgressBar_SetValue)
-
-local logan = CreateFrame("Frame", "yo_WeeklyAffixes", UIParent)
-	logan:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-	logan:RegisterEvent("CHALLENGE_MODE_COMPLETED");
-    logan:RegisterEvent("CHALLENGE_MODE_RESET");
-    logan:RegisterEvent("CHALLENGE_MODE_START")
-	logan:SetScript("OnEvent", OnEvent)
-

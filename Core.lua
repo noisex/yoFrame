@@ -107,8 +107,8 @@ local function loginEvent(self, ...)
 	SetCVar("cameraDistanceMaxZoomFactor", 2.6)
 
 	SetCVar("TargetNearestUseNew", 1)
-	SetCVar("TargetPriorityCombatLock", 1)
-	SetCVar("TargetPriorityCombatLockContextualRelaxation", 1)
+	SetCVar("TargetPriorityCombatLock", 0)
+	SetCVar("TargetPriorityCombatLockContextualRelaxation", 0)
 	SetCVar("countdownForCooldowns", 0)
 	SetCVar("showTargetOfTarget", 1)
 	

@@ -228,6 +228,7 @@ local function OnEvent( self, event, ...)
 		if not yo.fliger.enable then return end
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterUnitEvent("UNIT_AURA", "player", "target")
+		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 		if yo.fliger.pCDEnable then
 			lib:RegisterCallback("start", function( id, duration, class, watched) UpdatePCD( watched) end)

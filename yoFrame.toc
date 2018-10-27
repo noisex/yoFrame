@@ -14,7 +14,7 @@ Locale\enUS.lua
 Libs\rLib\core.lua
 Libs\rLib\dragframe.lua
 Libs\rLib\framefader.lua
-Libs\rLib\slashcmd.lua
+#Libs\rLib\slashcmd.lua
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
@@ -77,8 +77,6 @@ Addons\CTA.lua
 Addons\Bags.lua
 Addons\HolyShards.lua
 Addons\Inspect.lua
-#Addons\FilgerSpells.lua
-#Addons\Filger.lua
 Addons\Fliger.lua
 
 Addons\FogOfWar.lua
@@ -110,6 +108,7 @@ Infotext\Friend.lua
 Infotext\SpecLoot.lua
 Infotext\System.lua
 Infotext\Time.lua
+
 
 Libs\oUF\elements\AutoResurrect.lua
 

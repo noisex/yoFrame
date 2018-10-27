@@ -214,8 +214,8 @@ yo["Media"] = {
 
 yo["Raid"] = {
 	["enable"] 			= true,
-	["width"] 			= 95,
-	["height"]   		= 30,
+	["width"] 			= 90,
+	["height"]   		= 28,
 	["classcolor"] 		= 3,
 	["showSolo"] 		= false,
 	["showGroupNum"]	= true,
