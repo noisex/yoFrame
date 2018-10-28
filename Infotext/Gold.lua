@@ -20,28 +20,30 @@ end
 
 local function newConfigData()
 
-	local newname = UnitName("player")
-	local realm = GetRealmName()
+	--local newname = UnitName("player")
+	--local realm = GetRealmName()
 
 	if yo_AllData == nil then
 		yo_AllData = {}
 	end
 	
-	if yo_AllData[realm] == nil then
-		yo_AllData[realm] = {}
+	if yo_AllData[myRealm] == nil then
+		yo_AllData[myRealm] = {}
 	end
 
-	if yo_AllData[realm][newname] == nil then
-		yo_AllData[realm][newname] = {}
+	if yo_AllData[myRealm][myName] == nil then
+		yo_AllData[myRealm][myName] = {}
 	end
 
-	yo_AllData[realm][newname]["Money"] = GetMoney()
-	yo_AllData[realm][newname]["MoneyDay"] = date()
-	yo_AllData[realm][newname]["MoneyTime"] = time()
-
+	yo_AllData[myRealm][myName]["Money"] = GetMoney()
+	yo_AllData[myRealm][myName]["MoneyDay"] = date()
+	yo_AllData[myRealm][myName]["MoneyTime"] = time()
+	yo_AllData[myRealm][myName]["Class"] = myClass
+	yo_AllData[myRealm][myName]["Color"] = myColor
+	yo_AllData[myRealm][myName]["ColorStr"] = myColorStr
 end
 
-local function OnEvent(self, event)
+local function OnEvent(self, event, ...)
 	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnMouseDown", nil)
@@ -60,6 +62,15 @@ local function OnEvent(self, event)
 		Text:SetPoint("LEFT", RightInfoPanel, "LEFT", 10, 0)	
 		RightInfoPanel.goldText = Text
 		OldMoney = GetMoney()
+
+		local ofunc = ChatFrame_DisplayTimePlayed
+		function ChatFrame_DisplayTimePlayed() ChatFrame_DisplayTimePlayed = ofunc end
+		RequestTimePlayed()
+
+	elseif event == "TIME_PLAYED_MSG" then
+		local playedtotal, playedlevel = ...
+		yo_AllData[myRealm][myName]["Played"] = playedtotal
+		yo_AllData[myRealm][myName]["PlayedLvl"] = playedlevel
 	end
 		
 	local NewMoney	= GetMoney()
@@ -100,7 +111,6 @@ local function OnEvent(self, event)
 			GameTooltip:AddLine' '								
 			
 			GameTooltip:AddLine(L["General information"])
-			--GameTooltip:AddDoubleLine( UnitName("player"), FormatTooltipMoney( NewMoney), 1, 1, 1, 1, 1, 1)
 			
 			for k, v in pairs ( yo_AllData) do
 				if type( v) == "table" then
@@ -113,7 +123,9 @@ local function OnEvent(self, event)
 						end
 						if tonumber( vv["Money"]) and tonumber( vv["Money"]) > 100000 then
 							totalMoney = totalMoney + tonumber( vv["Money"])
-							GameTooltip:AddDoubleLine( kk .. keystone, FormatTooltipMoney( vv["Money"]), 1, 1, 0, 1, 1, 1)
+							local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
+
+							GameTooltip:AddDoubleLine( kk .. keystone, FormatTooltipMoney( vv["Money"]), cols.r, cols.g, cols.b, 1, 1, 1)
 						end
 						
 					end
@@ -146,6 +158,8 @@ Stat:RegisterEvent("SEND_MAIL_COD_CHANGED")
 Stat:RegisterEvent("PLAYER_TRADE_MONEY")
 Stat:RegisterEvent("TRADE_MONEY_CHANGED")
 Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
+Stat:RegisterEvent("TIME_PLAYED_MSG")
+
 Stat:SetScript("OnMouseDown", function( self) 
 	isOpen = not isOpen
 	if IsShiftKeyDown() then

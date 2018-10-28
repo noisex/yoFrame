@@ -322,12 +322,36 @@ local function OnEvent(f, event, ...)
 	end	
 end
 
+local function updateTOTAuras( self, unit)
+-- DEBUFFS
+	local index, fligerPD = 1, 1
+	local filter = UnitPlayerControlled( unit) and "HARMFUL" or "HELPFUL"
+
+	while true and fligerPD < self.pDebuff.count do
+		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
+		if not name then break end
+			
+		if --unit == self.pDebuff.unit and 
+			not blackSpells[spellID] then
+
+			if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM")end
+			UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
+			fligerPD = fligerPD + 1						
+		end
+
+		index = index + 1
+	end
+
+	for index = fligerPD,	#self.pDebuff	do self.pDebuff[index]:Hide()   end
+end
+
 local function OnUpdate(f, elapse)
 	f.tick = f.tick + elapse
 	if f.tick > 0.7 then
 		f.tick = 0
 		if f:IsShown() then
 			initFrame( f) 
+			updateTOTAuras( f, f.unit)
 		end
 	end
 end
@@ -532,6 +556,17 @@ function CreateUFrame( f, unit)
 	elseif unit == "targettarget" then
 		f.tick = 1
 		f:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit)
+		
+		local pDebuff = CreateFrame("Frame", nil, f)
+		pDebuff:SetPoint("TOPLEFT", f, "BOTTOMLEFT",  0, -5)
+		pDebuff:SetWidth( f:GetWidth())
+		pDebuff:SetHeight( 18)
+		pDebuff.direction 	= "RIGHT"
+		pDebuff.unit 		= "targettarget"
+		pDebuff.count 		= pDebuff:GetWidth() / pDebuff:GetHeight()
+		f.pDebuff 			= pDebuff
+
+		--f:RegisterUnitEvent("UNIT_AURA", unit)
 		f:SetScript("OnUpdate", OnUpdate)
 	end
 

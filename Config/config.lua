@@ -7,6 +7,7 @@ myColor = RAID_CLASS_COLORS[myClass]
 myColorStr = "|c" .. RAID_CLASS_COLORS[myClass].colorStr 
 myName	= UnitName( "player")
 myRealm = GetRealmName()
+myLogin = GetTime()
 
 dummy = function() return end	
 

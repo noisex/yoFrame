@@ -51,37 +51,57 @@ local function OnEnter( self)
 		
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
 	GameTooltip:ClearLines()
-	local pvp = GetNumWorldPVPAreas()
-	for i=1, pvp do
-		local timeleft = select(5, GetWorldPVPAreaInfo(i))
-		local name = select(2, GetWorldPVPAreaInfo(i))
-		local inprogress = select(3, GetWorldPVPAreaInfo(i))
-		local inInstance, instanceType = IsInInstance()
-		if not ( instanceType == "none" ) then
-			timeleft = QUEUE_TIME_UNAVAILABLE
-		elseif inprogress then
-			timeleft = WINTERGRASP_IN_PROGRESS
-		else
-			local hour = tonumber(format("%01.f", floor(timeleft/3600)))
-			local min = format(hour>0 and "%02.f" or "%01.f", floor(timeleft/60 - (hour*60)))
-			local sec = format("%02.f", floor(timeleft - hour*3600 - min *60)) 
-			timeleft = (hour>0 and hour..":" or "")..min..":"..sec
-		end
-		GameTooltip:AddDoubleLine("Time to".." "..name,timeleft)
-	end
+	--local pvp = GetNumWorldPVPAreas()
+	--for i=1, pvp do
+	--	local timeleft = select(5, GetWorldPVPAreaInfo(i))
+	--	local name = select(2, GetWorldPVPAreaInfo(i))
+	--	local inprogress = select(3, GetWorldPVPAreaInfo(i))
+	--	local inInstance, instanceType = IsInInstance()
+	--	if not ( instanceType == "none" ) then
+	--		timeleft = QUEUE_TIME_UNAVAILABLE
+	--	elseif inprogress then
+	--		timeleft = WINTERGRASP_IN_PROGRESS
+	--	else
+	--		local hour = tonumber(format("%01.f", floor(timeleft/3600)))
+	--		local min = format(hour>0 and "%02.f" or "%01.f", floor(timeleft/60 - (hour*60)))
+	--		local sec = format("%02.f", floor(timeleft - hour*3600 - min *60)) 
+	--		timeleft = (hour>0 and hour..":" or "")..min..":"..sec
+	--	end
+	--	GameTooltip:AddDoubleLine("Time to".." "..name,timeleft)
+	--end
 
-	GameTooltip:AddLine(" ")
-		
+	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - myLogin))
+	GameTooltip:AddLine' '
+	GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
+
+	local totalMoney = 0
+	for k, v in pairs ( yo_AllData) do
+		if type( v) == "table" then
+			GameTooltip:AddDoubleLine( " ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
+			for kk, vv in pairs ( v) do
+				if tonumber( vv["Played"]) then
+					totalMoney = totalMoney + tonumber( vv["Played"])
+					local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
+
+					GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"], true), cols.r, cols.g, cols.b, 1, 1, 1)
+				end	
+			end
+		end
+	end	
+	GameTooltip:AddLine' '
+	GameTooltip:AddDoubleLine( TOTAL, SecondsToClock( totalMoney, true), 1, 1, 0, 0, 1, 0)
+	GameTooltip:AddLine' '
+
 	local Hr, Min = GetGameTime()
 	if Min<10 then Min = "0"..Min end
-	GameTooltip:AddDoubleLine("Server Time: ",Hr .. ":" .. Min);
+	GameTooltip:AddDoubleLine( TIMEMANAGER_TOOLTIP_REALMTIME, Hr .. ":" .. Min, 1, 1, 0, 1, 1, 1)
 
 	Hr24 = tonumber(date("%H"))
 	Min = tonumber(date("%M"))
 	if Min<10 then Min = "0"..Min end
 	
-	GameTooltip:AddDoubleLine("Local Time: ",Hr24 .. ":" .. Min);
-		
+	GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, Hr24 .. ":" .. Min, 1, 1, 0, 1, 1, 1)
+	
 	local oneraid
 	for i = 1, GetNumSavedInstances() do
 		local name,_,reset,difficulty,locked,extended,_,isRaid,maxPlayers = GetSavedInstanceInfo(i)
@@ -89,7 +109,7 @@ local function OnEnter( self)
 			local tr,tg,tb,diff
 			if not oneraid then
 				GameTooltip:AddLine(" ")
-				GameTooltip:AddLine("Saved Raid(s)")
+				GameTooltip:AddLine( CALENDAR_FILTER_RAID_RESETS)
 				oneraid = true
 			end
 
@@ -112,9 +132,9 @@ local Stat = CreateFrame("Frame")
 	Stat:EnableMouse(true)
 	Stat:SetFrameStrata("BACKGROUND")
 	Stat:SetFrameLevel(3)
-	Stat:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-	Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
-	Stat:RegisterEvent("UPDATE_INSTANCE_INFO")
+	--Stat:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+	--Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
+	--Stat:RegisterEvent("UPDATE_INSTANCE_INFO")
 
 	Stat:SetScript("OnUpdate", Update)
 	Stat:SetScript("OnEnter", OnEnter)

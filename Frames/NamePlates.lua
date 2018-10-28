@@ -210,7 +210,7 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 			button.timer:SetTextColor( 1, 1, 0)
 		end
 
-		if est > 0.1 then
+		if ( duration and duration > 0) and est > 0.1 then
 			button.timer:SetText( formatTime( est))
 		else
 			button.timer:SetText( "")

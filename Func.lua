@@ -251,23 +251,31 @@ function formatTimeSec( s)
 	return format("%ds", s), (s * 100 - floor(s * 100))/100
 end
 
-function SecondsToClock(seconds)
+function SecondsToClock(seconds, noSec)
   local seconds = tonumber(seconds)
 
   if seconds <= 0 then   --return "00:00:00";
     return LESS_THAN_ONE_MINUTE;
   else
-    hours = format("%d", math.floor(seconds/3600))
-    mins =  format("%d", math.floor(seconds/60 - (hours*60)));
-    secs =  format("%d", math.floor(seconds - hours*3600 - mins *60));
+  	--days 	= format("%d", math.floor(seconds/86400))
+   -- hours 	= format("%d", math.floor(seconds/3600) -( days*24))
+   -- mins 	= format("%d", math.floor(seconds/60 - (hours*60)));
+   -- secs 	= format("%d", math.floor(seconds - hours*3600 - mins *60));
 
 	--hours = format("%02.f", math.floor(seconds/3600))
     --mins =  format("%02.f", math.floor(seconds/60 - (hours*60)));
     --secs =  format("%02.f", math.floor(seconds - hours*3600 - mins *60));
-    hours = hours == "0" and "" or ( hours .. "h ")
-	mins = mins == "0" and "" or ( mins .. "m ")
-	secs = secs == "0" and "" or ( secs .. "s")
-    return hours..mins..secs
+  	
+  	local days 	= floor(seconds/86400)
+  	local hours	= floor(mod(seconds, 86400)/3600)
+  	local mins 	= floor(mod(seconds,3600)/60)
+  	local secs 	= noSec and 0 or floor(mod(seconds,60))
+
+    days 	= days == 0 and "" or ( days .. "d ")
+    hours 	= hours == 0 and "" or ( hours .. "h ")
+	mins 	= mins == 0 and "" or ( mins .. "m ")	
+	secs 	= secs == 0 and "" or ( secs .. "s")
+    return days..hours..mins..secs
   end
 end
 

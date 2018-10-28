@@ -17,7 +17,7 @@ local function UpdateAura( self, unit)
 		if yo.fliger.tDebuffEnable then
 			if unit == self.tDebuff.unit and caster == "player"	and DebuffWhiteList[name] then
 				if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = CreateAuraIcon( self.tDebuff, fligerTD, true, "BOTTOM")end
-				UpdateAuraIcon( self.tDebuff[fligerTD], filter, icon, count, nil, duration, expirationTime, spellID, index)
+				UpdateAuraIcon( self.tDebuff[fligerTD], filter, icon, count, nil, duration, expirationTime, spellID, index)				
 				fligerTD = fligerTD + 1						
 			end
 		end
