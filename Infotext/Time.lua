@@ -51,26 +51,14 @@ local function OnEnter( self)
 		
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
 	GameTooltip:ClearLines()
-	--local pvp = GetNumWorldPVPAreas()
-	--for i=1, pvp do
-	--	local timeleft = select(5, GetWorldPVPAreaInfo(i))
-	--	local name = select(2, GetWorldPVPAreaInfo(i))
-	--	local inprogress = select(3, GetWorldPVPAreaInfo(i))
-	--	local inInstance, instanceType = IsInInstance()
-	--	if not ( instanceType == "none" ) then
-	--		timeleft = QUEUE_TIME_UNAVAILABLE
-	--	elseif inprogress then
-	--		timeleft = WINTERGRASP_IN_PROGRESS
-	--	else
-	--		local hour = tonumber(format("%01.f", floor(timeleft/3600)))
-	--		local min = format(hour>0 and "%02.f" or "%01.f", floor(timeleft/60 - (hour*60)))
-	--		local sec = format("%02.f", floor(timeleft - hour*3600 - min *60)) 
-	--		timeleft = (hour>0 and hour..":" or "")..min..":"..sec
-	--	end
-	--	GameTooltip:AddDoubleLine("Time to".." "..name,timeleft)
-	--end
 
 	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - myLogin))
+	if yo_AllData[myRealm][myName].PlayedLvl < 86400 then
+		GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[myRealm][myName].PlayedLvl))
+	else
+		GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[myRealm][myName].PlayedLvl, true, true))
+	end
+	
 	GameTooltip:AddLine' '
 	GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
 
@@ -82,13 +70,16 @@ local function OnEnter( self)
 				if tonumber( vv["Played"]) then
 					totalMoney = totalMoney + tonumber( vv["Played"])
 					local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
-
-					GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"], true), cols.r, cols.g, cols.b, 1, 1, 1)
+					if vv["Played"] < 86400 then
+						GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+					else
+						GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"], true, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+					end
 				end	
 			end
+			GameTooltip:AddLine' '
 		end
-	end	
-	GameTooltip:AddLine' '
+	end		
 	GameTooltip:AddDoubleLine( TOTAL, SecondsToClock( totalMoney, true), 1, 1, 0, 0, 1, 0)
 	GameTooltip:AddLine' '
 

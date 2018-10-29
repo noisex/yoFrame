@@ -4,18 +4,21 @@ local L = ns.L
 --------------------------------------------------------------------
 -- DURABILITY
 --------------------------------------------------------------------
+CreateFrame("GameTooltip", "LPDURA")
+LPDURA:SetOwner(WorldFrame, "ANCHOR_NONE")
+
 local localSlots = {
-	[1] = {1, "Head", 1000},
-	[2] = {3, "Shoulder", 1000},
-	[3] = {5, "Chest", 1000},
-	[4] = {6, "Waist", 1000},
-	[5] = {9, "Wrist", 1000},
-	[6] = {10, "Hands", 1000},
-	[7] = {7, "Legs", 1000},
-	[8] = {8, "Feet", 1000},
-	[9] = {16, "Main Hand", 1000},
-	[10] = {17, "Off Hand", 1000},
-	[11] = {18, "Ranged", 1000}
+	[1] = {1, HEADSLOT, 1000},
+	[2] = {3, SHOULDERSLOT, 1000},
+	[3] = {5, CHESTSLOT, 1000},
+	[4] = {6, WAISTSLOT, 1000},
+	[5] = {9, WRISTSLOT, 1000},
+	[6] = {10, HANDSSLOT, 1000},
+	[7] = {7, LEGSSLOT, 1000},
+	[8] = {8, FEETSLOT, 1000},
+	[9] = {16, MAINHANDSLOT, 1000},
+	[10] = {17, SECONDARYHANDSLOT, 1000},
+	[11] = {18, RANGEDSLOT, 1000}
 }
 	
 local function OnEvent(self, event)
@@ -71,13 +74,23 @@ local function OnEvent(self, event)
 		GameTooltip:ClearAllPoints()
 		GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
 		GameTooltip:ClearLines()
+		--local costTotal = 0
 		for i = 1, 11 do
+			--local cost = select(3, LPDURA:SetInventoryItem( "player", i))
+			--costTotal = costTotal + cost
+			--local slot = GetInventorySlotInfo(i)
+			--print(i, localSlots[i][2], slot, cost, costTotal)
+
 			if localSlots[i][3] ~= 1000 then
-				green = localSlots[i][3]*2
-				red = 1 - green
-				GameTooltip:AddDoubleLine(localSlots[i][2], floor(localSlots[i][3]*100).."%",1 ,1 , 1, red + 1, green, 0)
+				--green = localSlots[i][3]*2
+				--red = 1 - green
+				local cols1, cols2, cols3, cols4 = gradient( localSlots[i][3])
+				--GameTooltip:AddDoubleLine(localSlots[i][2], floor(localSlots[i][3]*100).."%",1 ,1 , 1, red + 1, green, 0)
+				GameTooltip:AddDoubleLine(localSlots[i][2], floor(localSlots[i][3]*100).."%",1 ,1 , 1, cols2, cols3, cols4)
 			end
 		end
+		--GameTooltip:AddLine(" ")
+		--GameTooltip:AddDoubleLine( REPAIR_ITEMS, formatMoney( costTotal), 1, .75, 0)
 		GameTooltip:Show()
 			
 	end)

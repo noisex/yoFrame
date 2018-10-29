@@ -125,7 +125,7 @@ local function OnEvent(self, event, ...)
 							totalMoney = totalMoney + tonumber( vv["Money"])
 							local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
 
-							GameTooltip:AddDoubleLine( kk .. keystone, FormatTooltipMoney( vv["Money"]), cols.r, cols.g, cols.b, 1, 1, 1)
+							GameTooltip:AddDoubleLine( kk .. keystone, FormatTooltipMoney( vv["Money"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 						end
 						
 					end

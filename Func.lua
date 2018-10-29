@@ -27,6 +27,14 @@ function formatMoney(money)
 	end
 end
 
+function gradient(perc)
+	perc = perc > 1 and 1 or perc < 0 and 0 or perc -- Stay between 0-1
+	local seg, relperc = math.modf(perc*2)
+	local r1, g1, b1, r2, g2, b2 = select(seg * 3 + 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0) -- R -> Y -> G
+	local r, g, b = r1 + (r2 - r1) * relperc, g1 + (g2 - g1) * relperc, b1 + (b2 - b1) * relperc
+	return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255), r, g, b
+end
+
 function HideBlizzard()
 	-- Hidden parent frame
 	local UIHider = CreateFrame("Frame")
@@ -251,7 +259,7 @@ function formatTimeSec( s)
 	return format("%ds", s), (s * 100 - floor(s * 100))/100
 end
 
-function SecondsToClock(seconds, noSec)
+function SecondsToClock(seconds, noSec, noMin)
   local seconds = tonumber(seconds)
 
   if seconds <= 0 then   --return "00:00:00";
@@ -268,13 +276,13 @@ function SecondsToClock(seconds, noSec)
   	
   	local days 	= floor(seconds/86400)
   	local hours	= floor(mod(seconds, 86400)/3600)
-  	local mins 	= floor(mod(seconds,3600)/60)
+  	local mins 	= noMin and 0 or floor(mod(seconds,3600)/60)
   	local secs 	= noSec and 0 or floor(mod(seconds,60))
 
-    days 	= days == 0 and "" or ( days .. "d ")
-    hours 	= hours == 0 and "" or ( hours .. "h ")
-	mins 	= mins == 0 and "" or ( mins .. "m ")	
-	secs 	= secs == 0 and "" or ( secs .. "s")
+    days 	= days == 0 and "" or ( format( LASTONLINE_DAYS, days) .. " ") 		-- .. "d ")
+    hours 	= hours == 0 and "" or ( format( LASTONLINE_HOURS, hours) .. " ") 	-- .. "h ")
+	mins 	= mins == 0 and "" or ( format( LASTONLINE_MINUTES, mins) .. " ")
+	secs 	= secs == 0 and "" or ( format( INT_SPELL_DURATION_SEC, secs))
     return days..hours..mins..secs
   end
 end

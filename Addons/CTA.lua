@@ -276,7 +276,7 @@ local function CreateLFRStrings( parent, id)
 					local timeWaite =  SecondsToClock( GetTime() - queuedTime)
 					GameTooltip:AddLine( " ")
 					GameTooltip:AddDoubleLine( QUEUED_STATUS_QUEUED, timeWaite)
-					GameTooltip:AddDoubleLine( AVERAGE_WAIT_TIME,  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")					
+					GameTooltip:AddDoubleLine( VOICE_CHAT_AWAITING_MEMBER_NAME,  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")					
 				end
 			end		
 		end
