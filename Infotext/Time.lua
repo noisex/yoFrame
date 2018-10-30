@@ -36,9 +36,9 @@ local function Update(self, t)
 		end
 			
 		-- BFA
-		--local pendingCalendarInvites = CalendarGetNumPendingInvites()		
+		local pendingCalendarInvites = C_Calendar.GetNumPendingInvites()		
 		if pendingCalendarInvites and pendingCalendarInvites > 0 then
-			Text:SetText( "|cffFF0000"..Hr24..":"..Min)
+			Text:SetText( "|cffFF0000NEW "..Hr24..":"..Min)
 		else
 			Text:SetText( myColorStr..Hr24..":"..myColorStr..Min)
 		end
@@ -96,35 +96,45 @@ local function OnEnter( self)
 	
 	local oneraid
 	for i = 1, GetNumSavedInstances() do
-		local name,_,reset,difficulty,locked,extended,_,isRaid,maxPlayers = GetSavedInstanceInfo(i)
+		local name, id, reset, difficulty, locked, extended, _, isRaid, _, diff, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
 		if isRaid and (locked or extended) then
-			local tr,tg,tb,diff
+			local tr,tg,tb
 			if not oneraid then
 				GameTooltip:AddLine(" ")
-				GameTooltip:AddLine( CALENDAR_FILTER_RAID_RESETS)
+				GameTooltip:AddDoubleLine( CALENDAR_FILTER_RAID_RESETS, SecondsToClock(reset, true, false))
 				oneraid = true
 			end
 
-			local function fmttime(sec,table)
-			local table = table or {}
-			local d,h,m,s = ChatFrame_TimeBreakDown(floor(sec))
-			local string = gsub(gsub(format(" %dd %dh %dm "..((d==0 and h==0) and "%ds" or ""),d,h,m,s)," 0[dhms]"," "),"%s+"," ")
-			local string = strtrim(gsub(string, "([dhms])", {d=table.days or "d",h=table.hours or "h",m=table.minutes or "m",s=table.seconds or "s"})," ")
-			return strmatch(string,"^%s*$") and "0"..(table.seconds or L"s") or string
-		end
-		if extended then tr,tg,tb = 0.3,1,0.3 else tr,tg,tb = 1,1,1 end
-		if difficulty == 3 or difficulty == 4 then diff = "H" else diff = "N" end
-		GameTooltip:AddDoubleLine(name,fmttime(reset),1,1,1,tr,tg,tb)
+			if extended then tr,tg,tb = 0.3,1,0.3 else tr,tg,tb = 1,1,1 end
+
+			if difficulty == 14 then
+				diff = "|cffffff00"..diff..": |r"
+			elseif difficulty == 15 then 
+				diff = "|cff00ffff"..diff..": |r"
+			elseif difficulty == 16 then 
+				diff = "|cffff0000"..diff..": |r"
+			else
+				diff = ""
+			end	
+			GameTooltip:AddDoubleLine( diff .. name, encounterProgress .. "/" .. numEncounters,1,1,1,tr,tg,tb)
 		end
 	end
 	GameTooltip:Show()
 end
+
+--local function OnEvent( self, event, ...)
+--	local pendingCalendarInvites = C_Calendar.GetNumPendingInvites()		
+--	if pendingCalendarInvites and pendingCalendarInvites > 0 then
+--		Text:SetText( "|cffFF0000Invite "..Hr24..":"..Min)
+--	end
+--end
 
 local Stat = CreateFrame("Frame")
 	Stat:EnableMouse(true)
 	Stat:SetFrameStrata("BACKGROUND")
 	Stat:SetFrameLevel(3)
 	--Stat:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+	--Stat:SetScript("OnEvent", OnEvent)
 	--Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
 	--Stat:RegisterEvent("UPDATE_INSTANCE_INFO")
 

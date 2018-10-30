@@ -226,7 +226,8 @@ local function CalendarPend( self, event, ...)
 end
 
 local calevent = CreateFrame("Frame", nil, Minimap)
-calevent:RegisterEvent("CALENDAR_NEW_EVENT")
+--calevent:RegisterEvent("CALENDAR_NEW_EVENT")
+
 --calevent:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 --calevent:RegisterEvent("CALENDAR_OPEN_EVENT")
 --calevent:RegisterEvent("CALENDAR_UPDATE_EVENT_LIST")
