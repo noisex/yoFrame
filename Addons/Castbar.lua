@@ -20,7 +20,7 @@ local function FadingOut( f)
 end
 
 function spellDelay()
-	for spellID, _ in pairs( raid_spells) do
+	for spellID, _ in pairs( interupt_spells) do
 		local _, duration = GetSpellCooldown( spellID)
 		if duration ~= 0 then
 			return false

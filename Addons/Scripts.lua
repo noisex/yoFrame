@@ -594,3 +594,5 @@ f:RegisterEvent("PLAYER_FLAGS_CHANGED")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("PLAYER_LEAVING_WORLD")
 f:RegisterEvent("PLAYER_LOGIN")
+
+--------------------

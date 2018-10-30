@@ -51,6 +51,8 @@ local function OnEnter( self)
 		
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
 	GameTooltip:ClearLines()
+	GameTooltip:SetBackdropColor( 0, 0, 0, 1)
+	GameTooltip:SetAlpha(1)
 
 	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - myLogin))
 	if yo_AllData[myRealm][myName].PlayedLvl < 86400 then
@@ -80,7 +82,7 @@ local function OnEnter( self)
 			GameTooltip:AddLine' '
 		end
 	end		
-	GameTooltip:AddDoubleLine( TOTAL, SecondsToClock( totalMoney, true), 1, 1, 0, 0, 1, 0)
+	GameTooltip:AddDoubleLine( TOTAL, SecondsToClock( totalMoney, true, true), 1, 1, 0, 0, 1, 0)
 	GameTooltip:AddLine' '
 
 	local Hr, Min = GetGameTime()
@@ -89,8 +91,7 @@ local function OnEnter( self)
 
 	Hr24 = tonumber(date("%H"))
 	Min = tonumber(date("%M"))
-	if Min<10 then Min = "0"..Min end
-	
+	if Min<10 then Min = "0"..Min end	
 	GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, Hr24 .. ":" .. Min, 1, 1, 0, 1, 1, 1)
 	
 	local oneraid

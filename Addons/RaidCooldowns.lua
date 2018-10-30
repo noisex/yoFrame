@@ -133,10 +133,10 @@ end
 local StartTimer = function(name, spellId)
 	local bar = CreateBar()
 	local spell, rank, icon = GetSpellInfo(spellId)
-	bar.endTime = GetTime() + raid_spells[spellId]
+	bar.endTime = GetTime() + raid_CD_Spells[spellId]
 	bar.startTime = GetTime()
 	bar.left:SetText( strsplit("-", name) .. " - " .. spell)
-	bar.right:SetText(FormatTime(raid_spells[spellId]))
+	bar.right:SetText(FormatTime(raid_CD_Spells[spellId]))
 	bar.icon:SetNormalTexture( icon)
 	bar.icon:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	
@@ -167,7 +167,7 @@ local OnEvent = function(self, event, ...)
 
 		if band(sourceFlags, filter) == 0 then return end
 		
-		if raid_spells[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
+		if raid_CD_Spells[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
 			StartTimer( strsplit( "-", sourceName), spellId)
 		end
 	

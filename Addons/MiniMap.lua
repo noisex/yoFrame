@@ -186,35 +186,53 @@ local function MiniInit()
 	Hide( Minimap)
 end
 
-rLib:RegisterCallback("PLAYER_ENTERING_WORLD", MiniInit)
-
-local function CalendarPend( self, event, unit)
+local function CalendarPend( self, event, ...)
 	--local pend = C_Calendar.GetNumPendingInvites()
-	if unit and not UnitIsUnit("player", unit) then
+
+	if event == "MINIMAP_PING" then
+		local unit = ...
+		if unit 
+			--and not UnitIsUnit("player", unit) 
+			then
 		
-		if not self.pingText then
-			self.pingText = self:CreateFontString(nil, "OVERLAY")
-			self.pingText:SetFont( font, fontsize, "OUTLINE")
-			self.pingText:SetPoint("CENTER", Minimap, "TOP", 0, -40)
-			self.pingText:Hide()			
+			if not self.pingText then
+				self.pingText = self:CreateFontString(nil, "OVERLAY")
+				self.pingText:SetFont( font, fontsize, "OUTLINE")
+				self.pingText:SetPoint("CENTER", Minimap, "TOP", 0, -40)
+				self.pingText:Hide()			
+			end
+
+			local uclass = ( select( 2, UnitClass( unit)) or 1)
+			local sColor = "|c" .. RAID_CLASS_COLORS[ uclass].colorStr .. UnitName( unit) .. "|r"
+			--local sColor = "|c" .. RAID_CLASS_COLORS[ uclass].colorStr .. strsplit( "-", UnitName( unit)) .. "|r"
+
+			self.pingText:SetText( sColor)
+			self.pingText:Show()
+  			C_Timer.After( 2, HidePing)
 		end
 
-		local uclass = ( select( 2, UnitClass( unit)) or 1)
-		local sColor = "|c" .. RAID_CLASS_COLORS[ uclass].colorStr .. UnitName( unit) .. "|r"
-		--local sColor = "|c" .. RAID_CLASS_COLORS[ uclass].colorStr .. strsplit( "-", UnitName( unit)) .. "|r"
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		MiniInit()
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-		self.pingText:SetText( sColor)
-		self.pingText:Show()
-  		C_Timer.After( 2, HidePing)
-	end
+	elseif event == "CALENDAR_EVENT_ALARM" then
+		local title, hour, minute = ...;
+		local info = ChatTypeInfo["SYSTEM"];
+		DEFAULT_CHAT_FRAME:AddMessage(format(CALENDAR_EVENT_ALARM_MESSAGE, title), info.r, info.g, info.b, info.id);
+		UIFrameFlash(GameTimeCalendarEventAlarmTexture, 1.0, 1.0, 6);
+	else
+		print("|cffff0000Debug event: |r", event, ... )
+	end	
 end
 
 local calevent = CreateFrame("Frame", nil, Minimap)
---calevent:RegisterEvent("PLAYER_ENTERING_WORLD")
+calevent:RegisterEvent("CALENDAR_NEW_EVENT")
 --calevent:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 --calevent:RegisterEvent("CALENDAR_OPEN_EVENT")
---calevent:RegisterEvent("CALENDAR_EVENT_ALARM")
 --calevent:RegisterEvent("CALENDAR_UPDATE_EVENT_LIST")
+
+calevent:RegisterEvent("CALENDAR_EVENT_ALARM")
+calevent:RegisterEvent("PLAYER_ENTERING_WORLD")
 calevent:RegisterEvent("MINIMAP_PING")
 calevent:SetScript("OnEvent", CalendarPend)
 

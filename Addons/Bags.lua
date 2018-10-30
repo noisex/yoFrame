@@ -888,12 +888,14 @@ function addon_Open()
 	--print( "BAGS Frame Open")
 	addon.bagFrame:Show()
 	UpdateAllSlots( addon.bagFrame)
+	--PlaySound ( 862, "Master")
 end
 
 function addon_Close()
 	--print( "BAGS Close")
-	addon.bagFrame:Hide()
+	addon.bagFrame:Hide()	
 end
+
 local function addon_OnShow()
 	--print( "Event addon_ONShow")
 	-- Stuffing:PLAYERBANKSLOTS_CHANGED(29)
@@ -1878,7 +1880,26 @@ hooksecurefunc( 'SetItemButtonCount', function( slot)
 		end
 	end
 end)
-			
+
+local needCloseBags = false
+local function checkToClose(...)
+	if addon.bagFrame:IsShown() then
+		needCloseBags = true
+	else
+		needCloseBags = false
+	end
+end
+
+local function tryToClose(...)
+	if needCloseBags then
+		addon_Close()
+		PlaySound ( 863, "Master")   -- 863	IG_BACKPACK_CLOSE
+		HideUIPanel(GameMenuFrame);	
+		needCloseBags = false
+	end		
+end
+
+
 function addon:PLAYER_ENTERING_WORLD()
 	addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	
@@ -1939,6 +1960,9 @@ function addon:PLAYER_ENTERING_WORLD()
 	CloseAllBags = addon_Close
 	CloseBackpack = addon_Close
 	
+	hooksecurefunc( "CloseAllWindows", checkToClose)
+	hooksecurefunc( "ToggleGameMenu", tryToClose)
+
 	--Bag Assignment Dropdown Menu
 	ElvUIAssignBagDropdown = CreateFrame("Frame", "ElvUIAssignBagDropdown", UIParent, "UIDropDownMenuTemplate")
 	ElvUIAssignBagDropdown:SetID(1)

@@ -90,13 +90,17 @@ hooksecurefunc("QuestLogQuests_Update", ShowQuestLevelInLog)
 ----------------------------------------------------------------------------------------
 --	Add quest/achievement wowhead link and Abandon
 ----------------------------------------------------------------------------------------
-local linkQuest, linkAchievement
-if client == "ruRU" then
+local linkQuest, linkAchievement, linkText
+local locale = GetLocale()
+
+if locale == "ruRU" then
 	linkQuest = "http://ru.wowhead.com/quest=%d"
+	linkText = "Ссылка на Wowhead"
 	linkAchievement = "http://ru.wowhead.com/achievement=%d"
 else
-	linkQuest = "http://ru.wowhead.com/quest=%d"
-	linkAchievement = "http://ru.wowhead.com/achievement=%d"
+	linkText = "Link to Wowhead"
+	linkQuest = "http://wowhead.com/quest=%d"
+	linkAchievement = "http://wowhead.com/achievement=%d"
 end
 
 StaticPopupDialogs.WATCHFRAME_URL = {
@@ -117,7 +121,7 @@ hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
 	b = self.activeFrame
 	questID = b.id
 	info = UIDropDownMenu_CreateInfo()
-	info.text = "Ссылка на Wowhead"
+	info.text = linkText
 	info.func = function(id)
 		local inputBox = StaticPopup_Show("WATCHFRAME_URL")
 		inputBox.editBox:SetText(linkQuest:format(questID))
@@ -128,7 +132,7 @@ hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
 	UIDropDownMenu_AddButton(info, UIDROPDOWN_MENU_LEVEL)
 	
 	info2 = UIDropDownMenu_CreateInfo()
-	info2.text = "Отменить квест!!!" 
+	info2.text = ABANDON_QUEST
 	info2.func = function(id)
 		for i=1, GetNumQuestLogEntries() do 
 			local qID = select( 8, GetQuestLogTitle(i))
@@ -152,7 +156,7 @@ hooksecurefunc("AchievementObjectiveTracker_OnOpenDropDown", function(self)
 	b = self.activeFrame
 	i = b.id
 	info = UIDropDownMenu_CreateInfo()
-	info.text = "Ссылка на Wowhead"
+	info.text = linkText
 	info.func = function(_, i)
 		local inputBox = StaticPopup_Show("WATCHFRAME_URL")
 		inputBox.editBox:SetText(linkAchievement:format(i))

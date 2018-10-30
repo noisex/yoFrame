@@ -274,16 +274,21 @@ function SecondsToClock(seconds, noSec, noMin)
     --mins =  format("%02.f", math.floor(seconds/60 - (hours*60)));
     --secs =  format("%02.f", math.floor(seconds - hours*3600 - mins *60));
   	
-  	local days 	= floor(seconds/86400)
+  	local years	= floor(seconds/31556926)
+  	local month	= floor(mod(seconds, 31556926)/ 2592000)
+  	local days 	= floor(mod(seconds, 2592000)/ 86400)
   	local hours	= floor(mod(seconds, 86400)/3600)
   	local mins 	= noMin and 0 or floor(mod(seconds,3600)/60)
   	local secs 	= noSec and 0 or floor(mod(seconds,60))
 
-    days 	= days == 0 and "" or ( format( LASTONLINE_DAYS, days) .. " ") 		-- .. "d ")
-    hours 	= hours == 0 and "" or ( format( LASTONLINE_HOURS, hours) .. " ") 	-- .. "h ")
-	mins 	= mins == 0 and "" or ( format( LASTONLINE_MINUTES, mins) .. " ")
-	secs 	= secs == 0 and "" or ( format( INT_SPELL_DURATION_SEC, secs))
-    return days..hours..mins..secs
+  	years 	= years == 0 and "" or ( format( LASTONLINE_YEARS, years) .. " ")
+  	month 	= month == 0 and "" or ( format( LASTONLINE_MONTHS, month) .. " ")
+    days 	= days  == 0 and "" or ( format( LASTONLINE_DAYS, days) .. " ") 
+    hours 	= hours == 0 and "" or ( format( LASTONLINE_HOURS, hours) .. " ")
+	mins 	= mins  == 0 and "" or ( format( LASTONLINE_MINUTES, mins) .. " ")
+	secs 	= secs  == 0 and "" or ( format( INT_SPELL_DURATION_SEC, secs))
+
+    return years..month..days..hours..mins..secs
   end
 end
 
