@@ -596,3 +596,18 @@ f:RegisterEvent("PLAYER_LEAVING_WORLD")
 f:RegisterEvent("PLAYER_LOGIN")
 
 --------------------
+
+----------------------------------------------------------------------------------------
+--	Move vehicle indicator
+----------------------------------------------------------------------------------------
+--local VehicleAnchor = CreateFrame("Frame", "VehicleAnchor", UIParent)
+--VehicleAnchor:SetPoint(unpack(C.position.vehicle))
+--VehicleAnchor:SetSize(130, 130)
+
+hooksecurefunc(VehicleSeatIndicator, "SetPoint", function(_, _, parent)
+	if parent == "MinimapCluster" or parent == _G["MinimapCluster"] then
+		VehicleSeatIndicator:ClearAllPoints()
+		VehicleSeatIndicator:SetPoint("TOPRIGHT", Minimap, "BOTTOMLEFT", -110, -15)
+		VehicleSeatIndicator:SetFrameStrata("LOW")
+	end
+end)

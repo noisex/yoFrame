@@ -1,3 +1,6 @@
+local addonName, ns = ...
+local L = ns.L
+
 local rowCount = 3
 local affCount = 3
 local iSize = 35
@@ -432,8 +435,11 @@ local function OnEvent( self, event, name, ...)
 		local timeLimit2 = timeLimit * TIME_FOR_2
 		local timeLimit3 = timeLimit * TIME_FOR_3
 
-		print(name, level, timeFormatMS(time), timeFormatMS(time - timeLimit))
-
+		--print(name, level, timeFormatMS(time), timeFormatMS(time - timeLimit), L["completion0"])
+		--"Гробница королей"," 2, "1:05:01.321", "26:01.321"
+		--L["completion0"] = "|cff8787ED[%s] %s|r окончили за |cffff0000%s|r, вы отстали на %s от общего лимита времени."
+		
+		print( "|cff00ffff" .. LANDING_PAGE_REPORT)
 		if time <= timeLimit3 then
 			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion3"], level, name, timeFormatMS(time), timeFormatMS(timeLimit3 - time)), 255/255, 215/255, 1/255) 
 		elseif time <= timeLimit2 then
@@ -441,16 +447,17 @@ local function OnEvent( self, event, name, ...)
 		elseif onTime then
 			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion1"], level, name, timeFormatMS(time), timeFormatMS(timeLimit - time), timeFormatMS(time - timeLimit2)), 237/255, 165/255, 95/255)
 		else
-			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion0"], ( name or "BAD DUNGE"), level, timeFormatMS(time), timeFormatMS(time - timeLimit)), 255/255, 32/255, 32/255)
+			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion0"], name, level, timeFormatMS(time), timeFormatMS(time - timeLimit)), 255/255, 32/255, 32/255)
 		end
+		print("|cff00ffff--------------------------------------------------------------------------")
 
 		yo_OldKey2 = CheckInventoryKeystone()
 		C_Timer.After( 2, function()
 			local newKey = CheckInventoryKeystone()
-			print("OLd: ", yo_OldKey, ". OLd2: ", yo_OldKey2, ". New: " , newKey)
+			print("Debug: OLd: ", yo_OldKey, ". OLd2: ", yo_OldKey2, ". New: " , newKey)
 			if newKey and newKey ~= yo_OldKey then
 				--print(yo_OldKey, newKey)
-				--SendChatMessage( newKey, "PARTY")
+				SendChatMessage( newKey, "PARTY")
 			end
 		end)
 	end

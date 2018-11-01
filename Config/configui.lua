@@ -25,7 +25,7 @@ LSM:Register("sound", "Shotgun", "Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg
 LSM:Register("sound", "Wisper", "Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
 LSM:Register("sound", "Murloc", "Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
 
-local function Setlers( path, val)
+function Setlers( path, val)
 	local p1, p2, p3, p4 = strsplit("#", path)
 		
 	local pers = false
@@ -81,9 +81,7 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
   	button1 = "Yes",
   	button2 = "No",
   	OnAccept = function()
-  		local name = UnitName("player")
-		local realm = GetRealmName()
-		yo_AllData[realm][name].PersonalConfig = not yo_AllData[realm][name].PersonalConfig 
+		yo_AllData[myRealm][myName].PersonalConfig = not yo_AllData[myRealm][myName].PersonalConfig 
      	ReloadUI()
   	end,
   	timeout = 0,
@@ -113,7 +111,7 @@ function InitOptions()
 					PersonalConfig = {
 						order = 1, type = "toggle", width = "full",	name = function(info) return tr( info[#info]) end, 
 						desc = L["PERSONAL_DESC"] ,	descStyle = "inline",
-						get = function(info) local name = UnitName("player") local realm = GetRealmName() return yo_AllData[realm][name].PersonalConfig end ,
+						get = function(info) return yo_AllData[myRealm][myName].PersonalConfig end ,
 						set = function(info,val) StaticPopup_Show ("CONFIRM_PERSONAL") end,	},
 
 			        ChangeSystemFonts = {

@@ -18,10 +18,7 @@ local function FormatTooltipMoney(money)
 	return cash
 end	
 
-local function newConfigData()
-
-	--local newname = UnitName("player")
-	--local realm = GetRealmName()
+local function newConfigData( personalConfig)
 
 	if yo_AllData == nil then
 		yo_AllData = {}
@@ -39,8 +36,9 @@ local function newConfigData()
 	yo_AllData[myRealm][myName]["MoneyDay"] = date()
 	yo_AllData[myRealm][myName]["MoneyTime"] = time()
 	yo_AllData[myRealm][myName]["Class"] = myClass
-	yo_AllData[myRealm][myName]["Color"] = myColor
+	yo_AllData[myRealm][myName]["Color"] = { ["r"] = myColor.r, ["g"] = myColor.g, ["b"] = myColor.b, ["colorStr"] = myColor.colorStr}
 	yo_AllData[myRealm][myName]["ColorStr"] = myColorStr
+	yo_AllData[myRealm][myName]["PersonalConfig"] = yo_AllData[myRealm][myName].PersonalConfig or personalConfig
 end
 
 local function OnEvent(self, event, ...)
@@ -87,66 +85,61 @@ local function OnEvent(self, event, ...)
 	newConfigData()
 
 	self:SetAllPoints( Text)
-
-	local myPlayerRealm = GetRealmName()
-	local myPlayerName  = UnitName("player")
-	local keystone = ""
-			
 	self:SetScript("OnEnter", function()
-			local totalMoney = 0
+		local totalMoney = 0
 
-			self.hovered = true 
-			GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
-			GameTooltip:ClearAllPoints()
-			GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
-			GameTooltip:ClearLines()
-			GameTooltip:AddLine(L["For the game"])
-			GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine(L["Spent"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
-			if Profit < Spent then
-				GameTooltip:AddDoubleLine(L["Loss"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
-			elseif (Profit-Spent)>0 then
-				GameTooltip:AddDoubleLine(L["Profit"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
-			end				
-			GameTooltip:AddLine' '								
+		GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
+		GameTooltip:ClearAllPoints()
+		GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
+		GameTooltip:ClearLines()
+		GameTooltip:AddLine(L["For the game"])
+		GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["Spent"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
+		if Profit < Spent then
+			GameTooltip:AddDoubleLine(L["Loss"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
+		elseif (Profit-Spent)>0 then
+			GameTooltip:AddDoubleLine(L["Profit"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
+		end				
+		GameTooltip:AddLine' '								
+		
+		GameTooltip:AddLine(L["General information"])
 			
-			GameTooltip:AddLine(L["General information"])
-			
-			for k, v in pairs ( yo_AllData) do
-				if type( v) == "table" then
-					GameTooltip:AddDoubleLine( "  ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
-					for kk, vv in pairs ( v) do
-						if vv["KeyStone"] ~= nil then
-							keystone = " " .. vv["KeyStone"]
-						else
-							keystone = ""
-						end
-						if tonumber( vv["Money"]) and tonumber( vv["Money"]) > 100000 then
-							totalMoney = totalMoney + tonumber( vv["Money"])
-							local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
+		local oneDate
+		for k, v in pairs ( yo_AllData) do
+			if type( v) == "table" then		
+				oneDate = false	
+				for kk, vv in pairs ( v) do					
+					local keystone = vv["KeyStone"] and " " .. vv["KeyStone"] or ""
 
+					if tonumber( vv["Money"]) and tonumber( vv["Money"]) > 100000 then
+						if not oneDate then
+							GameTooltip:AddDoubleLine( "  ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
+							oneDate = true
+						end	
+						totalMoney = totalMoney + tonumber( vv["Money"])
+						local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
 							GameTooltip:AddDoubleLine( kk .. keystone, FormatTooltipMoney( vv["Money"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
-						end
-						
 					end
+					
 				end
 			end
-			GameTooltip:AddLine' '	
-			GameTooltip:AddDoubleLine( L["TOTAL"], FormatTooltipMoney( totalMoney), 1, 1, 0, 0, 1, 0)
+		end
+		GameTooltip:AddLine' '	
+		GameTooltip:AddDoubleLine( L["TOTAL"], FormatTooltipMoney( totalMoney), 1, 1, 0, 0, 1, 0)
 			
-			for i = 1, MAX_WATCHED_TOKENS do
-				local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
-				if name and i == 1 then
-					GameTooltip:AddLine(" ")
-					GameTooltip:AddLine(CURRENCY .. ":")
-				end
-				local r, g, b = 1,1,1
-				if itemID then r, g, b = GetItemQualityColor(select(3, GetItemInfo(itemID))) end
-				if name and count then GameTooltip:AddDoubleLine(name, commav( count), r, g, b, 1, 1, 1) end
+		for i = 1, MAX_WATCHED_TOKENS do
+			local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
+			if name and i == 1 then
+				GameTooltip:AddLine(" ")
+				GameTooltip:AddLine(CURRENCY .. ":")
 			end
-			GameTooltip:Show()
-			
+			local r, g, b = 1,1,1
+			if itemID then r, g, b = GetItemQualityColor(select(3, GetItemInfo(itemID))) end
+			if name and count then GameTooltip:AddDoubleLine(name, commav( count), r, g, b, 1, 1, 1) end
+		end
+		GameTooltip:Show()		
 	end)
+
 	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 		
 	OldMoney = NewMoney
@@ -163,8 +156,12 @@ Stat:RegisterEvent("TIME_PLAYED_MSG")
 Stat:SetScript("OnMouseDown", function( self) 
 	isOpen = not isOpen
 	if IsShiftKeyDown() then
+		local myPersonalConfig
+		if yo_AllData[myRealm][myName] and yo_AllData[myRealm][myName].PersonalConfig then
+			myPersonalConfig = true
+		end
 		yo_AllData = nil
-		newConfigData()
+		newConfigData( myPersonalConfig)
 		print("|cffff0000All data reset.|r")
 	else
 		if isOpen then
@@ -176,15 +173,3 @@ Stat:SetScript("OnMouseDown", function( self)
 end)
 
 Stat:SetScript("OnEvent", OnEvent)
-
-	-- reset gold data
-local function RESETGOLD()
-	local myPlayerRealm = GetCVar("realmName");
-	local myPlayerName  = UnitName("player");
-	
-	Data.gold = {}
-	Data.gold[myPlayerRealm]={}
-	Data.gold[myPlayerRealm][myPlayerName] = GetMoney();
-end
-SLASH_RESETGOLD1 = "/resetgold"
-SlashCmdList["RESETGOLD"] = RESETGOLD

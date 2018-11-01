@@ -55,36 +55,43 @@ local function OnEnter( self)
 	GameTooltip:SetAlpha(1)
 
 	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - myLogin))
-	if yo_AllData[myRealm][myName].PlayedLvl < 86400 then
-		GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[myRealm][myName].PlayedLvl))
-	else
-		GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[myRealm][myName].PlayedLvl, true, true))
-	end
-	
-	GameTooltip:AddLine' '
-	GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
 
-	local totalMoney = 0
-	for k, v in pairs ( yo_AllData) do
-		if type( v) == "table" then
-			GameTooltip:AddDoubleLine( " ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
-			for kk, vv in pairs ( v) do
-				if tonumber( vv["Played"]) then
-					totalMoney = totalMoney + tonumber( vv["Played"])
-					local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
-					if vv["Played"] < 86400 then
-						GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
-					else
-						GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"], true, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
-					end
-				end	
-			end
-			GameTooltip:AddLine' '
+	if yo_AllData[myRealm][myName].PlayedLvl then		
+		if yo_AllData[myRealm][myName].PlayedLvl < 86400 then
+			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[myRealm][myName].PlayedLvl))
+		else
+			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[myRealm][myName].PlayedLvl, true, true))
 		end
-	end		
-	GameTooltip:AddDoubleLine( TOTAL, SecondsToClock( totalMoney, true, true), 1, 1, 0, 0, 1, 0)
-	GameTooltip:AddLine' '
+	
+		GameTooltip:AddLine' '
+		GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
 
+		local totalPlayed, oneDate = 0
+		for k, v in pairs ( yo_AllData) do
+			if type( v) == "table" then
+				oneDate = false
+				for kk, vv in pairs ( v) do	
+					if tonumber( vv["Played"]) then
+						if not oneDate then
+							GameTooltip:AddDoubleLine( " ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
+							oneDate = true
+						end	
+						totalPlayed = totalPlayed + tonumber( vv["Played"])
+						local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
+						if vv["Played"] < 86400 then
+							GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+						else
+							GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"], true, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+						end
+					end	
+				end
+				GameTooltip:AddLine' '
+			end
+		end		
+		GameTooltip:AddDoubleLine( TOTAL, SecondsToClock( totalPlayed, true, true), 1, 1, 0, 0, 1, 0)		
+	end
+
+	GameTooltip:AddLine' '
 	local Hr, Min = GetGameTime()
 	if Min<10 then Min = "0"..Min end
 	GameTooltip:AddDoubleLine( TIMEMANAGER_TOOLTIP_REALMTIME, Hr .. ":" .. Min, 1, 1, 0, 1, 1, 1)
@@ -94,15 +101,15 @@ local function OnEnter( self)
 	if Min<10 then Min = "0"..Min end	
 	GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, Hr24 .. ":" .. Min, 1, 1, 0, 1, 1, 1)
 	
-	local oneraid
+	oneDate = false
 	for i = 1, GetNumSavedInstances() do
 		local name, id, reset, difficulty, locked, extended, _, isRaid, _, diff, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
 		if isRaid and (locked or extended) then
 			local tr,tg,tb
-			if not oneraid then
+			if not oneDate then
 				GameTooltip:AddLine(" ")
 				GameTooltip:AddDoubleLine( CALENDAR_FILTER_RAID_RESETS, SecondsToClock(reset, true, false))
-				oneraid = true
+				oneDate = true
 			end
 
 			if extended then tr,tg,tb = 0.3,1,0.3 else tr,tg,tb = 1,1,1 end
@@ -113,6 +120,8 @@ local function OnEnter( self)
 				diff = "|cff00ffff"..diff..": |r"
 			elseif difficulty == 16 then 
 				diff = "|cffff0000"..diff..": |r"
+			elseif difficulty == 17 then 
+				diff = "|cff00ff00"..diff..": |r"
 			else
 				diff = ""
 			end	
@@ -121,13 +130,6 @@ local function OnEnter( self)
 	end
 	GameTooltip:Show()
 end
-
---local function OnEvent( self, event, ...)
---	local pendingCalendarInvites = C_Calendar.GetNumPendingInvites()		
---	if pendingCalendarInvites and pendingCalendarInvites > 0 then
---		Text:SetText( "|cffFF0000Invite "..Hr24..":"..Min)
---	end
---end
 
 local Stat = CreateFrame("Frame")
 	Stat:EnableMouse(true)

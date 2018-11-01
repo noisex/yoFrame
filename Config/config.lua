@@ -30,6 +30,7 @@ yo["Bags"] = {
 	["numMaxRow"]			= 16,
 	["containerWidth"] 		= 438,
 	["newIconAnimation"]	= true,
+	["autoReagent"]			= true,
 }			
 yo["Addons"] = {
 	["ChangeSystemFonts"] 			= true,			--	
@@ -312,8 +313,8 @@ logan:SetScript("OnEvent", function(self, event)
 	local name = UnitName("player")
 	local realm = GetRealmName()
 	local yo_tCfg = {}
-
-	if yo_AllData[realm][name].PersonalConfig then
+	
+	if yo_AllData[realm] and yo_AllData[realm][name] and yo_AllData[realm][name].PersonalConfig then
 		yo_tCfg = yo_PersonalConfig
 	else
 		yo_tCfg = yo_AllConfig
