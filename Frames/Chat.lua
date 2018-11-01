@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 texture	=	yo.Media.texture
 texhl 	=	yo.Media.texhl
 texglow = 	yo.Media.texglow

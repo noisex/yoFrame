@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local markPool = {8, 7, 5, 4, 3, 1, 6, 2}
 local markIndex = 1
 

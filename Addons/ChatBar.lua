@@ -1,5 +1,6 @@
-local height = 13
+local L, yo = unpack( select( 2, ...))
 
+local height = 13
 
 local function BEnter(self)
 	--local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]

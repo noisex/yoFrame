@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local lib = LibStub:NewLibrary("LibCooldown", 1.0)
 if not lib then return end
 

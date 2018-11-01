@@ -1,5 +1,5 @@
-local addonName, ns = ...
-local L = ns.L
+
+local L, yo = unpack( select( 2, ...))
 
 local rowCount = 3
 local affCount = 3
@@ -13,9 +13,6 @@ local TIME_FOR_2 = 0.8
 yo_OldKey, yo_OldKey2 = nil, nil
 
 local scheduleTitle = "Schedule"
-
-MYTHIC_PLUS_INCOMPLETE_WEEKLY_KEYSTONE = "Don`t cry, go fight!!!"
-MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE   = "Just go to keys,\nthere you will understand everything ..."
 
 local mythicRewards = {
 --	{"Level","End","Weekly","Azer Weekly"},

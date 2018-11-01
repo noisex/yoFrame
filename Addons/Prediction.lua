@@ -1,3 +1,4 @@
+local L, yo = unpack( select( 2, ...))
 
 local function OnEvent( f)
 	local uhpm = UnitHealthMax( "player") 

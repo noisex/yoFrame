@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local lib = LibStub("LibCooldown")
 if not lib then error("CooldownFlash requires LibCooldown") return end
 

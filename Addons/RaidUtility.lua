@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local function DisbandRaidGroup()
 	if InCombatLockdown() then return end -- Prevent user error in combat
 

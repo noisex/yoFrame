@@ -1,4 +1,6 @@
 -- [spellID] = true / false ( buff / debuff)
+local L, yo = unpack( select( 2, ...))
+
 local LOP = LibStub("LibObjectiveProgress-1.0", true);
 local isTeeming
 

@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local errorTicker
 
 local function unitPVP( f, unit)

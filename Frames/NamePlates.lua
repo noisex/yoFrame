@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badTypes, showToolTip
 local treatColor = {}
 local auraFilter = { "HARMFUL", "HELPFUL"}

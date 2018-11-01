@@ -1,6 +1,6 @@
-local addonName, ns = ...
+local addon, ns = ...
 -- constants
-local L = ns.L
+--local L, yo = unpack( select( 2, ...))
 
 myClass = select( 2, UnitClass( "player"))
 myColor = RAID_CLASS_COLORS[myClass]
@@ -11,10 +11,7 @@ myLogin = GetTime()
 
 dummy = function() return end	
 
-yo = {} 
-yo_AllConfig = {}
-yo_AllData = {}
-yo_PersonalConfig = {}
+local yo = {} 
 
 yo["General"] = {
 	["1st"] 	= true,
@@ -123,7 +120,7 @@ yo["CastBar"] = {
 		["width"]		= 370,
 		["height"]		= 20,
 		["offsetX"]		= 0,
-		["offsetY"]		= 400,
+		["offsetY"]		= -100,
 		["unit"]		= "target",
 		["icon"]		= true,
 		["iconSize"]	= 35,
@@ -132,7 +129,7 @@ yo["CastBar"] = {
 		["iconincombat"]= true,
 		["classcolor"]	= false,
 		["treatborder"]	= false,
-		["castbarAlpha"]= 0.5,
+		["castbarAlpha"]= 0.75,
 	},
 	["focus"] = {
 		["enable"]		= true,
@@ -178,14 +175,14 @@ yo["NamePlates"] = {
 	["showCastTarget"]	= true,
 	["showPercTreat"] 	= "none",
 	["showArrows"]		= true,
-	["executePhaze"]	= false,
+	["executePhaze"]	= true,
 	["executeProc"]		= 35,
-	["executeColor"]	= "1,1,1",
+	["executeColor"]	= "1,0.75,0",
 	["blueDebuff"]		= true,
-	["dissIcons"]		= "none",	-- false, dispell
-	["buffIcons"]		= "none",	-- false, all, dispell, buff
+	["dissIcons"]		= "dispell",	-- false, dispell
+	["buffIcons"]		= "buff",	-- false, all, dispell, buff
 	["classDispell"]	= true,
-	["showToolTip"]		= "none",
+	["showToolTip"]		= "cursor",
 	["anonceCast"]		= false,
 	["showOnFrames"]	= false,
 	["c0"]				= "0.753,0.212,0.212",
@@ -305,16 +302,20 @@ yo["CTA"] = {
 
 
 local logan = CreateFrame("Frame")
---logan:RegisterEvent("ADDON_LOADED")
-logan:RegisterEvent("PLAYER_LOGIN")
+logan:RegisterEvent("ADDON_LOADED")
+--logan:RegisterEvent("PLAYER_LOGIN")
 
-logan:SetScript("OnEvent", function(self, event)
+logan:SetScript("OnEvent", function(self, event, name)
+	
+	if addon ~= name then return end
+	
+	if yo_AllData 		== nil then yo_AllData = {} end
+	if yo_AllConfig 	== nil then yo_AllConfig = {} end
+	if yo_PersonalConfig== nil then yo_PersonalConfig = {} end
 
-	local name = UnitName("player")
-	local realm = GetRealmName()
 	local yo_tCfg = {}
 	
-	if yo_AllData[realm] and yo_AllData[realm][name] and yo_AllData[realm][name].PersonalConfig then
+	if yo_AllData[myRealm] and yo_AllData[myRealm][myName] and yo_AllData[myRealm][myName].PersonalConfig then
 		yo_tCfg = yo_PersonalConfig
 	else
 		yo_tCfg = yo_AllConfig
@@ -390,4 +391,9 @@ logan:SetScript("OnEvent", function(self, event)
 	fontsize 	=	yo.Media.fontsize
 	fontstyle 	= 	"OUTLINE"
 	sysfontsize	=	yo.Media.sysfontsize
+
+	ns[2] = yo
 end)
+
+ns[2] = yo
+yoFrame = ns

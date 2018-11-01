@@ -1,6 +1,8 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF 
 
+local L, yo = ns[1], ns[2]
+
 function testers(...)
 	
 end

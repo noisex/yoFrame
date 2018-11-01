@@ -1,8 +1,9 @@
 ## Interface: 80000
 ## Version: 0.0.1
-## Title: yoFrame
+## Title: |cff00ffffyoFrame|r
 ## Author: NoiseX
 ## Notes: Foo Frame. Based on Qulight and oUF code and design. Thanks.
+## OptionalDeps: yoFrame_Config
 ## SavedVariables: yo_AllData, yo_AllConfig
 ## SavedVariablesPerCharacter: yo_Position, yo_PersonalConfig, yo_ChatHistory
 
@@ -17,26 +18,20 @@ Libs\rLib\framefader.lua
 #Libs\rLib\slashcmd.lua
 
 Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
-
-Libs\LibCooldown.lua
 Libs\LibSharedMedia-3.0\lib.xml
 Libs\LibObjectiveProgress-1.0\embed.xml
 Libs\LibItemSearch-1.2\LibItemSearch-1.2.xml
-
-Libs\AceDB-3.0\AceDB-3.0.xml
-Libs\AceGUI-3.0\AceGUI-3.0.xml
-Libs\AceAddon-3.0\AceAddon-3.0.xml
-Libs\AceConfig-3.0\AceConfig-3.0.xml
-Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 
 Libs\oUF\oUF.xml
 Libs\healthprediction.lua
 Libs\oUF_DebuffHighlight.lua
 
 Config\config.lua
-Config\configui.lua
+#Config\configui.lua
+
+Libs\LibCooldown.lua
 
 Filters\ClassDebuffOnTarget.lua
 Filters\RaidAuras.lua
@@ -108,7 +103,6 @@ Infotext\Friend.lua
 Infotext\SpecLoot.lua
 Infotext\System.lua
 Infotext\Time.lua
-
 
 Libs\oUF\elements\AutoResurrect.lua
 

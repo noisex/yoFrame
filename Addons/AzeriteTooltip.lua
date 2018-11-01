@@ -1,4 +1,5 @@
 --local addon, AzeriteTooltip = ...
+local L, yo = unpack( select( 2, ...))
 
 AzeriteTooltipDB = {
 	["Compact"]			= false,

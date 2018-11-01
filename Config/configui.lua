@@ -1,5 +1,5 @@
-local addonName, ns = ...
-local L = ns.L
+
+local L, yo = unpack( select( 2, ...))
 
 local ACD
 local needReload = false
@@ -590,17 +590,17 @@ SLASH_CFGSLASH1 = "/cfg"
 SLASH_CFGSLASH2 = "/config"
 
 
-local GameMenuButton = CreateFrame("Button", "GameMenuButtonQulightUI", GameMenuFrame, "GameMenuButtonTemplate")
-GameMenuButton:SetText("|cff00ffffyoFrame|r")
-GameMenuButton:SetPoint("TOP", "GameMenuButtonAddons", "BOTTOM", 0, -1)
+--local GameMenuButton = CreateFrame("Button", "GameMenuButtonQulightUI", GameMenuFrame, "GameMenuButtonTemplate")
+--GameMenuButton:SetText("|cff00ffffyoFrame|r")
+--GameMenuButton:SetPoint("TOP", "GameMenuButtonAddons", "BOTTOM", 0, -1)
 
-GameMenuFrame:HookScript("OnShow", function()
-	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButton:GetHeight())
-	GameMenuButtonLogout:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -16)
-end)
+--GameMenuFrame:HookScript("OnShow", function()
+--	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButton:GetHeight())
+--	GameMenuButtonLogout:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -16)
+--end)
 
-GameMenuButton:SetScript("OnClick", function()
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
-	HideUIPanel(GameMenuFrame)
-	InitOptions()
-end) 
+--GameMenuButton:SetScript("OnClick", function()
+--	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+--	HideUIPanel(GameMenuFrame)
+--	InitOptions()
+--end) 

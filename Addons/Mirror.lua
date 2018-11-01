@@ -1,4 +1,7 @@
-local _, settings = ...
+local L, yo = unpack( select( 2, ...))
+
+--local _, settings = ...
+local settings = {}
 
 local _DEFAULTS = {
 	width = 250,

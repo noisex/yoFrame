@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 aura_env.interval = 3   -- интервал в секундах
 aura_env.endTime = 0 
 aura_env.cGUID = 0

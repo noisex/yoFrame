@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 --local t_unlock = false
 yo_AnchorFrames = {}
 yo_Position = {}

@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local tauntSpell = { 
     [6795] = "Мишка",
     [56222] = "DK",

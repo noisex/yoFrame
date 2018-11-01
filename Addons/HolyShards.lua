@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 -- sourced from FrameXML/Constants.lua
 local SPEC_MAGE_ARCANE = SPEC_MAGE_ARCANE or 1
 local SPEC_MONK_WINDWALKER = SPEC_MONK_WINDWALKER or 3

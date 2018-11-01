@@ -1,6 +1,6 @@
-local addonName, ns = ...
-local L = ns.L
+local L, yo = unpack( select( 2, ...))
 
+--print(yo.Addons.MiniMapHideText)
 --local A, L = ...
 
 --L.addonName       = A
@@ -40,7 +40,7 @@ local function Hide()
   	MiniMapInstanceDifficulty:SetAlpha(0)
   	GuildInstanceDifficulty:SetAlpha(0)
 
-	if yo["Addons"].MiniMapHideText then  	
+	if yo.Addons.MiniMapHideText then  	
 		MinimapZoneTextButton:SetAlpha(0)
 	end
 

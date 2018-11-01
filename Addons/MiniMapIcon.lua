@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local ignoreButtons = { 
 	["MiniMapTracking"]= true, 
 	["MiniMapWorldMapButton"]= true, 

@@ -1,3 +1,4 @@
+local L, yo = unpack( select( 2, ...))
 --wearBySlot = {}
 
 local slots = {

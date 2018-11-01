@@ -1,5 +1,5 @@
-local addonName, ns = ...
-local L = ns.L
+
+local L, yo = unpack( select( 2, ...))
 
 StaticPopupDialogs.SET_BN_BROADCAST = {
 	text = BN_BROADCAST_TOOLTIP,

@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local menuFrame = CreateFrame("Frame", "ExampleMenuFrame", UIParent, "UIDropDownMenuTemplate")
 local eText  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 

@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local Text1  = RightInfoPanel:CreateFontString(nil, "OVERLAY")
 local Text2  = RightInfoPanel:CreateFontString(nil, "OVERLAY")
 local Icon1  = RightInfoPanel:CreateTexture(nil, "OVERLAY")

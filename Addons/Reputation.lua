@@ -1,5 +1,5 @@
-local addonName, ns = ...
-local L = ns.L
+
+local L, yo = unpack( select( 2, ...))
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)

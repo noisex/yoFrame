@@ -1,5 +1,6 @@
 --local T, C, L, _ = unpack(select(2, ...))
 --if C.skins.dbm ~= true then return end
+local L, yo = unpack( select( 2, ...))
 
 ----------------------------------------------------------------------------------------
 --	DBM skin(by Affli)

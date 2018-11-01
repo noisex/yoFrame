@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local function RemoveAnchor()
 	for i, alertSubSystem in pairs(AlertFrame.alertFrameSubSystems) do
 		if alertSubSystem.anchorFrame == TalkingHeadFrame then

@@ -1,3 +1,4 @@
+local L, yo = unpack( select( 2, ...))
 
 local timerEnd, timerEst = GetTime(), 0
 local hpInRaid, hpInParty, hpInSolo, howBig = 30, 50, 50, 20

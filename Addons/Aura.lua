@@ -1,3 +1,4 @@
+local L, yo = unpack( select( 2, ...))
 
 local function OnUpdate(f, elapsed)
 	f.elapsed = (f.elapsed or 0) + elapsed

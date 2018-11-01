@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 --local eventData = {CombatLogGetCurrentEventInfo()};
 --	local logEvent = eventData[2];
 --	local unitGUID = eventData[8];

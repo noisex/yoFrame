@@ -1,3 +1,4 @@
+local L, yo = unpack( select( 2, ...))
 
 local function loginEvent(self, ...)
 	resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution")

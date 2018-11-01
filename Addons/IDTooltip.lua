@@ -1,3 +1,4 @@
+local L, yo = unpack( select( 2, ...))
 
 local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID,
       GetGlyphSocketInfo, tonumber, strfind

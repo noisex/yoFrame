@@ -1,5 +1,5 @@
-local addonName, ns = ...
-local L = ns.L
+
+local L, yo = unpack( select( 2, ...))
 
 --local T, C, L, _ = unpack(select(2, ...))
 --if C.map.fog_of_war ~= true then return end

@@ -1,9 +1,5 @@
---if not Qulight["loot"].lootframe == true then return end
+local L, yo = unpack( select( 2, ...))
 
-local L = {
-	fish = "Fishy loot",
-	empty = "Empty slot",
-}
 local addon = CreateFrame("Button", "Butsu")
 local title = addon:CreateFontString(nil, "OVERLAY")
 

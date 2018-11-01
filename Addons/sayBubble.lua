@@ -1,3 +1,5 @@
+local L, yo = unpack( select( 2, ...))
+
 local function skinBubble( self)
 	for i = 1, self:GetNumRegions() do
 		local region = select(i, self:GetRegions())
