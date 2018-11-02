@@ -33,8 +33,8 @@ Libs\oUF\oUF.xml
 Libs\healthprediction.lua
 Libs\oUF_DebuffHighlight.lua
 
-Config\ruRU.lua
 Config\enUS.lua
+Config\ruRU.lua
 Config\config.lua
 Config\configui.lua
 

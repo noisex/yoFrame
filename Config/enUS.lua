@@ -3,18 +3,18 @@ local _, ns = ...
 --if ns:IsSameLocale("enUS") then
 local L, yo = unpack( select( 2, ...)) or ns:NewLocale()
 
-	L.LOCALE_NAME = "enUS"
+L.LOCALE_NAME = "enUS"
 
-	L["scriptErrors"]	= "Show UI scripts error"
-	L["System"] 		= "General settings"
-	L["PersonalConfig"] = "|cffff0000Personal config(!)|r"
-	L["texture"] 		= "Texture addon elements"
-	L["FontSize"] 		= "Addon elements font size"
-	L["sysfontsize"]	= "Game system font size"
-	L["AutoScale"] 		= "UI Scale type"
-	L["ScaleRate"] 		= "UI Scale"
-	L["ChangeSystemFonts"] = "Change system fonts to normal :)"
-	L["DEFAULT"]			= "Default: "
+L["scriptErrors"]	= "Show UI scripts error"
+L["System"] 		= "General settings"
+L["PersonalConfig"] = "|cffff0000Personal config(!)|r"
+L["texture"] 		= "Texture addon elements"
+L["FontSize"] 		= "Addon elements font size"
+L["sysfontsize"]	= "Game system font size"
+L["AutoScale"] 		= "UI Scale type"
+L["ScaleRate"] 		= "UI Scale"
+L["ChangeSystemFonts"] = "Change system fonts to normal :)"
+L["DEFAULT"]			= "Default: "
 
 L["CONFIRM_PERSONAL"] = "Change the type of settings?\n(it is necessary to reload the interface)"
 L["PERSONAL_DESC"]	= "|cffffff00(changes addon settings for this character from common to personal)|r"
@@ -250,6 +250,3 @@ L["IN_CONNER"] 	= "In the default corner"
 
 L["stbEnable"]	=	"Enable Scrolling Combat Text"
 L["glowTarget"]	=	"Show glow amination ot target"
-
---ns[1] = L
---end
