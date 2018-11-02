@@ -214,11 +214,11 @@ local function BuildBNTable(total)
 			elseif client == hotsString then
 				BNTableHOTS[#BNTableHOTS + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-HotS", "Heroes of Storm", isGameAFK, isGameBusy }
 			elseif client == owString then
-				BNTableOW[#BNTableOW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-Overwatch", "Ovirva4zzz", isGameAFK, isGameBusy }
+				BNTableOW[#BNTableOW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-Overwatch", L["Ovirva4zzz"], isGameAFK, isGameBusy }
 			elseif client == bsapString then
-				BNTableBSAp[#BNTableBSAp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", "In MobilApps", isAFK, isDND}
+				BNTableBSAp[#BNTableBSAp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", L["In MobilApps"], isAFK, isDND}
 			elseif client == appString then
-				BNTableApp[#BNTableApp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", "In Apps", isAFK, isDND }
+				BNTableApp[#BNTableApp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", L["In Apps"], isAFK, isDND }
 			else
 				BNTableWoW[#BNTableWoW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK,  isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-WoW", "World of Warcraft", isGameAFK, isGameBusy }
 			end

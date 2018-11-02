@@ -396,4 +396,4 @@ logan:SetScript("OnEvent", function(self, event, name)
 end)
 
 ns[2] = yo
-yoFrame = ns
+--yoFrame = ns

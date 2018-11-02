@@ -180,8 +180,15 @@ local OnEvent = function(self, event, ...)
 	elseif event == "CHALLENGE_MODE_COMPLETED" then
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	
+	elseif event == "ENCOUNTER_END" or event == "ENCOUNTER_START" then
+		if UnitInRaid("player") then
+			for k, bar in pairs( bars) do 
+				print("fsfsfsdfsfsfsfsfs", bar)
+				StopTimer( bar) 
+			end
+		end
 	else
-		if not yo["Addons"].RaidCoolDowns then 
+		if not yo.Addons.RaidCoolDowns then 
 			self:UnregisterAllEvents()
 			self:SetScript("OnMouseDown", nil)
 			self:SetScript("OnEnter", nil)
@@ -202,6 +209,8 @@ addon:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 addon:RegisterEvent("CHALLENGE_MODE_START")
 addon:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
+addon:RegisterEvent("ENCOUNTER_END")
+addon:RegisterEvent("ENCOUNTER_START")
 --GetInstanceInfo
 --https://wow.gamepedia.com/API_GetInstanceInfo
 --DifficultyID
