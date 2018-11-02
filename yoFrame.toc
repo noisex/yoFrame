@@ -87,9 +87,13 @@ Addons\Loot.lua
 Addons\MiniMapIcon.lua
 Addons\MiniMap.lua
 Addons\Mirror.lua
+Addons\MoveBlizzFrames.lua
 Addons\ObjectiveTrack.lua
+Addons\OneClickDisenchanting.lua
+Addons\OneClickEnchantScroll.lua
 #Addons\Potatos.lua
 Addons\Prediction.lua
+Addons\ProfessionTabs.lua
 Addons\QuestAuto.lua
 Addons\RaidCooldowns.lua
 Addons\RaidUtility.lua

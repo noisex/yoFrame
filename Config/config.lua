@@ -2,12 +2,15 @@ local addon, ns = ...
 -- constants
 --local L, yo = unpack( select( 2, ...))
 
+--L_GUI_MISC_DISENCHANTING
+
 myClass = select( 2, UnitClass( "player"))
 myColor = RAID_CLASS_COLORS[myClass]
 myColorStr = "|c" .. RAID_CLASS_COLORS[myClass].colorStr 
 myName	= UnitName( "player")
 myRealm = GetRealmName()
 myLogin = GetTime()
+myClient = GetLocale()
 
 dummy = function() return end	
 
@@ -74,6 +77,7 @@ yo["Addons"] = {
 	["equipNewItemLevel"]			= 350,
 	["afk"]							= false,
 	["stbEnable"]					= true,
+	["MoveBlizzFrames"]				= true,
 }
 yo["ActionBar"] = {
 	["enable"]		= true,
@@ -306,7 +310,8 @@ logan:RegisterEvent("ADDON_LOADED")
 --logan:RegisterEvent("PLAYER_LOGIN")
 
 logan:SetScript("OnEvent", function(self, event, name)
-	
+	--print(name)
+
 	if addon ~= name then return end
 	
 	if yo_AllData 		== nil then yo_AllData = {} end
