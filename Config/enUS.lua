@@ -1,7 +1,7 @@
 local _, ns = ...
 
-if ns:IsSameLocale("enUS") then
-	local L, yo = unpack( select( 2, ...)) or ns:NewLocale()
+--if ns:IsSameLocale("enUS") then
+local L, yo = unpack( select( 2, ...)) or ns:NewLocale()
 
 	L.LOCALE_NAME = "enUS"
 
@@ -252,4 +252,4 @@ L["stbEnable"]	=	"Enable Scrolling Combat Text"
 L["glowTarget"]	=	"Show glow amination ot target"
 
 --ns[1] = L
-end
+--end

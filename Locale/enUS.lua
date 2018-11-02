@@ -105,6 +105,4 @@ L["Ovirva4zzz"]		= "Overwatch"
 L["In MobilApps"]	= "In MobilApps"
 L["In Apps"]		= "In Apps"
 
-
-
 ns[1] = L
