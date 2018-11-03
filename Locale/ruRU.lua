@@ -103,6 +103,10 @@ if ns:IsSameLocale("ruRU") then
 	L["In MobilApps"]	= "В мобильном"
 	L["In Apps"]		= "В приложении"
 
+
+L["Schedule"] 	= "Расписание"
+L["Rewards"] 	= "Награды"
+L["WeekLeader"] = "Лидеры недели"
 --[[
 L[""] 	= "
 L["DESC"] 	= 

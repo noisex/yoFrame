@@ -18,6 +18,9 @@ local function ScanTooltip(self, spells)
 end
 
 function button:PLAYER_LOGIN()
+
+	if not yo.Addons.disenchanting then return end
+
 	local spells, disenchanter, rogue = {}
 
 	if IsSpellKnown(51005) then

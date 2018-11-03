@@ -10,7 +10,7 @@ local challengeMapID
 local TIME_FOR_3 = 0.6
 local TIME_FOR_2 = 0.8
 
-yo_OldKey, yo_OldKey2 = nil, nil
+local yo_OldKey, yo_OldKey2 = nil, nil
 
 local scheduleTitle = "Schedule"
 
@@ -128,7 +128,7 @@ local function CreateLiders( self)
 			self.leaderBest.title = self.leaderBest:CreateFontString(nil, "ARTWORK")
 			self.leaderBest.title:SetFont( font, fontsize + 3, "OUTLINE")
 			self.leaderBest.title:SetTextColor( 1, 0.75, 0, 1)
-			self.leaderBest.title:SetText( "Weekly leaders")
+			self.leaderBest.title:SetText(  L["WeekLeader"])
 			self.leaderBest.title:SetPoint("BOTTOM", self.leaderBest, "TOP", -15, 10)
 		end
 
@@ -200,7 +200,8 @@ end
 local function UpdateAffixes( self)
 	ChallengesFrame.WeeklyInfo.Child.RunStatus:SetFont( font, fontsize + 2, "OUTLINE")
 	ChallengesFrame.WeeklyInfo.Child.RunStatus:ClearAllPoints()
-	ChallengesFrame.WeeklyInfo.Child.RunStatus:SetPoint("TOP", ChallengesFrame, "TOP", 0, -180)
+	ChallengesFrame.WeeklyInfo.Child.RunStatus:SetPoint("TOP", ChallengesFrame, "TOP", 0, -150)
+	ChallengesFrame.WeeklyInfo.Child.RunStatus:SetWidth( 250)
 	ChallengesFrame.WeeklyInfo.Child.RunStatus.ClearAllPoints = dummy
 	
 	C_MythicPlus.RequestCurrentAffixes()
@@ -265,7 +266,7 @@ local function Blizzard_ChallengesUI( self)
 	local title = frame:CreateFontString(nil, "ARTWORK")--, "GameFontNormalMed1")
 	title:SetFont( font, fontsize + 3, "OUTLINE")
 	title:SetTextColor(1, 0.75, 0, 1)
-	title:SetText( scheduleTitle)
+	title:SetText( L["Schedule"])
 	title:SetPoint("TOP", 0, -7)
 
 	local line = frame:CreateTexture(nil, "ARTWORK")
@@ -293,7 +294,7 @@ local function Blizzard_ChallengesUI( self)
 	local title2 = frame:CreateFontString(nil, "ARTWORK")--, "GameFontNormalMed1")
 	title2:SetFont( font, fontsize + 3, "OUTLINE")
 	title2:SetTextColor(1, 0.75, 0, 1)
-	title2:SetText( "Rewards")
+	title2:SetText( L["Rewards"])
 	title2:SetPoint("TOP", line3, "BOTTOM", 0, 0)
 
 	local line4 = frame:CreateTexture(nil, "ARTWORK")
@@ -435,8 +436,9 @@ local function OnEvent( self, event, name, ...)
 		--print(name, level, timeFormatMS(time), timeFormatMS(time - timeLimit), L["completion0"])
 		--"Гробница королей"," 2, "1:05:01.321", "26:01.321"
 		--L["completion0"] = "|cff8787ED[%s] %s|r окончили за |cffff0000%s|r, вы отстали на %s от общего лимита времени."
-		
+		print("|cff00ffff--------------------------------------------------------------------------")
 		print( "|cff00ffff" .. LANDING_PAGE_REPORT)
+		print("|cff00ffff--------------------------------------------------------------------------")
 		if time <= timeLimit3 then
 			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion3"], level, name, timeFormatMS(time), timeFormatMS(timeLimit3 - time)), 255/255, 215/255, 1/255) 
 		elseif time <= timeLimit2 then

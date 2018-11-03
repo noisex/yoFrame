@@ -1,7 +1,4 @@
-
 local L, yo = unpack( select( 2, ...))
-
---local F, C = unpack(select(2, ...))
 
 local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
@@ -1660,7 +1657,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsSortButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
 		SetInside( f.bagsSortButton:GetPushedTexture())
 		f.bagsSortButton:RegisterForClicks('anyUp')
-		f.bagsSortButton.ttText = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. BAG_CLEANUP_BANK
+		f.bagsSortButton.ttText = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. BAG_CLEANUP_BAGS
 		--f.bagsSortButton.ttText2 = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. REAGENTBANK_DEPOSIT
 		f.bagsSortButton:SetScript("OnEnter", addon.Tooltip_Show)
 		f.bagsSortButton:SetScript("OnLeave", addon.Tooltip_Hide)

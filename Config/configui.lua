@@ -185,7 +185,9 @@ function InitOptions()
 					ArtifactPowerbar= {	order = 8, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					unitFrames		= {	order = 9, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					afk				= {	order =10, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
-					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
+					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, 	width = "full",	},
+					MoveBlizzFrames = {	order =13, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, 	width = "full",	},	
+					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, 	width = "full",	},	
 					-- lootbox
 					-- cooldowns
 					ObjectiveHeight = { order = 20, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	}, 
@@ -230,7 +232,9 @@ function InitOptions()
 					AutoSellGrayTrash 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["SALE_DESC"],},
 					AutoScreenOnLvlUpAndAchiv={ order = 3, type = "toggle",	name = function(info) return tr( info[#info]) end, 	},	
 					AutoInvaitFromFriends 	= {	order = 4, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},	
-					equipNewItem			= {	order = 6, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					AutoInvite 				= {	order = 5, type = "toggle",	name = function(info) return tr( info[#info]) ..L["NEW"] end,  width = "full"},	
+					AutoLeader 				= {	order = 6, type = "toggle",	name = function(info) return tr( info[#info]) ..L["NEW"] end,  width = "full"},	
+					equipNewItem			= {	order = 7, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					equipNewItemLevel		= {	order = 8, type = "range",	name = function(info) return tr( info[#info]) end, 	min = 0, max = 800, step = 1,},
 
 					AutoQuesting = {

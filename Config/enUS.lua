@@ -5,6 +5,8 @@ local L, yo = unpack( select( 2, ...)) or ns:NewLocale()
 
 L.LOCALE_NAME = "enUS"
 
+L["NEW"] 			= " |cffff0000(!)|r"
+
 L["scriptErrors"]	= "Show UI scripts error"
 L["System"] 		= "General settings"
 L["PersonalConfig"] = "|cffff0000Personal config(!)|r"
@@ -62,6 +64,10 @@ L["equipNewItem"]= "Trying to wear a new thing while getting"
 L["equipNewItemLevel"]= "but not more than:"
 L["afk"]= "Enable AFK animations"
 L["Automatic"]= "Automatic"
+L["MoveBlizzFrames"] = "Move all Blizzard frames with Shift keypressed"
+L["AutoInvite"]		= "Autoinvite in party by whisper \'inv\'"
+L["AutoLeader"]		= "Auto give party/raid leader by whisper \'!leader\'"
+L["disenchanting"]	= "Milling, Prospecting and Disenchanting by Alt + click"
 
 L["RUP_DESC"] = "Targets mark, world marks, readycheck...( ERT requiued)"
 L["POT_DESC"] = "Enable module to track the use of pots in battle."

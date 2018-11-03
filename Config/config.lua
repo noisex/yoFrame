@@ -2,7 +2,13 @@ local addon, ns = ...
 -- constants
 --local L, yo = unpack( select( 2, ...))
 
---L_GUI_MISC_DISENCHANTING
+--L_GUI_ANNOUNCEMENTS_FEASTS = "Сообщать, когда ставят пир/почту/ремонт"
+--L_GUI_AUTOMATION_CURRENCY_CAP = "Напоминание, если достигнут лимит валюты (Доблесть/Честь)"
+
+--L_GUI_COMBATTEXT_TRESHOLD = "Минимально отображаемое значение урона"
+--L_GUI_CHAT_SKIN_BUBBLE = "Стилизация облачков чата"
+
+--L_GUI_MAP_EXPLORE = "Отслеживать на карте 'Первооткрыватель' и 'Хранитель мудрости'"
 
 myClass = select( 2, UnitClass( "player"))
 myColor = RAID_CLASS_COLORS[myClass]
@@ -78,6 +84,9 @@ yo["Addons"] = {
 	["afk"]							= false,
 	["stbEnable"]					= true,
 	["MoveBlizzFrames"]				= true,
+	["AutoInvite"]					= true,
+	["AutoLeader"]					= false,
+	["disenchanting"]				= true,
 }
 yo["ActionBar"] = {
 	["enable"]		= true,

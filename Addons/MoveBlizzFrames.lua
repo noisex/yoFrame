@@ -15,17 +15,6 @@ local frames = {
 	"StaticPopup2", "ScrollOfResurrectionSelectionFrame", "WorldMapFrame", "SplashFrame", 
 }
 
-for i, v in pairs(frames) do
-	if _G[v] then
-		_G[v]:EnableMouse(true)
-		_G[v]:SetMovable(true)
-		_G[v]:SetClampedToScreen(true)
-		_G[v]:RegisterForDrag("LeftButton")
-		_G[v]:SetScript("OnDragStart", function(self) self:StartMoving() end)
-		_G[v]:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-	end
-end
-
 local AddOnFrames = {
 	["Blizzard_AchievementUI"] = {"AchievementFrame"},
 	["Blizzard_ArchaeologyUI"] = {"ArchaeologyFrame"},
@@ -61,20 +50,40 @@ local AddOnFrames = {
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event, addon)
-	
-	---print(addon)
+		
+	if event == "ADDON_LOADED" then
 
-	if AddOnFrames[addon] then
-		for _, v in pairs(AddOnFrames[addon]) do
+		---print(addon)
+		if not yo.Addons.MoveBlizzFrames then return end
+
+		if AddOnFrames[addon] then
+			for _, v in pairs(AddOnFrames[addon]) do
+				if _G[v] then
+					_G[v]:EnableMouse(true)
+					_G[v]:SetMovable(true)
+					_G[v]:SetClampedToScreen(true)
+					_G[v]:RegisterForDrag("LeftButton")
+					_G[v]:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
+					_G[v]:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+				end
+			end
+		end	
+
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		
+		if not yo.Addons.MoveBlizzFrames then return end
+
+		for i, v in pairs(frames) do
 			if _G[v] then
 				_G[v]:EnableMouse(true)
 				_G[v]:SetMovable(true)
 				_G[v]:SetClampedToScreen(true)
 				_G[v]:RegisterForDrag("LeftButton")
-				_G[v]:SetScript("OnDragStart", function(self) self:StartMoving() end)
+				_G[v]:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
 				_G[v]:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 			end
 		end
-	end
+	end	
 end)

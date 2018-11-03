@@ -105,4 +105,9 @@ L["Ovirva4zzz"]		= "Overwatch"
 L["In MobilApps"]	= "In MobilApps"
 L["In Apps"]		= "In Apps"
 
+
+L["Schedule"] 	= "Schedule"
+L["Rewards"] 	= "Rewards"
+L["WeekLeader"] = "Week Leaders"
+
 ns[1] = L
