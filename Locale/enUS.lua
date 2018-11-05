@@ -110,4 +110,6 @@ L["Schedule"] 	= "Schedule"
 L["Rewards"] 	= "Rewards"
 L["WeekLeader"] = "Week Leaders"
 
+L["EXPEDIT_COMPLETE"] = "And someone has still not closed the expedition weekly..."
+
 ns[1] = L

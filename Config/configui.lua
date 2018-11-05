@@ -171,7 +171,7 @@ function InitOptions()
 
 
 			Addons = {
-				order = 20,	name = L["Addons"], type = "group",				
+				order = 20,	name = L["Addons"] .. L["NEW"], type = "group",				
 				get = function(info) return yo["Addons"][info[#info]] end ,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {	
@@ -224,7 +224,7 @@ function InitOptions()
 					
 
 			Automatic = {
-				order = 25,	name = L["Automatic"], type = "group",				
+				order = 25,	name = L["Automatic"] .. L["NEW"], type = "group",				
 				get = function(info) return yo["Addons"][info[#info]] end ,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {
@@ -232,7 +232,7 @@ function InitOptions()
 					AutoSellGrayTrash 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["SALE_DESC"],},
 					AutoScreenOnLvlUpAndAchiv={ order = 3, type = "toggle",	name = function(info) return tr( info[#info]) end, 	},	
 					AutoInvaitFromFriends 	= {	order = 4, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},	
-					AutoInvite 				= {	order = 5, type = "toggle",	name = function(info) return tr( info[#info]) ..L["NEW"] end,  width = "full"},	
+					AutoInvite 				= {	order = 5, type = "toggle",	name = function(info) return tr( info[#info]) ..L["NEW"] end,  width = "full", desc = "инв inv byd штм 123"},
 					AutoLeader 				= {	order = 6, type = "toggle",	name = function(info) return tr( info[#info]) ..L["NEW"] end,  width = "full"},	
 					equipNewItem			= {	order = 7, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					equipNewItemLevel		= {	order = 8, type = "range",	name = function(info) return tr( info[#info]) end, 	min = 0, max = 800, step = 1,},
@@ -288,7 +288,7 @@ function InitOptions()
 			},
 		
 			Bags = {
-				order = 35,	name = L["Bags"], type = "group",				
+				order = 35,	name = L["Bags"].. L["NEW"], type = "group",				
 				get = function(info) return yo["Bags"][info[#info]] end ,
 				set = function(info,val) Setlers( "Bags#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
@@ -298,7 +298,8 @@ function InitOptions()
 					numMaxRow 		= {	order = 6, type = "range", 	name = function(info) return tr( info[#info]) end, min = 5, max = 20, step = 1,	desc = L["DEFAULT"] .. 16,},
 					buttonSpacing 	= {	order = 7,	type = "range", name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,desc = L["DEFAULT"] .. 7,},
 					containerWidth 	= {	order = 8, type = "range", 	name = function(info) return tr( info[#info]) end, min = 350, max = 800, step = 1,	desc = L["DEFAULT"] .. 438,},
-					newIconAnimation= { order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end,},	
+					newIconAnimation= { order = 10, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", },
+					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info]) .. L["NEW"] end, width = "full",},
 					},
 			},
 
@@ -351,7 +352,7 @@ function InitOptions()
 			},		
 
 			NamePlates = {
-				order = 70,		name = L["NamePlates"],	type = "group",				
+				order = 70,		name = L["NamePlates"] .. L["NEW"],	type = "group",				
 				get = function(info) return yo[info[1]][info[#info]] end ,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
@@ -369,15 +370,16 @@ function InitOptions()
 					dissIcons 	= {	order = 40, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["all"] = L["DISS_ALL"], ["dispell"] = L["DISS_CLASS"],},},
 					buffIcons 	= {	order = 45, type = "select", name = function(info) return tr( info[#info]) end,	values = {["none"] = L["NONE"], ["dispell"] = L["DISS"], ["all"] = L["ALL_BUFF"], ["buff"] = L["ALL_EX_DIS"],},},
 
-					showCastIcon = 	{ width = "full",	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					showCastName = 	{ width = "full",	order = 52, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					showCastTarget ={ width = "full",	order = 55, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					showPercTreat = { width = 1.5,		order = 60, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],},},
-					showArrows = 	{ width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					glowTarget= 	{ width = "full",	order = 66, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					blueDebuff = 	{ width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					classDispell = 	{ width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
-
+					showCastIcon 	= { width = "full",	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					showCastName 	= { width = "full",	order = 52, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					showCastTarget 	= { width = "full",	order = 55, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					showPercTreat 	= { width = 1.5,		order = 60, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],},},
+					showArrows 		= { width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },					
+					blueDebuff 		= { width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					classDispell 	= { width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
+					glowTarget		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					glowBadType		= {	order = 69, type = "select", name = function(info) return tr( info[#info]) .. L["NEW"] end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
+					
 					showToolTip = {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
 
 					executePhaze ={ order = 70, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full"	},

@@ -130,6 +130,13 @@ local function OnEnter( self)
 			GameTooltip:AddDoubleLine( diff .. name, encounterProgress .. "/" .. numEncounters,1,1,1,tr,tg,tb)
 		end
 	end
+
+	local questID = myFaction == "Horde" and 53435 or 53436
+	
+	if myLevel == MAX_PLAYER_LEVEL and not IsQuestFlaggedCompleted( questID) then
+		GameTooltip:AddLine( " ")
+		GameTooltip:AddLine( L["EXPEDIT_COMPLETE"],1,0,0)
+	end
 	GameTooltip:Show()
 end
 

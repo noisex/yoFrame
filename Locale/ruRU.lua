@@ -104,9 +104,11 @@ if ns:IsSameLocale("ruRU") then
 	L["In Apps"]		= "В приложении"
 
 
-L["Schedule"] 	= "Расписание"
-L["Rewards"] 	= "Награды"
-L["WeekLeader"] = "Лидеры недели"
+	L["Schedule"] 	= "Расписание"
+	L["Rewards"] 	= "Награды"
+	L["WeekLeader"] = "Лидеры недели"
+
+	L["EXPEDIT_COMPLETE"] = "А кто-то все еще не закрыл экспедиции недельные..."
 --[[
 L[""] 	= "
 L["DESC"] 	= 

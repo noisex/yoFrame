@@ -441,12 +441,12 @@ function addon:NewItemGlowSlotSwitch(slot, show)
 		if show then
 			slot.newItemGlow:SetVertexColor(1, 1, 1, 0)
 			slot.newItemGlow:Show()
-			if yo["Bags"].newIconAnimation then
-				Flash(slot.newItemGlow, 0.5, false)
+			if yo.Bags.newIconAnimation then
+				Flash(slot.newItemGlow, 0.5, yo.Bags.newAnimationLoop)
 			end
 		else
 			slot.newItemGlow:Hide()
-			if yo["Bags"].newIconAnimation then
+			if yo.Bags.newIconAnimation then
 				StopFlash(slot.newItemGlow)
 			end
 		end

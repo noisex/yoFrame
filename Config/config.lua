@@ -17,6 +17,8 @@ myName	= UnitName( "player")
 myRealm = GetRealmName()
 myLogin = GetTime()
 myClient = GetLocale()
+myFaction = UnitFactionGroup("player")
+myLevel = UnitLevel( "player")
 
 dummy = function() return end	
 
@@ -37,6 +39,7 @@ yo["Bags"] = {
 	["containerWidth"] 		= 438,
 	["newIconAnimation"]	= true,
 	["autoReagent"]			= true,
+	["newAnimationLoop"]	= true,
 }			
 yo["Addons"] = {
 	["ChangeSystemFonts"] 			= true,			--	
@@ -208,6 +211,7 @@ yo["NamePlates"] = {
 	["tankOT"]			= "0,0.5,1",
 	["badGood"]			= "1,0.5,0.5",
 	["glowTarget"]		= true,
+	["glowBadType"]		= "pixel", 	-- button, cast, false
 }
 	
 yo["Media"] = {

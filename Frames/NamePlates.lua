@@ -5,8 +5,17 @@ local treatColor = {}
 local auraFilter = { "HARMFUL", "HELPFUL"}
 
 local aGlow = LibStub("LibCustomGlow-1.0", true)
+local glowColor, glowN, glowLength
+
 local glowStart = aGlow.PixelGlow_Start
 local glowStop = aGlow.PixelGlow_Stop
+
+local castStart = aGlow.AutoCastGlow_Start
+local castStop = aGlow.AutoCastGlow_Stop
+
+local buttonStart = aGlow.ButtonGlow_Start
+local buttonStop = aGlow.ButtonGlow_Stop
+
 
 DebuffTypeColor.none = { r = 0.09, g = 0.09, b = 0.09}
 
@@ -29,7 +38,9 @@ local badClassTypes = {
 local badMobes = {
 	--[130771] = true,	--	Дамми у ханта
 	--[123352] = true, 	--	Дамми у лока
+	[144082]	= true, 
 	
+	[136330] = true, 	-- голиаф шипы 
 	[137103] = true, 	-- кровавый образ
 	[120651] = true,  	-- 	Взрывчатка
 	[136461] = true,	--  Порождение Г'ууна
@@ -600,28 +611,25 @@ local function UpdateName( unitFrame)
 		if UnitExists( "target") and showArrows then
 			if UnitIsUnit( unitFrame.displayedUnit, "target") then
 				unitFrame.arrows:Show()
-				--function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key)
-				glowStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
-				--unitFrame.healthBar.value:Show()
+				glowTargetStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
 			else
 				unitFrame.arrows:Hide()
-				glowStop( unitFrame.healthBar, 1)
-				--unitFrame.healthBar.value:Hide()
+				glowTargetStop( unitFrame.healthBar, 1)
 			end
 		else
 			if showArrows then
 				unitFrame.arrows:Hide()
-				glowStop( unitFrame.healthBar, 1)
+				glowTargetStop( unitFrame.healthBar, 1)
 			end
-			--unitFrame.healthBar.value:Hide()
 		end
 		
 		if mobID and ( badMobes[mobID] or eTeam[mobID]) then
-			glowStart( unitFrame.healthBar, {0.95, 0.1, 0.1, 1}, 12, 0.2, 12, 3, 0, 0, false, 2)
+			--lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key)
+			glowBadStart( unitFrame.healthBar, glowColor, glowN, 0.2, glowLength, 3, 0, 0, false, 2)
 			--unitFrame.healthBar.shadow:SetBackdropBorderColor( 0, 1, 1)
 			--unitFrame.healthBar.HightLight:Show()
 		else
-			glowStop( unitFrame.healthBar, 2)
+			glowBadStop( unitFrame.healthBar, 2)
 			--unitFrame.healthBar.shadow:SetBackdropBorderColor( .09, .09, .09)
 			--unitFrame.healthBar.HightLight:Hide()
 		end
@@ -1067,10 +1075,36 @@ local function NamePlates_OnEvent(self, event, ...)
 			classDispell	= yo.NamePlates.classDispell
 			showToolTip		= yo.NamePlates.showToolTip
 			
-			if not yo.NamePlates.glowTarget then
-				glowStart = dummy
-				glowStop = dummy
+			if yo.NamePlates.glowTarget then
+				glowTargetStart	= glowStart
+				glowTargetStop = glowStop
+			else
+				glowTargetStart	= dummy
+				glowTargetStop  = dummy
 			end
+
+			if yo.NamePlates.glowBadType == "pixel" then 
+				glowBadStart 	= glowStart
+				glowBadStop  	= glowStop
+				glowColor 		= { 0.95, 0.1, 0.1, 1}
+				glowN			= 12
+				glowLength		= 12
+			elseif yo.NamePlates.glowBadType == "button" then 
+				glowBadStart 	= buttonStart
+				glowBadStop  	= buttonStop
+				glowColor 		= { 1, 0.75, 0, 1}
+				glowN			= 2
+			elseif yo.NamePlates.glowBadType == "cast" then 
+				glowBadStart 	= castStart
+				glowBadStop  	= castStop
+				glowColor 		= { 1, 0.75, 0, 1}
+				glowN			= 8
+				glowLength		= 1
+			else
+				glowBadStart = dummy
+				glowBadStop  = dummy
+			end
+
 			badTypes = classDispell and badClassTypes[myClass] or badClassTypes["HUNTER"]
 	
 			HideBlizzard()

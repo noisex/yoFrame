@@ -621,19 +621,26 @@ autoinvite:RegisterEvent("CHAT_MSG_BN_WHISPER")
 autoinvite:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 
 	if yo.Addons.AutoInvite then
-		if ((not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and ( arg1:lower():match( "inv") or arg1:lower():match( "инв"))) and not QueueStatusMinimapButton:IsShown() then
-			if event == "CHAT_MSG_WHISPER" then
-				InviteUnit(arg2)
-			elseif event == "CHAT_MSG_BN_WHISPER" then
-				local bnetIDAccount = select(11, ...)
-				local bnetIDGameAccount = select(6, BNGetFriendInfoByID(bnetIDAccount))
-				BNInviteFriend(bnetIDGameAccount)
+		if (not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player"))  and not QueueStatusMinimapButton:IsShown() then
+			for match in string.gmatch( " инв inv byd штм 123 ", " " .. arg1:lower() .. " ") do
+				if event == "CHAT_MSG_WHISPER" then
+					InviteUnit(arg2)
+				elseif event == "CHAT_MSG_BN_WHISPER" then
+					local bnetIDAccount = select(11, ...)
+					local bnetIDGameAccount = select(6, BNGetFriendInfoByID(bnetIDAccount))
+					BNInviteFriend(bnetIDGameAccount)
+				end
 			end
 		end
 	end
 
 	if yo.Addons.AutoLeader then
-		if ( UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and ( UnitInParty( strsplit( "-", arg2)) or UnitInRaid( strsplit( "-", arg2))) and ( arg1:lower():match( "!leader") or arg1:lower():match( "!лидер")) then
+		if ( UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) 
+			and ( UnitInParty( strsplit( "-", arg2)) or UnitInRaid( strsplit( "-", arg2))) 
+			and ( arg1:lower():match( "!leader") or arg1:lower():match( "!лидер")) 
+			and UnitIsInMyGuild( strsplit( "-", arg2))
+				then
+
 			if event == "CHAT_MSG_WHISPER" then
 				PromoteToLeader(strsplit( "-", arg2))
 

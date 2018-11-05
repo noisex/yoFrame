@@ -12,8 +12,6 @@ local TIME_FOR_2 = 0.8
 
 local yo_OldKey, yo_OldKey2 = nil, nil
 
-local scheduleTitle = "Schedule"
-
 local mythicRewards = {
 --	{"Level","End","Weekly","Azer Weekly"},
 	{2,345,355,340},
