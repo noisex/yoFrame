@@ -1,6 +1,69 @@
 
 local L, yo = unpack( select( 2, ...))
 
+yo_Model = CreateFrame("DressUpModel", nil, UIParent, "TooltipBorderedFrameTemplate")
+yo_Model:Hide()
+yo_Model:SetAlpha(1)
+yo_Model:SetClampedToScreen(true);
+yo_Model:SetFrameStrata("TOOLTIP");
+yo_Model:SetSize(230, 300)
+yo_Model:SetCustomCamera(1)
+yo_Model:SetUnit("player")
+--CreateStyle( yo_Model, 4, nil, 0.9)
+
+local cashed
+
+GameTooltip:HookScript("OnTooltipSetItem", function(self)
+	if not yo.Chat.ladyMod or ( yo.Chat.ladyModShift and not IsControlKeyDown()) then return end
+
+	local _, itemLink = self:GetItem();
+	if not itemLink then return end
+
+	local itemID, _, _, slot = GetItemInfoInstant(itemLink);
+	
+	if ( slot and #slot > 5 and slot ~= "INVTYPE_FINGER" and slot ~= "INVTYPE_TRINKET" and slot ~= "INVTYPE_NECK") and itemLink ~= cashed then		
+		
+		cashed = itemLink
+		local x,y = self:GetCenter();
+		local mogpoint, ownerpoint, shiftX
+
+		if ( x  or  1)/ GetScreenWidth() > 0.5 then
+			mogpoint = "RIGHT";
+			ownerpoint = "LEFT";
+			shiftX = -2
+		else
+			mogpoint = "LEFT";
+			ownerpoint = "RIGHT";
+			shiftX = 2
+		end
+		if ( y or 1) / GetScreenHeight() > 0.5 then
+			mogpoint = "TOP"..mogpoint;
+			ownerpoint = "TOP"..ownerpoint;
+		else
+			mogpoint = "BOTTOM"..mogpoint;
+			ownerpoint = "BOTTOM"..ownerpoint;
+		end
+
+		--print( slot, mogpoint, ownerpoint)	
+		yo_Model:ClearAllPoints();
+		yo_Model:SetPoint(mogpoint, GameTooltip, ownerpoint, shiftX, 0);
+
+		yo_Model:Show()
+		yo_Model:Undress()	
+		yo_Model:TryOn( itemLink)
+
+		yo_Model:SetScript("OnUpdate",function(self,elapsed)
+			yo_Model:SetFacing( yo_Model:GetFacing() + elapsed);
+		end)
+	end	
+end)
+
+GameTooltip:HookScript( "OnHide", function(self, bagID, slotID)
+	yo_Model:Hide()
+	yo_Model:SetScript("OnUpdate",nil)
+	cashed = nil
+end)
+
 ----------------------------------------------------------------------------------------
 --	Test Icons
 ----------------------------------------------------------------------------------------

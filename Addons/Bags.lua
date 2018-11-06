@@ -1914,7 +1914,7 @@ end
 local function tryToClose(...)
 	if needCloseBags then
 		addon_Close()
-		PlaySound ( 863, "Master")   -- 863	IG_BACKPACK_CLOSE
+		--PlaySound ( 863, "Master")   -- 863	IG_BACKPACK_CLOSE
 		HideUIPanel(GameMenuFrame);	
 		needCloseBags = false
 	end		

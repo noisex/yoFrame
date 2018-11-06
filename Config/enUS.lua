@@ -207,6 +207,7 @@ L["buffIcons"]		= "Right icons:"
 L["classDispell"]	= "Disspell, only if your class can disspell them (for right icons)"
 L["showToolTip"]	= "Show tooltip on buffs on mousover:"
 L["glowBadType"]	= "Glow type on bad mobs"
+L["glowTarget"]		= "Show glow amination ot target"
 
 L["c0"]			= "0. Good agro ( DPS, Healer)"
 L["c0t"]		= "0. Tank"
@@ -235,22 +236,22 @@ L["rawPercent"] = "rawPercent ( 0 - 255%)"
 L["UND_CURCOR"] = "Mousover"
 L["IN_CONNER"] 	= "In the default corner"
 
-L["glowTarget"]	=	"Show glow amination ot target"
-
 ---------------------------------------------
 -----		Chat
 ---------------------------------------------
-L["Chat"] 		= "Chat"
-L["EnableChat"] = "Redesign chat"
-L["fontsize"] 	= "Chat font size"
-L["BarChat"]	= "Enable chatbar"
-L["linkOverMouse"]= "Item, achievment tooltip under mousover"
-L["showVoice"]	= "Show voicechat buttons"
-L["showHistory"]= "Show guild, party chat history"
-L["fadingEnable"]= "Chat fading"
-L["fadingTimer"]= "...in seconds:"
-L["wisperSound"]= "PM sound"
-L["wisperInCombat"]= "PM sound in combat"
+L["Chat"] 			= "Chat"
+L["EnableChat"] 	= "Redesign chat"
+L["fontsize"] 		= "Chat font size"
+L["BarChat"]		= "Enable chatbar"
+L["linkOverMouse"]	= "Item, achievment tooltip under mousover"
+L["showVoice"]		= "Show voicechat buttons"
+L["showHistory"]	= "Show guild, party chat history"
+L["fadingEnable"]	= "Chat fading"
+L["fadingTimer"]	= "...in seconds:"
+L["wisperSound"]	= "PM sound"
+L["wisperInCombat"]	= "PM sound in combat"
+L["ladyMod"]		= "Tooltip for beauty and ladies"
+L["ladyModShift"]	= "...only with \'Ctrl\' key pressed"
 
 ---------------------------------------------
 -----		CTA
@@ -271,8 +272,8 @@ L["CTAsound"]	= "Alert Sound:"
 L["hideLast"]	= "Do not show if the last boss is killed"
 L["readRole"]	= "Select the roles that CTA will track:"
 L["CTAlaunch"] 	= "Start Again"
-L ["DESC_SETN"] = "Select the role to be assigned when connecting to the queue:"
-L ["DESC_NROLE"]= "It is set automatically according to the value set in ... well, in the window where the roles are set ... For each players, its own, by itself."
+L["DESC_SETN"] 	= "Select the role to be assigned when connecting to the queue:"
+L["DESC_NROLE"]	= "It is set automatically according to the value set in ... well, in the window where the roles are set ... For each players, its own, by itself."
 
 ---------------------------------------------
 -----		Fliger

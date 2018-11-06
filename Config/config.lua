@@ -267,6 +267,8 @@ yo["Chat"] = {
 	["fadingTimer"]		= 30,
 	["wisperSound"]		= "Wisper",
 	["wisperInCombat"]	= true,
+	["ladyMod"]			= true,
+	["ladyModShift"]	= false,
 }
 
 yo["healBotka"] = {

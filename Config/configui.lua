@@ -426,7 +426,7 @@ function InitOptions()
 			},	
 
 			Chat = {
-				order = 80,	name = L["Chat"], type = "group",
+				order = 80,	name = L["Chat"] .. L["NEW"], type = "group",
 				get = function(info) return yo["Chat"][info[#info]] end ,
 				set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, 
 				args = {	
@@ -435,11 +435,12 @@ function InitOptions()
 					linkOverMouse 	= {	order = 20, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 					showVoice 		= {	order = 25, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 					showHistory 	= {	order = 30, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
-					fadingEnable 	= {	order = 32, type = "toggle",	name = function(info) return tr( info[#info]) end,},
-					fadingTimer 	= {	order = 34,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 5, max = 100, step = 1,
-						disabled = function( info) return not yo[info[1]].fadingEnable; end,},
-					wisperSound		= {	order = 36, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
-					wisperInCombat	= {	order = 38, type = "toggle",	name = function(info) return tr( info[#info]) end,},
+					ladyMod			= {	order = 32, type = "toggle",	name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",},
+					ladyModShift	= {	order = 34, type = "toggle",	name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
+					fadingEnable 	= {	order = 36, type = "toggle",	name = function(info) return tr( info[#info]) end,},
+					fadingTimer 	= {	order = 38,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 5, max = 100, step = 1, disabled = function( info) return not yo[info[1]].fadingEnable; end,},
+					wisperSound		= {	order = 40, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
+					wisperInCombat	= {	order = 42, type = "toggle",	name = function(info) return tr( info[#info]) end,},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
 					--chatBubble		= {	order = 40, type = "select", 	name = "Чат-бабл:",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},
