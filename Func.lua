@@ -14,14 +14,19 @@ function Kill(object)
 	object:Hide()
 end
 
-function formatMoney(money)
+function formatMoney(money, noColor)	
+	local goldColor, silverColor, copperColor, back = "|cffffaa00", "|cffbbbbbb", "|cffff6600", "|r"
+	if noColor then
+		goldColor, silverColor, copperColor, back = "", "", "", ""
+	end
+
 	local gold   = commav( floor(math.abs(money) / 10000))
 	local silver = mod(floor(math.abs(money) / 100), 100)
 	local copper = mod(floor(math.abs(money)), 100)
 
-	gold = tonumber(gold) ~= 0 and 	format( GOLD_AMOUNT_TEXTURE_STRING, gold) .. "  " 	or ""
-	silver = 	silver ~= 0 and 	format( SILVER_AMOUNT_TEXTURE, silver) 	.. "  "		or ""
-	copper = 	copper ~= 0 and 	format( COPPER_AMOUNT_TEXTURE, copper) 				or ""
+	gold = tonumber(gold) ~= 0 and 	goldColor   .. format( GOLD_AMOUNT_TEXTURE_STRING, gold) .. back .. " "	or ""
+	silver = 	silver ~= 0 and 	silverColor .. format( SILVER_AMOUNT_TEXTURE, silver) 	 .. back .. " "	or ""
+	copper = 	copper ~= 0 and 	copperColor .. format( COPPER_AMOUNT_TEXTURE, copper)    .. back 		or ""
 
 	return gold .. silver .. copper
 end
@@ -367,27 +372,4 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	f:SetBackdropColor(.07,.07,.07, alpha or 1)
 	f:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
 end
-----------------------------------------------------------------------------------------
---	Undress button 
-----------------------------------------------------------------------------------------
-local strip = CreateFrame("Button", "DressUpFrameUndressButton", DressUpFrame, "UIPanelButtonTemplate")
-strip:SetText( "DRESS OFF")
-strip:SetHeight(22)
-strip:SetWidth(strip:GetTextWidth() + 40)
-strip:SetPoint("RIGHT", DressUpFrameResetButton, "LEFT", -40, 0)
-strip:RegisterForClicks("AnyUp")
-strip:SetScript("OnClick", function(self, button)
-	if button == "RightButton" then
-		self.model:UndressSlot(19)
-	else
-		self.model:Undress()
-	end
-end)
-strip.model = DressUpModel
-
-function GameTooltipOnLeave()
-	GameTooltip:Hide() 
-end
-
-
 

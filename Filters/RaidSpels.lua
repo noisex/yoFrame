@@ -1,14 +1,14 @@
 bls = {
- --   [774] = true,      -- "for esting..."   омоложение
-    --[8936] = true,      -- "for esting..." восстановление
-    [80353] = true,      -- "Time Warp",
-    [2825] = true,         -- "Bloodlust",
-    [32182] = true,      -- "Heroism",
-    [90355] = true,      --  "Ancient Hysteria",
+ --   [774] = true,     -- "for esting..."   омоложение
+    --[8936] = true,    -- "for esting..." восстановление
+    [80353] = true,     -- "Time Warp",
+    [2825] = true,      -- "Bloodlust",
+    [32182] = true,     -- "Heroism",
+    [90355] = true,     --  "Ancient Hysteria",
     [160452] = true,    -- "Netherwinds",
     [178207] = true,    -- "Drums of Fury",
-    [35475] = true,      --  "Drums of War",
-    [230935] = true   --   "Drums of the Mountain"
+    [35475] = true,     --  "Drums of War",
+    [230935] = true   	--   "Drums of the Mountain"
 }
 
 interupt_spells = {
@@ -54,10 +54,10 @@ raid_CD_Spells = {
 	[171138] = 24, --Shadow Lock if used from pet bar
 	[119910] = 24, -- warloc new pet 
 	
-	--[46968]  = 40, -- shockwave
-	--[30283]	 = 60, -- warlocl stun
-	[50613]  = 90, -- волшебный поток
-	[20608] = 1800, -- реинкорнация шаман
+	--[46968]  = 40, 	-- shockwave
+	--[30283]	 = 60, 	-- warlocl stun
+	--[50613]  = 90, 	-- волшебный поток
+	[20608] = 1800, 	-- реинкорнация шаман
 
 	-- Battle rez
 	--[20484] = 600,	-- Rebirth
@@ -68,19 +68,19 @@ raid_CD_Spells = {
 	--[159931] = 600,	-- Gift of Chi-Ji (Crane)
 	---- Heroism
 	--[32182] = 300,	-- Heroism
-	--[2825] = 300,	-- Bloodlust
+	--[2825] = 300,		-- Bloodlust
 	--[80353] = 300,	-- Time Warp
 	--[90355] = 300,	-- Ancient Hysteria (Core Hound)
 	--[160452] = 300,	-- Netherwinds (Nether Ray)
 	---- Healing
-	[633] = 600,	-- Lay on Hands
-	[740] = 180,	-- Tranquility
-	[115310] = 180,	-- Revival
-	[64843] = 180,	-- Divine Hymn
-	[108280] = 180,	-- Healing Tide Totem
-	[15286] = 180,	-- Vampiric Embrace
-	[108281] = 120,	-- Ancestral Guidance
-	[157535] = 90,	-- Breath of the Serpent
+	--[633] = 600,		-- Lay on Hands
+	--[740] = 180,		-- Tranquility
+	--[115310] = 180,	-- Revival
+	--[64843] = 180,	-- Divine Hymn
+	--[108280] = 180,	-- Healing Tide Totem
+	--[15286] = 180,	-- Vampiric Embrace
+	--[108281] = 120,	-- Ancestral Guidance
+	--[157535] = 90,	-- Breath of the Serpent
 	---- Defense
 	--[62618] = 180,	-- Power Word: Barrier
 	--[33206] = 180,	-- Pain Suppression
@@ -91,7 +91,7 @@ raid_CD_Spells = {
 	--[88611] = 180,	-- Smoke Bomb
 	--[51052] = 120,	-- Anti-Magic Zone
 	--[116849] = 120,	-- Life Cocoon
-	--[6940] = 120,	-- Hand of Sacrifice
+	--[6940] = 120,		-- Hand of Sacrifice
 	--[114030] = 120,	-- Vigilance
 	--[102342] = 60,	-- Ironbark
 	---- Other

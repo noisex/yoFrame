@@ -106,6 +106,7 @@ local function ConvertER( str)
 	--tprint( t)
 	return res
 end
+
 function addon:UpdateSearch()
 	if self.Instructions then self.Instructions:SetShown(self:GetText() == "") end
 	local MIN_REPEAT_CHARACTERS = 3;

@@ -611,21 +611,29 @@ end)
 ----------------------------------------------------------------------------------------
 --	Auto invite by whisper(by Tukz)
 ----------------------------------------------------------------------------------------
+local inviteOK = {
+	["инв"] = true,
+	["inv"] = true,
+	["byd"] = true,
+	["штм"] = true,
+	["123"] = true,
+	[123]   = true,
+}
+
 local autoinvite = CreateFrame("Frame")
 autoinvite:RegisterEvent("CHAT_MSG_WHISPER")
 autoinvite:RegisterEvent("CHAT_MSG_BN_WHISPER")
 autoinvite:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 
 	if yo.Addons.AutoInvite then
-		if (not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player"))  and not QueueStatusMinimapButton:IsShown() then
-			for match in string.gmatch( " инв inv byd штм 123 ", " " .. arg1:lower() .. " ") do
-				if event == "CHAT_MSG_WHISPER" then
-					InviteUnit(arg2)
-				elseif event == "CHAT_MSG_BN_WHISPER" then
-					local bnetIDAccount = select(11, ...)
-					local bnetIDGameAccount = select(6, BNGetFriendInfoByID(bnetIDAccount))
-					BNInviteFriend(bnetIDGameAccount)
-				end
+		if (not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and not QueueStatusMinimapButton:IsShown() and inviteOK[arg1:lower()] then
+			--for match in string.gmatch( " инв inv byd штм 123 ", " " .. arg1:lower() .. " ") do
+			if event == "CHAT_MSG_WHISPER" then
+				InviteUnit(arg2)
+			elseif event == "CHAT_MSG_BN_WHISPER" then
+				local bnetIDAccount = select(11, ...)
+				local bnetIDGameAccount = select(6, BNGetFriendInfoByID(bnetIDAccount))
+				BNInviteFriend(bnetIDGameAccount)
 			end
 		end
 	end
@@ -648,3 +656,27 @@ autoinvite:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 		end
 	end
 end)
+
+----------------------------------------------------------------------------------------
+--	Undress button 
+----------------------------------------------------------------------------------------
+local strip = CreateFrame("Button", "DressUpFrameUndressButton", DressUpFrame, "UIPanelButtonTemplate")
+strip:SetText( "DRESS OFF")
+strip:SetHeight(22)
+strip:SetWidth(strip:GetTextWidth() + 40)
+strip:SetPoint("RIGHT", DressUpFrameResetButton, "LEFT", -40, 0)
+strip:RegisterForClicks("AnyUp")
+strip:SetScript("OnClick", function(self, button)
+	if button == "RightButton" then
+		self.model:UndressSlot(19)
+	else
+		self.model:Undress()
+	end
+end)
+strip.model = DressUpModel
+
+function GameTooltipOnLeave()
+	GameTooltip:Hide() 
+end
+
+

@@ -40,6 +40,8 @@ local ignorTypes = {
 }
 
 local autoGossipNPC = {
+	[138476]	= true,
+
 	[144476]	= true,
 	[144350]	= true,
 	[144351]	= true,
@@ -299,7 +301,7 @@ local function OnEvent( self, event, ...)
 
 	
 		if #questObjectives > 1 then
-			print( "|cffffff00"..L["Quest"]..": |r|cff00ffff" .. questObjectives)
+			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives)
 		end
 
 		if GetNumQuestLogChoices() > 0 then
@@ -329,7 +331,7 @@ local function OnEvent( self, event, ...)
 		if GetNumQuestLogRewards() > 0 then
 			for i = 1, GetNumQuestLogRewards() do
 				if GetQuestLogItemLink("reward", i) then
-					print( "|cffffff00"..L["Reward"].." #" .. i ..": |r" .. GetQuestLogItemLink("reward", i).. "|r")	
+					print( "|cffffff00"..REWARD.." #" .. i ..": |r" .. GetQuestLogItemLink("reward", i).. "|r")	
 				end
 			end
 		end
@@ -340,23 +342,23 @@ local function OnEvent( self, event, ...)
 
 				if currencyID then
 					local link = GetCurrencyLink( currencyID, numItems or 10)
-					print( "|cffffff00"..L["Currency"]..": |r" .. numItems .. " x " .. ( link or name).. "|r")
+					print( "|cffffff00"..CURRENCY..": |r" .. numItems .. " x " .. ( link or name).. "|r")
 				end
 			end		
 		end
 
 		if GetQuestLogRewardXP() > 0 then
-			qString =  qString ..  "|cffffff00"..L["Expirience"]..": |r|cff0080ff" .. commav( GetQuestLogRewardXP()) .. "|r "
+			qString =  qString ..  "|cffffff00"..EXPERIENCE_COLON.." |r|cff0080ff" .. commav( GetQuestLogRewardXP()) .. "|r "
 		end
 
 		local skillName, icon, points = GetQuestLogRewardSkillPoints()
 		if skillName then
-			qString =  qString .. "|cffffff00"..L["Skill Points"]..": |r+" .. points .. " " .. skillName.. "|r "
+			qString =  qString .. "|cffffff00"..CHARACTER_POINTS2_COLON.." |r+" .. points .. " " .. skillName.. "|r "
 		end
 
 
 		if GetQuestLogRewardMoney() > 0 then
-			 qString =  qString .. "|cffffff00"..L["Money"]..": |r" .. formatMoney( GetQuestLogRewardMoney()).. "|r "
+			 qString =  qString .. "|cffffff00"..MONEY_COLON.." |r" .. formatMoney( GetQuestLogRewardMoney()).. "|r "
 		end
 
 		print( qString)

@@ -357,7 +357,8 @@ local function SlotKeystone()
 	end
 end
 
-local function OnEvent( self, event, name, ...)
+local function OnEvent( self, event, name, sender, ...)
+
 	if event == "ADDON_LOADED" and name == "Blizzard_ChallengesUI" then
 		Blizzard_ChallengesUI( self)	
 		ChallengesKeystoneFrame:HookScript("OnShow", SlotKeystone)
@@ -376,6 +377,7 @@ local function OnEvent( self, event, name, ...)
 			self:RegisterEvent("CHAT_MSG_PARTY")
 			self:RegisterEvent("CHAT_MSG_GUILD")
 			self:RegisterEvent("CHAT_MSG_LOOT")	
+			self:RegisterEvent("CHAT_MSG_WHISPER")
 			registered = true
 		end
 		
@@ -395,7 +397,15 @@ local function OnEvent( self, event, name, ...)
 		if name == "!key" or name == "!ключ" or name == "!keys" then
 			local keys = CheckInventoryKeystone()
 			if keys then
-				SendChatMessage( keys, "GUILD")
+				SendChatMessage( keys, "GUILD")				
+			end
+		end
+	elseif event == "CHAT_MSG_WHISPER" then
+		name = strlower( name)
+		if name == "!key" or name == "!ключ" or name == "!keys" then
+			local keys = CheckInventoryKeystone()
+			if keys then
+				SendChatMessage( keys, "WHISPER", "Common", sender)
 			end
 		end
 	
