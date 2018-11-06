@@ -183,7 +183,7 @@ local OnEvent = function(self, event, ...)
 	elseif event == "ENCOUNTER_END" or event == "ENCOUNTER_START" then
 		if UnitInRaid("player") then
 			for k, bar in pairs( bars) do 
-				print("fsfsfsdfsfsfsfsfs", bar)
+				--print("fsfsfsdfsfsfsfsfs", bar)
 				StopTimer( bar) 
 			end
 		end

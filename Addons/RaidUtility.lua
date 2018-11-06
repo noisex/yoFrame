@@ -6,7 +6,7 @@ local function DisbandRaidGroup()
 	if UnitInRaid("player") then
 		for i = 1, GetNumGroupMembers() do
 			local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
-			if online and name ~= E.myname then
+			if online and name ~= myName then
 				UninviteUnit(name)
 			end
 		end

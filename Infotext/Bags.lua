@@ -31,7 +31,7 @@ local function OnEvent(self, event)
 	if free <= 5 then
 		Text:SetText( "|cffff0000Bags: ".. free .. "/" .. total)
 	else
-		Text:SetText("Bags: ".. myColorStr .. free .. "/" .. total)
+		Text:SetText( BAGSLOT .. ": ".. myColorStr .. free .. "/" .. total)
 	end
 	
 	self:SetAllPoints(Text)

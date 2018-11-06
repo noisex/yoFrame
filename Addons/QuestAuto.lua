@@ -39,9 +39,44 @@ local ignorTypes = {
 	["INVTYPE_WEAPON"]			=	true,
 }
 
+local autoGossipNPC = {
+	[144476]	= true,
+	[144350]	= true,
+	[144351]	= true,
+	[144354]	= true,
+	
+	[144478]	= true,
+	[144355]	= true,
+	[144356]	= true,
+	[144357]	= true,
+	[144358]	= true,
+
+	[144360]	= true,
+	[144361]	= true,
+	[144362]	= true,
+}
+
+local autoGossipInstance = {
+	["party"]	= true,
+	["raid"]	= true,
+	["scenario"]= true,
+}
+
 local TimerMovie
 
+local function GetNPCID()
+	return tonumber(string.match(UnitGUID("npc") or "", "Creature%-.-%-.-%-.-%-.-%-(.-)%-"))
+end
+
+local function GetActiveOptions(...)
+	local _, instance, _, _, _, _, _, mapID = GetInstanceInfo()
+	if ( autoGossipInstance[instance] or autoGossipNPC[GetNPCID()]) and GetNumGossipOptions() == 1 then
+		SelectGossipOption(1, "", true)
+	end	
+end
+
 local function GetAvailableQuests( ... )
+	--print(...)
 	for i=1, select("#", ...), 7 do
 
 		local titleText, level, isTrivial, isDaily, isRepeatable, isLegendary, isIgnored = select(i, ...);
@@ -114,16 +149,17 @@ local function OnEvent( self, event, ...)
 		if ( isDaily or isWeekly) then --or (UnitLevel('player') == MAX_PLAYER_LEVEL) then 
 			local money = GetQuestMoneyToGet()
 			local name, texture, amount = GetQuestCurrencyInfo("required", 1)
-			local iname, itexture, numItems, quality, isUsable = GetQuestItemInfo("required", 1)
+			local iname, itexture, numItems, iquality, isUsable = GetQuestItemInfo("required", 1)
 
 			if name then
-				print("|cffff0000"..L["Spend"].." |cff00ff00" .. amount .. " |r" .. name .. "|cffffff00 "..L["myself"].."|r" .. L["DONT_SHIFT"])
+				local r, g, b, hexColor = GetItemQualityColor( select( 8, GetCurrencyInfo( name)))
+				print("|cffff0000"..L["Spend"].." |cff00ff00" .. amount .. " |r" .. '|T'.. texture ..':14|t |c' .. hexColor .. name .. "|cffffff00 "..L["myself"].."|r" .. L["DONT_SHIFT"])
 				CloseQuest()
 			elseif money > 1 then
-				print("|cffff0000"..L["Pay"].." |cff00ff00" .. formatMoney( money) .. " |cffffff00"..L["this huckster"].."|r" .. L["DONT_SHIFT"])
+				print("|cffff0000"..L["Pay"]..": |cff00ff00" .. formatMoney( money) .. "|cffffff00"..L["this huckster"].."|r" .. L["DONT_SHIFT"])
 				CloseQuest()
 			elseif iname then
-				print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. iname .. "|cffffff00!|r" .. L["DONT_SHIFT"])
+				print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. '|T'.. itexture ..':14|t |c' .. select( 4, GetItemQualityColor( iquality)).. iname .. L["DONT_SHIFT"])
 				CloseQuest()
 			else
 				CompleteQuest()
@@ -211,6 +247,7 @@ local function OnEvent( self, event, ...)
 
 		GetAvailableQuests( GetGossipAvailableQuests())
 		GetActiveQuests( GetGossipActiveQuests())
+		GetActiveOptions( GetGossipOptions())
 
 	elseif	event == "QUEST_GREETING" then
 		if IsShiftKeyDown() == true then return end

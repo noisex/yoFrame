@@ -15,16 +15,15 @@ function Kill(object)
 end
 
 function formatMoney(money)
-	local gold = 	commav( floor(math.abs(money) / 10000))
+	local gold   = commav( floor(math.abs(money) / 10000))
 	local silver = mod(floor(math.abs(money) / 100), 100)
 	local copper = mod(floor(math.abs(money)), 100)
-	if gold ~= 0 then
-		return format("%s".."|cffffd700g|r".." %s".."|cffc7c7cfs|r".." %s".."|cffeda55fc|r", gold, silver, copper)
-	elseif silver ~= 0 then
-		return format("%s".."|cffc7c7cfs|r".." %s".."|cffeda55fc|r", silver, copper)
-	else
-		return format("%s".."|cffeda55fc|r", copper)
-	end
+
+	gold = tonumber(gold) ~= 0 and 	format( GOLD_AMOUNT_TEXTURE_STRING, gold) .. "  " 	or ""
+	silver = 	silver ~= 0 and 	format( SILVER_AMOUNT_TEXTURE, silver) 	.. "  "		or ""
+	copper = 	copper ~= 0 and 	format( COPPER_AMOUNT_TEXTURE, copper) 				or ""
+
+	return gold .. silver .. copper
 end
 
 function gradient(perc)
@@ -34,103 +33,6 @@ function gradient(perc)
 	local r, g, b = r1 + (r2 - r1) * relperc, g1 + (g2 - g1) * relperc, b1 + (b2 - b1) * relperc
 	return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255), r, g, b
 end
-
-function HideBlizzard()
-	-- Hidden parent frame
-	local UIHider = CreateFrame("Frame")
-	UIHider:Hide()
-
-	MultiBarBottomLeft:SetParent(UIHider)
-	MultiBarBottomRight:SetParent(UIHider)
-	MultiBarLeft:SetParent(UIHider)
-	MultiBarRight:SetParent(UIHider)
-
-	-- Hide MultiBar Buttons, but keep the bars alive
-	for i=1,12 do
-		_G["ActionButton" .. i]:Hide()
-		_G["ActionButton" .. i]:UnregisterAllEvents()
-		_G["ActionButton" .. i]:SetAttribute("statehidden", true)
-
-		_G["MultiBarBottomLeftButton" .. i]:Hide()
-		_G["MultiBarBottomLeftButton" .. i]:UnregisterAllEvents()
-		_G["MultiBarBottomLeftButton" .. i]:SetAttribute("statehidden", true)
-
-		_G["MultiBarBottomRightButton" .. i]:Hide()
-		_G["MultiBarBottomRightButton" .. i]:UnregisterAllEvents()
-		_G["MultiBarBottomRightButton" .. i]:SetAttribute("statehidden", true)
-
-		_G["MultiBarRightButton" .. i]:Hide()
-		_G["MultiBarRightButton" .. i]:UnregisterAllEvents()
-		_G["MultiBarRightButton" .. i]:SetAttribute("statehidden", true)
-
-		_G["MultiBarLeftButton" .. i]:Hide()
-		_G["MultiBarLeftButton" .. i]:UnregisterAllEvents()
-		_G["MultiBarLeftButton" .. i]:SetAttribute("statehidden", true)
-	end
-	
-	UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
-	UIPARENT_MANAGED_FRAME_POSITIONS["StanceBarFrame"] = nil
-	UIPARENT_MANAGED_FRAME_POSITIONS["PossessBarFrame"] = nil
-	UIPARENT_MANAGED_FRAME_POSITIONS["PETACTIONBAR_YPOS"] = nil
-
-	MainMenuBar:EnableMouse(false)
-
-	local animations = {MainMenuBar.slideOut:GetAnimations()}
-	animations[1]:SetOffset(0,0)
-
-	animations = {OverrideActionBar.slideOut:GetAnimations()}
-	animations[1]:SetOffset(0,0)
-
-	MainMenuBarArtFrame:Hide()
-	MainMenuBarArtFrame:SetParent(UIHider)
-
-	MainMenuExpBar:SetParent(UIHider)
-	MainMenuExpBar:SetDeferAnimationCallback(nil)
-
-	MainMenuBarMaxLevelBar:Hide()
-	MainMenuBarMaxLevelBar:SetParent(UIHider)
-
-	ReputationWatchBar:SetParent(UIHider)
-
-	ArtifactWatchBar:SetParent(UIHider)
-	ArtifactWatchBar.StatusBar:SetDeferAnimationCallback(nil)
-
-	HonorWatchBar:SetParent(UIHider)
-	HonorWatchBar.StatusBar:SetDeferAnimationCallback(nil)
-
-	StanceBarFrame:UnregisterAllEvents()
-	StanceBarFrame:Hide()
-	StanceBarFrame:SetParent(UIHider)
-
-	PossessBarFrame:Hide()
-	PossessBarFrame:SetParent(UIHider)
-
-	PetActionBarFrame:UnregisterAllEvents()
-	PetActionBarFrame:Hide()
-	PetActionBarFrame:SetParent(UIHider)
-
-	if PlayerTalentFrame then
-		PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-	else
-		hooksecurefunc("TalentFrame_LoadUI", function() PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED") end)
-	end
-end
-
---function tprint (tbl, indent)
---  	if not indent then indent = 0 end
---  	for k, v in pairs(tbl) do
---    	formatting = string.rep("  ", indent) .. k .. ": "
---    	if type(v) == "table" then
---    		print(formatting)
---    		tprint(v, indent+1)
---    	elseif type(v) == 'boolean' then
---    		print(formatting .. tostring(v))      
---    	else
---    		print(formatting .. v)
---    	end
---  	end
---end
-
 
 function tprint(t, s)
     for k, v in pairs(t) do
@@ -166,16 +68,6 @@ function GetColors( f)
 	end
 	f.colors = colors
 end
-
---function ShortValue(v)
---	if v >= 1e6 then
---		return ("%.1fm"):format(v / 1e6):gsub("%.?0+([km])$", "%1")
---	elseif v >= 1e3 or v <= -1e3 then
---		return ("%.1fk"):format(v / 1e3):gsub("%.?0+([km])$", "%1")
---	else
---		return v
---	end
---end
 
 function ShortValue( value)
 	if value >= 1e11 then
@@ -265,15 +157,6 @@ function SecondsToClock(seconds, noSec, noMin)
   if seconds <= 0 then   --return "00:00:00";
     return LESS_THAN_ONE_MINUTE;
   else
-  	--days 	= format("%d", math.floor(seconds/86400))
-   -- hours 	= format("%d", math.floor(seconds/3600) -( days*24))
-   -- mins 	= format("%d", math.floor(seconds/60 - (hours*60)));
-   -- secs 	= format("%d", math.floor(seconds - hours*3600 - mins *60));
-
-	--hours = format("%02.f", math.floor(seconds/3600))
-    --mins =  format("%02.f", math.floor(seconds/60 - (hours*60)));
-    --secs =  format("%02.f", math.floor(seconds - hours*3600 - mins *60));
-  	
   	local years	= floor(seconds/31556926)
   	local month	= floor(mod(seconds, 31556926)/ 2592000)
   	local days 	= floor(mod(seconds, 2592000)/ 86400)

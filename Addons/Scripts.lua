@@ -159,8 +159,7 @@ f:SetScript("OnEvent", function()
 		end
 	
 		if c>0 then
-			local g, s, c = math.floor(c/10000) or 0, math.floor((c%10000)/100) or 0, c%100
-			DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." |cffffffff"..g.."|cffffd700g|r".." |cffffffff"..s.."|cffc7c7cfs|r".." |cffffffff"..c.."|cffeda55fc|r"..".",255,255,0)
+			DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." " .. formatMoney( c)..".",255,255,0)
 		end
 	end
 	
@@ -173,12 +172,9 @@ f:SetScript("OnEvent", function()
 				else
 					RepairAllItems()
 				end
-				local c = cost%100
-				local s = math.floor((cost%10000)/100)
-				local g = math.floor(cost/10000)
-				DEFAULT_CHAT_FRAME:AddMessage(L["REMONT"] .." |cffffffff"..g.."|cffffd700g|r".." |cffffffff"..s.."|cffc7c7cfs|r".." |cffffffff"..c.."|cffeda55fc|r"..".",255,255,0)
+				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. formatMoney( cost)..".",255,255,0)
 			else
-				DEFAULT_CHAT_FRAME:AddMessage( L["NOMONEY"],255,0,0)
+				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY,255,0,0)
 			end
 		end
 	end		

@@ -266,7 +266,7 @@ local function Update(self, event, ...)
 	-- force update when showing tooltip
 	dataValid = false
 
-	Text:SetFormattedText(displayString, "Friends", onlineFriends + numBNetOnline)
+	Text:SetFormattedText(displayString, FRIENDS, onlineFriends + numBNetOnline)
 	self:SetAllPoints(Text)
 end
 
@@ -346,7 +346,7 @@ Stat:SetScript("OnEnter", function(self)
 	local zonec, classc, levelc, realmc, info, grouped
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
 	GameTooltip:ClearLines()
-	GameTooltip:AddDoubleLine(L["Friends"], format(totalOnlineString, totalonline, totalfriends),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
+	GameTooltip:AddDoubleLine( FRIENDS, format(totalOnlineString, totalonline, totalfriends),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
 	if onlineFriends > 0 then
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddLine(worldOfWarcraftString)

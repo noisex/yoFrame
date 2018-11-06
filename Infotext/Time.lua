@@ -131,6 +131,9 @@ local function OnEnter( self)
 		end
 	end
 
+	--GameTooltip:AddDoubleLine("ResetTime", SecondsToClock( GetQuestResetTime(), true))
+	--GameTooltip:AddDoubleLine("Time", SecondsToClock( GetTime()))
+
 	local questID = myFaction == "Horde" and 53435 or 53436
 	
 	if myLevel == MAX_PLAYER_LEVEL and not IsQuestFlaggedCompleted( questID) then

@@ -11,13 +11,6 @@ local Profit	= 0
 local Spent		= 0
 local OldMoney	= 0
 
-local function FormatTooltipMoney(money)
-	local gold, silver, copper = abs(money / 10000), abs(mod(money / 100, 100)), abs(mod(money, 100))
-	local cash = ""
-	cash = format("%s".."|cffffd700g|r".." %d".."|cffc7c7cfs|r".." %d".."|cffeda55fc|r", commav( floor( gold)), silver, copper)		
-	return cash
-end	
-
 local function newConfigData( personalConfig)
 
 	if yo_AllData == nil then
@@ -92,16 +85,25 @@ local function OnEvent(self, event, ...)
 		GameTooltip:ClearAllPoints()
 		GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine(L["For the game"])
-		GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
-		GameTooltip:AddDoubleLine(L["Spent"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
-		if Profit < Spent then
-			GameTooltip:AddDoubleLine(L["Loss"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
-		elseif (Profit-Spent)>0 then
-			GameTooltip:AddDoubleLine(L["Profit"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
-		end				
-		GameTooltip:AddLine' '								
-		
+
+		if Change ~= 0 then
+			GameTooltip:AddLine(L["For the game"])
+			if Profit > 0 then
+				GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)	
+			end
+			
+			if Spent > 0 then
+				GameTooltip:AddDoubleLine(L["Spent"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)	
+			end
+			
+			if Profit < Spent then
+				GameTooltip:AddDoubleLine(L["Loss"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
+			elseif (Profit-Spent)>0 then
+				GameTooltip:AddDoubleLine(L["Profit"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
+			end				
+			GameTooltip:AddLine' '	
+		end
+				
 		GameTooltip:AddLine(L["General information"])
 			
 		local oneDate
@@ -118,14 +120,14 @@ local function OnEvent(self, event, ...)
 						end	
 						totalMoney = totalMoney + tonumber( vv["Money"])
 						local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
-							GameTooltip:AddDoubleLine( kk .. keystone, FormatTooltipMoney( vv["Money"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+							GameTooltip:AddDoubleLine( kk .. keystone, formatMoney( vv["Money"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 					end
 					
 				end
 			end
 		end
 		GameTooltip:AddLine' '	
-		GameTooltip:AddDoubleLine( L["TOTAL"], FormatTooltipMoney( totalMoney), 1, 1, 0, 0, 1, 0)
+		GameTooltip:AddDoubleLine( L["TOTAL"], formatMoney( totalMoney), 1, 1, 0, 0, 1, 0)
 			
 		for i = 1, MAX_WATCHED_TOKENS do
 			local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
