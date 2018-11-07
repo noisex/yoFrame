@@ -4,11 +4,11 @@ local L, yo = unpack( select( 2, ...))
 -- TIME
 --------------------------------------------------------------------
 local Text  = RightInfoPanel:CreateFontString(nil, "OVERLAY")
-	Text:SetFont( font, ( fontsize or 10), "OVERLAY")
-	Text:SetHeight( RightInfoPanel:GetHeight())
-	Text:SetPoint("RIGHT", RightInfoPanel, "RIGHT", -5, 0)
-	Text:SetShadowColor(0,0,0,1)
-	Text:SetShadowOffset(0.5,-0.5)
+Text:SetFont( font, ( fontsize or 10), "OVERLAY")
+Text:SetHeight( RightInfoPanel:GetHeight())
+Text:SetPoint("RIGHT", RightInfoPanel, "RIGHT", -5, 0)
+Text:SetShadowColor(0,0,0,1)
+Text:SetShadowOffset(0.5,-0.5)
 RightInfoPanel.timeText = Text
 
 local int = 0
@@ -144,23 +144,28 @@ local function OnEnter( self)
 end
 
 local Stat = CreateFrame("Frame")
-	Stat:EnableMouse(true)
-	Stat:SetFrameStrata("BACKGROUND")
-	Stat:SetFrameLevel(3)
-	--Stat:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-	--Stat:SetScript("OnEvent", OnEvent)
-	--Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
-	--Stat:RegisterEvent("UPDATE_INSTANCE_INFO")
+Stat:EnableMouse(true)
+Stat:SetFrameStrata("BACKGROUND")
+Stat:SetFrameLevel(3)
+--Stat:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+--Stat:SetScript("OnEvent", OnEvent)
+--Stat:RegisterEvent("UPDATE_INSTANCE_INFO")
 
-	Stat:SetScript("OnUpdate", Update)
-	Stat:SetScript("OnEnter", OnEnter)
-	Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	Stat:SetScript("OnMouseDown", function(self, btn)
-		if btn == 'RightButton'  then
-			ToggleTimeManager()
-		else
-			GameTimeFrame:Click()
-		end
-	end)
+Stat:SetScript("OnUpdate", Update)
+Stat:SetScript("OnEnter", OnEnter)
+Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
+Stat:SetScript("OnMouseDown", function(self, btn)
+	if btn == 'RightButton'  then
+		ToggleTimeManager()
+	else
+		GameTimeFrame:Click()
+	end
+end)
+
+Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
+Stat:SetScript("OnEvent", function(self, ...)
+	Text:SetFont( font, ( fontsize or 10), "OVERLAY")
+	Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end)
 
 Update(Stat, 0)

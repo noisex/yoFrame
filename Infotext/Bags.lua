@@ -6,7 +6,7 @@ local L, yo = unpack( select( 2, ...))
 --------------------------------------------------------------------
 
 local Text  = RightInfoPanel:CreateFontString(nil, "OVERLAY")
-Text:SetPoint("RIGHT", RightInfoPanel, "RIGHT", -90, 0)
+Text:SetPoint("LEFT", RightInfoPanel, "CENTER", 55, 0)
 RightInfoPanel.bagText = Text
 
 local function OnEvent(self, event)

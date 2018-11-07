@@ -55,7 +55,15 @@ local function SetTimer()
 end
 
 local function MiniInit()
-	if not yo["Addons"].MiniMap then return end
+	if not yo.Addons.MiniMap then return end
+	
+	--CreateStyle( DurabilityFrame, 3, 0)
+	DurabilityFrame:ClearAllPoints()
+	DurabilityFrame:SetPoint("BOTTOM", plFrame, "TOP", 0, 20)
+	--DurabilityFrame:SetFrameLevel( 10)
+	DurabilityFrame.ClearAllPoints = dummy
+	DurabilityFrame.SetPoint = dummy
+	
 
 	--MinimapCluster
 	MinimapCluster:SetScale(cfg.scale)
@@ -66,8 +74,8 @@ local function MiniInit()
 	local mediapath = "interface\\addons\\yoFrame\\Media\\"
 	--Minimap:SetMaskTexture(mediapath.."mask2")
 	Minimap:ClearAllPoints()
-	Minimap:SetPoint("CENTER")
-	Minimap:SetSize(150,150) --correct the cluster offset
+	Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -5)
+	Minimap:SetSize( yo.Addons.MiniMapSize, yo.Addons.MiniMapSize) --correct the cluster offset
 
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 	--Minimap:SetHitRectInsets(0, 0, 24*cfg.scale, 24*cfg.scale)

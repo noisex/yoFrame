@@ -116,7 +116,6 @@ local function BuffOnEnter( f)
 		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	end	
 	GameTooltip:SetUnitAura( f.unit, f.id, f.filter)
-		--( f:GetParent():GetParent().displayedUnit, f.id, f.filter)
 	GameTooltip:Show()
 end
 

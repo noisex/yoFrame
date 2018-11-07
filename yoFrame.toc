@@ -105,14 +105,14 @@ Addons\TalkingHead.lua
 Addons\ToolTip.lua
 Addons\IDTooltip.lua
 
-Infotext\Bags.lua
+Infotext\System.lua
 Infotext\Durability.lua
-Infotext\Gold.lua
 Infotext\Guild.lua
 Infotext\Friend.lua
 #Infotext\Equipment.lua
+Infotext\Gold.lua
 Infotext\SpecLoot.lua
-Infotext\System.lua
+Infotext\Bags.lua
 Infotext\Time.lua
 
 Libs\oUF\elements\AutoResurrect.lua

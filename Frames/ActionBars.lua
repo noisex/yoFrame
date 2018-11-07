@@ -367,9 +367,9 @@ bars:SetScript("OnEvent", function(self, event)
 			["framePadding"] 	= 1,
 			["frameParent"] 	= UIParent,
 			["framePoint"] 		= { "CENTER", cfg.frameParent, "CENTER", 0, 0},
-			["buttonWidth"] 	= 35,
-			["buttonHeight"] 	= 35,
-			["buttonMargin"] 	= 2,
+			["buttonWidth"] 	= yo.ActionBar.buttonsSize,
+			["buttonHeight"] 	= yo.ActionBar.buttonsSize,
+			["buttonMargin"] 	= yo.ActionBar.buttonSpace,
 			["numCols"] 		= 12,
 			["startPoint"] 		= "TOPLEFT", --, TOPRIGHT, BOTTOMRIGHT, BOTTOMLEFT)
 			["fader"] 			= nil, --type:TABLE, description: rLib faderConfig, check rLib API for definition
@@ -386,11 +386,14 @@ bars:SetScript("OnEvent", function(self, event)
 		rActionBar:CreateActionBar2( "yoFrame", cfg)
 
 		--cfg.fader = fader		
-		cfg.numCols = 6
-		cfg.framePoint = { "CENTER", yo_MoveABar3, "CENTER", 0, 0}
+		cfg.numCols = yo.ActionBar.panel3Cols		
+		cfg.framePoint = { "TOPLEFT", yo_MoveABar3, "TOPLEFT", 0, 0}
 		rActionBar:CreateActionBar3( "yoFrame", cfg)
 
 		cfg.numCols = 12
+		cfg.buttonWidth 	= 35
+		cfg.buttonHeight 	= 35
+		cfg.buttonMargin 	= 2
 		cfg.framePoint = { "CENTER", yo_MoveABar4, "CENTER", 0, 0}
 		rActionBar:CreateActionBar4( "yoFrame", cfg)
 		
@@ -427,7 +430,7 @@ bars:SetScript("OnEvent", function(self, event)
 		rActionBar:CreatePossessExitBar( "yoFrame",cfg)
 	
 		cfg.buttonWidth = 30
-		cfg.buttonHeight = 30
+		cfg.buttonHeight = 35
 		cfg.startPoint = "TOPRIGHT"
 		cfg.numCols = 12
 		cfg.framePoint = { "RIGHT", yo_MovePetBar, "RIGHT", 0, 0}

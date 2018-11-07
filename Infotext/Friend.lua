@@ -239,7 +239,7 @@ local function BuildBNTable(total)
 end
 
 local function Update(self, event, ...)
-	if not yo["Addons"].InfoPanels then
+	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnMouseDown", nil)
 		self:SetScript("OnEnter", nil)
@@ -267,7 +267,12 @@ local function Update(self, event, ...)
 	dataValid = false
 
 	Text:SetFormattedText(displayString, FRIENDS, onlineFriends + numBNetOnline)
-	self:SetAllPoints(Text)
+	
+	if event == "PLAYER_ENTERING_WORLD" then
+		Text:SetFont( font, ( fontsize or 10), "OVERLAY")
+		self:SetAllPoints(Text)
+		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
 end
 
 Stat:SetScript("OnMouseDown", function(self, btn)

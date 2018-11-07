@@ -76,18 +76,22 @@ local function UpdateButtonsText(frame)
 	for _, slot in pairs(slots) do
 		local id = GetInventorySlotInfo(slot)
 		local text = _G[frame..slot].t
-		local itemLink
+		local level
 
 		if frame == "Inspect" then
-			itemLink = GetInventoryItemLink("target", id)
+			local itemLink = GetInventoryItemLink("target", id)
+			if itemLink then
+				level = _getRealItemLevel( id, "target", itemLink, true)
+			end			
 		else
-			itemLink = GetInventoryItemLink("player", id)
+			local item = Item:CreateFromEquipmentSlot( id)
+			level = item:GetCurrentItemLevel()
 		end
 
 		if slot == "ShirtSlot" or slot == "TabardSlot" then
 			text:SetText("")
 		
-		elseif itemLink then
+		elseif level then
 			--local itemLocation = ItemLocation:CreateFromEquipmentSlot( id)
 			--local item = Item:CreateFromItemLocation( itemLocation)
 			--local itemLocation = ItemLocation:CreateFromEquipmentSlot(self:GetID());
@@ -97,18 +101,11 @@ local function UpdateButtonsText(frame)
 			--if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLocation) then
 				--tprint( item)
 			--end
-			--wearBySlot[id] = ilvl
-
-			local item = Item:CreateFromItemLink( itemLink)	
-			local ilvl = item:GetCurrentItemLevel()
+			--wearBySlot[id] = ilvl		 
 		
-			if ilvl then
-				text:SetText("|cFFFFFF00"..ilvl)
-			else
-				text:SetText("")	
-			end
+			text:SetText("|cFFFFFF00"..level)
 		else
-			text:SetText("")
+			text:SetText("")	
 		end
 	end
 end

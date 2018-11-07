@@ -5,7 +5,7 @@
 -----------------------------
 -- Variables
 -----------------------------
-
+local _, yo = unpack( select( 2, ...))
 local A, L = ...
 
 -----------------------------
@@ -109,6 +109,7 @@ end
 function rActionBar:CreateActionBar3(addonName,cfg)
   cfg.blizzardBar = MultiBarBottomRight
   cfg.frameName = addonName.."Bar3"
+  cfg.pa3NumButtons = yo.ActionBar.panel3Nums
   cfg.frameParent = cfg.frameParent or UIParent
   cfg.frameTemplate = "SecureHandlerStateTemplate"
   cfg.frameVisibility = cfg.frameVisibility or "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"
@@ -122,6 +123,7 @@ end
 function rActionBar:CreateActionBar4(addonName,cfg)
   cfg.blizzardBar = MultiBarRight
   cfg.frameName = addonName.."Bar4"
+  cfg.pa3NumButtons = nil
   cfg.frameParent = cfg.frameParent or UIParent
   cfg.frameTemplate = "SecureHandlerStateTemplate"
   cfg.frameVisibility = cfg.frameVisibility or "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"

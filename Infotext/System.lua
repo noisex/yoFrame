@@ -129,5 +129,11 @@ local Stat = CreateFrame("Frame")
 		end
 		GameTooltip:Show()
 	end)
+	
+	Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
+	Stat:SetScript("OnEvent", function(self, ...)
+		Text:SetFont( font, ( fontsize or 10), "OVERLAY")
+		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end)
 
 Update(Stat, 20)

@@ -67,6 +67,7 @@ L["afk"]			= "Enable AFK animations"
 L["MoveBlizzFrames"]= "Move all Blizzard frames with Shift keypressed"
 L["disenchanting"]	= "Milling, Prospecting and Disenchanting by Alt + click"
 L["stbEnable"]		= "Enable Scrolling Combat Text"
+L["MiniMapSize"]	= "MiniMap size"
 
 L["RUP_DESC"] 		= "Targets mark, world marks, readycheck...( ERT requiued)"
 L["POT_DESC"] 		= "Enable module to track the use of pots in battle."
@@ -183,6 +184,10 @@ L["CountSize"]	= "Stacks font size"
 L["HideName"]	= "Dont show macros names"
 L["MicroMenu"]	= "Micromenu"
 L["MicroScale"]	= "Micromenu scale"
+L["panel3Nums"]	= "Panel:3 Num Buttons"
+L["panel3Cols"]	= "Panel:3 Num Collumns"
+L["buttonsSize"]= "Panels:1-3 buttons size"
+L["buttonSpace"]= "Panels:1-3 button space"
 
 ---------------------------------------------
 -----		NamePlates
@@ -252,6 +257,7 @@ L["wisperSound"]	= "PM sound"
 L["wisperInCombat"]	= "PM sound in combat"
 L["ladyMod"]		= "Tooltip for beauty and ladies"
 L["ladyModShift"]	= "...only with \'Ctrl\' key pressed"
+L["chatFont"]		= "Chat font"
 
 ---------------------------------------------
 -----		CTA

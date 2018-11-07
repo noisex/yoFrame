@@ -165,7 +165,7 @@ CreateAnchor("yo_MoveLoot", "Move Loot", 250, 50, 10, -270, "TOPLEFT","TOPLEFT")
 
 CreateAnchor("yo_MoveABar1", "Move Action Bar #1", 445, 35, 0, 2, "BOTTOM", "BOTTOM")
 CreateAnchor("yo_MoveABar2", "Move Action Bar #2", 445, 35, 0, 40, "BOTTOM", "BOTTOM")
-CreateAnchor("yo_MoveABar3", "Move Action Bar #3", 445, 35, -1, 240, "BOTTOMRIGHT", "BOTTOMRIGHT")
+CreateAnchor("yo_MoveABar3", "Move Action Bar #3", 35, 35, -300, 300, "TOPRIGHT", "BOTTOMRIGHT")
 CreateAnchor("yo_MoveABar4", "Move Action Bar #4", 445, 35, -1, 182, "BOTTOMRIGHT", "BOTTOMRIGHT")
 CreateAnchor("yo_MoveABar5", "Move Action Bar #5", 35, 445, -5, -110, "RIGHT", "RIGHT")
 

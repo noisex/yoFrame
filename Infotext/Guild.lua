@@ -267,6 +267,11 @@ local function Update(self, event, ...)
 	GuildRoster() -- Bux Fix on 5.4.
 	local _, online = GetNumGuildMembers()
 	Text:SetFormattedText(displayString, online)
+
+	if event == "PLAYER_ENTERING_WORLD" then
+		Text:SetFont( font, ( fontsize or 10), "OVERLAY")
+		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
 end
 
 

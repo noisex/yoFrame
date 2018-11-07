@@ -40,7 +40,7 @@ end
 --1. p1, f, fp1, fp2
 --2. p2, rb-1, p3, bm1, bm2
 --3. p4, b-1, p5, bm3, bm4
-local function SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, p1, fp1, fp2, p2, p3, bm1, bm2, p4, p5, bm3, bm4)
+local function SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, p1, fp1, fp2, p2, p3, bm1, bm2, p4, p5, bm3, bm4, pa3NumButtons)
 	
 	for index, button in next, buttonList do
     	if not frame.__blizzardBar then
@@ -60,11 +60,17 @@ local function SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, n
     	---------------------------------------------------------------------------------------------------------
     	---				DESIGN
     	---------------------------------------------------------------------------------------------------------
-		ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
+        
+        if pa3NumButtons and index > pa3NumButtons then
+            --print( index, pa3NumButtons)
+            Kill( button)    
+        else
+            ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
+        end		  
 	end
 end
 
-local function SetupButtonFrame(frame, framePadding, buttonList, buttonWidth, buttonHeight, buttonMargin, numCols, startPoint)
+local function SetupButtonFrame(frame, framePadding, buttonList, buttonWidth, buttonHeight, buttonMargin, numCols, startPoint, pa3NumButtons)
   local numButtons = # buttonList
   numCols = min(numButtons, numCols)
   local numRows = ceil(numButtons/numCols)
@@ -76,21 +82,21 @@ local function SetupButtonFrame(frame, framePadding, buttonList, buttonWidth, bu
   --2. T, rb-1, B, 0, -m
   --3. L, b-1, R, m, 0
   if startPoint == "TOPLEFT" then
-    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, framePadding, -framePadding, "TOP", "BOTTOM", 0, -buttonMargin, "LEFT", "RIGHT", buttonMargin, 0)
+    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, framePadding, -framePadding, "TOP", "BOTTOM", 0, -buttonMargin, "LEFT", "RIGHT", buttonMargin, 0, pa3NumButtons)
   --end
   --TOPRIGHT
   --1. TR, f, -p, -p
   --2. T, rb-1, B, 0, -m
   --3. R, b-1, L, -m, 0
   elseif startPoint == "TOPRIGHT" then
-    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, -framePadding, -framePadding, "TOP", "BOTTOM", 0, -buttonMargin, "RIGHT", "LEFT", -buttonMargin, 0)
+    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, -framePadding, -framePadding, "TOP", "BOTTOM", 0, -buttonMargin, "RIGHT", "LEFT", -buttonMargin, 0, pa3NumButtons)
   --end
   --BOTTOMRIGHT
   --1. BR, f, -p, p
   --2. B, rb-1, T, 0, m
   --3. R, b-1, L, -m, 0
   elseif startPoint == "BOTTOMRIGHT" then
-    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, -framePadding, framePadding, "BOTTOM", "TOP", 0, buttonMargin, "RIGHT", "LEFT", -buttonMargin, 0)
+    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, -framePadding, framePadding, "BOTTOM", "TOP", 0, buttonMargin, "RIGHT", "LEFT", -buttonMargin, 0, pa3NumButtons)
   --end
   --BOTTOMLEFT
   --1. BL, f, p, p
@@ -99,7 +105,7 @@ local function SetupButtonFrame(frame, framePadding, buttonList, buttonWidth, bu
   --elseif startPoint == "BOTTOMLEFT" then
   else
     startPoint = "BOTTOMLEFT"
-    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, framePadding, framePadding, "BOTTOM", "TOP", 0, buttonMargin, "LEFT", "RIGHT", buttonMargin, 0)
+    SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, startPoint, framePadding, framePadding, "BOTTOM", "TOP", 0, buttonMargin, "LEFT", "RIGHT", buttonMargin, 0, pa3NumButtons)
   end
 end
 
@@ -111,11 +117,11 @@ function L:CreateButtonFrame(cfg,buttonList,delaySetup)
   frame.__blizzardBar = cfg.blizzardBar
   if delaySetup then
     local function OnLogin(...)
-      SetupButtonFrame(frame, cfg.framePadding, buttonList, cfg.buttonWidth, cfg.buttonHeight, cfg.buttonMargin, cfg.numCols, cfg.startPoint)
+      SetupButtonFrame(frame, cfg.framePadding, buttonList, cfg.buttonWidth, cfg.buttonHeight, cfg.buttonMargin, cfg.numCols, cfg.startPoint, cfg.pa3NumButtons)
     end
     rLib:RegisterCallback("PLAYER_LOGIN", OnLogin)
   else
-    SetupButtonFrame(frame, cfg.framePadding, buttonList, cfg.buttonWidth, cfg.buttonHeight, cfg.buttonMargin, cfg.numCols, cfg.startPoint)
+    SetupButtonFrame(frame, cfg.framePadding, buttonList, cfg.buttonWidth, cfg.buttonHeight, cfg.buttonMargin, cfg.numCols, cfg.startPoint, cfg.pa3NumButtons)
   end
   --reparent the Blizzard bar
   if cfg.blizzardBar then

@@ -1,4 +1,3 @@
-
 local L, yo = unpack( select( 2, ...))
 
 yo_Model = CreateFrame("DressUpModel", nil, UIParent, "TooltipBorderedFrameTemplate")
@@ -21,7 +20,7 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 
 	local itemID, _, _, slot = GetItemInfoInstant(itemLink);
 	
-	if ( slot and #slot > 5 and slot ~= "INVTYPE_FINGER" and slot ~= "INVTYPE_TRINKET" and slot ~= "INVTYPE_NECK") and itemLink ~= cashed then		
+	if ( slot and #slot > 5 and slot ~= "INVTYPE_FINGER" and slot ~= "INVTYPE_TRINKET" and slot ~= "INVTYPE_NECK" and slot ~= "INVTYPE_BAG") and itemLink ~= cashed then		
 		
 		cashed = itemLink
 		local x,y = self:GetCenter();
@@ -58,7 +57,7 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 	end	
 end)
 
-GameTooltip:HookScript( "OnHide", function(self, bagID, slotID)
+GameTooltip:HookScript( "OnHide", function(self)
 	yo_Model:Hide()
 	yo_Model:SetScript("OnUpdate",nil)
 	cashed = nil

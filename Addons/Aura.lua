@@ -109,30 +109,40 @@ local function AuraUpdate( f, lastID, filter)
 	end
 end
 
-function AuraPrepare(f, event)
-	if f.unit == "player" then
-		for i = 1, 2 do
-			local bfname = f.bfname[i]
-			local bflast = f.bflast[i]
-			
-			for idx = bflast, 30 do
-				bf =  bfname .. idx 		
-				if not _G[bf] then 
-					break
-				end
-				if not _G[bf].shadow then
-					f.bflast[i] = idx
-					CreateStyle( _G[bf], 4)
-					_G[bf.."Icon"]:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-					_G[bf.."Count"]:SetFont( fontpx, 16, "OUTLINE")
-					_G[bf.."Count"]:ClearAllPoints()
-					_G[bf.."Count"]:SetPoint( "CENTER", _G[bf], "TOPRIGHT", 0, 0)
-					_G[bf.."Duration"]:ClearAllPoints()
-					_G[bf.."Duration"]:SetPoint( "CENTER", _G[bf], "BOTTOM", 5, 0)
-					_G[bf.."Duration"]:SetFont( fontpx, 12, "OUTLINE")
-				end
+local bname = { "BuffButton", "DebuffButton"}
+local blast = { 1, 1}
+
+local function BuffDEbuffDesign(...)
+	if BuffFrame and not BuffFrame.moved then
+		BuffFrame:ClearAllPoints()
+		BuffFrame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -10, 0)
+		BuffFrame.moved = true
+	end
+
+	for i = 1, 2 do		
+		for idx = blast[i], 30 do
+			bf =  bname[i] .. idx 		
+			if not _G[bf] then 
+				break
+			end
+			if not _G[bf].shadow then
+				blast[i] = idx
+				CreateStyle( _G[bf], 4)
+				_G[bf.."Icon"]:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+				_G[bf.."Count"]:SetFont( fontpx, 16, "OUTLINE")
+				_G[bf.."Count"]:ClearAllPoints()
+				_G[bf.."Count"]:SetPoint( "CENTER", _G[bf], "TOPRIGHT", 0, 0)
+				_G[bf.."Duration"]:ClearAllPoints()
+				_G[bf.."Duration"]:SetPoint( "CENTER", _G[bf], "BOTTOM", 5, 0)
+				_G[bf.."Duration"]:SetFont( fontpx, 12, "OUTLINE")
 			end
 		end
+	end	
+end
+
+function AuraPrepare(f, event)
+	if f.unit == "player" then
+		BuffDEbuffDesign()
 	end
 
 	if UnitExists( f.unit) then
@@ -233,10 +243,8 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 		
 		if unit == "player" then
 			f.filter = {"HARMFUL"}
-			f:RegisterEvent("PLAYER_ENTERING_WORLD") 
+			--f:RegisterEvent("PLAYER_ENTERING_WORLD")
 			f:RegisterUnitEvent("UNIT_AURA", unit)
-			f.bfname = { "BuffButton", "DebuffButton"}
-			f.bflast = { 1, 1}
 		elseif uf.isboss then 				
 			if name == "aurabar" then
 				f.filter = {"HELPFUL"}			
@@ -273,9 +281,7 @@ logan:SetScript("OnEvent", function(self)
 		CreateBuff(    bFrame, "aurabar",  bFrame:GetHeight(), 10, "LEFT", "RIGHT", 6, 0, 1, 7)
 		CreateBuff(    bFrame, "aurabuff", bFrame:GetHeight(), 10, "RIGHT", "LEFT", 7, 0, -1, 8)
 	end
---	if unit ~= "targettarget" then
---		f:RegisterUnitEvent("UNIT_AURA", unit)
---	end
+	BuffDEbuffDesign()
 end)
 
 --

@@ -61,6 +61,7 @@ yo["Addons"] = {
 	["MMColectIcons"]				= true,
 	["unitFrames"]					= true,
 	["MiniMapHideText"]				= false,
+	["MiniMapSize"]					= 150,
 	["MMFogOfWar"]					= true,
 	["MMCoordColor"]				= "1,1,1",
 	["MMCoordSize"] 				= 6,
@@ -99,6 +100,10 @@ yo["ActionBar"] = {
 	["HideName"]	= true,
 	["MicroMenu"]	= true,
 	["MicroScale"]	= 0.75,
+	["panel3Cols"]	= 6,
+	["panel3Nums"]	= 12,
+	["buttonsSize"]	= 35,
+	["buttonSpace"]	= 2,
 }
 yo["CastBar"] = {
 	["player"] = {
@@ -269,6 +274,7 @@ yo["Chat"] = {
 	["wisperInCombat"]	= true,
 	["ladyMod"]			= true,
 	["ladyModShift"]	= false,
+	["chatFont"]		= "Interface\\Addons\\yoFrame\\Media\\qFont.ttf",
 }
 
 yo["healBotka"] = {
@@ -407,9 +413,11 @@ logan:SetScript("OnEvent", function(self, event, name)
 	texhl 		=	yo.Media.texhl
 	texglow 	= 	yo.Media.texglow
 	font 		= 	yo.Media.font
+	fontChat	=	yo.Chat.chatFont
 	fontpx		=	yo.Media.fontpx
 	fontsize 	=	yo.Media.fontsize
 	fontstyle 	= 	"OUTLINE"
+	
 	sysfontsize	=	yo.Media.sysfontsize
 
 	ns[2] = yo

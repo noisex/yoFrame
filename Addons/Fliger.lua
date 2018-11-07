@@ -53,8 +53,8 @@ local function UpdateAura( self, unit)
 			
 		if yo.fliger.pBuffEnable then
 			if unit == self.pBuff.unit and PlayerBuffWhiteList[name] then
-				if not self.pBuff[fligerPB] then self.pBuff[fligerPB] = CreateAuraIcon( self.pBuff, fligerPB, true, "BOTTOM")end
-				UpdateAuraIcon( self.pBuff[fligerPB], filter, icon, count, nil, duration, expirationTime, spellID, index)
+				if not self.pBuff[fligerPB] then self.pBuff[fligerPB] = CreateAuraIcon( self.pBuff, fligerPB, false, "BOTTOM")end
+				UpdateAuraIcon( self.pBuff[fligerPB], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
 				fligerPB = fligerPB + 1
 			end
 		end

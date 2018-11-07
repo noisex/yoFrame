@@ -291,7 +291,7 @@ local function SetupChatPosAndFont(self)
 		chat.ScrollToBottomButton.ClearAllPoints = function() return end
 		
 		-- Font and font style for chat
-		chat:SetFont( font, fontsize, "OVERLAY")
+		chat:SetFont( yo.Chat.chatFont, fontsize, "OVERLAY")
 		chat:SetShadowOffset(1, -1)
 
 		-- Force chat position
@@ -450,7 +450,7 @@ local Fane = CreateFrame("Frame")
 local updateFS = function(self, inc, ...)
 	local fstring = self:GetFontString()
 
-	fstring:SetFont(font, fontsize, "OVERLAY")
+	fstring:SetFont( font, fontsize, "OVERLAY")
 	fstring:SetShadowOffset(1, -1)
 
 	if (...) then

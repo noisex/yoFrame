@@ -806,7 +806,8 @@ function UpdateSlot( self, bagID, slotID)
 		--slot.ignoreBorderColors = true
 	else
 		--slot.newItemGlow:SetVertexColor(1, 0.5, 0, 0.2)
-		slot.shadow:SetBackdropBorderColor( .09, .09, .09, .9)
+		--slot.shadow:SetBackdropBorderColor( .09, .09, .09, .9)		-- DEFAULT border !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		slot.shadow:SetBackdropBorderColor( .12, .12, .12, .9)		-- DEFAULT border !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		--slot.ignoreBorderColors = nil
 	end
 

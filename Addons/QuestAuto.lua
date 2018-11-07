@@ -48,6 +48,8 @@ local autoGossipNPC = {
 	[144354]	= true,
 	
 	[144478]	= true,
+	[144353]	= true,
+	[144354]	= true,
 	[144355]	= true,
 	[144356]	= true,
 	[144357]	= true,

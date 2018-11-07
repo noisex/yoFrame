@@ -23,7 +23,7 @@ function ChangeSystemFonts( fontsSize)
 	--print(ind, rind)
 	_G["ChatBubbleFont"]:SetFont( font, 12, "OUTLINE")
 
-	_G["ChatFontNormal"]:SetFont( font, 10)
+	_G["ChatFontNormal"]:SetFont( font, fontsize)
 	_G["ErrorFont"]:SetFont( font, 16)
 	_G["QuestFont"]:SetFont( font, 12)
 	_G["QuestFontLeft"]:SetFont( font, 13)

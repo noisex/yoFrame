@@ -25,6 +25,9 @@ LSM:Register("sound", "Shotgun", "Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg
 LSM:Register("sound", "Wisper", "Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
 LSM:Register("sound", "Murloc", "Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
 
+LSM:Register("font", "yoMagistral", "Interface\\Addons\\yoFrame\\Media\\qFont.ttf", 130)
+LSM:Register("font", "yoSansNarrow", "Interface\\Addons\\yoFrame\\Media\\qSans.ttf", 130)
+
 function Setlers( path, val)
 	local p1, p2, p3, p4 = strsplit("#", path)
 		
@@ -131,13 +134,6 @@ function InitOptions()
 						min = 10, max = 14, step = 1, width = "full",
 						get = function(info) return yo["Media"].fontsize end ,
 						set = function(info,val) Setlers( "Media#fontsize", val) end,},			
-					fontsize = {
-						name = function(info) return tr( info[#info]) end, 
-						order = 17,	type = "range",
-						desc = L["DEFAULT"] .. 10,
-						min = 10, max = 16, step = 1, width = "full",
-						get = function(info) return yo["Chat"][info[#info]] end ,
-						set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, },
 					scriptErrors= {
 						name = function(info) return tr( info[#info]) end, 
 						order = 9, type = "toggle",
@@ -196,7 +192,8 @@ function InitOptions()
 					MiniMaps = {
 						name = L["MiniMaps"],	type = "group",	order = 30,	inline = true,
 						args = {	
-							MiniMap 		= {	order = 1,  type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = "full"},
+							MiniMap 		= {	order = 1,  type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = 1},
+							MiniMapSize		= {	order = 2,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 100, max = 250, step = 10,},
 							MMColectIcons 	= {	order = 5,  type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
 							MiniMapCoord 	= {	order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end,  },
 							MiniMapHideText = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["MMHIDE_DESC"],},
@@ -300,6 +297,8 @@ function InitOptions()
 					containerWidth 	= {	order = 8, type = "range", 	name = function(info) return tr( info[#info]) end, min = 350, max = 800, step = 1,	desc = L["DEFAULT"] .. 438,},
 					newIconAnimation= { order = 10, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", },
 					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info]) .. L["NEW"] end, width = "full",},
+					ladyMod			= {	order = 32, type = "toggle",name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",},
+					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
 					},
 			},
 
@@ -348,6 +347,10 @@ function InitOptions()
 					CountSize 		= {	order = 5,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 8, max = 16, step = 1,},
 					MicroMenu 		= {	order = 20, type = "toggle", 	name = function(info) return tr( info[#info]) end, },
 					MicroScale 		= {	order = 21,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 0.5, max = 1.5, step = 0.05,},
+					panel3Nums		= {	order = 34,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 12, step = 1,},
+					panel3Cols		= {	order = 36,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 12, step = 1,},
+					buttonsSize		= {	order = 30,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 25, max = 50, step = 1,},
+					buttonSpace		= {	order = 32,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,},
 				},	
 			},		
 
@@ -434,13 +437,26 @@ function InitOptions()
 					BarChat 		= {	order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 					linkOverMouse 	= {	order = 20, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 					showVoice 		= {	order = 25, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
-					showHistory 	= {	order = 30, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
-					ladyMod			= {	order = 32, type = "toggle",	name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",},
-					ladyModShift	= {	order = 34, type = "toggle",	name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
+					showHistory 	= {	order = 30, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},					
 					fadingEnable 	= {	order = 36, type = "toggle",	name = function(info) return tr( info[#info]) end,},
 					fadingTimer 	= {	order = 38,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 5, max = 100, step = 1, disabled = function( info) return not yo[info[1]].fadingEnable; end,},
 					wisperSound		= {	order = 40, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
 					wisperInCombat	= {	order = 42, type = "toggle",	name = function(info) return tr( info[#info]) end,},
+
+					fontsize = {
+						name = function(info) return tr( info[#info]) end,  
+						order = 2,	type = "range", desc = L["DEFAULT"] .. 10,	min = 10, max = 16, step = 1, 
+						get = function(info) return yo["Chat"][info[#info]] end ,
+						set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, },
+
+					chatFont 		= {	order = 4, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
+						get = function(info) 
+							for k, val in pairs( LSM:List("font")) do
+								--print( k, val, yo["Chat"][info[#info]], LSM:Fetch("font", val))
+								if yo["Chat"][info[#info]] == LSM:Fetch("font", val) then return val end
+							end	end ,
+						set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end ,
+					},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
 					--chatBubble		= {	order = 40, type = "select", 	name = "Чат-бабл:",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},

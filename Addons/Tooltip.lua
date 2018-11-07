@@ -957,7 +957,7 @@ local S_ITEM_LEVEL = "^" .. gsub(ITEM_LEVEL, "%%d", "(%%d+)")
 local scantip = CreateFrame("GameTooltip", "iLvlScanningTooltip", nil, "GameTooltipTemplate")
 scantip:SetOwner(UIParent, "ANCHOR_NONE")
 
-local function _getRealItemLevel(slotId, unit, link, forced)
+function _getRealItemLevel(slotId, unit, link, forced)
 	if (not forced) and ItemDB[link] then return ItemDB[link] end
 
 	local realItemLevel

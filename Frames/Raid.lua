@@ -18,15 +18,15 @@ local function CreateClique()
 	local B_SET = [[print( "onEnter", self:GetName());self:SetBindingClick(true, %q, self, %q);]]
 	local B_CLR = [[print( "onLeaver");self:ClearBinding(%q);]]
 
-	local attr = B_SET:format( "Q", "cliquebuttonQ")
+	local attr = B_SET:format( "Q", "buttonQ")
 	set[#set + 1] = attr
 	clr[#clr + 1] = B_CLR:format( "Q")
 
-	attr = B_SET:format( "A", "cliquebuttonA")
+	attr = B_SET:format( "A", "buttonA")
 	set[#set + 1] = attr
 	clr[#clr + 1] = B_CLR:format( "A")
 
-	attr = B_SET:format( "MOUSEWHEELDOWN", "w1")
+	attr = B_SET:format( "MOUSEWHEELDOWN", "whell1")
 	set[#set + 1] = attr
 	clr[#clr + 1] = B_CLR:format( "MOUSEWHEELDOWN")
 
@@ -503,15 +503,14 @@ local Shared = function(self, unit)
 		--self:SetAttribute("type-w1", "spell")
 		--self:SetAttribute("spell-w1", "Буйный рост")
 
-		self:SetAttribute("type-cliquebuttonQ", "macro")
-		self:SetAttribute("macrotext-cliquebuttonQ", "/cast [@mouseover] Восстановление")
+		self:SetAttribute("type-buttonQ", "macro")
+		self:SetAttribute("macrotext-buttonQ", "/cast [@mouseover] Восстановление")
 
-		self:SetAttribute("type-cliquebuttonA", "macro")
-		self:SetAttribute("macrotext-cliquebuttonA", "/cast [@mouseover] Омоложение")
+		self:SetAttribute("type-buttonA", "macro")
+		self:SetAttribute("macrotext-buttonA", "/cast [@mouseover] Омоложение")
 	
-		self:SetAttribute("type-w1", "macro")
-		self:SetAttribute("macrotext-w1", "/cast [@mouseover] Буйный рост")
-		--/stopcasting\n
+		self:SetAttribute("type-whell1", "macro")
+		self:SetAttribute("macrotext-whell1", "/cast [@mouseover] Буйный рост")
 	else
 		self.menu = SpawnMenu
 		self:SetScript("OnEnter", OnEnter)
