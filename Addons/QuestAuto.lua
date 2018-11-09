@@ -140,6 +140,7 @@ local function OnEvent( self, event, ...)
 		self:RegisterEvent("QUEST_COMPLETE")
 		self:RegisterEvent("QUEST_ACCEPTED")
 		self:RegisterEvent("CINEMATIC_START")
+		--self:RegisterEvent("ADDON_LOADED")
 	end
 
 	if event == "QUEST_PROGRESS" then
@@ -366,10 +367,22 @@ local function OnEvent( self, event, ...)
 		print( qString)
 		print( " ")
 	else
-		--print("|cffff0000Unknown event: " .. event)
+		--print("|cffff0000Unknown event: " .. event, ...)
 	end
 end
 
 local quest = CreateFrame("Frame")
 quest:RegisterEvent("PLAYER_ENTERING_WORLD")
 quest:SetScript("OnEvent", OnEvent)
+
+-- autoclose AutoQuestPopupTracker
+hooksecurefunc( AUTO_QUEST_POPUP_TRACKER_MODULE, "Update", function(self, ...)
+	for i = 1, GetNumAutoQuestPopUps() do
+		local questID, popUpType = GetAutoQuestPopUp(i);
+		
+		if questID and popUpType == "COMPLETE" then
+			ShowQuestComplete(GetQuestLogIndexByID(questID));
+			--AutoQuestPopupTracker_RemovePopUp(questID)
+		end
+	end
+end)

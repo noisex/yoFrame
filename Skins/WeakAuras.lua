@@ -28,7 +28,7 @@ local function styleIcon( region)
 			region:SetHeight( region:GetHeight() * 0.83)
 			region:SetWidth( region:GetWidth() * 0.83)
 
-			CreateBorder( region)
+			CreateNewBorder( region)
 
 			region:EnableMouse(false)
 			region.icon:ClearAllPoints()

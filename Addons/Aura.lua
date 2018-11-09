@@ -113,9 +113,11 @@ local bname = { "BuffButton", "DebuffButton"}
 local blast = { 1, 1}
 
 local function BuffDEbuffDesign(...)
-	if BuffFrame and not BuffFrame.moved then
+	if BuffFrame and BuffFrame.moved ~= true then
 		BuffFrame:ClearAllPoints()
+		BuffFrame.ClearAllPoints = dummy
 		BuffFrame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -10, 0)
+		BuffFrame.SetPoint = dummy
 		BuffFrame.moved = true
 	end
 
@@ -274,7 +276,7 @@ logan:SetScript("OnEvent", function(self)
 
 	CreateBuff( plFrame,  "aurabar", 27, 7, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0) 
 	CreateBuff( tarFrame, "aurabar", 21, 8, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
-	CreateBuff( fcFrame, "aurabar", 20, 5, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
+	CreateBuff( fcFrame, "aurabar", 25, 4, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
 	
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = _G["yo_Boss"..i]
@@ -282,6 +284,7 @@ logan:SetScript("OnEvent", function(self)
 		CreateBuff(    bFrame, "aurabuff", bFrame:GetHeight(), 10, "RIGHT", "LEFT", 7, 0, -1, 8)
 	end
 	BuffDEbuffDesign()
+	BuffFrame.moved = false
 end)
 
 --

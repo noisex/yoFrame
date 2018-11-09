@@ -182,7 +182,7 @@ function pw_update( f, unit)
         uPP = 0
     end
 	
-    if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) then
+    if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) or pmin == 0 then
         uPText = ""
 	elseif f.isboss then
 		uPText = uPP .. "%"
@@ -562,13 +562,12 @@ function CreateUFrame( f, unit)
 		local pDebuff = CreateFrame("Frame", nil, f)
 		pDebuff:SetPoint("TOPLEFT", f, "BOTTOMLEFT",  0, -5)
 		pDebuff:SetWidth( f:GetWidth())
-		pDebuff:SetHeight( 18)
+		pDebuff:SetHeight( 25)
 		pDebuff.direction 	= "RIGHT"
 		pDebuff.unit 		= "targettarget"
 		pDebuff.count 		= pDebuff:GetWidth() / pDebuff:GetHeight()
 		f.pDebuff 			= pDebuff
 
-		--f:RegisterUnitEvent("UNIT_AURA", unit)
 		f:SetScript("OnUpdate", OnUpdate)
 	end
 

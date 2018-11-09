@@ -329,7 +329,12 @@ function InitOptions()
 					aurasRaid		= {	order = 92, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					aurasParty		= {	order = 94, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					debuffHight		= {	order = 96, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
+					filterHighLight	= {	order = 97, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					classBackground = {	order = 98, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
+					showMT 			= {	order =100, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
+					showMTT 		= {	order =102, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
+					heightMT		= {	order =104,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 20, max = 50, step = 1,},
+					widthMT			= {	order =106,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 80, max = 200, step = 1,},
 					},
 			},
 

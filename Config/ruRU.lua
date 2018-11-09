@@ -266,6 +266,13 @@ L["buttonsSize"]= "Размер иконок панелей №1-3"
 L["buttonSpace"]= "Растояние между кнопками"
 L["chatFont"]	= "Шрифт чата"
 L["MiniMapSize"]	= "Размер миникарты"
+
+L["filterHighLight"]= "Показывать только дебафы, которые могу сдиспелить"
+
+L["showMT"]			= "Show Main Tanks"
+L["showMTT"]		= "Show Main Tanks targets"
+L["heightMT"]		= "Main Tanks Height"
+L["widthMT"]		= "Main Tanks Width"
 --[[
 L[""] 	= "
 L["DESC"] 	= 

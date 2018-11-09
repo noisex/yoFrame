@@ -101,7 +101,7 @@ oUF.Tags.Events["NameShort"] = "UNIT_NAME_UPDATE"
 
 oUF.Tags["NameMedium"] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 11, true)
+	return utf8sub(name, 10, false)
 end
 oUF.Tags.Events["NameMedium"] = "UNIT_NAME_UPDATE"
 
@@ -165,7 +165,7 @@ end
 oUF.Tags.Events['namemedium'] = 'UNIT_NAME_UPDATE'
 oUF.Tags.Methods['namemedium'] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 15, true)
+	return utf8sub(name, 10, false)
 end
 
 oUF.Tags.Events['namelong'] = 'UNIT_NAME_UPDATE'

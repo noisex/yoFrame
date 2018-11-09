@@ -175,6 +175,7 @@ CreateAnchor("yo_MovePetBar", "Move Pet Bar", 330, 30, 449, 197, "RIGHT", "BOTTO
 CreateAnchor("yo_MoveExtr", "Move Extro Button", 130, 60, 250, -200, "LEFT", "LEFT")
 
 CreateAnchor("yo_MoveRaid", "Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
+CreateAnchor("yo_MoveTanks", "Move Raid MainTanks Frame", 200, 55, 5, 420, "TOPLEFT", "BOTTOMLEFT")
 CreateAnchor("yo_MoveAltPower", "Move Power Alt Bar", 250, 70, 0, -150, "CENTER", "TOP")
 
 CreateAnchor("P_DEBUFF",	"Player Debuff",					40,	40,-450, 150, 	"CENTER", "CENTER")

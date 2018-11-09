@@ -256,6 +256,11 @@ yo["Raid"] = {
 	["aurasParty"]		= true,
 	["debuffHight"]		= true,
 	["classBackground"]	= true,
+	["filterHighLight"]	= false,
+	["showMT"]			= true,
+	["showMTT"]			= true,
+	["heightMT"]		= 25,
+	["widthMT"]			= 100,
 }
 yo["Chat"] = {
 	["EnableChat"] 		= true,
