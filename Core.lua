@@ -174,7 +174,7 @@ local function enterEvent( self)
 			local bFrame = "boss"..i.."Frame"
 			bFrame = CreateFrame("Button", "yo_Boss" .. i, UIParent, "SecureUnitButtonTemplate") 
 			bFrame.unit = "boss"..i
-			bFrame:SetPoint( "CENTER", yo_MoveBoss, "CENTER", 0 , -( i -1) * 65)
+			bFrame:SetPoint( "CENTER", yo_MoveBoss, "CENTER", 0 , -( i -1) * 62)
 			bFrame:SetSize( yo_MoveBoss:GetSize())
 			CreateUFrame(  bFrame, bFrame.unit)
 		end

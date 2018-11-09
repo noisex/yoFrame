@@ -54,7 +54,7 @@ Stat:SetFrameStrata("MEDIUM")
 Stat:SetFrameLevel(3)
 
 local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
-Text:SetFont( font, fontsize, "OVERLAY")
+--Text:SetFont( font, fontsize, "OVERLAY")
 Text:SetHeight(LeftInfoPanel:GetHeight())
 Text:SetPoint("RIGHT", LeftInfoPanel, "RIGHT", -150, 0)
 Stat:SetAllPoints(Text)
@@ -258,6 +258,22 @@ local function Update(self, event, ...)
 		LeftInfoPanel.guildText = nil
 		return
 	end
+	if event == "PLAYER_ENTERING_WORLD" then
+		Text:SetFont( font, ( yo.Media.fontsize), "OVERLAY")
+		--BFA
+		Stat:RegisterEvent("GUILD_ROSTER_UPDATE")
+		--Stat:RegisterEvent("GUILD_ROSTER_SHOW")
+		--Stat:RegisterEvent("GUILD_XP_UPDATE")
+		Stat:RegisterEvent("PLAYER_GUILD_UPDATE")
+		Stat:RegisterEvent("GUILD_MOTD")
+		Stat:RegisterEvent("CHAT_MSG_SYSTEM")
+		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		if not GuildFrame and IsInGuild() then
+			LoadAddOn("Blizzard_GuildUI")
+			GuildRoster()
+		end 
+	end
+
 	if (not IsInGuild()) then
 		Text:SetText(noGuildString) -- I need a string :(
 		
@@ -267,24 +283,10 @@ local function Update(self, event, ...)
 	GuildRoster() -- Bux Fix on 5.4.
 	local _, online = GetNumGuildMembers()
 	Text:SetFormattedText(displayString, online)
-
-	if event == "PLAYER_ENTERING_WORLD" then
-		Text:SetFont( font, ( fontsize or 10), "OVERLAY")
-		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
 end
 
 
 Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-
 Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
---BFA
---Stat:RegisterEvent("GUILD_ROSTER_UPDATE")
---Stat:RegisterEvent("GUILD_ROSTER_SHOW")
---Stat:RegisterEvent("GUILD_XP_UPDATE")
-Stat:RegisterEvent("PLAYER_GUILD_UPDATE")
-Stat:RegisterEvent("GUILD_MOTD")
-Stat:RegisterEvent("CHAT_MSG_SYSTEM")
 Stat:SetScript("OnEvent", Update)
 --end

@@ -32,11 +32,12 @@ Stat:SetFrameStrata("MEDIUM")
 Stat:SetFrameLevel(3)
 
 local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
-Text:SetFont( font, fontsize, "OVERLAY")
+--Text:SetFont( font, fontsize, "OVERLAY")
 Text:SetHeight(LeftInfoPanel:GetHeight())
 Text:SetPoint("RIGHT", LeftInfoPanel, "RIGHT", -30, 0)
 Stat:SetParent(Text:GetParent())
 LeftInfoPanel.friendText = Text
+
 
 local menuFrame = CreateFrame("Frame", "FriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
 local menuList = {
@@ -250,7 +251,38 @@ local function Update(self, event, ...)
 		LeftInfoPanel.friendText = nil
 		return
 	end
-	
+
+	if event == "PLAYER_ENTERING_WORLD" then
+		Text:SetFont( font, ( yo.Media.fontsize), "OVERLAY")		
+		self:SetAllPoints(Text)
+
+		Stat:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
+		Stat:RegisterEvent("BN_FRIEND_ACCOUNT_OFFLINE")
+		--Stat:RegisterEvent("BN_FRIEND_TOON_ONLINE")
+		--Stat:RegisterEvent("BN_FRIEND_TOON_OFFLINE")
+		--Stat:RegisterEvent("BN_TOON_NAME_UPDATED")
+		Stat:RegisterEvent("FRIENDLIST_UPDATE")
+
+		--Stat:RegisterEvent("FRIENDLIST_SHOW")
+		Stat:RegisterEvent("IGNORELIST_UPDATE")
+		Stat:RegisterEvent("MUTELIST_UPDATE")
+		Stat:RegisterEvent("PLAYER_FLAGS_CHANGED")
+		Stat:RegisterEvent("BN_FRIEND_LIST_SIZE_CHANGED")
+		Stat:RegisterEvent("BN_FRIEND_INFO_CHANGED")
+		Stat:RegisterEvent("BN_FRIEND_INVITE_LIST_INITIALIZED")
+		Stat:RegisterEvent("BN_FRIEND_INVITE_ADDED")
+		Stat:RegisterEvent("BN_FRIEND_INVITE_REMOVED")
+		--Stat:RegisterEvent("BN_SELF_ONLINE")
+		Stat:RegisterEvent("BN_BLOCK_LIST_UPDATED")
+		Stat:RegisterEvent("BN_CONNECTED")
+		Stat:RegisterEvent("BN_DISCONNECTED")
+		Stat:RegisterEvent("BN_INFO_CHANGED")
+		Stat:RegisterEvent("BATTLETAG_INVITE_SHOW")
+		Stat:RegisterEvent("PARTY_REFER_A_FRIEND_UPDATED")
+		Stat:RegisterEvent("CHAT_MSG_SYSTEM")
+		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+
 	local _, onlineFriends = GetNumFriends()
 	local _, numBNetOnline = BNGetNumFriends()
 
@@ -267,12 +299,6 @@ local function Update(self, event, ...)
 	dataValid = false
 
 	Text:SetFormattedText(displayString, FRIENDS, onlineFriends + numBNetOnline)
-	
-	if event == "PLAYER_ENTERING_WORLD" then
-		Text:SetFont( font, ( fontsize or 10), "OVERLAY")
-		self:SetAllPoints(Text)
-		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
 end
 
 Stat:SetScript("OnMouseDown", function(self, btn)
@@ -429,32 +455,7 @@ Stat:SetScript("OnEnter", function(self)
 	GameTooltip:Show()
 end)
 
-Stat:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
-Stat:RegisterEvent("BN_FRIEND_ACCOUNT_OFFLINE")
---Stat:RegisterEvent("BN_FRIEND_TOON_ONLINE")
---Stat:RegisterEvent("BN_FRIEND_TOON_OFFLINE")
---Stat:RegisterEvent("BN_TOON_NAME_UPDATED")
-Stat:RegisterEvent("FRIENDLIST_UPDATE")
 Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
---Stat:RegisterEvent("FRIENDLIST_SHOW")
-Stat:RegisterEvent("IGNORELIST_UPDATE")
-Stat:RegisterEvent("MUTELIST_UPDATE")
-Stat:RegisterEvent("PLAYER_FLAGS_CHANGED")
-Stat:RegisterEvent("BN_FRIEND_LIST_SIZE_CHANGED")
-Stat:RegisterEvent("BN_FRIEND_INFO_CHANGED")
-Stat:RegisterEvent("BN_FRIEND_INVITE_LIST_INITIALIZED")
-Stat:RegisterEvent("BN_FRIEND_INVITE_ADDED")
-Stat:RegisterEvent("BN_FRIEND_INVITE_REMOVED")
---Stat:RegisterEvent("BN_SELF_ONLINE")
-Stat:RegisterEvent("BN_BLOCK_LIST_UPDATED")
-Stat:RegisterEvent("BN_CONNECTED")
-Stat:RegisterEvent("BN_DISCONNECTED")
-Stat:RegisterEvent("BN_INFO_CHANGED")
-Stat:RegisterEvent("BATTLETAG_INVITE_SHOW")
-Stat:RegisterEvent("PARTY_REFER_A_FRIEND_UPDATED")
-Stat:RegisterEvent("CHAT_MSG_SYSTEM")
-
-
 Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:SetScript("OnEvent", Update)
 --end

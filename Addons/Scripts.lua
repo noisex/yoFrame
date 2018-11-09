@@ -221,7 +221,7 @@ f:SetScript("OnEvent", function()
 		end
 	
 		if c>0 then
-			DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." " .. formatMoney( c)..".",255,255,0)
+			DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." " .. formatMoney( c),255,255,0)
 		end
 	end
 	
@@ -234,7 +234,7 @@ f:SetScript("OnEvent", function()
 				else
 					RepairAllItems()
 				end
-				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. formatMoney( cost)..".",255,255,0)
+				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. formatMoney( cost),255,255,0)
 			else
 				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY,255,0,0)
 			end

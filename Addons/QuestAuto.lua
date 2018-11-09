@@ -87,7 +87,7 @@ local function GetAvailableQuests( ... )
 		if isTrivial ~= true then
 			SelectGossipAvailableQuest( math.floor( i/7) + 1)
 		else
-			print("|cffff0000SKIP_IT: |r" .. titleText)
+			print("|cffff0000SKIPED: |r" .. titleText)
 		end
 	end
 end

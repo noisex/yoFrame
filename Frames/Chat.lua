@@ -323,20 +323,22 @@ local function SetupChatPosAndFont(self)
 
 
 	if yo.Chat.showVoice then
-		ChatFrameMenuButton:SetSize( 18, 18)
+		ChatFrameMenuButton:SetSize( 35, 35)
 		ChatFrameMenuButton:ClearAllPoints()
 		ChatFrameMenuButton:SetNormalTexture( nil)
 		ChatFrameMenuButton:SetPushedTexture(nil)
+		ChatFrameMenuButton:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 		ChatFrameMenuButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
 		ChatFrameMenuButton.Icon = ChatFrameMenuButton:CreateTexture(nil, "OVERLAY")
-		ChatFrameMenuButton.Icon:SetAllPoints()
-		ChatFrameMenuButton.Icon:SetTexture("Interface\\WORLDSTATEFRAME\\HordeFlagFlash") --Interface\\ChatFrame\\UI-ChatIcon-Chat-Up")
-		--ChatFrameMenuButton.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+		ChatFrameMenuButton.Icon:SetPoint( "CENTER")
+		ChatFrameMenuButton.Icon:SetTexture("Interface\\ChatFrame\\UI-ChatWhisperIcon.blp")
+		ChatFrameMenuButton.Icon:SetVertexColor(1, 1, 0, 1)
+		ChatFrameMenuButton.Icon:SetSize( 17, 17)
 
 		ChatFrameChannelButton:SetNormalTexture(nil)
 		ChatFrameChannelButton:SetPushedTexture(nil)
 		ChatFrameChannelButton:ClearAllPoints()
-		ChatFrameChannelButton:SetPoint( "RIGHT", ChatFrameMenuButton, "LEFT", 4, 0)
+		ChatFrameChannelButton:SetPoint( "RIGHT", ChatFrameMenuButton, "LEFT", 8, 0)
 
 		ChatFrameToggleVoiceDeafenButton:SetNormalTexture(nil)
 		ChatFrameToggleVoiceDeafenButton:SetPushedTexture(nil)
@@ -372,7 +374,9 @@ local function SetupChatPosAndFont(self)
 	
 	-- Reposition battle.net popup over chat #1
 	ChatAlertFrame:ClearAllPoints()
-	ChatAlertFrame:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 0, 50)
+	ChatAlertFrame:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 0, 35)
+	--QuickJoinToastButton.FriendsButton:SetTexture("Interface\\CHATFRAME\\UI-ChatIcon-Battlenet.blp")
+	--QuickJoinToastButton.FriendsButton.SetTexture = dummy
 	-- BNToastFrame:ClearAllPoints()
 	-- BNToastFrame:SetPoint("BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 5, 5)
 
@@ -575,8 +579,8 @@ local function CreatCopyFrame()
 	frame = CreateFrame("Frame", "CopyFrame", UIParent)
 	CreateStyle(frame, 2)
 	frame:SetWidth(440)
-	frame:SetHeight(370)
-	frame:SetPoint("BOTTOM", LeftDataPanel, "TOP", 0, 7)
+	frame:SetHeight(400)
+	frame:SetPoint("BOTTOM", LeftDataPanel, "TOP", 0, 38)
 	frame:SetFrameStrata("DIALOG")
 	tinsert(UISpecialFrames, "CopyFrame")
 	frame:Hide()
@@ -633,15 +637,15 @@ for i = 1, NUM_CHAT_WINDOWS do
 	local cf = _G[format("ChatFrame%d", i)]
 	local button = CreateFrame("Button", format("ButtonCF%d", i), cf)
 	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -25, -25) -- -5, -5)
-	button:SetSize(20, 20)
-	button:SetAlpha(0)
+	button:SetSize( 30, 30)
+	button:SetAlpha(0.1)
 	CreateStyle(button, 2)
 	button:SetBackdropBorderColor(1, 1, 1)
 
 	local buttontexture = button:CreateTexture(nil, "BORDER")
 	buttontexture:SetPoint("CENTER")
 	buttontexture:SetTexture("Interface\\BUTTONS\\UI-GuildButton-PublicNote-Up")
-	buttontexture:SetSize(16, 16)
+	buttontexture:SetSize(24, 24)
 
 	button:SetScript("OnMouseUp", function(self)
 		Copy(cf)
@@ -649,7 +653,7 @@ for i = 1, NUM_CHAT_WINDOWS do
 	button:SetScript("OnEnter", function() 
 		button:SetAlpha(1) 
 	end)
-	button:SetScript("OnLeave", function() button:SetAlpha(0) end)
+	button:SetScript("OnLeave", function() button:SetAlpha(0.1) end)
 
 	SlashCmdList.COPY_CHAT = function()
 		Copy(_G["ChatFrame1"])
