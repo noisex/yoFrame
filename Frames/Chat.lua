@@ -636,7 +636,7 @@ end
 for i = 1, NUM_CHAT_WINDOWS do
 	local cf = _G[format("ChatFrame%d", i)]
 	local button = CreateFrame("Button", format("ButtonCF%d", i), cf)
-	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -25, -25) -- -5, -5)
+	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -21, -21)
 	button:SetSize( 30, 30)
 	button:SetAlpha(0.1)
 	CreateStyle(button, 2)

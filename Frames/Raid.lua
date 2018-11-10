@@ -176,7 +176,10 @@ local Shared = function(self, unit)
 	self.Health.frequentUpdates = true
 	self.Health.colorDisconnected = true
 	self.colors.disconnected = { 0.3, 0.3, 0.3}
-	self.Range = { insideAlpha = 1, outsideAlpha = 0.5, }	
+	
+	if unit ~= "tank" then
+		self.Range = { insideAlpha = 1, outsideAlpha = 0.5, }		
+	end	
 
 	if yo.Raid.classcolor == 1 and unit ~= "tank" then 
 		self.Health.colorClass = true
@@ -190,49 +193,53 @@ local Shared = function(self, unit)
 		self.Health.colorHealth = true
 		self.colors.health = { 0.2, 0.2, 0.2 }
 		self.Health.hbg:SetVertexColor( 0.7, 0.7, 0.7, 0.9)
-		self.Range = { insideAlpha = 1, outsideAlpha = .5, }
+		--self.Range = { insideAlpha = 1, outsideAlpha = .5, }
 	end
 
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR
 	------------------------------------------------------------------------------------------------------	
-	self.Power = CreateFrame("StatusBar", nil, self)
-	self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
-	self.Power:SetStatusBarTexture( texture)
-	self.Power:SetFrameStrata( "MEDIUM")
-	self.Power:SetWidth( self:GetWidth() - 6)
-	self.Power:SetHeight( 2)
-
-	self.Power.PostUpdate = function(power, unit, cur, min, max)
-		local role = UnitGroupRolesAssigned( unit)
-
-		if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) or self:GetParent():GetName():match( "yo_Tanke") then
-			power:Show( )
-			if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
-				power:SetValue( max)
-			end
-		else
-			power:Hide( )
-		end
-	end
-		
-	self.Power:SetFrameLevel(10)
-	self.Power.frequentUpdates = false
-	self.Power.colorDisconnected = true
-	if yo.Raid.manacolorClass then 
-		self.Power.colorClass = true
-	else
-		self.Power.colorPower = true
-	end
-
-	-- Power bar background
-	self.Power.bg = self.Power:CreateTexture(nil, "BORDER")
-	self.Power.bg:SetAllPoints(self.Power)
-	self.Power.bg:SetTexture( texture)
-	self.Power.bg:SetAlpha(1)
-	self.Power.bg.multiplier = 0.2
 	
-	CreateStyle( self.Power, 2)
+	if not self:GetParent():GetName():match( "yo_TanketsTar") then  
+	
+		self.Power = CreateFrame("StatusBar", nil, self)
+		self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
+		self.Power:SetStatusBarTexture( texture)
+		self.Power:SetFrameStrata( "MEDIUM")
+		self.Power:SetWidth( self:GetWidth() - 6)
+		self.Power:SetHeight( 2)
+
+		self.Power.PostUpdate = function(power, unit, cur, min, max)
+			local role = UnitGroupRolesAssigned( unit)
+
+			if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) or self:GetParent():GetName():match( "yo_Tanke") then
+				power:Show( )
+				if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
+					power:SetValue( max)
+				end
+			else
+				power:Hide( )
+			end
+		end
+		
+		self.Power:SetFrameLevel(10)
+		self.Power.frequentUpdates = false
+		self.Power.colorDisconnected = true
+		if yo.Raid.manacolorClass then 
+			self.Power.colorClass = true
+		else
+			self.Power.colorPower = true
+		end
+
+		-- Power bar background
+		self.Power.bg = self.Power:CreateTexture(nil, "BORDER")
+		self.Power.bg:SetAllPoints(self.Power)
+		self.Power.bg:SetTexture( texture)
+		self.Power.bg:SetAlpha(1)
+		self.Power.bg.multiplier = 0.2
+	
+		CreateStyle( self.Power, 2)
+	end
 
 --	    -- Position and size
 --    local mainBar = CreateFrame('StatusBar', nil, self.Power)
@@ -340,7 +347,7 @@ local Shared = function(self, unit)
 	---											AURAS
 	------------------------------------------------------------------------------------------------------
 	if ( unit == "party" or unit == "player") and yo.Raid.aurasParty then
-		local size = self:GetHeight() * 0.8
+		local size = self:GetHeight() * 0.95
 		
 		local Buffs = CreateFrame('Frame', nil, self)
 		--self.Info:SetPoint( 'LEFT', self.Power, 'LEFT', 3, 5)
@@ -356,31 +363,24 @@ local Shared = function(self, unit)
 		self.Debuffs = Buffs
 		self.Debuffs.CustomFilter = function( self, button, ...)
 			spellID = select( 11, ...)
-			if not blackSpells[spellID] then
-				return true
-			else
-				return false
-			end
+			if not blackSpells[spellID] then return true else return false end
+		end
+
+		self.Debuffs.PostCreateIcon = function( self, button)
+			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
+			--button.icon:SetDesaturated( true)
+			button.count:SetFont( fontpx, self:GetHeight() / 1.5, 'OUTLINE')
+			button.count:ClearAllPoints()
+			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
+			button.count:SetTextColor( 0, 1, 0)
+			button:SetAlpha( 1)
+			button.cd:SetDrawEdge( false)
+			button.cd:SetDrawSwipe( false)
+			CreateStyle( button, 3)
 		end
 
 		DeadText:SetFont( font, fontsize - 1)
 
-		self.Debuffs.PostCreateIcon = function( self, button)
-			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
-			button.count:SetFont( fontpx, fontsize + 8, 'OUTLINE')
-			button.count:ClearAllPoints()
-			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
-			button.count:SetTextColor( 1, 0.9, 0)
-			
-			--button.cd:ClearAllPoints()
-			--button.cd:SetPoint( 'CENTER', button, 'BOTTOM', 0, 0)
-			button.cd:SetDrawSwipe( false)
-			button.cd:SetDrawEdge( false)
-			CreateStyle( button, 4)
-		end
-		--self.Debuffs.PostUpdate = function( self, button, ...)
-			--print( ...)
-		--end
 	elseif unit == "raid" and yo.Raid.aurasRaid then 	--( unit == "raid" or unit == "tank") and
 		DeadText:SetFont( font, fontsize - 2)
 
@@ -406,55 +406,58 @@ local Shared = function(self, unit)
 		self.Debuffs = Buffs
 		
 		self.Debuffs.CustomFilter = function( self, button, ...)
-			local spellID = select( 11, ...)
-			
-			if RaidDebuffList[spellID] then
-				return true
-			else
-				return false
-			end
+			local spellID = select( 11, ...)			
+			if RaidDebuffList[spellID] then return true else return false end
 		end
+
 		self.Debuffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
 			--button.icon:SetDesaturated( true)
-			button.count:SetFont( fontpx, fontsize +4, 'OUTLINE')
+			button.count:SetFont( fontpx, self:GetHeight() / 1.5, 'OUTLINE')
 			button.count:ClearAllPoints()
 			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
-			button.count:SetTextColor( 1, 0.9, 0)			
+			button.count:SetTextColor( 0, 1, 0)
+			button:SetAlpha( 1)
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
-			button:SetAlpha( 0.8)
-			--CreateStyle( button, 4, 150)
-		end	
+			CreateStyle( button, 3)
+		end
+
 	elseif self:GetParent():GetName() == "yo_Tankets" and yo.Raid.aurasRaid then
-		--DeadText:SetFont( font, fontsize - 2)
 		--print(self:GetParent():GetName(), self:GetParent():GetAttribute("widthMT") )
-		local size = self:GetHeight() * 0.95
+		local size = self:GetHeight() * 0.8
 		
 		local Buffs = CreateFrame('Frame', nil, self)
-		Buffs:SetPoint( 'LEFT', self, 'RIGHT', self:GetParent():GetAttribute("widthMT"), 0)
-		
+		--Buffs:SetPoint( 'LEFT', self, 'RIGHT', self:GetParent():GetAttribute("widthMT"), 0)
+		Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -2, -2)
+		Buffs:SetFrameStrata( "MEDIUM")
 		Buffs:SetFrameLevel( 150)
 		Buffs:SetSize( size * 10, size)
 
-		Buffs.disableCooldown = false
-		Buffs.spacing = 4
+		Buffs.disableCooldown = false		
 		Buffs.num = 3
 		Buffs.disableMouse = false
-		Buffs.initialAnchor = "LEFT"
-		Buffs.size   =  size
-		Buffs['growth-x'] = 'RIGHT'
+		--Buffs.initialAnchor = "LEFT"
+		--Buffs['growth-x'] = 'RIGHT'
+		--Buffs.spacing = 4
+		Buffs.initialAnchor = "RIGHT"
+		Buffs['growth-x'] = 'LEFT'
+		Buffs.spacing = 3
+		
+		Buffs.size   =  size		
 		self.Debuffs = Buffs
 		
 		self.Debuffs.CustomFilter = function( self, button, ...)
 			local spellID = select( 11, ...)
 			
-			if RaidDebuffList[spellID] then
-				return true
-			else
-				return true 		---!!!!
-			end
+			if not blackSpells[spellID] then return true else return false end -- party
+
+			--if RaidDebuffList[spellID] then return true 
+				--else return true 		---!!!! raid
+				--else return false 	---!!!! raid
+			--end
 		end
+
 		self.Debuffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
 			--button.icon:SetDesaturated( true)
@@ -468,7 +471,11 @@ local Shared = function(self, unit)
 			CreateStyle( button, 3)
 		end
 	end
-	
+
+	if yo.Raid.aurasRaid then
+
+	end
+
 	------------------------------------------------------------------------------------------------------
 	---										HEAL PREDICTION
 	------------------------------------------------------------------------------------------------------	
@@ -804,14 +811,19 @@ logan:SetScript("OnEvent", function(self, event)
 			local fullMTT = 0
 
 			if yo.Raid.showMTT then
-				heightMTT	= min( 25, heightMT * .8)
+				heightMTT	= min( 25, heightMT * .7)
 				widthMTT	= min( 120, widthMT * .8)
 				offsetMTT	= offsetMT + heightMT - heightMTT
 				fullMTT		= offsetMT + widthMTT
-			end			
+			end	
+			local showParty = false
+
 			local mt = self:SpawnHeader( 'yo_Tankets', nil, 'raid,party',
     			'showRaid', true,
-    			'groupFilter', 'MAINTANK',
+    			'showParty', showParty,
+    			'showPlayer', showParty,
+    			--'groupFilter', 'MAINTANK',
+    			'roleFilter', 'TANK',    			
     			'yOffset', -offsetMT,
     			'widthMT', fullMTT + offsetMT,
     			'oUF-initialConfigFunction', ([[
@@ -825,7 +837,10 @@ logan:SetScript("OnEvent", function(self, event)
 			if yo.Raid.showMTT then
 				local mtt = self:SpawnHeader( 'yo_TanketsTar', nil, 'raid,party',
     				'showRaid', true,
-    				'groupFilter', 'MAINTANK',
+    				'showParty', showParty,
+    				'showPlayer', showParty,
+    				--'groupFilter', 'MAINTANK',
+    				'roleFilter', 'TANK',				
     				'yOffset', -offsetMTT,
     				'oUF-initialConfigFunction', ([[
         				self:SetAttribute('unitsuffix', 'target')
@@ -840,3 +855,33 @@ logan:SetScript("OnEvent", function(self, event)
 	end)	
 end)
 
+--[[
+List of the various configuration attributes
+======================================================
+showRaid = [BOOLEAN] -- true if the header should be shown while in a raid
+showParty = [BOOLEAN] -- true if the header should be shown while in a party and not in a raid
+showPlayer = [BOOLEAN] -- true if the header should show the player when not in a raid
+showSolo = [BOOLEAN] -- true if the header should be shown while not in a group (implies showPlayer)
+nameList = [STRING] -- a comma separated list of player names (not used if 'groupFilter' is set)
+groupFilter = [1-8, STRING] -- a comma seperated list of raid group numbers and/or uppercase class names and/or uppercase roles
+roleFilter = [STRING] -- a comma seperated list of MT/MA/Tank/Healer/DPS role strings
+strictFiltering = [BOOLEAN] 
+-- if true, then 
+---- if only groupFilter is specified then characters must match both a group and a class from the groupFilter list
+---- if only roleFilter is specified then characters must match at least one of the specified roles
+---- if both groupFilter and roleFilters are specified then characters must match a group and a class from the groupFilter list and a role from the roleFilter list
+point = [STRING] -- a valid XML anchoring point (Default: "TOP")
+xOffset = [NUMBER] -- the x-Offset to use when anchoring the unit buttons (Default: 0)
+yOffset = [NUMBER] -- the y-Offset to use when anchoring the unit buttons (Default: 0)
+sortMethod = ["INDEX", "NAME", "NAMELIST"] -- defines how the group is sorted (Default: "INDEX")
+sortDir = ["ASC", "DESC"] -- defines the sort order (Default: "ASC")
+template = [STRING] -- the XML template to use for the unit buttons
+templateType = [STRING] - specifies the frame type of the managed subframes (Default: "Button")
+groupBy = [nil, "GROUP", "CLASS", "ROLE", "ASSIGNEDROLE"] - specifies a "grouping" type to apply before regular sorting (Default: nil)
+groupingOrder = [STRING] - specifies the order of the groupings (ie. "1,2,3,4,5,6,7,8")
+maxColumns = [NUMBER] - maximum number of columns the header will create (Default: 1)
+unitsPerColumn = [NUMBER or nil] - maximum units that will be displayed in a singe column, nil is infinite (Default: nil)
+startingIndex = [NUMBER] - the index in the final sorted unit list at which to start displaying units (Default: 1)
+columnSpacing = [NUMBER] - the amount of space between the rows/columns (Default: 0)
+columnAnchorPoint = [STRING] - the anchor point of each new column (ie. use LEFT for the columns to grow to the right)
+--]]

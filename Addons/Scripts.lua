@@ -13,7 +13,7 @@ yo_Model:SetUnit("player")
 local cashed
 
 GameTooltip:HookScript("OnTooltipSetItem", function(self)
-	if not yo.Chat.ladyMod or ( yo.Chat.ladyModShift and not IsControlKeyDown()) then return end
+	if not yo.Bags.ladyMod or ( yo.Bags.ladyModShift and not IsControlKeyDown()) then return end
 
 	local _, itemLink = self:GetItem();
 	if not itemLink then return end

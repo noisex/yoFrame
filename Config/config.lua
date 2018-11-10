@@ -40,6 +40,8 @@ yo["Bags"] = {
 	["newIconAnimation"]	= true,
 	["autoReagent"]			= true,
 	["newAnimationLoop"]	= true,
+	["ladyMod"]			= true,
+	["ladyModShift"]	= false,
 }			
 yo["Addons"] = {
 	["ChangeSystemFonts"] 			= true,			--	
@@ -259,7 +261,7 @@ yo["Raid"] = {
 	["filterHighLight"]	= false,
 	["showMT"]			= true,
 	["showMTT"]			= true,
-	["heightMT"]		= 25,
+	["heightMT"]		= 30,
 	["widthMT"]			= 100,
 }
 yo["Chat"] = {
@@ -277,8 +279,6 @@ yo["Chat"] = {
 	["fadingTimer"]		= 30,
 	["wisperSound"]		= "Wisper",
 	["wisperInCombat"]	= true,
-	["ladyMod"]			= true,
-	["ladyModShift"]	= false,
 	["chatFont"]		= "Interface\\Addons\\yoFrame\\Media\\qFont.ttf",
 }
 

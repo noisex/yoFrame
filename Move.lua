@@ -150,7 +150,7 @@ local frame = CreateFrame("Frame")
 CreateAnchor("yo_MovePlayer", "Move Player", 200, 40, 470, 270, "BOTTOMLEFT", "BOTTOMLEFT")
 CreateAnchor("yo_MoveTarget", "Move Target", 200, 40, -470, 270, "BOTTOMRIGHT", "BOTTOMRIGHT")
 
-CreateAnchor("yo_MoveFocus", "Move Focus", 150, 25, 10, -50, "LEFT","LEFT")
+CreateAnchor("yo_MoveFocus", "Move Focus", 100, 30, 5, 0, "LEFT","LEFT")
 CreateAnchor("yo_MoveToT", "Move Tar-Tar", 200, 30, 00, -1000)
 CreateAnchor("yo_MoveBoss", "Move Boss", 170, 35, -370, -200, "TOPRIGHT", "TOPRIGHT")
 CreateAnchor("yo_MoveQuestFrame", "Move Quest Frame", 230, 500, -5, -175, "TOPRIGHT", "TOPRIGHT")
