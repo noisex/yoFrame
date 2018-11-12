@@ -273,6 +273,9 @@ L["showMT"]			= "Show Main Tanks"
 L["showMTT"]		= "Show Main Tanks targets"
 L["heightMT"]		= "Main Tanks Height"
 L["widthMT"]		= "Main Tanks Width"
+L["hoverTexture"]	= "Рамка при подсветке кнопки"
+L["maxDispance"]	= "Максимальное расстояние для отображения"
+L["simpeRaid"]		= "Шаблон: Simple Raid"
 --[[
 L[""] 	= "
 L["DESC"] 	= 

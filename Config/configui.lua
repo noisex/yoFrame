@@ -113,31 +113,31 @@ function InitOptions()
 				args = {
 					PersonalConfig = {
 						order = 1, type = "toggle", width = "full",	name = function(info) return tr( info[#info]) end, 
-						desc = L["PERSONAL_DESC"] ,	descStyle = "inline",
-						get = function(info) return yo_AllData[myRealm][myName].PersonalConfig end ,
+						desc = L["PERSONAL_DESC"],	descStyle = "inline",
+						get = function(info) return yo_AllData[myRealm][myName].PersonalConfig end,
 						set = function(info,val) StaticPopup_Show ("CONFIRM_PERSONAL") end,	},
 
 			        ChangeSystemFonts = {
 						order = 10, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",
-						get = function(info) return yo["Addons"][info[#info]] end ,
+						get = function(info) return yo["Addons"][info[#info]] end,
 						set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 	},	
 			        sysfontsize = {
 			        	order = 11,	type = "range", name = function(info) return tr( info[#info]) end, 
 						desc = L["SYSFONT_DESC"], min = 10, max = 14, step = 1, width = "full", 
 						disabled = function() return not yo["Addons"].ChangeSystemFonts; end,
-						get = function(info) return yo["Media"].sysfontsize end ,
+						get = function(info) return yo["Media"].sysfontsize end,
 						set = function(info,val) Setlers( "Media#sysfontsize", val) ChangeSystemFonts( val) end,},	
 			        FontSize = {
 			   			name = function(info) return tr( info[#info]) end, 
 						order = 15,	type = "range",
 						desc = L["DEFAULT"] .. 10,
 						min = 10, max = 14, step = 1, width = "full",
-						get = function(info) return yo["Media"].fontsize end ,
+						get = function(info) return yo["Media"].fontsize end,
 						set = function(info,val) Setlers( "Media#fontsize", val) end,},			
 					scriptErrors= {
 						name = function(info) return tr( info[#info]) end, 
 						order = 9, type = "toggle",
-						get = function(info) return yo["General"][info[#info]] end , width = "full",
+						get = function(info) return yo["General"][info[#info]] end, width = "full",
 						set = function(info,val) Setlers( "General#" .. info[#info], val) end,	},
 					texture = {
 						name = function(info) return tr( info[#info]) end, 
@@ -147,19 +147,19 @@ function InitOptions()
 						get = function(info) 
 							for k, val in pairs( LSM:List("statusbar")) do
 								if yo["Media"][info[#info]] == LSM:Fetch("statusbar", val) then return val end
-							end	end ,
-						set = function(info, val) Setlers( "Media#" .. info[#info], LSM:Fetch("statusbar", val))	end ,},
+							end	end,
+						set = function(info, val) Setlers( "Media#" .. info[#info], LSM:Fetch("statusbar", val))	end,},
 					
 					AutoScale = {	
 						name = function(info) return tr( info[#info]) end, 	order = 40, type = "select", 
 						values = {["none"] = L["SCALE_NONE"], ["auto"] = L["SCALE_AUTO"], ["manual"] = L["SCALE_MANUAL"]},
-						get = function(info) return yo.Media.AutoScale end ,
+						get = function(info) return yo.Media.AutoScale end,
 						set = function(info,val) Setlers( "Media#AutoScale", val) end,},
 					ScaleRate = {
 						name = function(info) return tr( info[#info]) end, order = 42,	type = "range",
 						desc = L["DEFAULT"] .. 0.64, min = 0.6, max = 1.2, step = 0.01, 
 						disabled = function() if yo.Media.AutoScale ~= "manual" then return true end end	,
-						get = function(info) return yo["Media"][info[#info]] end ,
+						get = function(info) return yo["Media"][info[#info]] end,
 						set = function(info,val) Setlers( "Media#" .. info[#info], val) 
 							SetCVar("useUiScale", 1)	SetCVar("uiScale", val) UIParent:SetScale( val)	end, },
 			 	},
@@ -167,8 +167,8 @@ function InitOptions()
 
 
 			Addons = {
-				order = 20,	name = L["Addons"] .. L["NEW"], type = "group",				
-				get = function(info) return yo["Addons"][info[#info]] end ,
+				order = 20,	name = L["Addons"].. L["NEW"], type = "group",				
+				get = function(info) return yo["Addons"][info[#info]] end,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {	
 					RaidUtilityPanel= {	order = 1, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["RUP_DESC"],},
@@ -181,9 +181,9 @@ function InitOptions()
 					ArtifactPowerbar= {	order = 8, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					unitFrames		= {	order = 9, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					afk				= {	order =10, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
-					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, 	width = "full",	},
-					MoveBlizzFrames = {	order =13, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, 	width = "full",	},	
-					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, 	width = "full",	},	
+					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info])  end, 	width = "full",	},
+					MoveBlizzFrames = {	order =13, type = "toggle", name = function(info) return tr( info[#info])  end, 	width = "full",	},	
+					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info])  end, 	width = "full",	},	
 					-- lootbox
 					-- cooldowns
 					ObjectiveHeight = { order = 20, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	}, 
@@ -193,7 +193,7 @@ function InitOptions()
 						name = L["MiniMaps"],	type = "group",	order = 30,	inline = true,
 						args = {	
 							MiniMap 		= {	order = 1,  type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = 1},
-							MiniMapSize		= {	order = 2,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 100, max = 250, step = 10,},
+							MiniMapSize		= {	order = 2,	type = "range", 	name = function(info) return tr( info[#info]).. L["NEW"] end, min = 100, max = 250, step = 10,},
 							MMColectIcons 	= {	order = 5,  type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
 							MiniMapCoord 	= {	order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end,  },
 							MiniMapHideText = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["MMHIDE_DESC"],},
@@ -206,7 +206,7 @@ function InitOptions()
 					},	},
 					--CastWatcher = {
 					--	name = "CastWatcher", type = "group", order = 40, inline = true,
-					--	get = function(info) return yo["Addons"][info[#info]] end ,
+					--	get = function(info) return yo["Addons"][info[#info]] end,
 					--	set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,	
 					--	args = {	
 					--		CastWatcher = {		order = 20, type = "toggle", name = "Cлежение за установкой еды, котлов, таунт танков.",
@@ -221,8 +221,8 @@ function InitOptions()
 					
 
 			Automatic = {
-				order = 25,	name = L["Automatic"] .. L["NEW"], type = "group",				
-				get = function(info) return yo["Addons"][info[#info]] end ,
+				order = 25,	name = L["Automatic"], type = "group",				
+				get = function(info) return yo["Addons"][info[#info]] end,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {
 					AutoRepair 				= {	order = 1, type = "toggle", name = function(info) return tr( info[#info]) end,  width = "full", },
@@ -252,7 +252,7 @@ function InitOptions()
 				args = {	
 					BCB = {
 						order = 20,	name = L["BCB"], type = "group",	inline = true,
-						get = function(info) return yo[info[1]][info[2]][info[#info]] end ,
+						get = function(info) return yo[info[1]][info[2]][info[#info]] end,
 						set = function(info,val) Setlers( info[1] .."#".. info[2] .."#".. info[#info], val)	end,
 						disabled = function() return not yo.CastBar.BCB.enable; end,
 						args = {
@@ -274,7 +274,7 @@ function InitOptions()
 					},
 					player = {
 						order = 30,	name = L["PCB"], type = "group",	inline = true,
-						get = function(info) return yo[info[1]][info[2]][info[#info]] end ,
+						get = function(info) return yo[info[1]][info[2]][info[#info]] end,
 						set = function(info,val)    Setlers( info[1] .."#".. info[2] .."#".. info[#info], val) end,
 						args = {
 							enable 		= {	order = 1, type = "toggle", name = L["PCBenable"],},
@@ -285,8 +285,8 @@ function InitOptions()
 			},
 		
 			Bags = {
-				order = 35,	name = L["Bags"].. L["NEW"], type = "group",				
-				get = function(info) return yo["Bags"][info[#info]] end ,
+				order = 35,	name = L["Bags"], type = "group",				
+				get = function(info) return yo["Bags"][info[#info]] end,
 				set = function(info,val) Setlers( "Bags#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
 				args = {
@@ -296,20 +296,21 @@ function InitOptions()
 					buttonSpacing 	= {	order = 7,	type = "range", name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,desc = L["DEFAULT"] .. 7,},
 					containerWidth 	= {	order = 8, type = "range", 	name = function(info) return tr( info[#info]) end, min = 350, max = 800, step = 1,	desc = L["DEFAULT"] .. 438,},
 					newIconAnimation= { order = 10, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", },
-					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info]) .. L["NEW"] end, width = "full",},
-					ladyMod			= {	order = 32, type = "toggle",name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",},
-					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info]) .. L["NEW"] end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
+					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info])  end, width = "full",},
+					ladyMod			= {	order = 32, type = "toggle",name = function(info) return tr( info[#info])  end,width = "full",},
+					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info])  end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
 					},
 			},
 
 			Raid = {
-				order = 40,	name = L["Raid"],type = "group",				
-				get = function(info) return yo["Raid"][info[#info]] end ,
+				order = 40,	name = L["Raid"] .. L["NEW"],type = "group",				
+				get = function(info) return yo["Raid"][info[#info]] end,
 				set = function(info,val) Setlers( "Raid#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
 				args = {	
-					enable 			= {	order = 1,  type = "toggle", name = L["RAIDenable"], width = "full", disabled = false,},					
-					classcolor 		= {	order = 10, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"]},},
+					enable 			= {	order = 1,  type = "toggle", name = L["RAIDenable"], disabled = false,},
+					simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info]) end,},		
+					classcolor 		= {	order = 10, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
 					groupingOrder 	= {	order = 15, type = "select", name = function(info) return tr( info[#info]) end,	values = {["ID"] = L["SRT_ID"], ["GROUP"] = L["SRT_GR"], ["TDH"] = L["SRT_TDH"], ["THD"] = L["SRT_THD"]},},
 					width 			= {	order = 20,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 60, max = 150, step = 1,},
 					height 			= {	order = 25,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 20, max = 80, step = 1,},
@@ -329,18 +330,18 @@ function InitOptions()
 					aurasRaid		= {	order = 92, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					aurasParty		= {	order = 94, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					debuffHight		= {	order = 96, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
-					filterHighLight	= {	order = 97, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
+					filterHighLight	= {	order = 97, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, width = "full",},
 					classBackground = {	order = 98, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
-					showMT 			= {	order =100, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
-					showMTT 		= {	order =102, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
-					heightMT		= {	order =104,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 20, max = 60, step = 1,},
-					widthMT			= {	order =106,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 80, max = 220, step = 1,},
+					showMT 			= {	order =100, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, width = 1,},
+					showMTT 		= {	order =102, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, width = 1,},
+					heightMT		= {	order =104,	type = "range",  name = function(info) return tr( info[#info]) .. L["NEW"] end,	min = 20, max = 60, step = 1,},
+					widthMT			= {	order =106,	type = "range",  name = function(info) return tr( info[#info]) .. L["NEW"] end,	min = 80, max = 220, step = 1,},
 					},
 			},
 
 			ActionBar = {
 				order = 50,	name = L["ActionBar"], type = "group",
-				get = function(info) return yo["ActionBar"][info[#info]] end ,
+				get = function(info) return yo["ActionBar"][info[#info]] end,
 				set = function(info,val) Setlers( "ActionBar#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
 				args = {
@@ -356,19 +357,22 @@ function InitOptions()
 					panel3Cols		= {	order = 36,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 12, step = 1,},
 					buttonsSize		= {	order = 30,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 25, max = 50, step = 1,},
 					buttonSpace		= {	order = 32,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,},
+					hoverTexture	= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
 				},	
 			},		
 
 			NamePlates = {
-				order = 70,		name = L["NamePlates"] .. L["NEW"],	type = "group",				
-				get = function(info) return yo[info[1]][info[#info]] end ,
+				order = 70,		name = L["NamePlates"],	type = "group",				
+				get = function(info) return yo[info[1]][info[#info]] end,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
 				args = {	
 
 					enable 		= { width = "full",	order = 1, type = "toggle",	name = L["NPenable"], disabled = false, },
 					
-					width 		= {	order = 20,	type = "range", name = function(info) return tr( info[#info]) end,	desc = L["DEFAULT"] .. 175,	min = 130, max = 250, step = 1,},					
+					maxDispance= {	order =  2,	type = "range", name = function(info) return tr( info[#info]) end,	desc = L["DEFAULT"] .. 40,	min = 30, max = 60, step = 1, width = "full"},
+
+					width 		= {	order = 20,	type = "range", name = function(info) return tr( info[#info]) end,	desc = L["DEFAULT"] .. 175,	min = 130, max = 250, step = 1,},
 					height 		= {	order = 25,	type = "range", name = function(info) return tr( info[#info]) end,	desc = L["DEFAULT"] .. 14,	min = 10, max = 25, step = 1,},
 					iconDSize 	= {	order = 30,	type = "range", name = function(info) return tr( info[#info]) end,	desc = L["DESC_iconD"],	min = 10, max = 45, step = 1,},	
 					iconBSize 	= {	order = 31,	type = "range", name = function(info) return tr( info[#info]) end,	desc = L["DESC_iconB"],	min = 10, max = 45, step = 1,},	
@@ -386,7 +390,7 @@ function InitOptions()
 					blueDebuff 		= { width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					classDispell 	= { width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
 					glowTarget		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					glowBadType		= {	order = 69, type = "select", name = function(info) return tr( info[#info]) .. L["NEW"] end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
+					glowBadType		= {	order = 69, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
 					
 					showToolTip = {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
 
@@ -435,7 +439,7 @@ function InitOptions()
 
 			Chat = {
 				order = 80,	name = L["Chat"] .. L["NEW"], type = "group",
-				get = function(info) return yo["Chat"][info[#info]] end ,
+				get = function(info) return yo["Chat"][info[#info]] end,
 				set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, 
 				args = {	
 					EnableChat 		= {	order = 1,  type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
@@ -451,16 +455,16 @@ function InitOptions()
 					fontsize = {
 						name = function(info) return tr( info[#info]) end,  
 						order = 2,	type = "range", desc = L["DEFAULT"] .. 10,	min = 10, max = 16, step = 1, 
-						get = function(info) return yo["Chat"][info[#info]] end ,
+						get = function(info) return yo["Chat"][info[#info]] end,
 						set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, },
 
-					chatFont 		= {	order = 4, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
+					chatFont 		= {	order = 4, type = "select", 	name = function(info) return tr( info[#info]) .. L["NEW"] end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
 						get = function(info) 
 							for k, val in pairs( LSM:List("font")) do
 								--print( k, val, yo["Chat"][info[#info]], LSM:Fetch("font", val))
 								if yo["Chat"][info[#info]] == LSM:Fetch("font", val) then return val end
-							end	end ,
-						set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end ,
+							end	end,
+						set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end,
 					},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
@@ -474,12 +478,12 @@ function InitOptions()
 
 			fliger = {
 				order = 90, name = L["fliger"], type = "group",
-				get = function(info) return yo[info[1]][info[#info]] end ,
+				get = function(info) return yo[info[1]][info[#info]] end,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {	
 					enable 			= { width = "full",	order = 1, type = "toggle",	name = L["FLGenable"], disabled = false, },
-					desc01			= {	order = 2, type = "description", name = L["DESC_FILGER"], width = "full"},
+					--desc01			= {	order = 2, type = "description", name = L["DESC_FILGER"], width = "full"},
 					
 					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
@@ -508,7 +512,7 @@ function InitOptions()
 
 			CTA = {
 				order = 90, name = L["CTA"], type = "group",
-				get = function(info) return yo[info[1]][info[#info]] end ,
+				get = function(info) return yo[info[1]][info[#info]] end,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
@@ -576,11 +580,11 @@ function InitOptions()
 
 				args = {	
 					key1	= {	order = 20, type = "keybinding",	name = "Показывать иконки 1",
-						get = function(info) return yo[info[1]][info[#info]] end ,
+						get = function(info) return yo[info[1]][info[#info]] end,
 						set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, },
 						
 					key2	= {	order = 22, type = "keybinding",	name = "Показывать иконки 2",
-						get = function(info) return yo[info[1]][info[#info]] end ,
+						get = function(info) return yo[info[1]][info[#info]] end,
 						set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, },
 				},	
 			},

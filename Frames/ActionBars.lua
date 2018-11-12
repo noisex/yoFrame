@@ -192,24 +192,40 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 --		Actions Bars
 --------------------------------------------------------------------------------------------
 		else
-			local action = button.action
-			local Button = button
-			local Icon = _G[name.."Icon"]
-			local Count = _G[name.."Count"]
-			local Flash	 = _G[name.."Flash"]
-			local HotKey = _G[name.."HotKey"]
-			local Border  = _G[name.."Border"]
-			local Btname = _G[name.."Name"]
-			local normal  = _G[name.."NormalTexture"]
-			local BtnBG = _G[name..'FloatingBG']
+			local shift, alpfa 	= -2, .3
+			local action 	= button.action
+			local Button 	= button
+			local Icon 		= _G[name.."Icon"]
+			local Count 	= _G[name.."Count"]
+			local Flash	 	= _G[name.."Flash"]
+			local HotKey 	= _G[name.."HotKey"]
+			local Border  	= _G[name.."Border"]
+			local CD 		= _G[name.."Cooldown"]
+			local Btname 	= _G[name.."Name"]
+			local normal  	= _G[name.."NormalTexture"]
+			local BtnBG 	= _G[name..'FloatingBG']
+			local texture 	= texture
+
+			if yo.ActionBar.hoverTexture then	
+				--texture = "Interface\\AddOns\\yoFrame\\Media\\SimpleSquare.blp"
+				texture = "Interface\\AddOns\\yoFrame\\Media\\boder6px.blp"
+				shift = 3
+				alpfa = 0.9
+			end
+
+			if CD then
+				CD:ClearAllPoints()
+				CD:SetPoint("TOPLEFT", 2, -2)
+				CD:SetPoint("BOTTOMRIGHT", -2, 2)
+			end
 
 			if button.SetHighlightTexture and not button.hover then
 				local hover = button:CreateTexture("frame", nil, self)
 				hover:SetTexture( texture)
 				hover:SetVertexColor( 0, 1, 0, 1)
-				hover:SetPoint("TOPLEFT", 2, -2)
-				hover:SetPoint("BOTTOMRIGHT", -2, 2)
-				hover:SetAlpha( 0.8)
+				hover:SetPoint("TOPLEFT", -shift, shift)
+				hover:SetPoint("BOTTOMRIGHT", shift, -shift)
+				hover:SetAlpha( 0.9)
 				button.hover = hover
 				button:SetHighlightTexture(hover)
 			end
@@ -217,10 +233,10 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			if button.SetPushedTexture and not button.pushed then
 				local pushed = button:CreateTexture("frame", nil, self)
 				pushed:SetTexture( texture)
-				pushed:SetVertexColor( 0, 1, 0, 1)
-				pushed:SetPoint("TOPLEFT", 2, -2)
-				pushed:SetPoint("BOTTOMRIGHT", -2, 2)
-				pushed:SetAlpha( 0.7)
+				pushed:SetVertexColor( 1, 0, 0, 1)
+				pushed:SetPoint("TOPLEFT", -shift, shift)
+				pushed:SetPoint("BOTTOMRIGHT", shift, -shift)				
+				pushed:SetAlpha( 0.9)
 				button.pushed = pushed
 				button:SetPushedTexture(pushed)
 			end
@@ -229,9 +245,9 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 				local checked = button:CreateTexture("frame", nil, self)
 				checked:SetTexture( texture)
 				checked:SetVertexColor( 1, 1, 0, 1)
-				checked:SetPoint("TOPLEFT", 2, -2)
-				checked:SetPoint("BOTTOMRIGHT", -2, 2)
-				checked:SetAlpha( 0.2)
+				checked:SetPoint("TOPLEFT", -shift, shift)
+				checked:SetPoint("BOTTOMRIGHT", shift, -shift)
+				checked:SetAlpha( alpfa - 0.3)
 				button.checked = checked
 				button:SetCheckedTexture( checked)
 			end

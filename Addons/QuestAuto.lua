@@ -41,6 +41,7 @@ local ignorTypes = {
 
 local autoGossipNPC = {
 	[138476]	= true,
+	[138480]	= true,
 
 	[144476]	= true,
 	[144350]	= true,
@@ -377,10 +378,10 @@ quest:SetScript("OnEvent", OnEvent)
 
 -- autoclose AutoQuestPopupTracker
 hooksecurefunc( AUTO_QUEST_POPUP_TRACKER_MODULE, "Update", function(self, ...)
+	
 	for i = 1, GetNumAutoQuestPopUps() do
 		local questID, popUpType = GetAutoQuestPopUp(i);
-		
-		if questID and popUpType == "COMPLETE" then
+		if questID then --== "COMPLETE"
 			ShowQuestComplete(GetQuestLogIndexByID(questID));
 			--AutoQuestPopupTracker_RemovePopUp(questID)
 		end

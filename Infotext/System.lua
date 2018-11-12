@@ -5,7 +5,6 @@ local L, yo = unpack( select( 2, ...))
 --------------------------------------------------------------------
 
 local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
-	Text:SetFont( font, ( fontsize or 10), "OVERLAY")
 	Text:SetHeight( LeftInfoPanel:GetHeight())
 	Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 5, 0)
 LeftInfoPanel.systemText = Text
@@ -107,7 +106,7 @@ local Stat = CreateFrame("Frame")
 	Stat:SetFrameLevel(3)
 	Stat:EnableMouse(true)
 	Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	Stat:SetScript("OnUpdate", Update)
+	
 	Stat:SetScript("OnMouseDown", function () collectgarbage("collect") Update(Stat, 20) end)
 	Stat:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
@@ -134,6 +133,7 @@ local Stat = CreateFrame("Frame")
 	Stat:SetScript("OnEvent", function(self, ...)
 		Text:SetFont( font, ( fontsize or 10), "OVERLAY")
 		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		Stat:SetScript("OnUpdate", Update)
 	end)
 
-Update(Stat, 20)
+--Update(Stat, 20)

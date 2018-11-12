@@ -10,7 +10,7 @@ local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
 local C_NewItems_IsNewItem = C_NewItems.IsNewItem
 local Search = LibStub('LibItemSearch-1.2')
 
-local addon = CreateFrame("Frame", nil, UIParent)
+local addon = CreateFrame("Frame", "yo_BagsFrame", UIParent)
 	--addon:RegisterEvent("ADDON_LOADED")
 	addon:RegisterEvent("PLAYER_ENTERING_WORLD")
 	addon:SetScript('OnEvent', function(self, event, ...) 

@@ -91,7 +91,7 @@ SpawnMenu = function(self)
 	end
 end
 
-function OnChangeTarget( self)
+function OnChangeTarget( self)	
 	--if(unit ~= self.unit) then return end
 
 	local unit = self.unit	
@@ -108,6 +108,9 @@ function OnChangeTarget( self)
 		local _, class = UnitClass(unit)
 		local t = self.colors.class[class]
 		self.shadow:SetBackdropBorderColor( t[1], t[2], t[3])
+		if yo.Raid.simpeRaid then
+			--self
+		end		
 	end
 end
 
@@ -131,6 +134,7 @@ local function OnLeave( f)
 	end
 end
 
+
 -------------------------------------------------------------------------------------------------------
 --											SHARED
 -------------------------------------------------------------------------------------------------------
@@ -150,7 +154,12 @@ local Shared = function(self, unit)
 	-- Register click
 	self:RegisterForClicks("AnyUp")
 
-	CreateStyle(self, 3)
+	if yo.Raid.simpeRaid then
+		CreateStyleSmall(self, 2)
+	else
+		CreateStyle(self, 3)
+	end
+	
 		
 	--print(unit, self:GetParent():GetName(), self.unit)
 	------------------------------------------------------------------------------------------------------
@@ -162,9 +171,17 @@ local Shared = function(self, unit)
 	self.Health:SetAllPoints()
 	self.Health:SetStatusBarTexture( texture)
 	
-	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")
-	self.Health.hbg:SetAllPoints( self.Health)
-	self.Health.hbg:SetTexture( texture)
+	if yo.Raid.simpeRaid then
+		self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")
+		self.Health.bg = self.Health:CreateTexture(nil, 'BACKGROUND')    	
+    	self.Health.bg:SetAllPoints()
+    	self.Health.bg:SetTexture( texture)
+		self.Health.bg.multiplier = .4
+	else
+		self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")
+		self.Health.hbg:SetAllPoints( self.Health)
+		self.Health.hbg:SetTexture( texture)
+	end
 
 	if yo.Raid.hpBarRevers then 
 		self.Health:SetFillStyle( 'REVERSE');
@@ -178,7 +195,8 @@ local Shared = function(self, unit)
 	self.colors.disconnected = { 0.3, 0.3, 0.3}
 	
 	if unit ~= "tank" then
-		self.Range = { insideAlpha = 1, outsideAlpha = 0.5, }		
+		self.Range = { insideAlpha = 1, outsideAlpha = 0.5, }
+		--self.Range = { insideAlpha = 1, outsideAlpha = 1, }		
 	end	
 
 	if yo.Raid.classcolor == 1 and unit ~= "tank" then 
@@ -191,7 +209,11 @@ local Shared = function(self, unit)
 		self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
 	else
 		self.Health.colorHealth = true
+		self.Health.bg:ClearAllPoints()
+		self.Health.bg = nil
 		self.colors.health = { 0.2, 0.2, 0.2 }
+		self.Health.hbg:SetAllPoints( self.Health)
+		self.Health.hbg:SetTexture( texture)
 		self.Health.hbg:SetVertexColor( 0.7, 0.7, 0.7, 0.9)
 		--self.Range = { insideAlpha = 1, outsideAlpha = .5, }
 	end
@@ -200,7 +222,7 @@ local Shared = function(self, unit)
 	---											POWER BAR
 	------------------------------------------------------------------------------------------------------	
 	
-	if not self:GetParent():GetName():match( "yo_TanketsTar") then  
+	if not self:GetParent():GetName():match( "yo_TanketsTar") and not yo.Raid.simpeRaid then  
 	
 		self.Power = CreateFrame("StatusBar", nil, self)
 		self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
@@ -277,8 +299,13 @@ local Shared = function(self, unit)
 	self.bgHlight:Hide()
 	
 	self.Info = self.Overlay:CreateFontString( nil, "OVERLAY")
-	self.Info:SetPoint("LEFT", self, "LEFT", 2, 2)
-	self.Info:SetFont( font, fontsize)
+	if yo.Raid.simpeRaid then
+		self.Info:SetPoint("LEFT", self, "RIGHT", 15, 0)
+		self.Info:SetFont( font, fontsize + 2)
+	else
+		self.Info:SetPoint("LEFT", self, "LEFT", 2, 2)
+		self.Info:SetFont( font, fontsize)
+	end
 	self.Info:SetShadowOffset( 1, -1)
 	self.Info:SetShadowColor( 0, 0, 0, 1)
 	self:Tag( self.Info, "[GetNameColor][namemedium][afk]")
@@ -296,7 +323,11 @@ local Shared = function(self, unit)
 
 	local DeadText = self.Overlay:CreateFontString(nil ,"OVERLAY")
 	DeadText:SetFont( font, fontsize - 1) --, "OUTLINE")
-	DeadText:SetPoint("TOPRIGHT", self, "TOPRIGHT", -2, -1)
+	if yo.Raid.simpeRaid then
+		DeadText:SetPoint("TOPRIGHT", self, "TOPRIGHT", -8, -1)
+	else
+		DeadText:SetPoint("TOPRIGHT", self, "TOPRIGHT", -2, -1)
+	end
 	DeadText:SetShadowOffset( 1, -1)
 	DeadText:SetShadowColor( 0, 0, 0, 1)
 	self:Tag( DeadText, "[GetNameColor]".. yo.Raid.showHPValue)
@@ -336,8 +367,13 @@ local Shared = function(self, unit)
 
 		if yo.Raid.showLFD then
 			local lfd =   self.Overlay:CreateFontString(nil ,"OVERLAY")
-			lfd:SetFont( fontsymbol, fontsize - 1, "OUTLINE")
-			lfd:SetPoint("RIGHT", self, "RIGHT", -1, -1)
+			if yo.Raid.simpeRaid then
+				lfd:SetFont( fontsymbol, fontsize - 3)
+				lfd:SetPoint("RIGHT", self, "RIGHT", -1, 0)
+			else
+				lfd:SetFont( fontsymbol, fontsize - 1, "OUTLINE")
+				lfd:SetPoint("RIGHT", self, "RIGHT", -1, -1)
+			end			
 			lfd:SetJustifyH"LEFT"
 			self:Tag(lfd, '[LFD]')
 		end
@@ -346,7 +382,7 @@ local Shared = function(self, unit)
 	------------------------------------------------------------------------------------------------------
 	---											AURAS
 	------------------------------------------------------------------------------------------------------
-	if ( unit == "party" or unit == "player") and yo.Raid.aurasParty then
+	if ( unit == "party" or unit == "player") and yo.Raid.aurasParty and not yo.Raid.simpeRaid then
 		local size = self:GetHeight() * 0.95
 		
 		local Buffs = CreateFrame('Frame', nil, self)
@@ -381,7 +417,7 @@ local Shared = function(self, unit)
 
 		DeadText:SetFont( font, fontsize - 1)
 
-	elseif unit == "raid" and yo.Raid.aurasRaid then 	--( unit == "raid" or unit == "tank") and
+	elseif unit == "raid" and yo.Raid.aurasRaid and not yo.Raid.simpeRaid then 	--( unit == "raid" or unit == "tank") and
 		DeadText:SetFont( font, fontsize - 2)
 
 		local size = 20	--self:GetHeight() * 0.7
@@ -423,16 +459,16 @@ local Shared = function(self, unit)
 			CreateStyle( button, 3)
 		end
 
-	elseif self:GetParent():GetName() == "yo_Tankets" and yo.Raid.aurasRaid then
+	elseif self:GetParent():GetName() == "yo_Tankets" and yo.Raid.aurasRaid and not yo.Raid.simpeRaid then
 		--print(self:GetParent():GetName(), self:GetParent():GetAttribute("widthMT") )
 		local size = self:GetHeight() * 0.8
 		
 		local Buffs = CreateFrame('Frame', nil, self)
 		--Buffs:SetPoint( 'LEFT', self, 'RIGHT', self:GetParent():GetAttribute("widthMT"), 0)
-		Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -2, -2)
+		Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -4, -2)
 		Buffs:SetFrameStrata( "MEDIUM")
 		Buffs:SetFrameLevel( 150)
-		Buffs:SetSize( size * 10, size)
+		Buffs:SetSize( size * 4, size)
 
 		Buffs.disableCooldown = false		
 		Buffs.num = 3
@@ -470,10 +506,6 @@ local Shared = function(self, unit)
 			button.cd:SetDrawSwipe( false)
 			CreateStyle( button, 3)
 		end
-	end
-
-	if yo.Raid.aurasRaid then
-
 	end
 
 	------------------------------------------------------------------------------------------------------
@@ -688,6 +720,15 @@ logan:SetScript("OnEvent", function(self, event)
 		
 	local unit_width = 	yo.Raid.width
 	local unit_height = yo.Raid.height
+	local spaicing = ( yo.Raid.spaicing or 6)
+	local unitsPerColumn = 5
+
+	if yo.Raid.simpeRaid then
+		unit_width 	= unit_width * 1.2
+		unit_height = 13
+		spaicing	= 4
+		unitsPerColumn = 40
+	end	
 
 	InterfaceOptionsFrameCategoriesButton10:SetScale(0.00001)
 	InterfaceOptionsFrameCategoriesButton10:SetAlpha(0)
@@ -703,8 +744,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 	oUF:RegisterStyle("Raid", Shared)
 	oUF:Factory(function(self)
-		self:SetActiveStyle("Raid")
-		local spaicing = ( yo.Raid.spaicing or 6)
+		self:SetActiveStyle("Raid")		
 		local groupBy, groupingOrder
 
 		if yo.Raid.groupingOrder == "GROUP" then
@@ -768,7 +808,7 @@ logan:SetScript("OnEvent", function(self, event)
 				"xOffset", spaicing,
 				"yOffset", -spaicing,			---6,
 				"maxColumns", yo.Raid.numgroups,
-				"unitsPerColumn", 5,
+				"unitsPerColumn", unitsPerColumn,
 				"columnSpacing", spaicing,
 				"point", "TOP",
 				"columnAnchorPoint", "LEFT"
@@ -794,7 +834,7 @@ logan:SetScript("OnEvent", function(self, event)
 			"groupBy", groupBy,
 			"groupingOrder", groupingOrder,
 			"yOffset", -spaicing * yo.Raid.partyScale * 1.0,			---6,
-			"unitsPerColumn", 5,
+			"unitsPerColumn", unitsPerColumn,
 			"columnSpacing", yo.Raid.spaicing,
 			"point", "TOP",
 			"columnAnchorPoint", "LEFT"
@@ -802,7 +842,7 @@ logan:SetScript("OnEvent", function(self, event)
 		--party:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0) 		
 		CreateMovier( yo_Party)
 
-		if yo.Raid.showMT then
+		if yo.Raid.showMT and not yo.Raid.simpeRaid then
 			local heightMT = yo.Raid.heightMT
 			local widthMT = yo.Raid.widthMT
 			local offsetMT = 6
@@ -816,7 +856,7 @@ logan:SetScript("OnEvent", function(self, event)
 				offsetMTT	= offsetMT + heightMT - heightMTT
 				fullMTT		= offsetMT + widthMTT
 			end	
-			local showParty = false
+			local showParty = true
 
 			local mt = self:SpawnHeader( 'yo_Tankets', nil, 'raid,party',
     			'showRaid', true,

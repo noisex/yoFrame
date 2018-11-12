@@ -277,7 +277,7 @@ logan:SetScript("OnEvent", function(self)
 	CreateBuff( plFrame,  "aurabar", 27, 7, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0) 
 	CreateBuff( tarFrame, "aurabar", 21, 8, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
 	CreateBuff( fcFrame, "aurabar", 25, 4, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
-	
+
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = _G["yo_Boss"..i]
 		CreateBuff(    bFrame, "aurabar",  bFrame:GetHeight(), 10, "LEFT", "RIGHT", 6, 0, 1, 7)

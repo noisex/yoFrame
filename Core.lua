@@ -61,8 +61,7 @@ local function loginEvent(self, ...)
 	SetCVar("nameplateOverlapV",  2) 	--default is 1.5
 	SetCVar("nameplateTargetRadialPosition", 1)
 	SetCVar("nameplateMotion", 1)
-
-	SetCVar("nameplateMaxDistance", 40)	
+	
 	SetCVar("nameplateMaxAlpha", 0.7)
 	SetCVar("nameplateMinAlpha", 0.2)
 	SetCVar("nameplateMaxAlphaDistance", 100)

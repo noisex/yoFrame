@@ -106,6 +106,7 @@ yo["ActionBar"] = {
 	["panel3Nums"]	= 12,
 	["buttonsSize"]	= 35,
 	["buttonSpace"]	= 2,
+	["hoverTexture"]= true,
 }
 yo["CastBar"] = {
 	["player"] = {
@@ -219,6 +220,7 @@ yo["NamePlates"] = {
 	["badGood"]			= "1,0.5,0.5",
 	["glowTarget"]		= true,
 	["glowBadType"]		= "pixel", 	-- button, cast, false
+	["maxDispance"]		= 40, 
 }
 	
 yo["Media"] = {
@@ -261,8 +263,9 @@ yo["Raid"] = {
 	["filterHighLight"]	= false,
 	["showMT"]			= true,
 	["showMTT"]			= true,
-	["heightMT"]		= 30,
-	["widthMT"]			= 100,
+	["heightMT"]		= 32,
+	["widthMT"]			= 120,
+	["simpeRaid"]		= true,
 }
 yo["Chat"] = {
 	["EnableChat"] 		= true,

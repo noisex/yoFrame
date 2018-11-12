@@ -1110,6 +1110,8 @@ local function NamePlates_OnEvent(self, event, ...)
 	
 			HideBlizzard()
 			NamePlates_UpdateNamePlateOptions()
+
+			SetCVar("nameplateMaxDistance", yo.NamePlates.maxDispance)
 		else
 			self:UnregisterAllEvents()
 			return

@@ -17,6 +17,7 @@ local function styleIcon( region)
 				region.border.glow = region.border:CreateTexture(nil, "BORDER")
 				region.border.glow:SetPoint( "CENTER", region.border, "CENTER", 0, 0)
 				region.border.glow:SetTexture( "Interface\\Buttons\\UI-Quickslot2")
+				--region.border.glow:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
 				region.border.glow:SetSize( sizeH * 1.85, sizeW * 1.85)
 				region.border.glow:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
 

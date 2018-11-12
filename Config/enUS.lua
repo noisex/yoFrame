@@ -138,6 +138,7 @@ L["newAnimationLoop"]= "Looped flash animation on new items"
 -----		RaiFrames
 ---------------------------------------------
 L["Raid"] 			= "Riadframes"
+L["simpeRaid"]		= "Simple Raid template"
 L["RAIDenable"] 	= "Enable Raidframes"
 L["classcolor"] 	= "Raidframe colors:"
 L["showSolo"] 		= "Show with no group (solo player frame)"
@@ -193,11 +194,13 @@ L["panel3Nums"]	= "Panel:3 Num Buttons"
 L["panel3Cols"]	= "Panel:3 Num Collumns"
 L["buttonsSize"]= "Panels:1-3 buttons size"
 L["buttonSpace"]= "Panels:1-3 button space"
+L["hoverTexture"]= "Hover/Highlight border vs texture"
 
 ---------------------------------------------
 -----		NamePlates
 ---------------------------------------------
 L["NamePlates"] 	= "NamePlates"
+L["maxDispance"]	= "NamePlates max distance"
 L["NPenable"]		= "Enable NamePlates"
 L["iconDSize"]		= "Player debuff icon size"
 L["iconBSize"]		= "Size of Right Icons"

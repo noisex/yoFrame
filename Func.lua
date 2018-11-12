@@ -302,20 +302,25 @@ function CreateNewBorder( f)
 	f.border.glow = f.border:CreateTexture(nil, "BORDER")
 	f.border.glow:SetPoint( "CENTER", f.border, "CENTER", 0, 0)
 	f.border.glow:SetVertexColor( 0.15, 0.15, 0.15, 0.9)
-	f.border.glow:SetTexture( "Interface\\Buttons\\UI-Quickslot2")
+	f.border.glow:SetTexture( "Interface\\Buttons\\UI-Quickslot2")		
 	f.border.glow:SetHeight( f:GetHeight() * 1.85)
 	f.border.glow:SetWidth( f:GetWidth() * 1.85)
+	--f.border.glow:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
+	--f.border.glow:SetVertexColor( 0.05, 0.05, 0.05, 0.9)
+	--f.border.glow:SetHeight( f:GetHeight() * 1.3)
+	--f.border.glow:SetWidth( f:GetWidth() * 1.3)
 end
 
 function CreateStyle(f, size, level, alpha, alphaborder) 
     if f.shadow then return end
-
+    local size = size or 3
 	local style = {
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
 		edgeFile = texglow, 
 		edgeSize = 4,
-		insets = { left = 3, right = 3, top = 3, bottom = 3 }
+		insets = { left = 3, right = 3, top = 3, bottom = 3 }	
 	}
+
     local shadow = CreateFrame("Frame", nil, f)
     shadow:SetFrameLevel(level or 0)
     shadow:SetFrameStrata(f:GetFrameStrata())
@@ -323,7 +328,30 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     shadow:SetPoint("BOTTOMRIGHT", size, -size)
     shadow:SetBackdrop(style)
     shadow:SetBackdropColor(.08,.08,.08, alpha or .9)
-    shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
+	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
+    f.shadow = shadow
+    return shadow
+end
+
+function CreateStyleSmall(f, size, level, alpha, alphaborder) 
+    if f.shadow then return end
+
+    local size = size or 3
+	local style = {
+	--bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+	bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
+	edgeFile = "Interface\\TUTORIALFRAME\\UI-TutorialFrame-CalloutGlow.blp",
+	edgeSize = 4,
+	insets = { left = 14, right = 14, top = 4, bottom = 4}};
+
+    local shadow = CreateFrame("Frame", nil, f)
+    shadow:SetFrameLevel(level or 0)
+    shadow:SetFrameStrata(f:GetFrameStrata())
+    shadow:SetPoint("TOPLEFT", -size, size)
+    shadow:SetPoint("BOTTOMRIGHT", size, -size)
+    shadow:SetBackdrop(style)
+    shadow:SetBackdropColor(.08,.08,.08, alpha or 1)
+	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
     f.shadow = shadow
     return shadow
 end

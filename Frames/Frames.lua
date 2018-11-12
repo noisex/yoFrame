@@ -543,6 +543,7 @@ function CreateUFrame( f, unit)
 		f:RegisterUnitEvent("UNIT_HEALTH", unit)
 		f:RegisterUnitEvent("UNIT_POWER_FREQUENT", unit)
 	elseif unit == "focus" then 
+		f.powerBar:SetHeight( 2)
 		f:RegisterEvent("GROUP_ROSTER_UPDATE")
 		f:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		f:RegisterUnitEvent("UNIT_HEALTH", unit)
