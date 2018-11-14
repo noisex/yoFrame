@@ -83,16 +83,16 @@ local function CreateLeadersIcon( self, index)
 		else
 			frame:SetPoint("TOPLEFT", self[index-1], "BOTTOMLEFT", 0, -5)
 		end
-		frame:SetSize( iSize, iSize)
+		frame:SetSize( iSize +10, iSize +10)
 
 		frame.icon = frame:CreateTexture(nil, "OVERLAY")
 		frame.icon:SetAllPoints(frame)
-		frame.icon:SetTexCoord( 0.365, 0.636, 0.352, 0.742)
+		--frame.icon:SetTexCoord( 0.365, 0.636, 0.352, 0.742)
 
 		frame.level = frame:CreateFontString(nil, "OVERLAY")
 		frame.level:SetFont( font, fontsize + 4, "OUTLINE")
 		frame.level:SetTextColor( 1, 0.75, 0, 1)
-		frame.level:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", -3, 3)
+		frame.level:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", 0, 1)
 
 		frame.mapname = frame:CreateFontString(nil, "ARTWORK")
 		frame.mapname:SetFont( font, fontsize, "OUTLINE")
@@ -121,7 +121,7 @@ local function CreateLiders( self)
 		if not self.leaderBest then
 			self.leaderBest = CreateFrame("Frame", nil, ChallengesFrame)
 			self.leaderBest:SetSize(175, ( 35+5) * #leaders)
-			self.leaderBest:SetPoint("TOPLEFT", ChallengesFrame, "TOPLEFT", 15, -130)
+			self.leaderBest:SetPoint("TOPLEFT", ChallengesFrame, "TOPLEFT", 10, -120)
 
 			self.leaderBest.title = self.leaderBest:CreateFontString(nil, "ARTWORK")
 			self.leaderBest.title:SetFont( font, fontsize + 3, "OUTLINE")
@@ -132,7 +132,7 @@ local function CreateLiders( self)
 
 		for ind, leadersInfo in ipairs( leaders) do 
    			local icons = CreateLeadersIcon( self.leaderBest, ind)
-			local map, _, _, _, mapTexture =  C_ChallengeMode.GetMapUIInfo( leadersInfo.mapChallengeModeID)
+			local map, _, _, mapTexture =  C_ChallengeMode.GetMapUIInfo( leadersInfo.mapChallengeModeID)
 
 			icons.level:SetText( leadersInfo.keystoneLevel)
 			icons.leadername:SetText( "|c" .. RAID_CLASS_COLORS[leadersInfo.classFileName].colorStr .. leadersInfo.name)
@@ -185,6 +185,9 @@ end
 
 local function skinDungens()
 	for k, map in pairs( ChallengesFrame.DungeonIcons) do
+		map.HighestLevel:ClearAllPoints()
+		map.HighestLevel:SetPoint("BOTTOMRIGHT", map, "BOTTOMRIGHT", -1, 2)
+
 		map.Icon:SetHeight( map:GetHeight() - 4)
 		map.Icon:SetWidth( map:GetWidth() - 4)
 		map.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)

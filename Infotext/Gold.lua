@@ -1,6 +1,88 @@
 
 local L, yo = unpack( select( 2, ...))
 
+local resetIntervals = { daily = 1, weekly = 2, unknown = 3 }
+local bossDefeated = "|TInterface\\WorldMap\\Skull_64Red:14|t"
+local bossStatus = "|TInterface\\WorldMap\\Skull_64Red:14|t"
+local bossAvailable = "|TInterface\\WorldMap\\Skull_64Grey:14|t"
+
+local function GetBoss(encounterID, questID, resetInterval, faction)
+	local boss = {}
+
+	if not resetInterval then resetInterval = resetIntervals.weekly end
+
+	boss.name = EJ_GetEncounterInfo(encounterID)
+	boss.questId = questID
+	boss.resetInterval = resetInterval
+	boss.faction = faction
+	boss.displayName = boss.name
+	--print( boss.name, faction, resetInterval, questID)
+	return boss
+end
+
+local category = {}
+	category.name = 'Zandalar/Kul Tiras'
+	category.maxKills = 2
+	category.bosses = bosses
+	category.bonusRollCurrencies = {1580}
+	category.maps = {
+		942, -- STORMSONG_VALLEY,
+		896, -- DRUSTVAR
+		895, -- TIRAGARDE_SOUND
+		864, -- VOLDUN
+		863, -- NAZMIR
+		862, -- ZULDAZAR
+		14   -- ARATHI_HIGHLANDS 
+	}
+	category.bosses = {
+		GetBoss(2210, 52196), -- Dunegorger Kraulok
+		GetBoss(2141, 52169), -- Ji'arak
+		GetBoss(2139, 52181), -- T'zane
+		GetBoss(2198, 52166), -- Warbringer Yenajz
+		GetBoss(2199, 52163), -- Azurethos, The Winged Typhoon
+		GetBoss(2197, 52157), -- Hailstone Construct
+		GetBoss(2213, 52847, resetIntervals.unknown, 'Alliance'), -- Doom's Howl (Alliance)
+		GetBoss(2212, 52848, resetIntervals.unknown, 'Horde')  -- The Lion's Roar (Horde)
+	}	
+
+--	BOSS_DATA[#BOSS_DATA +1] = category
+local function FlagActiveBosses()
+	--local bossData = BOSS_DATA
+	local worldQuests = {}
+	local ret = ""
+   
+	--for _, category in pairs(bossData) do	
+		local zones = category.maps or {}
+
+		for zoneIndex = 1, #zones do
+			local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(zones[zoneIndex])
+			if taskInfo and #taskInfo then
+			   for taskIndex = 1, #taskInfo do
+			   		--tprint( taskInfo)
+			   		--print(taskInfo[taskIndex].mapID, taskInfo[taskIndex].questId)
+					
+					worldQuests[taskInfo[taskIndex].questId] = time()                      
+			   end
+			end
+		end
+		
+		for _, boss in pairs(category.bosses) do
+			if boss.questId then
+				if worldQuests[boss.questId] or IsQuestFlaggedCompleted(boss.questId) then
+					boss.active = true
+					if IsQuestFlaggedCompleted(boss.questId) then
+						ret = ret .. bossAvailable
+					else
+						ret = ret .. bossDefeated
+					end
+					--print(boss.questId, IsQuestFlaggedCompleted(boss.questId))
+				end
+			end
+		end
+	--end
+	return ret
+end
+
 local Stat = CreateFrame("Frame")
 Stat:EnableMouse(true)
 Stat:SetFrameStrata("BACKGROUND")
@@ -32,6 +114,7 @@ local function newConfigData( personalConfig)
 	yo_AllData[myRealm][myName]["Color"] = { ["r"] = myColor.r, ["g"] = myColor.g, ["b"] = myColor.b, ["colorStr"] = myColor.colorStr}
 	yo_AllData[myRealm][myName]["ColorStr"] = myColorStr
 	yo_AllData[myRealm][myName]["PersonalConfig"] = yo_AllData[myRealm][myName].PersonalConfig or personalConfig
+	yo_AllData[myRealm][myName]["WorldBoss"] = FlagActiveBosses()
 end
 
 local function OnEvent(self, event, ...)
@@ -110,17 +193,18 @@ local function OnEvent(self, event, ...)
 		for k, v in pairs ( yo_AllData) do
 			if type( v) == "table" then		
 				oneDate = false	
-				for kk, vv in pairs ( v) do					
-					local keystone = vv["KeyStone"] and " " .. vv["KeyStone"] or ""
-
-					if tonumber( vv["Money"]) and tonumber( vv["Money"]) > 100000 then
+				for name, value in pairs ( v) do
+					if value.KeyStone and timeLastWeeklyReset() < value.KeyStoneTime then
+						name = name .. value.KeyStone
+					end
+					if tonumber( value.Money) and tonumber( value.Money) > 100000 then
 						if not oneDate then
 							GameTooltip:AddDoubleLine( "  ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
 							oneDate = true
 						end	
-						totalMoney = totalMoney + tonumber( vv["Money"])
-						local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
-							GameTooltip:AddDoubleLine( kk .. keystone, formatMoney( vv["Money"], true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+						totalMoney = totalMoney + tonumber( value.Money)
+						local cols = value.Color and value.Color or { 1, 0.75, 0}
+							GameTooltip:AddDoubleLine( name, formatMoney( value.Money, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 					end
 					
 				end

@@ -258,14 +258,14 @@ local function coordUpdate( self, elapsed)
 	tick  = tick + elapsed
 	if tick >= 1 then
 	
-		if not yo["Addons"].MiniMapCoord then
+		if not yo.Addons.MiniMapCoord then
 			self:SetScript("OnUpdate", nil)
 			self.MiniMapText:SetText("")
 			return
 		else
-			local r, b, g = strsplit( ",", yo["Addons"].MMCoordColor)
+			local r, b, g = strsplit( ",", yo.Addons.MMCoordColor)
 			
-			local fontsize = yo["Addons"].MMCoordSize
+			local fontsize = yo.Addons.MMCoordSize
 			self.MiniMapText:SetTextColor( r, b, g)
 			self.MiniMapText:SetFont( font, fontsize)
 		end

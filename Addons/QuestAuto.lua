@@ -381,7 +381,7 @@ hooksecurefunc( AUTO_QUEST_POPUP_TRACKER_MODULE, "Update", function(self, ...)
 	
 	for i = 1, GetNumAutoQuestPopUps() do
 		local questID, popUpType = GetAutoQuestPopUp(i);
-		if questID then --== "COMPLETE"
+		if questID and popUpType then --== "COMPLETE"
 			ShowQuestComplete(GetQuestLogIndexByID(questID));
 			--AutoQuestPopupTracker_RemovePopUp(questID)
 		end

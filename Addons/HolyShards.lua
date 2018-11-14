@@ -16,7 +16,6 @@ local SPELL_POWER_ARCANE_CHARGES = Enum.PowerType.ArcaneCharges or 16
 
 local ClassPowerID, ClassPowerType, holyShardsPoints
 local holyShardBarWidth = 105
-local _, myClass = UnitClass( "player")
 
 if(myClass == 'MONK') then
 	ClassPowerID = SPELL_POWER_CHI
@@ -171,7 +170,7 @@ local function CreateShardsBar( f)
 	holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 4, -3)
 	holyShards:SetWidth( holyShardBarWidth)
 	holyShards:SetHeight( 5)
-	holyShards:SetFrameLevel(4)
+	--holyShards:SetFrameLevel(4)
 
 	holyShards:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 	holyShards:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")

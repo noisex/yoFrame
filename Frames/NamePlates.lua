@@ -213,19 +213,18 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 		button.tick = 0
 		
 		local est = expirationTime - GetTime()
-		
-		if est <= 0 then
-			self:SetScript("OnUpdate", nil)
-			return
-		end
-		
+			
 		if est <= 2 then
 			button.timer:SetTextColor( 1, 0, 0)
+		elseif est <= 0 then
+			self:SetScript("OnUpdate", nil)
+			return
 		else
 			button.timer:SetTextColor( 1, 1, 0)
 		end
 
 		if ( duration and duration > 0) and est > 0.1 then
+			--print( formatTime( est), expirationTime, est)
 			button.timer:SetText( formatTime( est))
 		else
 			button.timer:SetText( "")

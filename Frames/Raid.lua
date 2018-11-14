@@ -78,7 +78,7 @@ local UnitSpecific = {
 SpawnMenu = function(self)
 	local unit = self.unit:gsub("(.)", string.upper, 1)
 	if unit == "Targettarget" or unit == "focustarget" or unit == "pettarget" then return end
-	print( unit)
+
 	if _G[unit.."FrameDropDown"] then
 		ToggleDropDownMenu(nil, nil, _G[unit.."FrameDropDown"], "cursor")
 	elseif self.unit:match("party") then
@@ -120,7 +120,9 @@ local PostIconUpdate = function( self, button)
 end
 
 local function OnEnter( f)
-	f.bgHlight:Show()
+	if f.bgHlight then
+		f.bgHlight:Show()	
+	end	
 	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	GameTooltip:SetUnit( f.unit)
@@ -128,12 +130,31 @@ local function OnEnter( f)
 end
 
 local function OnLeave( f)
-	f.bgHlight:Hide()
+	if f.bgHlight then
+		f.bgHlight:Hide()
+	end
 	if GameTooltip:IsShown() then
 		GameTooltip:FadeOut( 2) 
 	end
 end
 
+local funcWhiteList = function( self, button, ...) 
+	local spellID = select( 11, ...) 
+	if not blackSpells[spellID] then 
+		return true 
+	else 
+		return false 
+	end 
+end
+
+local funcBlackList = function( self, button, ...) 
+	local spellID = select( 11, ...)	
+	if RaidDebuffList[spellID] then 
+		return true 
+	else 
+		return false 
+	end 
+end
 
 -------------------------------------------------------------------------------------------------------
 --											SHARED
@@ -154,13 +175,76 @@ local Shared = function(self, unit)
 	-- Register click
 	self:RegisterForClicks("AnyUp")
 
+	local posInfo		= {"LEFT", self, "LEFT", 2, 2}
+	local posDead 		= {"TOPRIGHT", self, "TOPRIGHT", -2, -1}
+	local posLFD 		= {"RIGHT", self, "RIGHT", -1, -1}
+	local posAuras		= {'LEFT', self, 'RIGHT', 12, 0}
+	local sizeInfoFont 	= fontsize	
+	local sizeLFDFont 	= fontsize - 1
+	local sizeDeadFont 	= fontsize - 1
+	local sizeRTarget	= 16
+	local sizeResurrect	= 25
+	local enablePower	= true	
+	local enableBorder	= true
+	local enableAuras	= yo.Raid.aurasParty
+	local enableDeHight = yo.Raid.debuffHight
+	local enableHealPr	= yo.Raid.healPrediction
+	local sizeAuras 	= self:GetHeight() * 0.95
+	local spacingAuras 	= 6
+	local numAuras 		= 10
+	local initialAnchor = "LEFT"
+	local growthX 		= "RIGHT"
+	local CustomFilter 	= funcWhiteList
+	local outsideAlpha	= 0.5
+
 	if yo.Raid.simpeRaid then
-		CreateStyleSmall(self, 2)
+		posInfo			= {"LEFT", self, "RIGHT", 12, 0}
+		posDead 		= {"RIGHT", self, "RIGHT", -8, 1}
+		posLFD			= {"RIGHT", self, "RIGHT", -1, 0}
+		sizeInfoFont 	= fontsize + 2
+		sizeLFDFont 	= fontsize - 3	
+		sizeRTarget		= 12	
+		sizeResurrect	= 16
+		enablePower		= false
+		enableAuras 	= false
+		CreateStyleSmall(self, 1)	
 	else
 		CreateStyle(self, 3)
 	end
-	
-		
+
+	if unit == "raid" then
+		spacingAuras	= 2
+		numAuras		= 2
+		sizeAuras		= 20
+		posAuras 		= {'TOPRIGHT', self, 'TOPRIGHT', -2, -2}
+		initialAnchor 	= "RIGHT"
+		growthX 		= 'LEFT'
+		CustomFilter	= funcBlackList
+	elseif unit == "tank" then
+		posInfo			= {"LEFT", self, "LEFT", 2, 2}
+		enableDeHight 	= false
+		enableBorder 	= false
+		enableHealPr	= yo.Raid.healPrediction
+		enableAuras 	= true
+		enablePower		= true
+		numAuras		= 3
+		spacingAuras	= 3
+		sizeInfoFont	= fontsize
+		initialAnchor 	= "RIGHT"
+		growthX 		= 'LEFT'
+		sizeAuras 		= self:GetHeight() * 0.8
+		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -2, -2}
+		CustomFilter	= funcWhiteList --funcWhiteList
+		outsideAlpha	= 0.5
+	end
+
+	if self:GetParent():GetName():match( "yo_TanketsTar") then
+		enablePower		= false
+		enableAuras 	= false
+		sizeInfoFont	= fontsize - 1
+		sizeDeadFont 	= fontsize - 1
+	end
+
 	--print(unit, self:GetParent():GetName(), self.unit)
 	------------------------------------------------------------------------------------------------------
 	---											HEALTH BAR
@@ -170,60 +254,43 @@ local Shared = function(self, unit)
 	self.Health:SetPoint("TOPRIGHT")
 	self.Health:SetAllPoints()
 	self.Health:SetStatusBarTexture( texture)
-	
-	if yo.Raid.simpeRaid then
-		self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")
-		self.Health.bg = self.Health:CreateTexture(nil, 'BACKGROUND')    	
-    	self.Health.bg:SetAllPoints()
-    	self.Health.bg:SetTexture( texture)
-		self.Health.bg.multiplier = .4
-	else
-		self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")
-		self.Health.hbg:SetAllPoints( self.Health)
-		self.Health.hbg:SetTexture( texture)
-	end
-
-	if yo.Raid.hpBarRevers then 
-		self.Health:SetFillStyle( 'REVERSE');
-	end
-	if yo.Raid.hpBarVertical then 
-		self.Health:SetOrientation( 'VERTICAL')
-	end
-	
 	self.Health.frequentUpdates = true
 	self.Health.colorDisconnected = true
 	self.colors.disconnected = { 0.3, 0.3, 0.3}
-	
-	if unit ~= "tank" then
-		self.Range = { insideAlpha = 1, outsideAlpha = 0.5, }
-		--self.Range = { insideAlpha = 1, outsideAlpha = 1, }		
-	end	
+	self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha, }
 
-	if yo.Raid.classcolor == 1 and unit ~= "tank" then 
+	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")
+	self.Health.hbg:SetAllPoints()
+	self.Health.hbg:SetTexture( texture)
+	self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
+
+	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
+	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end	
+	
+	if yo.Raid.classcolor == 1 then
 		self.Health.colorClass = true
 	    self.Health.colorReaction = true
-		self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
-	elseif yo.Raid.classcolor == 2 and unit ~= "tank" then
+	
+	elseif yo.Raid.classcolor == 2 then
 		self.Health.colorSmooth = true 
 		self.Health.colorReaction = true
-		self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
+
 	else
 		self.Health.colorHealth = true
-		self.Health.bg:ClearAllPoints()
-		self.Health.bg = nil
 		self.colors.health = { 0.2, 0.2, 0.2 }
-		self.Health.hbg:SetAllPoints( self.Health)
-		self.Health.hbg:SetTexture( texture)
 		self.Health.hbg:SetVertexColor( 0.7, 0.7, 0.7, 0.9)
-		--self.Range = { insideAlpha = 1, outsideAlpha = .5, }
+	end
+
+	if yo.Raid.simpeRaid and yo.Raid.classcolor ~= 3 then
+		self.Health.bg = self.Health.hbg
+		self.Health.bg.multiplier = .5
 	end
 
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR
 	------------------------------------------------------------------------------------------------------	
 	
-	if not self:GetParent():GetName():match( "yo_TanketsTar") and not yo.Raid.simpeRaid then  
-	
+	if enablePower then 	
 		self.Power = CreateFrame("StatusBar", nil, self)
 		self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
 		self.Power:SetStatusBarTexture( texture)
@@ -297,37 +364,28 @@ local Shared = function(self, unit)
 	self.bgHlight:SetBlendMode( "ADD")
 	self.bgHlight:SetAlpha( 0.2)
 	self.bgHlight:Hide()
-	
+
 	self.Info = self.Overlay:CreateFontString( nil, "OVERLAY")
-	if yo.Raid.simpeRaid then
-		self.Info:SetPoint("LEFT", self, "RIGHT", 15, 0)
-		self.Info:SetFont( font, fontsize + 2)
-	else
-		self.Info:SetPoint("LEFT", self, "LEFT", 2, 2)
-		self.Info:SetFont( font, fontsize)
-	end
+	self.Info:SetPoint( unpack( posInfo))
+	self.Info:SetFont( font, sizeInfoFont)
 	self.Info:SetShadowOffset( 1, -1)
 	self.Info:SetShadowColor( 0, 0, 0, 1)
 	self:Tag( self.Info, "[GetNameColor][namemedium][afk]")
 
     local RaidTargetIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
-    RaidTargetIndicator:SetSize( 16, 16)
+    RaidTargetIndicator:SetSize( sizeRTarget, sizeRTarget)
     RaidTargetIndicator:SetPoint('CENTER', self, 'TOP', 0, 0)
     RaidTargetIndicator:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidicons")
     self.RaidTargetIndicator = RaidTargetIndicator
 
     local ResurrectIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
-    ResurrectIndicator:SetSize( 25, 25)
+    ResurrectIndicator:SetSize( sizeResurrect, sizeResurrect)
     ResurrectIndicator:SetPoint('CENTER', self, 'CENTER', 0, 0)	
     self.ResurrectIndicator = ResurrectIndicator	
 
 	local DeadText = self.Overlay:CreateFontString(nil ,"OVERLAY")
-	DeadText:SetFont( font, fontsize - 1) --, "OUTLINE")
-	if yo.Raid.simpeRaid then
-		DeadText:SetPoint("TOPRIGHT", self, "TOPRIGHT", -8, -1)
-	else
-		DeadText:SetPoint("TOPRIGHT", self, "TOPRIGHT", -2, -1)
-	end
+	DeadText:SetFont( font, sizeDeadFont)
+	DeadText:SetPoint( unpack( posDead))
 	DeadText:SetShadowOffset( 1, -1)
 	DeadText:SetShadowColor( 0, 0, 0, 1)
 	self:Tag( DeadText, "[GetNameColor]".. yo.Raid.showHPValue)
@@ -335,7 +393,7 @@ local Shared = function(self, unit)
 	if unit == "raid" and yo.Raid.showGroupNum then
 		self.rText = self.Overlay:CreateFontString(nil ,"OVERLAY")
 		self.rText:SetFont( fontpx, fontsize, "OUTLINE")
-		self.rText:SetPoint("BOTTOMLEFT", self.Overlay, "TOPLEFT", 2, -4)
+		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -4)
 		self:Tag(self.rText, "[GetNameColor][group]")
 	end
 	
@@ -367,13 +425,8 @@ local Shared = function(self, unit)
 
 		if yo.Raid.showLFD then
 			local lfd =   self.Overlay:CreateFontString(nil ,"OVERLAY")
-			if yo.Raid.simpeRaid then
-				lfd:SetFont( fontsymbol, fontsize - 3)
-				lfd:SetPoint("RIGHT", self, "RIGHT", -1, 0)
-			else
-				lfd:SetFont( fontsymbol, fontsize - 1, "OUTLINE")
-				lfd:SetPoint("RIGHT", self, "RIGHT", -1, -1)
-			end			
+			lfd:SetFont( fontsymbol, sizeLFDFont)
+			lfd:SetPoint( unpack( posLFD))
 			lfd:SetJustifyH"LEFT"
 			self:Tag(lfd, '[LFD]')
 		end
@@ -382,117 +435,20 @@ local Shared = function(self, unit)
 	------------------------------------------------------------------------------------------------------
 	---											AURAS
 	------------------------------------------------------------------------------------------------------
-	if ( unit == "party" or unit == "player") and yo.Raid.aurasParty and not yo.Raid.simpeRaid then
-		local size = self:GetHeight() * 0.95
-		
+	if enableAuras then
 		local Buffs = CreateFrame('Frame', nil, self)
-		--self.Info:SetPoint( 'LEFT', self.Power, 'LEFT', 3, 5)
-		Buffs:SetPoint( 'LEFT', self, 'RIGHT', 12, 0)
+		Buffs:SetPoint( unpack( posAuras))
 		Buffs:SetFrameLevel( 100)
-		Buffs:SetSize( size * 12, size)
+		Buffs:SetSize( sizeAuras * ( numAuras +1), sizeAuras)
 		Buffs.disableCooldown = false
-		--Buffs.filter = 'HARMFUL'
-		Buffs.spacing = 6
-		Buffs.num = 10
-		Buffs.disableMouse = false
-		Buffs.size   =  size
+		Buffs.spacing 		= spacingAuras
+		Buffs.num 			= numAuras
+		Buffs.disableMouse 	= false
+		Buffs.size   		= sizeAuras
+		Buffs.initialAnchor = initialAnchor
+		Buffs['growth-x'] 	= growthX
 		self.Debuffs = Buffs
-		self.Debuffs.CustomFilter = function( self, button, ...)
-			spellID = select( 11, ...)
-			if not blackSpells[spellID] then return true else return false end
-		end
-
-		self.Debuffs.PostCreateIcon = function( self, button)
-			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
-			--button.icon:SetDesaturated( true)
-			button.count:SetFont( fontpx, self:GetHeight() / 1.5, 'OUTLINE')
-			button.count:ClearAllPoints()
-			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
-			button.count:SetTextColor( 0, 1, 0)
-			button:SetAlpha( 1)
-			button.cd:SetDrawEdge( false)
-			button.cd:SetDrawSwipe( false)
-			CreateStyle( button, 3)
-		end
-
-		DeadText:SetFont( font, fontsize - 1)
-
-	elseif unit == "raid" and yo.Raid.aurasRaid and not yo.Raid.simpeRaid then 	--( unit == "raid" or unit == "tank") and
-		DeadText:SetFont( font, fontsize - 2)
-
-		local size = 20	--self:GetHeight() * 0.7
-		
-		local Buffs = CreateFrame('Frame', nil, self)
-		--Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -20, 0)
-		--Buffs:SetPoint( 'BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 0)
-		Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -2, -2)
-		--Buffs:SetPoint( 'BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 0)
-		
-		Buffs:SetFrameLevel( 150)
-		Buffs:SetSize( size * 10, size)
-
-		Buffs.disableCooldown = false
-		----Buffs.filter = 'HARMFUL'
-		Buffs.spacing = 1
-		Buffs.num = 2
-		Buffs.disableMouse = true
-		Buffs.initialAnchor = "RIGHT"
-		Buffs.size   =  size
-		Buffs['growth-x'] = 'LEFT'
-		self.Debuffs = Buffs
-		
-		self.Debuffs.CustomFilter = function( self, button, ...)
-			local spellID = select( 11, ...)			
-			if RaidDebuffList[spellID] then return true else return false end
-		end
-
-		self.Debuffs.PostCreateIcon = function( self, button)
-			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
-			--button.icon:SetDesaturated( true)
-			button.count:SetFont( fontpx, self:GetHeight() / 1.5, 'OUTLINE')
-			button.count:ClearAllPoints()
-			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
-			button.count:SetTextColor( 0, 1, 0)
-			button:SetAlpha( 1)
-			button.cd:SetDrawEdge( false)
-			button.cd:SetDrawSwipe( false)
-			CreateStyle( button, 3)
-		end
-
-	elseif self:GetParent():GetName() == "yo_Tankets" and yo.Raid.aurasRaid and not yo.Raid.simpeRaid then
-		--print(self:GetParent():GetName(), self:GetParent():GetAttribute("widthMT") )
-		local size = self:GetHeight() * 0.8
-		
-		local Buffs = CreateFrame('Frame', nil, self)
-		--Buffs:SetPoint( 'LEFT', self, 'RIGHT', self:GetParent():GetAttribute("widthMT"), 0)
-		Buffs:SetPoint( 'TOPRIGHT', self, 'TOPRIGHT', -4, -2)
-		Buffs:SetFrameStrata( "MEDIUM")
-		Buffs:SetFrameLevel( 150)
-		Buffs:SetSize( size * 4, size)
-
-		Buffs.disableCooldown = false		
-		Buffs.num = 3
-		Buffs.disableMouse = false
-		--Buffs.initialAnchor = "LEFT"
-		--Buffs['growth-x'] = 'RIGHT'
-		--Buffs.spacing = 4
-		Buffs.initialAnchor = "RIGHT"
-		Buffs['growth-x'] = 'LEFT'
-		Buffs.spacing = 3
-		
-		Buffs.size   =  size		
-		self.Debuffs = Buffs
-		
-		self.Debuffs.CustomFilter = function( self, button, ...)
-			local spellID = select( 11, ...)
-			
-			if not blackSpells[spellID] then return true else return false end -- party
-
-			--if RaidDebuffList[spellID] then return true 
-				--else return true 		---!!!! raid
-				--else return false 	---!!!! raid
-			--end
-		end
+		self.Debuffs.CustomFilter = CustomFilter
 
 		self.Debuffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
@@ -511,7 +467,7 @@ local Shared = function(self, unit)
 	------------------------------------------------------------------------------------------------------
 	---										HEAL PREDICTION
 	------------------------------------------------------------------------------------------------------	
-	if yo.Raid.healPrediction and unit ~= "tank" then
+	if enableHealPr then
 		--local myBar = CreateFrame('StatusBar', nil, self.Health)
 	 	--myBar:SetPoint('TOP')    
   		--myBar:SetPoint('BOTTOM')
@@ -555,7 +511,7 @@ local Shared = function(self, unit)
 	    } 
 	end
     
-   	if unit ~= "tank" then
+   	if enableBorder then
 		table.insert(self.__elements, OnChangeTarget)
 		self:RegisterEvent('PLAYER_TARGET_CHANGED', OnChangeTarget)
 		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", OnChangeTarget)
@@ -565,7 +521,7 @@ local Shared = function(self, unit)
 	------------------------------------------------------------------------------------------------------
 	---										Debuff highlight
 	------------------------------------------------------------------------------------------------------	
-	if yo.Raid.debuffHight and unit ~= "tank" then
+	if enableDeHight then
 		self.DebuffHighlightMy = self.Health:CreateTexture(nil, "OVERLAY")
 		self.DebuffHighlightMy:SetAllPoints(self.Health)
 		self.DebuffHighlightMy:SetTexture(texture)
@@ -842,7 +798,7 @@ logan:SetScript("OnEvent", function(self, event)
 		--party:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0) 		
 		CreateMovier( yo_Party)
 
-		if yo.Raid.showMT and not yo.Raid.simpeRaid then
+		if yo.Raid.showMT then --and not yo.Raid.simpeRaid then
 			local heightMT = yo.Raid.heightMT
 			local widthMT = yo.Raid.widthMT
 			local offsetMT = 6

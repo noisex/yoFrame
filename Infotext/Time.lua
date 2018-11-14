@@ -3,6 +3,7 @@ local L, yo = unpack( select( 2, ...))
 --------------------------------------------------------------------
 -- TIME
 --------------------------------------------------------------------
+
 local Text  = RightInfoPanel:CreateFontString(nil, "OVERLAY")
 --Text:SetFont( font, ( fontsize or 10), "OVERLAY")
 Text:SetHeight( RightInfoPanel:GetHeight())
@@ -69,21 +70,24 @@ local function OnEnter( self)
 		GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
 
 		local totalPlayed, oneDate = 0
-		for k, v in pairs ( yo_AllData) do
-			if type( v) == "table" then
+		for realmName, val in pairs ( yo_AllData) do
+			if type( val) == "table" then
 				oneDate = false
-				for kk, vv in pairs ( v) do	
-					if tonumber( vv["Played"]) then
+				for name, value in pairs ( val) do
+					if value.WorldBoss and timeLastWeeklyReset() < value.MoneyTime then 
+						name = name .. value.WorldBoss 
+					end
+					if tonumber( value["Played"]) then
 						if not oneDate then
-							GameTooltip:AddDoubleLine( " ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
+							GameTooltip:AddDoubleLine( " ", realmName, 0.5, .5, .5, 0, 1, 1)  --- Realmane
 							oneDate = true
 						end	
-						totalPlayed = totalPlayed + tonumber( vv["Played"])
-						local cols = vv["Color"] and vv["Color"] or { 1, 0.75, 0}
-						if vv["Played"] < 86400 then
-							GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"]), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+						totalPlayed = totalPlayed + tonumber( value.Played)
+						local cols = value.Color and value.Color or { 1, 0.75, 0}
+						if value.Played < 86400 then							
+							GameTooltip:AddDoubleLine( name, SecondsToClock( value.Played), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 						else
-							GameTooltip:AddDoubleLine( kk, SecondsToClock( vv["Played"], true, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+							GameTooltip:AddDoubleLine( name, SecondsToClock( value.Played, true, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 						end
 					end	
 				end
@@ -140,6 +144,9 @@ local function OnEnter( self)
 		GameTooltip:AddLine( " ")
 		GameTooltip:AddLine( L["EXPEDIT_COMPLETE"],1,0,0)
 	end
+
+	--FlagActiveBosses()
+
 	GameTooltip:Show()
 end
 

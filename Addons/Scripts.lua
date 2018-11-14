@@ -12,6 +12,57 @@ yo_Model:SetUnit("player")
 
 local cashed
 
+--local tooltip
+--local function CheckTooltipFor(link, ...)
+--    if not tooltip then
+--        tooltip = CreateFrame("GameTooltip", "AppearanceTooltipScanningTooltip", nil, "GameTooltipTemplate")
+--        tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+--    end
+--    tooltip:ClearLines()
+
+--    -- just showing tooltip for an itemid
+--    -- uses rather innocent checking so that slot can be a link or an itemid
+--    local link = tostring(link) -- so that ":match" is guaranteed to be okay
+--    if not link:match("item:") then
+--        link = "item:"..link
+--    end
+--    tooltip:SetHyperlink(link)
+
+--    for i=2, tooltip:NumLines() do
+--        local left = _G["AppearanceTooltipScanningTooltipTextLeft"..i]
+--        --local right = _G["AppearanceTooltipScanningTooltipTextRight"..i]
+--        if left and left:IsShown() then
+--            local text = left:GetText()
+--            for ii=1, select('#', ...) do
+--                if string.match(text, (select(ii, ...))) then
+--                    return text
+--                end
+--            end
+--        end
+--       --if right and right:IsShown() and string.match(right:GetText(), text) then return true end
+--    end
+--    return false
+--end
+
+--local function CanTransmogItem(itemLink)
+--    local itemID = GetItemInfoInstant(itemLink)
+--    if itemID then
+--        local canBeChanged, noChangeReason, canBeSource, noSourceReason = C_Transmog.GetItemInfo(itemID)
+--        return canBeSource, noSourceReason
+--    end
+--end
+
+--local function PlayerHasAppearance(item)
+--    if not CanTransmogItem(item) then
+--        return false, false, true
+--    end
+--    local state = CheckTooltipFor(item, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN, TRANSMOGRIFY_TOOLTIP_ITEM_UNKNOWN_APPEARANCE_KNOWN)
+--    if state == TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN then
+--        return
+--    end
+--    return true, state == TRANSMOGRIFY_TOOLTIP_ITEM_UNKNOWN_APPEARANCE_KNOWN
+--end
+
 GameTooltip:HookScript("OnTooltipSetItem", function(self)
 	if not yo.Bags.ladyMod or ( yo.Bags.ladyModShift and not IsControlKeyDown()) then return end
 
@@ -47,8 +98,13 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 		yo_Model:ClearAllPoints();
 		yo_Model:SetPoint(mogpoint, GameTooltip, ownerpoint, shiftX, 0);
 
+--myModel:SetCamera(0);     -- Selects facial camera
+--myModel:SetCamera(1);     -- Selects front view full body camera
+--myModel:SetCamera(2);     -- Selects camera at 0,0,0 (movable)
+
 		yo_Model:Show()
 		yo_Model:Undress()	
+		--yo_Model:SetItem(itemID)
 		yo_Model:TryOn( itemLink)
 
 		yo_Model:SetScript("OnUpdate",function(self,elapsed)
@@ -63,6 +119,28 @@ GameTooltip:HookScript( "OnHide", function(self)
 	cashed = nil
 end)
 
+        --if db.notifyKnown then
+        --    local hasAppearance, appearanceFromOtherItem, notTransmoggable = ns.PlayerHasAppearance(link)
+
+        --    local label
+        --    if notTransmoggable then
+        --        label = "|c00ffff00" .. TRANSMOGRIFY_INVALID_DESTINATION
+        --    else
+        --        if hasAppearance then
+        --            if appearanceFromOtherItem then
+        --                label = "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t " .. (TRANSMOGRIFY_TOOLTIP_ITEM_UNKNOWN_APPEARANCE_KNOWN):gsub(', ', ',\n')
+        --            else
+        --                label = "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t " .. TRANSMOGRIFY_TOOLTIP_APPEARANCE_KNOWN
+        --            end
+        --        else
+        --            label = "|TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t |cffff0000" .. TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN
+        --        end
+        --        classwarning:SetShown(not appropriateItem)
+        --    end
+        --    known:SetText(label)
+        --    known:Show()
+        --end
+        
 ----------------------------------------------------------------------------------------
 --	Test Icons
 ----------------------------------------------------------------------------------------

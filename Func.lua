@@ -39,6 +39,20 @@ function gradient(perc)
 	return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255), r, g, b
 end
 
+
+function timeLastWeeklyReset()
+	local resetDays = { 2, 4, 3, 4, 4}
+	local region = GetCurrentRegion()
+	
+	local weekDayReset = resetDays[region]
+	local nextResetTime = time() + GetQuestResetTime()
+	local nextResetTimeWeekDay = tonumber( date("%w", nextResetTime))
+
+	local timeNextWeeklyReset = nextResetTime + mod( 7 + weekDayReset - nextResetTimeWeekDay, 7) * 86400
+	local timeLastWeeklyReset = timeNextWeeklyReset - 7 * 86400
+	return timeLastWeeklyReset, timeNextWeeklyReset
+end
+
 function tprint(t, s)
     for k, v in pairs(t) do
         local kfmt = '["' .. tostring(k) ..'"]'
@@ -129,15 +143,15 @@ end
 function formatTime( s)
 	local day, hour, minute = 86400, 3600, 60
 	if s >= day then
-		return format("%dd", floor(s/day + 0.5)), s % day
+		return format("%dd", floor(s/day + 0.5))	--, s % day
 	elseif s >= hour then
-		return format("%dh", floor(s/hour + 0.5)), s % hour
+		return format("%dh", floor(s/hour + 0.5))	--, s % hour
 	elseif s >= minute then
-		return format("%dm", floor(s/minute + 0.5)), s % minute
+		return format("%dm", floor(s/minute + 0.5))	--, s % minute
 	elseif s >= minute / 12 then
-		return floor(s + 0.5), (s * 100 - floor(s * 100))/100
+		return floor(s + 0.5) --, (s * 100 - floor(s * 100))/100
 	end
-	return format("%.1f", s), (s * 100 - floor(s * 100))/100
+	return format("%.1f", s) --, (s * 100 - floor(s * 100))/100
 end
 
 function formatTimeSec( s)
@@ -340,9 +354,10 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
 	local style = {
 	--bgFile = "Interface/Tooltips/UI-Tooltip-Background",
 	bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = "Interface\\TUTORIALFRAME\\UI-TutorialFrame-CalloutGlow.blp",
-	edgeSize = 4,
-	insets = { left = 14, right = 14, top = 4, bottom = 4}};
+	--edgeFile = "Interface\\TUTORIALFRAME\\UI-TutorialFrame-CalloutGlow.blp",
+	edgeFile = "Interface\\Buttons\\WHITE8x8",
+	edgeSize = 1,
+	insets = { left = size, right = size, top = size, bottom = size}};
 
     local shadow = CreateFrame("Frame", nil, f)
     shadow:SetFrameLevel(level or 0)
