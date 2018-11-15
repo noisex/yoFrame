@@ -309,7 +309,7 @@ function InitOptions()
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
 				args = {	
 					enable 			= {	order = 1,  type = "toggle", name = L["RAIDenable"], disabled = false,},
-					simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info]) end,},		
+					simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info])  .. L["NEW"] end,},		
 					classcolor 		= {	order = 10, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
 					groupingOrder 	= {	order = 15, type = "select", name = function(info) return tr( info[#info]) end,	values = {["ID"] = L["SRT_ID"], ["GROUP"] = L["SRT_GR"], ["TDH"] = L["SRT_TDH"], ["THD"] = L["SRT_THD"]},},
 					width 			= {	order = 20,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 60, max = 150, step = 1,},
@@ -362,7 +362,7 @@ function InitOptions()
 			},		
 
 			NamePlates = {
-				order = 70,		name = L["NamePlates"],	type = "group",				
+				order = 70,		name = L["NamePlates"]  .. L["NEW"], type = "group",				
 				get = function(info) return yo[info[1]][info[#info]] end,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
@@ -385,14 +385,15 @@ function InitOptions()
 					showCastIcon 	= { width = "full",	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showCastName 	= { width = "full",	order = 52, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showCastTarget 	= { width = "full",	order = 55, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					showPercTreat 	= { width = 1.5,		order = 60, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],},},
-					showArrows 		= { width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },					
+					showPercTreat 	= { width = 1.5,	order = 60, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],},},
+					showResourses	= { width = "full",	order = 63, type = "toggle",	name = function(info) return tr( info[#info]) .. L["NEW"] end, },
+					showArrows 		= { width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					blueDebuff 		= { width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					classDispell 	= { width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
 					glowTarget		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					glowBadType		= {	order = 69, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
-					
-					showToolTip = {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
+										
+					showToolTip 	= {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
 
 					executePhaze ={ order = 70, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full"	},
 					executeProc  ={ order = 75,	type = "range", name = function(info) return tr( info[#info]) end,	min = 0, max = 100, step = 1,},	

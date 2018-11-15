@@ -276,6 +276,7 @@ L["widthMT"]		= "Main Tanks Width"
 L["hoverTexture"]	= "Рамка при подсветке кнопки"
 L["maxDispance"]	= "Максимальное расстояние для отображения"
 L["simpeRaid"]		= "Шаблон: Simple Raid"
+L["showResourses"]	= "Реусрсы игрока ( комбопойнты, шарды, ци, ...)"
 --[[
 L[""] 	= "
 L["DESC"] 	= 

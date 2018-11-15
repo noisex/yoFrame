@@ -58,7 +58,7 @@ local totClass = {
 	DRUID	= 1
 }
 
-local function isDruid( self, myClass)
+function isDruid( self)
 	if myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then 
 		self:Hide()
 		return false
@@ -117,7 +117,7 @@ end
 
 	self:SetWidth( self:GetWidth() + self.idx - 1)
 	
-	isDruid( self, myClass)
+	isDruid( self)
 	pwUpdate( self, ClassPowerID)
 end
 
@@ -152,7 +152,7 @@ local function OnEvent( self, event, unit, pToken, ...)
 		CreateShards( self)
 		
 	elseif event == "UNIT_DISPLAYPOWER" then
-		isDruid( self, myClass) 
+		isDruid( self) 
 				
 	elseif event == "PLAYER_TOTEM_UPDATE" then
 		--print( "toto up", event, unit, pToken, ...)

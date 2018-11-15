@@ -221,6 +221,7 @@ yo["NamePlates"] = {
 	["glowTarget"]		= true,
 	["glowBadType"]		= "pixel", 	-- button, cast, false
 	["maxDispance"]		= 40, 
+	["showResourses"]	= true,
 }
 	
 yo["Media"] = {

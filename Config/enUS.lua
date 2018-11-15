@@ -221,6 +221,7 @@ L["classDispell"]	= "Disspell, only if your class can disspell them (for right i
 L["showToolTip"]	= "Show tooltip on buffs on mousover:"
 L["glowBadType"]	= "Glow type on bad mobs"
 L["glowTarget"]		= "Show glow amination ot target"
+L["showResourses"]	= "Show player resourses ( cp, arcane, shards)"
 
 L["c0"]			= "0. Good agro ( DPS, Healer)"
 L["c0t"]		= "0. Tank"

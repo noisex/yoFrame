@@ -608,19 +608,20 @@ local function UpdateName( unitFrame)
 		unitFrame.name:SetText(name)
 		unitFrame.level:SetTextColor(r, g, b)
 		
-		if UnitExists( "target") and showArrows then
+		if UnitExists( "target") then
 			if UnitIsUnit( unitFrame.displayedUnit, "target") then
-				unitFrame.arrows:Show()
 				glowTargetStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
-			else
-				unitFrame.arrows:Hide()
+				if showArrows then unitFrame.arrows:Show() end
+				if unitFrame.classPower then unitFrame.classPower:Show() end
+			else				
 				glowTargetStop( unitFrame.healthBar, 1)
+				if showArrows then unitFrame.arrows:Hide() end
+				if unitFrame.classPower then unitFrame.classPower:Hide() end
 			end
 		else
-			if showArrows then
-				unitFrame.arrows:Hide()
-				glowTargetStop( unitFrame.healthBar, 1)
-			end
+			glowTargetStop( unitFrame.healthBar, 1)
+			if showArrows then unitFrame.arrows:Hide() 	end
+			if unitFrame.classPower then unitFrame.classPower:Hide() end			
 		end
 		
 		if mobID and ( badMobes[mobID] or eTeam[mobID]) then
@@ -690,6 +691,141 @@ local function UpdateAll(unitFrame)
 			unitFrame.castBar:UnregisterAllEvents()
 		end
 	end
+end
+
+local pType = {
+	MAGE 		= 1,
+	WARLOCK 	= 7,
+	PALADIN 	= 9,
+	ROGUE 		= 4,
+	DRUID 		= 4,
+	DEATHKNIGHT = 5,
+	MONK 		= 12, 			
+}
+
+local function ClearCPoints( self)
+	if self.cPoints then
+		for i = 1, #self.cPoints do
+			Kill( self.cPoints[i])
+		end
+	end	
+	
+	if myClass == "DEATHKNIGHT" then
+		self:UnregisterEvent("RUNE_POWER_UPDATE")
+	else
+		self:UnregisterEvent("UNIT_POWER_UPDATE", "player")	
+		self:UnregisterEvent("UNIT_MAXPOWER", "player")
+		--self:UnregisterEvent("UNIT_DISPLAYPOWER", "player")
+	end
+end
+
+local function OnCPEvent( self, event, unit, powerType)
+	
+	if event == "UNIT_POWER_UPDATE" and self.ClassPowerType ~= powerType then
+		return
+	
+	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		for idx, frame in pairs(C_NamePlate.GetNamePlates()) do
+        	ClearCPoints( frame.UnitFrame.classPower)
+        	CreateCPpoints( frame.UnitFrame.classPower)
+        end
+
+	elseif event == "UNIT_DISPLAYPOWER" then
+		for idx, frame in pairs(C_NamePlate.GetNamePlates()) do            
+        	isDruid( self) 
+        end			
+
+	elseif myClass == "DEATHKNIGHT" then
+		for i = 1, 6 do
+			local start, duration, runeReady = GetRuneCooldown( i)
+			if not runeReady then
+				self:TurnOff(self.cPoints[i], self.cPoints[i].Point, 0);
+			else --if start then
+				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1);
+			end
+		end	
+
+	--elseif myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
+	--	for idx, frame in pairs(C_NamePlate.GetNamePlates()) do            
+ --       	frame.UnitFrame.classPower:Hide()        	
+ --       end
+
+	else
+		local charges = UnitPower("player", pType[myClass]);
+		for i = 1, min( charges, #self.cPoints) do
+			if (not self.cPoints[i].on) then			
+				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1);
+			end
+		end
+		for i = charges + 1, #self.cPoints do
+			if ( self.cPoints[i].on) then
+				self:TurnOff( self.cPoints[i], self.cPoints[i].Point, 0);
+			end
+		end
+	end
+end
+
+function CreateCPpoints( self)
+	if not pType[myClass] then return end
+	
+	local size = 8
+	local ClassPowerID, ClassPowerType, RequireSpec
+
+	if(myClass == 'MONK') then
+		ClassPowerType = 'CHI'
+		RequireSpec = SPEC_MONK_WINDWALKER
+	elseif(myClass == 'PALADIN') then
+		ClassPowerType = 'HOLY_POWER'
+		RequireSpec = SPEC_PALADIN_RETRIBUTION
+	elseif(myClass == 'WARLOCK') then
+		ClassPowerType = 'SOUL_SHARDS'
+	elseif(myClass == 'DEATHKNIGHT') then
+		ClassPowerType = 'RUNES'
+	elseif(myClass == 'ROGUE' or myClass == 'DRUID') then
+		ClassPowerType = 'COMBO_POINTS'
+		if(myClass == 'DRUID') then
+			RequireSpec = 2
+			--	RequireSpell = 5221 -- Shred
+		end
+	elseif(myClass == 'MAGE') then
+		ClassPowerType = 'ARCANE_CHARGES'
+		RequireSpec = SPEC_MAGE_ARCANE
+	end
+
+	self.ClassPowerID 	= pType[myClass]
+	self.ClassPowerType = ClassPowerType
+	self.RequireSpec 	= RequireSpec
+
+	if RequireSpec and RequireSpec ~= GetSpecialization() then return end
+
+	self.cPoints = CreateFrame("Frame", nil, self)
+	self.cPoints:SetAllPoints()
+
+	local maxComboPoints = UnitPowerMax("player", pType[myClass]);
+
+	for i = 1, maxComboPoints do	
+		self.cPoints[i] = CreateFrame("Frame", nil, self, "ClassNameplateBarComboPointFrameYo") 
+		self.cPoints[i]:SetParent( self)
+		self.cPoints[i]:SetSize( size, size)
+		self.cPoints[i].Point:SetAlpha(0)
+
+		if i == 1 then
+			self.cPoints[i]:SetPoint("LEFT", self, "LEFT", 0, 0)
+		else
+			self.cPoints[i]:SetPoint("LEFT", self.cPoints[i-1], "RIGHT", 1, 0)
+		end
+	end
+	self:SetWidth( size * maxComboPoints)
+
+	if myClass == "DEATHKNIGHT" then
+		self:RegisterEvent("RUNE_POWER_UPDATE")
+	else
+		self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")	
+		self:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+		--self:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
+	end	
+	--isDruid( self)
+	OnCPEvent( self)
 end
 
 -----------------------------------------------------------------------------------------------
@@ -881,6 +1017,20 @@ local function OnNamePlateCreated( frame)
 	f.castBar:HookScript("OnValueChanged", function() NamePlates_UpdateCastBar(f.castBar) end)
 	
 	f:EnableMouse(false)
+
+	if yo.NamePlates.showResourses then
+		f.classPower = CreateFrame("Frame", nil, f) 
+		f.classPower:SetPoint("BOTTOM", f.healthBar, "BOTTOM", 0, -6)
+		f.classPower:SetSize(60, 13)
+		f.classPower:SetFrameStrata("MEDIUM")
+		f.classPower:SetFrameLevel(100)
+		f.classPower.TurnOff = ClassPowerBar.TurnOff
+		f.classPower.TurnOn = ClassPowerBar.TurnOn
+		CreateCPpoints( f.classPower)
+
+		f.classPower:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")		
+		f.classPower:SetScript("OnEvent", OnCPEvent)
+	end
 
 	frame.UnitFrame = f
 end

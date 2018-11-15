@@ -14,7 +14,7 @@ local yo_OldKey, yo_OldKey2 = nil, nil
 
 local mythicRewards = {
 --	{"Level","End","Weekly","Azer Weekly"},
-	{2,345,355,340},
+	{2,345,350,340},
 	{3,345,355,340},
 	{4,350,360,355},
 	{5,355,360,355},
