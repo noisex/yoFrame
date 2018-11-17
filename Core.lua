@@ -188,7 +188,9 @@ local function enterEvent( self)
 	CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
 	CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
 
-	CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 3, 3, 0.5, 0)
+	--CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 3, 3, 0.5, 0)
+	CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", yo_MoveLeftPanel, "BOTTOMLEFT", 0, 0, 0.5, 0)
+
 	CreateStyle( LeftDataPanel, 3, 0, 0, 0.7)
 
 	SimpleBackground( RightInfoPanel, 440, 15, "BOTTOM", RightDataPanel, "BOTTOM", 0, 0)
