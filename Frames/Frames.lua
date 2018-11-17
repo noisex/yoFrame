@@ -125,7 +125,7 @@ end
 function nm_update( f, unit, levelUP)
 	
 	local level = ""
-	if unit == "player" and ( levelUP ~= MAX_PLAYER_LEVEL or UnitLevel( "player") ~= MAX_PLAYER_LEVEL) then 
+	if unit == "player" and (( levelUP and levelUP ~= MAX_PLAYER_LEVEL) or UnitLevel( "player") ~= MAX_PLAYER_LEVEL) then 
 		level = levelUP or UnitLevel( "player")
 		level = level .. " "
 	end	
