@@ -457,6 +457,40 @@ end
 -----------------------------------------------------------------------------------------------
 --	CREATE PLATE
 -----------------------------------------------------------------------------------------------
+local function TurnOn(frame, texture, toAlpha, maxComboPoints)
+	local alphaValue = texture:GetAlpha();
+	frame.Fadein:Stop();
+	frame.Fadeout:Stop();
+	texture:SetAlpha(alphaValue);
+	frame.on = true;
+	if (alphaValue < toAlpha) then
+		if (texture:IsVisible()) then
+			frame.Fadein.AlphaAnim:SetFromAlpha(alphaValue);
+			frame.Fadein:Play();
+			if maxComboPoints then frame.BackFX:SetAlpha(toAlpha) end
+		else
+			texture:SetAlpha(toAlpha);		
+			if maxComboPoints then frame.BackFX:SetAlpha(toAlpha) end
+		end
+	end
+end
+
+local function TurnOff(frame, texture, toAlpha)
+	local alphaValue = texture:GetAlpha();
+	frame.Fadein:Stop();
+	frame.Fadeout:Stop();
+	texture:SetAlpha(alphaValue);
+	frame.on = false;
+	frame.BackFX:SetAlpha(toAlpha)
+	if (alphaValue > toAlpha) then
+		if (texture:IsVisible()) then
+			frame.Fadeout.AlphaAnim:SetFromAlpha(alphaValue);
+			frame.Fadeout:Play();
+		else
+			texture:SetAlpha(toAlpha);
+		end
+	end
+end
 
 local function UpdateRaidTarget(unitFrame)
 	local icon = unitFrame.RaidTargetFrame.RaidTargetIcon
@@ -752,14 +786,21 @@ local function OnCPEvent( self, event, unit, powerType)
 
 	else
 		local charges = UnitPower("player", pType[myClass]);
+		
+		if charges == self.maxComboPoints then 
+			self.cPointsFX:SetAlpha( 0.7) 
+		else
+			self.cPointsFX:SetAlpha( 0) 
+		end
+
 		for i = 1, min( charges, #self.cPoints) do
-			if (not self.cPoints[i].on) then			
-				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1);
+			if (not self.cPoints[i].on) then
+				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1)
 			end
 		end
 		for i = charges + 1, #self.cPoints do
 			if ( self.cPoints[i].on) then
-				self:TurnOff( self.cPoints[i], self.cPoints[i].Point, 0);
+				self:TurnOff( self.cPoints[i], self.cPoints[i].Point, 0);				
 			end
 		end
 	end
@@ -801,18 +842,31 @@ function CreateCPpoints( self)
 	self.cPoints = CreateFrame("Frame", nil, self)
 	self.cPoints:SetAllPoints()
 
+	self.cPointsFX = CreateFrame("Frame", nil, self.cPoints)
+	self.cPointsFX:SetAllPoints()
+	self.cPointsFX:SetAlpha( 0)
+
 	local maxComboPoints = UnitPowerMax("player", pType[myClass]);
+	self.maxComboPoints = maxComboPoints
 
 	for i = 1, maxComboPoints do	
 		self.cPoints[i] = CreateFrame("Frame", nil, self, "ClassNameplateBarComboPointFrameYo") 
 		self.cPoints[i]:SetParent( self)
 		self.cPoints[i]:SetSize( size, size)
-		self.cPoints[i].Point:SetAlpha(0)
+
+		self.cPointsFX[i] = self.cPointsFX:CreateTexture(nil, "ARTWORK")
+		self.cPointsFX[i]:SetTexture([[Interface\PlayerFrame\ClassOverlayComboPoints]])
+		self.cPointsFX[i]:SetAtlas( "ComboPoints-FX-Circle", false)
+		--self.cPointsFX[i]:SetTexture([[Interface\PlayerFrame\DruidEclipse]])
+		--self.cPointsFX[i]:SetAtlas( "DruidEclipse-SolarSun", false)
+		self.cPointsFX[i]:SetSize( 10, 10)
 
 		if i == 1 then
 			self.cPoints[i]:SetPoint("LEFT", self, "LEFT", 0, 0)
+			self.cPointsFX[i]:SetPoint("LEFT", self, "LEFT", 0, 0)
 		else
 			self.cPoints[i]:SetPoint("LEFT", self.cPoints[i-1], "RIGHT", 1, 0)
+			self.cPointsFX[i]:SetPoint("LEFT", self.cPoints[i-1], "RIGHT", 1, 0)
 		end
 	end
 	self:SetWidth( size * maxComboPoints)
@@ -1024,8 +1078,8 @@ local function OnNamePlateCreated( frame)
 		f.classPower:SetSize(60, 13)
 		f.classPower:SetFrameStrata("MEDIUM")
 		f.classPower:SetFrameLevel(100)
-		f.classPower.TurnOff = ClassPowerBar.TurnOff
-		f.classPower.TurnOn = ClassPowerBar.TurnOn
+		f.classPower.TurnOff 	= ClassPowerBar.TurnOff
+		f.classPower.TurnOn 	= ClassPowerBar.TurnOn
 		CreateCPpoints( f.classPower)
 
 		f.classPower:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")		
@@ -1034,6 +1088,12 @@ local function OnNamePlateCreated( frame)
 
 	frame.UnitFrame = f
 end
+
+
+----------------------------------------------------------------------------------------------------------------
+-- 		NAMEPLATES CONSTRUCT 
+----------------------------------------------------------------------------------------------------------------
+
 
 function NamePlates_UpdateNamePlateOptions()
 	-- Called at VARIABLES_LOADED and by "Larger Nameplates" interface options checkbox

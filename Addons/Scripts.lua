@@ -146,62 +146,68 @@ end)
 ----------------------------------------------------------------------------------------
 --LibStub("LibButtonGlow-1.0").ShowOverlayGlow(f)
 
-local tCount = CreateFrame("Frame")
-tCount:RegisterEvent("ADDON_LOADED")
-tCount:SetScript("OnEvent", function(_, _, name)
-	--if name ~= "yoFrame" then return end
-	tCount:UnregisterEvent("ADDON_LOADED")
-	tCount:SetScript("OnEvent", nil)
-	UIItemTooltip = UIItemTooltip or {count = true}
-end)
+--local tCount = CreateFrame("Frame")
+--tCount:RegisterEvent("ADDON_LOADED")
+--tCount:SetScript("OnEvent", function(_, _, name)
+--	--if name ~= "yoFrame" then return end
+--	tCount:UnregisterEvent("ADDON_LOADED")
+--	tCount:SetScript("OnEvent", nil)
+--	UIItemTooltip = UIItemTooltip or {count = true}
+--end)
 
-function KeyPressed( self, key)
-	if key == "LSHIFT"
-		or key == "RSHIFT"
-		or key == "LCTRL"
-		or key == "RCTRL"
-		or key == "LALT"
-		or key == "RALT"
-		or key == "UNKNOWN"
-		--or key == "LeftButton"
-	then return end
-	local bingo = ""
-	local alt 	= IsAltKeyDown() 		and "ALT-" or ""
-	local ctrl 	= IsControlKeyDown()	and "CTRL-" or ""
-	local shift = IsShiftKeyDown() 		and "SHIFT-" or ""
-	local keyPress = alt .. ctrl .. shift .. key
+--function KeyPressed( self, key)
+--	if key == "LSHIFT"
+--		or key == "RSHIFT"
+--		or key == "LCTRL"
+--		or key == "RCTRL"
+--		or key == "LALT"
+--		or key == "RALT"
+--		or key == "UNKNOWN"
+--		--or key == "LeftButton"
+--	then return end
+--	local bingo = ""
+--	local alt 	= IsAltKeyDown() 		and "ALT-" or ""
+--	local ctrl 	= IsControlKeyDown()	and "CTRL-" or ""
+--	local shift = IsShiftKeyDown() 		and "SHIFT-" or ""
+--	local keyPress = alt .. ctrl .. shift .. key
 
-	if keyPress == yo.healBotka.key1 then
-		bingo = " KEY1 PRESSED"
-	elseif keyPress == yo.healBotka.key2 then
-		bingo = " KEY2 PRESSED"
-	end
+--	if keyPress == yo.healBotka.key1 then
+--		bingo = " KEY1 PRESSED"
+--	elseif keyPress == yo.healBotka.key2 then
+--		bingo = " KEY2 PRESSED"
+--	end
 
-	print( keyPress, bingo, self.unit)
-end
+--	print( keyPress, bingo, self.unit)
+--end
 
 local function test_icon()
-	f = CreateFrame( "Button", "yo_test", UIParent, "SecureUnitButtonTemplate") 
+	f = CreateFrame( "Button", "yo_test", UIParent) --, "SecureUnitButtonTemplate") 
 	f:SetWidth(50)
 	f:SetHeight(50)
 	f:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
 	
-	f.icon = f:CreateTexture( nil, "OVERLAY")
-	f.icon:SetAllPoints( f)
-	f.icon:SetTexture( 511726)
+	--f.icon = f:CreateTexture( nil, "OVERLAY")
+	--f.icon:SetAllPoints( f)
+	--f.icon:SetTexture( 511726)
 	
 	f.outerGlow = f:CreateTexture( "OuterGlow", "ARTWORK")
 	f.outerGlow:SetPoint("CENTER", f)
 	f.outerGlow:SetWidth( f:GetWidth() * 2)
 	f.outerGlow:SetHeight( f:GetHeight() * 2)
-	f.outerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
-	f.outerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
-	f.outerGlow:Hide()
+	f.outerGlow:SetTexture([[Interface\PlayerFrame\DruidEclipse]])
+	--f.outerGlow:SetTexCoord( 0.78125, 0.9375, 0.328125, 0.640625) -- ON
+	--f.outerGlow:SetTexCoord( 0.78125, 0.9375, 0.671875, 0.984375)	-- OFF
+	--f.outerGlow:SetTexCoord( 0.609375, 0.765625, 0.328125, 0.65625)	-- PointBg"
+	--f.outerGlow:SetTexCoord(  0.0078125, 0.210938, 0.328125, 0.75)	-- FX-Circle"]={26, 27,
+	f.outerGlow:SetTexCoord( 0.246094, 0.414062, 0.59375, 0.945312)	--    ["DruidEclipse-SolarSun"]={43, 45, 0.246094, 0.414062, 0.59375, 0.945312, false, false},
+	--f.outerGlow:SetTexCoord( )
 
-	f:RegisterForClicks("AnyDown")
-	f:EnableMouse( true)	
-	f:EnableMouseWheel( true)
-	f:EnableKeyboard( false)
+	--f.outerGlow:Hide()
+
+	--f:RegisterForClicks("AnyDown")
+	--f:EnableMouse( true)	
+	--f:EnableMouseWheel( true)
+	--f:EnableKeyboard( false)
 
 	--f:SetScript("OnKeyDown", KeyPressed)
 	
@@ -220,25 +226,25 @@ local function test_icon()
 	--	print('OnEnter')
 	--end)
 	
-	local aButtonId, aModiKey, anAction = 1, "", "Омоложение"
+	--local aButtonId, aModiKey, anAction = 1, "", "Омоложение"
 
-	f:SetAttribute("unit", "player")
-	f:SetAttribute("type1", "spell");
-	f:SetAttribute("spell1", "Омоложение");	
+	--f:SetAttribute("unit", "player")
+	--f:SetAttribute("type1", "spell");
+	--f:SetAttribute("spell1", "Омоложение");	
 
-	f:SetAttribute( "type2", "spell");
-	f:SetAttribute( "spell2", "Жизнецвет");	
+	--f:SetAttribute( "type2", "spell");
+	--f:SetAttribute( "spell2", "Жизнецвет");	
 
-	f:SetAttribute( "shift-type1", "spell");
-	f:SetAttribute( "shift-spell1", "Восстановление");	
+	--f:SetAttribute( "shift-type1", "spell");
+	--f:SetAttribute( "shift-spell1", "Восстановление");	
 
 	--f:SetAttribute( "shift-type2", "spell");
 	--f:SetAttribute( "shift-spell2", "Буйный рост");	
 
-	f:SetAttribute( "type-w2", "macro");
-	f:SetAttribute( "macrotext-w2", "/cast Буйный рост");	
+	--f:SetAttribute( "type-w2", "macro");
+	--f:SetAttribute( "macrotext-w2", "/cast Буйный рост");	
 	
-	RegisterUnitWatch( f)
+	--RegisterUnitWatch( f)
 	f:Show()
 end
 --test_icon()
@@ -308,9 +314,15 @@ f:SetScript("OnEvent", function()
 		if cost>0 then
 			if possible then
 				if CanGuildBankRepair() then
-					RepairAllItems( 1)
+					RepairAllItems( true)
+					PlaySound(SOUNDKIT.ITEM_REPAIR);
+					cost, possible = GetRepairAllCost()
+					if possible then
+						RepairAllItems()
+					end
 				else
 					RepairAllItems()
+					PlaySound(SOUNDKIT.ITEM_REPAIR);
 				end
 				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. formatMoney( cost),255,255,0)
 			else

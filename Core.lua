@@ -137,33 +137,39 @@ local function enterEvent( self)
 	end
 	hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
 
+	plFrame = CreateFrame("Button", "yo_Player", UIParent, "SecureUnitButtonTemplate") 
+	tarFrame = CreateFrame("Button", "yo_Target", UIParent, "SecureUnitButtonTemplate") 
+	totFrame = CreateFrame("Button", "yo_TarTar", UIParent, "SecureUnitButtonTemplate") 
+	fcFrame = CreateFrame("Button", "yo_Focus", UIParent, "SecureUnitButtonTemplate") 
+	petFrame = CreateFrame("Button", "yo_Pet", UIParent, "SecureUnitButtonTemplate") 
+
 	if yo.Addons.unitFrames then
 	
-		plFrame = CreateFrame("Button", "yo_Player", UIParent, "SecureUnitButtonTemplate") 
+		--plFrame = CreateFrame("Button", "yo_Player", UIParent, "SecureUnitButtonTemplate") 
 		plFrame:SetPoint( "CENTER", yo_MovePlayer, "CENTER", 0 , 0)
 		plFrame:SetSize( yo_MovePlayer:GetSize())
 		plFrame.unit = "player"
 		CreateUFrame( plFrame, plFrame.unit)
 
-		tarFrame = CreateFrame("Button", "yo_Target", UIParent, "SecureUnitButtonTemplate") 
+		--tarFrame = CreateFrame("Button", "yo_Target", UIParent, "SecureUnitButtonTemplate") 
 		tarFrame:SetPoint( "CENTER", yo_MoveTarget, "CENTER", 0 , 0)
 		tarFrame:SetSize( yo_MoveTarget:GetSize())
 		tarFrame.unit = "target"
 		CreateUFrame( tarFrame, tarFrame.unit)
 
-		totFrame = CreateFrame("Button", "yo_TarTar", UIParent, "SecureUnitButtonTemplate") 
+		--totFrame = CreateFrame("Button", "yo_TarTar", UIParent, "SecureUnitButtonTemplate") 
 		totFrame:SetPoint( "TOPLEFT", yo_MoveTarget, "TOPRIGHT", 8 , 0)
 		totFrame:SetSize( 100, 25)
 		totFrame.unit = "targettarget"
 		CreateUFrame( totFrame, totFrame.unit)
 
-		fcFrame = CreateFrame("Button", "yo_Focus", UIParent, "SecureUnitButtonTemplate") 
+		--fcFrame = CreateFrame("Button", "yo_Focus", UIParent, "SecureUnitButtonTemplate") 
 		fcFrame:SetPoint( "CENTER", yo_MoveFocus, "CENTER", 0 , 0)
 		fcFrame:SetSize( yo_MoveFocus:GetSize())
 		fcFrame.unit = "focus"
 		CreateUFrame( fcFrame, fcFrame.unit)
 
-		petFrame = CreateFrame("Button", "yo_Pet", UIParent, "SecureUnitButtonTemplate") 
+		--petFrame = CreateFrame("Button", "yo_Pet", UIParent, "SecureUnitButtonTemplate") 
 		petFrame:SetPoint( "TOPRIGHT", yo_MovePlayer, "TOPLEFT", -8 , 0)
 		petFrame:SetSize( 100, 25)
 		petFrame.unit = "pet"

@@ -122,12 +122,24 @@ function flag_update( f, unit)
 	end
 end
 
-function nm_update( f, unit)
-	local lenght = math.floor( f:GetWidth() / 8)
-	f.nameText:SetText( utf8sub( UnitName( unit), lenght, false))
+function nm_update( f, unit, levelUP)
+	
+	local level = ""
+	if unit == "player" and ( levelUP ~= MAX_PLAYER_LEVEL or UnitLevel( "player") ~= MAX_PLAYER_LEVEL) then 
+		level = levelUP or UnitLevel( "player")
+		level = level .. " "
+	end	
+
+	local lenght = math.floor( f:GetWidth() / 7)
+	local name = utf8sub( UnitName( unit), lenght, false)
+	if name then
+		f.nameText:SetText( format( "%s%s", level, name))	
+	end	
+
 	if UnitIsAFK(unit) == true then
 		f.nameText:SetText( f.nameText:GetText() .. " |cffffffff afk")
 	end
+	--print(level, unit, name)
 end
 
 function hp_update( f, unit)  
@@ -319,6 +331,9 @@ local function OnEvent(f, event, ...)
 		initFrame( f)				
 	elseif event == "UNIT_FACTION" then
 		unitPVP( f, unit)
+	elseif event == "PLAYER_LEVEL_UP" then
+		local level = ...
+		nm_update( f, unit, level)
 	else
 		print( "UnknownEvent: |cffff0000" .. event .. "|r from: " .. f:GetName())
 	end	
@@ -494,6 +509,8 @@ function CreateUFrame( f, unit)
 		f:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit)
 		f:RegisterUnitEvent("UNIT_POWER_FREQUENT", unit)
 		f:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit)
+		f:RegisterEvent('PLAYER_LEVEL_UP')
+
 		--f:RegisterUnitEvent("PLAYER_TARGET_CHANGED", unit)
 		--f:RegisterEvent("UNIT_PET")
 		
@@ -583,18 +600,19 @@ function CreateUFrame( f, unit)
 	f:SetScript("OnEvent", OnEvent)
 	
 	f:SetAttribute("*type1", "target")
-	f:SetAttribute("*type2", "menu")
+	f:SetAttribute("*type2", "togglemenu")
 	f:SetAttribute("unit", unit)
 	RegisterUnitWatch( f)
 	
 	--f.rLoot:Hide()
+
 	f.rAssist:Hide()
 	f.rLeader:Hide()
 	f:SetAlpha(1)
 	GetColors( f)
 	CreateStyle( f, 4)
 	CreateStyle( f.powerBar, 4, 4, .3, .3)
-	f.menu = menu
+	--f.menu = menu
 	DisableBlizzard( unit)
 	initFrame( f)
 end

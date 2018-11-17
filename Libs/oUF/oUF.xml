@@ -80,6 +80,7 @@
 					</Anchors>
 				</Texture>
 			</Layer>
+			
 			<Layer level="ARTWORK">
 				<Texture parentKey="Point" atlas="ClassOverlay-ComboPoint" useAtlasSize="false" alpha="0">
 					<Size x="10" y="10"/>
@@ -87,6 +88,14 @@
 						<Anchor point="TOPLEFT"/>
 					</Anchors>
 				</Texture>
+	<!--
+			<Texture parentKey="BackFX" atlas="ComboPoints-FX-Circle" useAtlasSize="false" alpha="0">
+					<Size x="10" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture> 
+	-->
 			</Layer>
 		</Layers>
 		<Animations>
