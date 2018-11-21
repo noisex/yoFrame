@@ -420,9 +420,8 @@ local function UpdateCastBar( f, id)
 end
 
 function CastTimerUpdate( f)
-	if f.spellDelay ~= yo.General.spellDelay then
-		UpdateCastBar( f)		
-	end
+	if f.spellDelay ~= yo.General.spellDelay then UpdateCastBar( f)	end
+
 	local now = GetTime()
 	if f.reversed then
 		f:SetValue(f.endTime - now)
@@ -457,41 +456,6 @@ end
 -----------------------------------------------------------------------------------------------
 --	CREATE PLATE
 -----------------------------------------------------------------------------------------------
-local function TurnOn(frame, texture, toAlpha, maxComboPoints)
-	local alphaValue = texture:GetAlpha();
-	frame.Fadein:Stop();
-	frame.Fadeout:Stop();
-	texture:SetAlpha(alphaValue);
-	frame.on = true;
-	if (alphaValue < toAlpha) then
-		if (texture:IsVisible()) then
-			frame.Fadein.AlphaAnim:SetFromAlpha(alphaValue);
-			frame.Fadein:Play();
-			if maxComboPoints then frame.BackFX:SetAlpha(toAlpha) end
-		else
-			texture:SetAlpha(toAlpha);		
-			if maxComboPoints then frame.BackFX:SetAlpha(toAlpha) end
-		end
-	end
-end
-
-local function TurnOff(frame, texture, toAlpha)
-	local alphaValue = texture:GetAlpha();
-	frame.Fadein:Stop();
-	frame.Fadeout:Stop();
-	texture:SetAlpha(alphaValue);
-	frame.on = false;
-	frame.BackFX:SetAlpha(toAlpha)
-	if (alphaValue > toAlpha) then
-		if (texture:IsVisible()) then
-			frame.Fadeout.AlphaAnim:SetFromAlpha(alphaValue);
-			frame.Fadeout:Play();
-		else
-			texture:SetAlpha(toAlpha);
-		end
-	end
-end
-
 local function UpdateRaidTarget(unitFrame)
 	local icon = unitFrame.RaidTargetFrame.RaidTargetIcon
 	local index = GetRaidTargetIndex(unitFrame.displayedUnit)
@@ -642,20 +606,21 @@ local function UpdateName( unitFrame)
 		unitFrame.name:SetText(name)
 		unitFrame.level:SetTextColor(r, g, b)
 		
-		if UnitExists( "target") then
-			if UnitIsUnit( unitFrame.displayedUnit, "target") then
-				glowTargetStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
-				if showArrows then unitFrame.arrows:Show() end
-				if unitFrame.classPower then unitFrame.classPower:Show() end
-			else				
-				glowTargetStop( unitFrame.healthBar, 1)
-				if showArrows then unitFrame.arrows:Hide() end
-				if unitFrame.classPower then unitFrame.classPower:Hide() end
+		if UnitIsUnit( unitFrame.displayedUnit, "target") then				
+			glowTargetStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
+			if showArrows then unitFrame.arrows:Show() end
+			if unitFrame.classPower then
+				UpdateUnitPower( unitFrame.classPower)
+				unitFrame.classPower:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+				unitFrame.classPower:SetShown( isDruid())
 			end
-		else
+		else			
 			glowTargetStop( unitFrame.healthBar, 1)
-			if showArrows then unitFrame.arrows:Hide() 	end
-			if unitFrame.classPower then unitFrame.classPower:Hide() end			
+			if showArrows then unitFrame.arrows:Hide() end
+			if unitFrame.classPower and unitFrame.classPower:IsVisible() then 
+				unitFrame.classPower:Hide()
+				unitFrame.classPower:UnregisterEvent("UNIT_POWER_UPDATE")
+			end
 		end
 		
 		if mobID and ( badMobes[mobID] or eTeam[mobID]) then
@@ -727,16 +692,9 @@ local function UpdateAll(unitFrame)
 	end
 end
 
-local pType = {
-	MAGE 		= 1,
-	WARLOCK 	= 7,
-	PALADIN 	= 9,
-	ROGUE 		= 4,
-	DRUID 		= 4,
-	DEATHKNIGHT = 5,
-	MONK 		= 12, 			
-}
-
+-----------------------------------------------------------------------------------
+--- COMBO POINTS
+-----------------------------------------------------------------------------------
 local function ClearCPoints( self)
 	if self.cPoints then
 		for i = 1, #self.cPoints do
@@ -749,24 +707,51 @@ local function ClearCPoints( self)
 	else
 		self:UnregisterEvent("UNIT_POWER_UPDATE", "player")	
 		self:UnregisterEvent("UNIT_MAXPOWER", "player")
-		--self:UnregisterEvent("UNIT_DISPLAYPOWER", "player")
+		--self:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+		self:UnregisterEvent("UNIT_DISPLAYPOWER", "player")
 	end
+end
+
+function UpdateUnitPower( self)
+	local charges = UnitPower("player", self.powerID);
+	local showFX = charges == self.maxComboPoints and true or false
+
+	for i = 1, self.maxComboPoints do
+		if showFX then
+			self.cPoints[i].BackFX:Show()
+		else
+			self.cPoints[i].BackFX:Hide()
+		end
+
+		if i <= charges then
+			if (not self.cPoints[i].on) then
+				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1)
+			end
+		else
+			if ( self.cPoints[i].on) then
+				self:TurnOff( self.cPoints[i], self.cPoints[i].Point, 0);
+			end
+		end
+	end
+
 end
 
 local function OnCPEvent( self, event, unit, powerType)
 	
-	if event == "UNIT_POWER_UPDATE" and self.ClassPowerType ~= powerType then
+	if event == "UNIT_POWER_UPDATE" and self.powerType ~= powerType then
 		return
 	
-	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		for idx, frame in pairs(C_NamePlate.GetNamePlates()) do
-        	ClearCPoints( frame.UnitFrame.classPower)
-        	CreateCPpoints( frame.UnitFrame.classPower)
+	elseif event == "UNIT_MAXPOWER" then  --PLAYER_TALENT_UPDATE		
+		if powerType == self.powerType then
+			for idx, frame in pairs(C_NamePlate.GetNamePlates()) do
+        		CreateCPpoints( frame.UnitFrame.classPower)
+        	end
         end
 
 	elseif event == "UNIT_DISPLAYPOWER" then
 		for idx, frame in pairs(C_NamePlate.GetNamePlates()) do            
-        	isDruid( self) 
+        	self:SetShown( isDruid( self))
+        	--isDruid( self) 
         end			
 
 	elseif myClass == "DEATHKNIGHT" then
@@ -778,95 +763,58 @@ local function OnCPEvent( self, event, unit, powerType)
 				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1);
 			end
 		end	
-
-	--elseif myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
-	--	for idx, frame in pairs(C_NamePlate.GetNamePlates()) do            
- --       	frame.UnitFrame.classPower:Hide()        	
- --       end
-
 	else
-		local charges = UnitPower("player", pType[myClass]);
-		
-		if charges == self.maxComboPoints then 
-			self.cPointsFX:SetAlpha( 0.7) 
-		else
-			self.cPointsFX:SetAlpha( 0) 
-		end
-
-		for i = 1, min( charges, #self.cPoints) do
-			if (not self.cPoints[i].on) then
-				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1)
-			end
-		end
-		for i = charges + 1, #self.cPoints do
-			if ( self.cPoints[i].on) then
-				self:TurnOff( self.cPoints[i], self.cPoints[i].Point, 0);				
-			end
-		end
+		UpdateUnitPower( self)
 	end
 end
 
 function CreateCPpoints( self)
-	if not pType[myClass] then return end
+	if not yo.pType[myClass].powerID then return end
+	if yo.pType[myClass].spec and yo.pType[myClass].spec ~= GetSpecialization() then return end
 	
-	local size = 8
-	local ClassPowerID, ClassPowerType, RequireSpec
+	local size = 8	
+	local maxComboPoints = UnitPowerMax("player", self.powerID);
+	
+	if maxComboPoints == self.maxComboPoints then return end
 
-	if(myClass == 'MONK') then
-		ClassPowerType = 'CHI'
-		RequireSpec = SPEC_MONK_WINDWALKER
-	elseif(myClass == 'PALADIN') then
-		ClassPowerType = 'HOLY_POWER'
-		RequireSpec = SPEC_PALADIN_RETRIBUTION
-	elseif(myClass == 'WARLOCK') then
-		ClassPowerType = 'SOUL_SHARDS'
-	elseif(myClass == 'DEATHKNIGHT') then
-		ClassPowerType = 'RUNES'
-	elseif(myClass == 'ROGUE' or myClass == 'DRUID') then
-		ClassPowerType = 'COMBO_POINTS'
-		if(myClass == 'DRUID') then
-			RequireSpec = 2
-			--	RequireSpell = 5221 -- Shred
-		end
-	elseif(myClass == 'MAGE') then
-		ClassPowerType = 'ARCANE_CHARGES'
-		RequireSpec = SPEC_MAGE_ARCANE
-	end
+	ClearCPoints( self)
 
-	self.ClassPowerID 	= pType[myClass]
-	self.ClassPowerType = ClassPowerType
-	self.RequireSpec 	= RequireSpec
-
-	if RequireSpec and RequireSpec ~= GetSpecialization() then return end
+	self.maxComboPoints = maxComboPoints
 
 	self.cPoints = CreateFrame("Frame", nil, self)
 	self.cPoints:SetAllPoints()
 
-	self.cPointsFX = CreateFrame("Frame", nil, self.cPoints)
-	self.cPointsFX:SetAllPoints()
-	self.cPointsFX:SetAlpha( 0)
-
-	local maxComboPoints = UnitPowerMax("player", pType[myClass]);
-	self.maxComboPoints = maxComboPoints
-
 	for i = 1, maxComboPoints do	
-		self.cPoints[i] = CreateFrame("Frame", nil, self, "ClassNameplateBarComboPointFrameYo") 
+		self.cPoints[i] = CreateFrame("Frame", nil, self) --, "ClassNameplateBarComboPointFrameYo") 
 		self.cPoints[i]:SetParent( self)
 		self.cPoints[i]:SetSize( size, size)
 
-		self.cPointsFX[i] = self.cPointsFX:CreateTexture(nil, "ARTWORK")
-		self.cPointsFX[i]:SetTexture([[Interface\PlayerFrame\ClassOverlayComboPoints]])
-		self.cPointsFX[i]:SetAtlas( "ComboPoints-FX-Circle", false)
-		--self.cPointsFX[i]:SetTexture([[Interface\PlayerFrame\DruidEclipse]])
-		--self.cPointsFX[i]:SetAtlas( "DruidEclipse-SolarSun", false)
-		self.cPointsFX[i]:SetSize( 10, 10)
+		self.cPoints[i].Back = self.cPoints[i]:CreateTexture(nil, "BACKGROUND")
+		self.cPoints[i].Back:SetPoint( "CENTER")
+		self.cPoints[i].Back:SetSize(10, 10)
+		self.cPoints[i].Back:SetAtlas( "ClassOverlay-ComboPoint-Off")
+		self.cPoints[i].Back:SetAlpha( 1)
+		
+		self.cPoints[i].Point = self.cPoints[i]:CreateTexture(nil, "ARTWORK")
+		self.cPoints[i].Point:SetPoint( "CENTER")
+		self.cPoints[i].Point:SetSize(10, 10)
+		self.cPoints[i].Point:SetAtlas( "ClassOverlay-ComboPoint")
+		self.cPoints[i].Point:SetAlpha( 0)
+
+		self.cPoints[i].BackFX = self.cPoints[i]:CreateTexture(nil, "OVERLAY")
+		self.cPoints[i].BackFX:SetPoint( "CENTER")
+		self.cPoints[i].BackFX:SetSize( 13, 13)
+		self.cPoints[i].BackFX:SetAtlas( "ComboPoints-FX-Circle")
+		self.cPoints[i].BackFX:SetAlpha( 0.8)
+		self.cPoints[i].BackFX:Hide()
+
+		SetUpAnimGroup( self.cPoints[i], "Fadein", 0, 1, 0.2, true, self.cPoints[i].Point)
+		SetUpAnimGroup( self.cPoints[i], "Fadeout", 0, 1, 0.3, true, self.cPoints[i].Point)
 
 		if i == 1 then
 			self.cPoints[i]:SetPoint("LEFT", self, "LEFT", 0, 0)
-			self.cPointsFX[i]:SetPoint("LEFT", self, "LEFT", 0, 0)
 		else
 			self.cPoints[i]:SetPoint("LEFT", self.cPoints[i-1], "RIGHT", 1, 0)
-			self.cPointsFX[i]:SetPoint("LEFT", self.cPoints[i-1], "RIGHT", 1, 0)
 		end
 	end
 	self:SetWidth( size * maxComboPoints)
@@ -876,7 +824,9 @@ function CreateCPpoints( self)
 	else
 		self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")	
 		self:RegisterUnitEvent("UNIT_MAXPOWER", "player")
-		--self:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
+		self:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
+		--self:RegisterEvent("PLAYER_TALENT_UPDATE");
+		--self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")		
 	end	
 	--isDruid( self)
 	OnCPEvent( self)
@@ -1074,15 +1024,18 @@ local function OnNamePlateCreated( frame)
 
 	if yo.NamePlates.showResourses then
 		f.classPower = CreateFrame("Frame", nil, f) 
-		f.classPower:SetPoint("BOTTOM", f.healthBar, "BOTTOM", 0, -6)
+		f.classPower:SetPoint("CENTER", f.healthBar, "BOTTOM", 0, -3)
 		f.classPower:SetSize(60, 13)
 		f.classPower:SetFrameStrata("MEDIUM")
 		f.classPower:SetFrameLevel(100)
 		f.classPower.TurnOff 	= ClassPowerBar.TurnOff
 		f.classPower.TurnOn 	= ClassPowerBar.TurnOn
+		--f.classPower.TurnOff 	= TurnOff
+		--f.classPower.TurnOn 	= TurnOn
+		f.classPower.powerID 	= yo.pType[myClass].powerID
+		f.classPower.powerType	= yo.pType[myClass].powerType		
 		CreateCPpoints( f.classPower)
-
-		f.classPower:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")		
+		
 		f.classPower:SetScript("OnEvent", OnCPEvent)
 	end
 

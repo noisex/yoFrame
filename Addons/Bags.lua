@@ -300,110 +300,6 @@ function addon:SetSlotAlphaForBag(f)
 	end
 end
 
-local function SetUpAnimGroup(object, type, ...)
-	if not type then type = 'Flash' end
-
-	if type == 'Flash' then
-		object.anim = object:CreateAnimationGroup("Flash")
-		object.anim.fadein = object.anim:CreateAnimation("ALPHA", "FadeIn")
-		object.anim.fadein:SetFromAlpha(0)
-		object.anim.fadein:SetToAlpha(1)
-		object.anim.fadein:SetOrder(2)
-
-		object.anim.fadeout = object.anim:CreateAnimation("ALPHA", "FadeOut")
-		object.anim.fadeout:SetFromAlpha(1)
-		object.anim.fadeout:SetToAlpha(0)
-		object.anim.fadeout:SetOrder(1)
-	elseif type == 'FlashLoop' then
-		object.anim = object:CreateAnimationGroup("Flash")
-		object.anim.fadein = object.anim:CreateAnimation("ALPHA", "FadeIn")
-		object.anim.fadein:SetFromAlpha(0)
-		object.anim.fadein:SetToAlpha(1)
-		object.anim.fadein:SetOrder(2)
-
-		object.anim.fadeout = object.anim:CreateAnimation("ALPHA", "FadeOut")
-		object.anim.fadeout:SetFromAlpha(1)
-		object.anim.fadeout:SetToAlpha(0)
-		object.anim.fadeout:SetOrder(1)
-
-		object.anim:SetScript("OnFinished", function(_, requested)
-			if(not requested) then
-				object.anim:Play()
-			end
-		end)
-	elseif type == 'Shake' then
-		object.shake = object:CreateAnimationGroup("Shake")
-		object.shake:SetLooping("REPEAT")
-		object.shake.path = object.shake:CreateAnimation("Path")
-		object.shake.path[1] = object.shake.path:CreateControlPoint()
-		object.shake.path[2] = object.shake.path:CreateControlPoint()
-		object.shake.path[3] = object.shake.path:CreateControlPoint()
-		object.shake.path[4] = object.shake.path:CreateControlPoint()
-		object.shake.path[5] = object.shake.path:CreateControlPoint()
-		object.shake.path[6] = object.shake.path:CreateControlPoint()
-
-		object.shake.path:SetDuration(0.7)
-		object.shake.path[1]:SetOffset(random(-9, 7), random(-7, 12))
-		object.shake.path[1]:SetOrder(1)
-		object.shake.path[2]:SetOffset(random(-5, 9), random(-9, 5))
-		object.shake.path[2]:SetOrder(2)
-		object.shake.path[3]:SetOffset(random(-5, 7), random(-7, 5))
-		object.shake.path[3]:SetOrder(3)
-		object.shake.path[4]:SetOffset(random(-9, 9), random(-9, 9))
-		object.shake.path[4]:SetOrder(4)
-		object.shake.path[5]:SetOffset(random(-5, 7), random(-7, 5))
-		object.shake.path[5]:SetOrder(5)
-		object.shake.path[6]:SetOffset(random(-9, 7), random(-9, 5))
-		object.shake.path[6]:SetOrder(6)
-	elseif type == 'Shake_Horizontal' then
-		object.shakeh = object:CreateAnimationGroup("ShakeH")
-		object.shakeh:SetLooping("REPEAT")
-		object.shakeh.path = object.shakeh:CreateAnimation("Path")
-		object.shakeh.path[1] = object.shakeh.path:CreateControlPoint()
-		object.shakeh.path[2] = object.shakeh.path:CreateControlPoint()
-		object.shakeh.path[3] = object.shakeh.path:CreateControlPoint()
-		object.shakeh.path[4] = object.shakeh.path:CreateControlPoint()
-		object.shakeh.path[5] = object.shakeh.path:CreateControlPoint()
-		object.shakeh.path[6] = object.shakeh.path:CreateControlPoint()
-
-		object.shakeh.path:SetDuration(2)
-		object.shakeh.path[1]:SetOffset(-5, 0)
-		object.shakeh.path[1]:SetOrder(1)
-		object.shakeh.path[2]:SetOffset(5, 0)
-		object.shakeh.path[2]:SetOrder(2)
-		object.shakeh.path[3]:SetOffset(-2, 0)
-		object.shakeh.path[3]:SetOrder(3)
-		object.shakeh.path[4]:SetOffset(5, 0)
-		object.shakeh.path[4]:SetOrder(4)
-		object.shakeh.path[5]:SetOffset(-2, 0)
-		object.shakeh.path[5]:SetOrder(5)
-		object.shakeh.path[6]:SetOffset(5, 0)
-		object.shakeh.path[6]:SetOrder(6)
-	else
-		local x, y, duration, customName = ...
-		if not customName then
-			customName = 'anim'
-		end
-		object[customName] = object:CreateAnimationGroup("Move_In")
-		object[customName].in1 = object[customName]:CreateAnimation("Translation")
-		object[customName].in1:SetDuration(0)
-		object[customName].in1:SetOrder(1)
-		object[customName].in2 = object[customName]:CreateAnimation("Translation")
-		object[customName].in2:SetDuration(duration)
-		object[customName].in2:SetOrder(2)
-		object[customName].in2:SetSmoothing("OUT")
-		object[customName].out1 = object:CreateAnimationGroup("Move_Out")
-		object[customName].out2 = object[customName].out1:CreateAnimation("Translation")
-		object[customName].out2:SetDuration(duration)
-		object[customName].out2:SetOrder(1)
-		object[customName].out2:SetSmoothing("IN")
-		object[customName].in1:SetOffset( (x), (y))
-		object[customName].in2:SetOffset( (-x),(-y))
-		object[customName].out2:SetOffset((x), (y))
-		object[customName].out1:SetScript("OnFinished", function() object:Hide() end)
-	end
-end
- 
 local function Flash(object, duration, loop)
 	if not object.anim then
 		SetUpAnimGroup(object, loop and "FlashLoop" or 'Flash')
@@ -662,7 +558,7 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 					local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
 					local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. L["instead"].. locLink
 
-					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl then					
+					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and locitemRarity ~= 7 then					
 											
 						if InCombatLockdown() then
 							print( L["put on"] .. text)

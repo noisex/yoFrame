@@ -1,3 +1,15 @@
+local L, yo = unpack( select( 2, ...))
+
+yo.pType = {
+	MAGE 		= { powerID = 16,	powerType = 'ARCANE_CHARGES', 	spec = 1},
+	WARLOCK 	= { powerID = 7, 	powerType = 'SOUL_SHARDS'		},
+	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER', 		spec = 3},
+	ROGUE 		= { powerID = 4, 	powerType = 'COMBO_POINTS'		},
+	DRUID 		= { powerID = 4, 	powerType = 'COMBO_POINTS', 	},	--spec = 2},
+	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},	
+	MONK 		= { powerID = 12, 	powerType = 'CHI', 				spec = 3},
+}
+
 local function SpellName(id)
 	local name = GetSpellInfo(id)
 	if name then
@@ -57,6 +69,7 @@ DebuffWhiteList = {
 	[SpellName(6770)] = true,	-- Sap
 	[SpellName(2094)] = true,	-- Blind
 	[SpellName(1776)] = true,	-- Gouge
+	[SpellName(195452)] = true,		 -- Nightblade 
 	-- Shaman
 	[SpellName(51514)] = true,	-- Hex
 	[SpellName(3600)] = true,	-- Earthbind
@@ -154,6 +167,39 @@ BuffWhiteList = {	-- ElvUI
 }
 
 PlayerBuffWhiteList = {
+	--Consumables
+		[SpellName(251231)] = true, -- Steelskin Potion (BfA Armor)
+		[SpellName(251316)] = true, -- Potion of Bursting Blood (BfA Melee)
+		[SpellName(269853)] = true, -- Potion of Rising Death (BfA Caster)
+		[SpellName(279151)] = true, -- Battle Potion of Intellect (BfA Intellect)
+		[SpellName(279152)] = true, -- Battle Potion of Agility (BfA Agility)
+		[SpellName(279153)] = true, -- Battle Potion of Strength (BfA Strength)
+		[SpellName(178207)] = true, -- Drums of Fury
+		[SpellName(230935)] = true, -- Drums of the Mountain (Legion)
+		[SpellName(256740)] = true, -- Drums of the Maelstrom (BfA)
+		[SpellName(188023)] = true, -- Мир духов
+		[SpellName(188024)] = true, -- зелье-небесной-поступи
+		[SpellName(188021)] = true, -- эликсир-лавины
+		[SpellName(126389)] = true, -- гоблинский-планер
+		[SpellName(250878)] = true, -- зелье-легкой-поступи
+		[SpellName(251143)] = true, -- зелье-морских-туманов
+		[SpellName(250873)] = true, -- невидимость
+		[SpellName(250956)] = true, -- зелье-сокрытия
+	-- BLs
+		[SpellName(31821)]  = true, -- Devotion Aura
+		[SpellName(2825)]   = true, -- Bloodlust
+		[SpellName(32182)]  = true, -- Heroism
+		[SpellName(80353)]  = true, -- Time Warp
+		[SpellName(90355)]  = true, -- Ancient Hysteria
+		[SpellName(47788)]  = true, -- Guardian Spirit
+		[SpellName(33206)]  = true, -- Pain Suppression
+		[SpellName(116849)] = true, -- Life Cocoon
+		[SpellName(22812)]  = true, -- Barkskin
+	-- Азерит
+		--[SpellName(273842)]  = true, -- Тайны глубин белая
+		--[SpellName(273843)]  = true, -- Тайны глубин черная
+		[SpellName(273406)]  = true, -- Гууун, темная сделка
+
 	--Death Knight
 		-- [SpellName(48707)]  = true, -- Anti-Magic Shell
 		-- [SpellName(81256)]  = true, -- Dancing Rune Weapon
@@ -437,38 +483,4 @@ PlayerBuffWhiteList = {
 		-- [SpellName(26297)] = true, -- Berserking
 		-- [SpellName(68992)] = true, -- Darkflight
 		-- [SpellName(58984)] = true, -- Shadowmeld
-	--Consumables
-		[SpellName(251231)] = true, -- Steelskin Potion (BfA Armor)
-		[SpellName(251316)] = true, -- Potion of Bursting Blood (BfA Melee)
-		[SpellName(269853)] = true, -- Potion of Rising Death (BfA Caster)
-		[SpellName(279151)] = true, -- Battle Potion of Intellect (BfA Intellect)
-		[SpellName(279152)] = true, -- Battle Potion of Agility (BfA Agility)
-		[SpellName(279153)] = true, -- Battle Potion of Strength (BfA Strength)
-		[SpellName(178207)] = true, -- Drums of Fury
-		[SpellName(230935)] = true, -- Drums of the Mountain (Legion)
-		[SpellName(256740)] = true, -- Drums of the Maelstrom (BfA)
-		[SpellName(188023)] = true, -- Мир духов
-		[SpellName(188024)] = true, -- зелье-небесной-поступи
-		[SpellName(188021)] = true, -- эликсир-лавины
-		[SpellName(126389)] = true, -- гоблинский-планер
-		[SpellName(250878)] = true, -- зелье-легкой-поступи
-		[SpellName(251143)] = true, -- зелье-морских-туманов
-		[SpellName(250873)] = true, -- невидимость
-		[SpellName(250956)] = true, -- зелье-сокрытия
-	-- BLs
-		[SpellName(31821)]  = true, -- Devotion Aura
-		[SpellName(2825)]   = true, -- Bloodlust
-		[SpellName(32182)]  = true, -- Heroism
-		[SpellName(80353)]  = true, -- Time Warp
-		[SpellName(90355)]  = true, -- Ancient Hysteria
-		[SpellName(47788)]  = true, -- Guardian Spirit
-		[SpellName(33206)]  = true, -- Pain Suppression
-		[SpellName(116849)] = true, -- Life Cocoon
-		[SpellName(22812)]  = true, -- Barkskin
-	-- Азерит
-		--[SpellName(273842)]  = true, -- Тайны глубин белая
-		--[SpellName(273843)]  = true, -- Тайны глубин черная
-
-		[SpellName(273406)]  = true, -- Гууун, темная сделка
-		
 } 

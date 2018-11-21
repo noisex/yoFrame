@@ -84,6 +84,7 @@ Addons\Fliger.lua
 Addons\FogOfWar.lua
 Addons\Experience.lua
 Addons\Loot.lua
+Addons\Mail.lua
 Addons\MiniMapIcon.lua
 Addons\MiniMap.lua
 Addons\Mirror.lua

@@ -75,21 +75,21 @@ local UnitSpecific = {
     end,
 }
 
-SpawnMenu = function(self)
-	local unit = self.unit:gsub("(.)", string.upper, 1)
-	if unit == "Targettarget" or unit == "focustarget" or unit == "pettarget" then return end
+--SpawnMenu = function(self)
+--	local unit = self.unit:gsub("(.)", string.upper, 1)
+--	if unit == "Targettarget" or unit == "focustarget" or unit == "pettarget" then return end
 
-	if _G[unit.."FrameDropDown"] then
-		ToggleDropDownMenu(nil, nil, _G[unit.."FrameDropDown"], "cursor")
-	elseif self.unit:match("party") then
-		ToggleDropDownMenu(nil, nil, _G["PartyMemberFrame"..self.id.."DropDown"], "cursor")
-	else
-		FriendsDropDown.unit = self.unit
-		FriendsDropDown.id = self.id
-		FriendsDropDown.initialize = RaidFrameDropDown_Initialize
-		ToggleDropDownMenu(nil, nil, FriendsDropDown, "cursor")
-	end
-end
+--	if _G[unit.."FrameDropDown"] then
+--		ToggleDropDownMenu(nil, nil, _G[unit.."FrameDropDown"], "cursor")
+--	elseif self.unit:match("party") then
+--		ToggleDropDownMenu(nil, nil, _G["PartyMemberFrame"..self.id.."DropDown"], "cursor")
+--	else
+--		FriendsDropDown.unit = self.unit
+--		FriendsDropDown.id = self.id
+--		FriendsDropDown.initialize = RaidFrameDropDown_Initialize
+--		ToggleDropDownMenu(nil, nil, FriendsDropDown, "cursor")
+--	end
+--end
 
 function OnChangeTarget( self)	
 	--if(unit ~= self.unit) then return end
@@ -179,6 +179,7 @@ local Shared = function(self, unit)
 	local posDead 		= {"TOPRIGHT", self, "TOPRIGHT", -2, -1}
 	local posLFD 		= {"RIGHT", self, "RIGHT", -1, -1}
 	local posAuras		= {'LEFT', self, 'RIGHT', 12, 0}
+	local posRCheck		= {'RIGHT', self, 'RIGHT', -15, 0}
 	local sizeInfoFont 	= fontsize	
 	local sizeLFDFont 	= fontsize - 1
 	local sizeDeadFont 	= fontsize - 1
@@ -201,6 +202,7 @@ local Shared = function(self, unit)
 		posInfo			= {"LEFT", self, "RIGHT", 12, 0}
 		posDead 		= {"RIGHT", self, "RIGHT", -8, 1}
 		posLFD			= {"RIGHT", self, "RIGHT", -1, 0}
+		posRCheck		= {'RIGHT', self, 'RIGHT', -25, 0}
 		sizeInfoFont 	= fontsize + 2
 		sizeLFDFont 	= fontsize - 3	
 		sizeRTarget		= 12	
@@ -419,7 +421,7 @@ local Shared = function(self, unit)
 
     	local ReadyCheckIndicator = self.Overlay:CreateTexture(nil, 'BORDER')
     	ReadyCheckIndicator:SetSize(16, 16)
-    	ReadyCheckIndicator:SetPoint('RIGHT', self, 'RIGHT', -15, 0)
+    	ReadyCheckIndicator:SetPoint( unpack( posRCheck))
     	self.ReadyCheckIndicator = ReadyCheckIndicator
 		self.ReadyCheckIndicator.finishedTime = 5
 
@@ -451,13 +453,14 @@ local Shared = function(self, unit)
 		self.Debuffs.CustomFilter = CustomFilter
 
 		self.Debuffs.PostCreateIcon = function( self, button)
-			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
+			--button:SetAlpha( 1)
+			--button:EnableMouse(false)
 			--button.icon:SetDesaturated( true)
+			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)			
 			button.count:SetFont( fontpx, self:GetHeight() / 1.5, 'OUTLINE')
 			button.count:ClearAllPoints()
 			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
-			button.count:SetTextColor( 0, 1, 0)
-			button:SetAlpha( 1)
+			button.count:SetTextColor( 0, 1, 0)			
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
 			CreateStyle( button, 3)
@@ -533,7 +536,7 @@ local Shared = function(self, unit)
 	end
 
 
-	self:SetAttribute("unit", "player")
+	--self:SetAttribute("unit", "player") ------------------!!!!!!!!!!!!!!!!!!
 	
 	if yo.healBotka.enable then
 
@@ -561,7 +564,7 @@ local Shared = function(self, unit)
 		self:SetAttribute("type-whell1", "macro")
 		self:SetAttribute("macrotext-whell1", "/cast [@mouseover] Буйный рост")
 	else
-		self.menu = SpawnMenu
+		--self.menu = SpawnMenu
 		self:SetScript("OnEnter", OnEnter)
 		self:SetScript("OnLeave", OnLeave)
 	end

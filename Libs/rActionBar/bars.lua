@@ -90,15 +90,13 @@ function rActionBar:CreateActionBar1(addonName,cfg)
   RegisterStateDriver(frame, "page", cfg.actionPage)
 end
 
---Bar2   	E.db["actionbar"]["bar2"]["visibility"] = "[vehicleui][overridebar][petbattle][possessbar] hide; show"
-
 --Bar2
 function rActionBar:CreateActionBar2(addonName,cfg)
   cfg.blizzardBar = MultiBarBottomLeft
   cfg.frameName = addonName.."Bar2"
   cfg.frameParent = cfg.frameParent or UIParent
-  cfg.frameTemplate = "SecureHandlerStateTemplate"
-  cfg.frameVisibility = cfg.frameVisibility or "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"
+  cfg.frameTemplate = "SecureHandlerStateTemplate"  
+  cfg.frameVisibility = '[vehicleui] hide; [overridebar] hide; [petbattle] hide; show' --cfg.frameVisibility or  "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"
   local buttonName = "MultiBarBottomLeftButton"
   local numButtons = NUM_ACTIONBAR_BUTTONS
   local buttonList = L:GetButtonList(buttonName, numButtons)
@@ -112,7 +110,7 @@ function rActionBar:CreateActionBar3(addonName,cfg)
   cfg.pa3NumButtons = yo.ActionBar.panel3Nums
   cfg.frameParent = cfg.frameParent or UIParent
   cfg.frameTemplate = "SecureHandlerStateTemplate"
-  cfg.frameVisibility = cfg.frameVisibility or "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"
+  cfg.frameVisibility = '[vehicleui] hide; [overridebar] hide; [petbattle] hide; show' --cfg.frameVisibility or "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"
   local buttonName = "MultiBarBottomRightButton"
   local numButtons = NUM_ACTIONBAR_BUTTONS
   local buttonList = L:GetButtonList(buttonName, numButtons)

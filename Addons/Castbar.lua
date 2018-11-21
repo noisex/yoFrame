@@ -58,6 +58,8 @@ local function UnitColors( f)
 end
 
 local function TimerUpdate( f)
+	if f.spellDelay ~= yo.General.spellDelay then UnitColors( f)	end
+
 	local now = GetTime()
 	
 	if f.reversed then
@@ -79,7 +81,7 @@ local function stopCast( f, unit, ...)
 		f.ibg:Hide()
 	end
 	f.spark:Hide()
-	f:SetValue( f.reversed and 0 or (( f.endTime or GetTime()) - f.startTime))
+	f:SetValue( f.reversed and 0 or ( f.endTime or GetTime()))	-- - f.startTime))
 	f.endTime = GetTime()	
 	f:SetScript('OnUpdate', FadingOut)
 end
@@ -147,7 +149,8 @@ local function startCast( f, unit, ...)
 	f.spellID = spellID
 	f.endTime = endTime/1000
 	f.startTime = startTime/1000
-		
+	f.spellDelay = yo.General.spellDelay
+
 	f:SetMinMaxValues(0, f.endTime - f.startTime)
 	if f.unit ~= "focus" then
 		f.nameText:SetText( utf8sub( name, f:GetWidth() / 10, true))

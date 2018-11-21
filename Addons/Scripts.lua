@@ -830,5 +830,3 @@ strip.model = DressUpModel
 function GameTooltipOnLeave()
 	GameTooltip:Hide() 
 end
-
-

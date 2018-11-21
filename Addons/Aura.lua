@@ -84,9 +84,11 @@ local function AuraUpdate( f, lastID, filter)
 				else --if( not UnitPlayerControlled(unit)) then
 					f[lastID].icon:SetDesaturated(true)  
 				end
-			elseif( unit == "player") then	
-				_G["DebuffButton" .. lastID .. "Border"]:SetTexture( nil)
-				_G["DebuffButton" .. lastID .. "Border"]:Hide( )
+			elseif( unit == "player") then
+				if _G["DebuffButton" .. lastID .. "Border"] then
+					_G["DebuffButton" .. lastID .. "Border"]:SetTexture( nil)
+					_G["DebuffButton" .. lastID .. "Border"]:Hide( )
+				end
 			end
 						
 			if duration and (duration > 0) then

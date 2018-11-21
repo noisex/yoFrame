@@ -388,16 +388,17 @@ bars:SetScript("OnEvent", function(self, event)
 			["buttonMargin"] 	= yo.ActionBar.buttonSpace,
 			["numCols"] 		= 12,
 			["startPoint"] 		= "TOPLEFT", --, TOPRIGHT, BOTTOMRIGHT, BOTTOMLEFT)
-			["fader"] 			= nil, --type:TABLE, description: rLib faderConfig, check rLib API for definition
+			["fader"] 			= nil, --type:TABLE, description: rLib faderConfig, check rLib API for definition			
+			["frameVisibility"] = nil,
 			--["frameVisibility"] = (OPTIONAL), type:STRING, description: visibility state handler. define your own or let rActionBar use the default one.
 			--["actionPage"] = (OPTIONAL), type:STRING, description: onstate-page handler. define your own or let rActionBar use the default one. Actionbar1 only.
 		} 
 
 		cfg = defaultcfg
-
 		cfg.framePoint	= { "CENTER", yo_MoveABar1, "CENTER", 0, 0}
 		rActionBar:CreateActionBar1( "yoFrame", cfg)
-		
+
+		cfg = defaultcfg		
 		cfg.framePoint = { "CENTER", yo_MoveABar2, "CENTER", 0, 0}
 		rActionBar:CreateActionBar2( "yoFrame", cfg)
 
@@ -497,4 +498,11 @@ bars:SetScript("OnEvent", function(self, event)
 			ActionButton_ShowGrid(button)
 		end
 	end
+
+	ZoneAbilityFrame:SetParent(UIParent)
+	ZoneAbilityFrame:SetScale( 0.6)
+	ZoneAbilityFrame:ClearAllPoints()
+	ZoneAbilityFrame:SetPoint('LEFT', LeftDataPanel, 'RIGHT', 170, 20)
+	--DraenorZoneAbilityFrame:SetScript("OnShow", DraenorZoneAbilityFrame.Hide)
+	ZoneAbilityFrame.ignoreFramePositionManager = true
 end)
