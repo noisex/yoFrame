@@ -12,7 +12,6 @@ end
 
 local function pwUpdate( self, powerID)
 	local unitPower = UnitPower( "player", powerID)
-	local charges 	= UnitPower( "player", powerID);
 
 	for i = 1, min( unitPower, #self) do
 		if not self[i].on then
@@ -25,7 +24,7 @@ local function pwUpdate( self, powerID)
 		end
 	end
 		
-	if charges == self.idx then
+	if unitPower == self.idx and myClass ~= "DEATHKNIGHT" then
 		self.shadow:SetBackdropBorderColor( self:GetParent().colr, self:GetParent().colg, self:GetParent().colb, 0.4)
 	else
 		self.shadow:SetBackdropBorderColor( 0, 0, 0, 1)
@@ -73,8 +72,9 @@ end
 local function OnEvent( self, event, unit, pToken, ...)
 	--print( event, " ptoken: ", pToken, " Type: ", pType[myClass].powerID)
 	
-	if event == "RUNE_POWER_UPDATE" then
-		for i = 1, 6 do
+	if event == "RUNE_POWER_UPDATE" then		
+
+		for i = 1, self.idx do
 			local start, duration, runeReady = GetRuneCooldown( i)
 			--print( start, runeReady, i)
 			if runeReady then
@@ -95,6 +95,8 @@ local function OnEvent( self, event, unit, pToken, ...)
 					self.mini = value
 				end)
 			end
+
+			--self.shadow:SetBackdropBorderColor( 0, 0, 0, 1)
 		end
 		
 	elseif event == "UNIT_MAXPOWER" or event == "ACTIVE_TALENT_GROUP_CHANGED" then

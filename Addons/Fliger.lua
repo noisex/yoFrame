@@ -228,6 +228,10 @@ local function OnEvent( self, event, ...)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
 		if not yo.fliger.enable then return end
+
+		MakeFligerFrame( self)
+		CheckTemplates( myClass, GetSpecialization())
+		
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterUnitEvent("UNIT_AURA", "player", "target")
 		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
@@ -237,9 +241,6 @@ local function OnEvent( self, event, ...)
 			lib:RegisterCallback("stop", function(id, class, watched) UpdatePCD( watched) end)
 		end				
 		
-		MakeFligerFrame( self)
-		CheckTemplates( myClass, GetSpecialization())
-
 	elseif event == "UNIT_AURA" then
 		UpdateAura( self, ...)
 	elseif event == "PLAYER_TARGET_CHANGED" then

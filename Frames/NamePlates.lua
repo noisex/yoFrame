@@ -712,7 +712,24 @@ local function ClearCPoints( self)
 	end
 end
 
-function UpdateUnitPower( self)
+local function UpdateRunes( self)
+	for i = 1, 6 do
+		local start, duration, runeReady = GetRuneCooldown( i)
+		if not runeReady then
+			self:TurnOff(self.cPoints[i], self.cPoints[i].Point, 0);
+		else --if start then
+			self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1);
+		end
+	end		
+end
+
+function UpdateUnitPower( self)	
+	
+	if myClass == "DEATHKNIGHT" then
+		UpdateRunes( self)
+		return
+	end
+
 	local charges = UnitPower("player", self.powerID);
 	local showFX = charges == self.maxComboPoints and true or false
 
@@ -755,14 +772,7 @@ local function OnCPEvent( self, event, unit, powerType)
         end			
 
 	elseif myClass == "DEATHKNIGHT" then
-		for i = 1, 6 do
-			local start, duration, runeReady = GetRuneCooldown( i)
-			if not runeReady then
-				self:TurnOff(self.cPoints[i], self.cPoints[i].Point, 0);
-			else --if start then
-				self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1);
-			end
-		end	
+		UpdateRunes( self)
 	else
 		UpdateUnitPower( self)
 	end
@@ -1024,7 +1034,7 @@ local function OnNamePlateCreated( frame)
 
 	if yo.NamePlates.showResourses then
 		f.classPower = CreateFrame("Frame", nil, f) 
-		f.classPower:SetPoint("CENTER", f.healthBar, "BOTTOM", 0, -3)
+		f.classPower:SetPoint("CENTER", f.healthBar, "BOTTOM", 0, 0)
 		f.classPower:SetSize(60, 13)
 		f.classPower:SetFrameStrata("MEDIUM")
 		f.classPower:SetFrameLevel(100)

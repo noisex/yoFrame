@@ -2,7 +2,7 @@ local L, yo = unpack( select( 2, ...))
 
 local errorTicker
 
-local function unitPVP( f, unit)
+function unitPVP( f, unit)
 
 	local status
 	local element = f.pvpIcon

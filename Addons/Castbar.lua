@@ -21,7 +21,7 @@ local function FadingOut( f)
 	end
 end
 
-function spellDelay()
+function spellDelay( self)
 	for spellID, _ in pairs( interupt_spells) do
 		local _, duration = GetSpellCooldown( spellID)
 		if duration ~= 0 then
@@ -462,4 +462,30 @@ logan:SetScript("OnEvent", function(self, event)
 		cfg.unit	= "boss"..i
 		CreateCastBar( bFrame, cfg)
 	end
+end)
+
+ PetCastingBarFrame:HookScript( "OnShow", function(self, ...)
+	if not self.shadow and UnitControllingVehicle("player") then	
+		self.Flash:SetTexture(nil)
+		self.Border:SetTexture(nil)
+		self.BorderShield:SetTexture(nil)
+
+		self:SetWidth( 300)
+		self:SetHeight( 22)
+		self:SetStatusBarTexture( texture)
+		self:ClearAllPoints()
+		self:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 100)
+
+		self.Icon:SetSize( self:GetHeight(), self:GetHeight())
+		self.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+
+		self.Text:SetFont( font, 11, "OUTLINE")
+		self.Text:ClearAllPoints()
+		self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	
+		CreateStyle( self, 4)
+	end
+
+	self.Text:SetTextColor(myColor.r, myColor.g, myColor.b)
+	self:SetStatusBarColor(myColor.r, myColor.g, myColor.b)
 end)

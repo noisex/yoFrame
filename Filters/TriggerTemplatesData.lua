@@ -147,19 +147,22 @@ generalAzeriteTraits = {
   { spell = 281843, type = "buff", unit = "player"}, --Tradewinds
   { spell = 280709, type = "buff", unit = "player"}, --Archive of the Titans
   { spell = 280573, type = "buff", unit = "player"}, --Reorigination Array
-}
+
+  { spell = 280713, type = "buff", unit = "player"}, --
+  { spell = 268604, type = "buff", unit = "player"}, --
+--}
 
 --local pvpAzeriteTraits = {
---  { spell = 280876, type = "buff", unit = "player"}, --Anduin's Dedication
---  { spell = 280809, type = "buff", unit = "player"}, --Sylvanas' Resolve
---  { spell = 280855, type = "debuff", unit = "target"}, --Battlefield Precision
---  { spell = 280817, type = "debuff", unit = "target"}, --Battlefield Focus
---  { spell = 280858, type = "buff", unit = "player"}, --Stand As One
---  { spell = 280830, type = "buff", unit = "player"}, --Liberator's Might
---  { spell = 280780, type = "buff", unit = "player"}, --Glory in Battle
---  { spell = 280861, type = "buff", unit = "player"}, --Last Gift
---  { spell = 280787, type = "buff", unit = "player"}, --Retaliatory Fury
---}
+  { spell = 280876, type = "buff", unit = "player"}, --Anduin's Dedication
+  { spell = 280809, type = "buff", unit = "player"}, --Sylvanas' Resolve
+  { spell = 280855, type = "debuff", unit = "target"}, --Battlefield Precision
+  { spell = 280817, type = "debuff", unit = "target"}, --Battlefield Focus
+  { spell = 280858, type = "buff", unit = "player"}, --Stand As One
+  { spell = 280830, type = "buff", unit = "player"}, --Liberator's Might
+  { spell = 280780, type = "buff", unit = "player"}, --Glory in Battle
+  { spell = 280861, type = "buff", unit = "player"}, --Last Gift
+  { spell = 280787, type = "buff", unit = "player"}, --Retaliatory Fury
+}
 
 -- Collected by WeakAurasTemplateCollector:
 

@@ -370,6 +370,18 @@ function SecondsToClock(seconds, noSec, noMin)
   end
 end
 
+function timeFormat(seconds)
+	local hours = floor(seconds / 3600)
+	local minutes = floor((seconds / 60) - (hours * 60))
+	seconds = seconds - hours * 3600 - minutes * 60
+
+	if hours == 0 then
+		return format("%d:%.2d", minutes, seconds)
+	else
+		return format("%d:%.2d:%.2d", hours, minutes, seconds)
+	end
+end
+
 function timeFormatMS(timeAmount)
 	local seconds = floor(timeAmount / 1000)
 	local ms = timeAmount - seconds * 1000

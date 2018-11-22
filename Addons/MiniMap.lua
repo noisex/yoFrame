@@ -1,12 +1,6 @@
 local L, yo = unpack( select( 2, ...))
 
---print(yo.Addons.MiniMapHideText)
---local A, L = ...
-
---L.addonName       = A
---L.dragFrames      = {}
---L.addonColor      = "00FFAA00"
---L.addonShortcut   = "rmm"
+local tick, ptick = 1, 0
 
 local cfg = {
   	scale = 1,
@@ -133,7 +127,7 @@ local function MiniInit()
 
 	--mail
 	MiniMapMailFrame:ClearAllPoints()
-	MiniMapMailFrame:SetPoint("BOTTOMRIGHT",Minimap,-0,0)
+	MiniMapMailFrame:SetPoint("BOTTOMRIGHT",Minimap, -0, -3)
 	MiniMapMailIcon:SetTexture(mediapath.."mail")
 	MiniMapMailBorder:SetTexture("Interface\\Calendar\\EventNotificationGlow")
 	MiniMapMailBorder:SetBlendMode("ADD")
@@ -194,6 +188,35 @@ local function MiniInit()
 	Hide( Minimap)
 end
 
+local function pvpTimer( self, elapsed)
+	ptick = ptick + elapsed
+	if ptick < 1 then return end
+	ptick = 0
+
+	if not self.pvpText then
+		self.pvpIcon = self:CreateTexture(nil, "OVERLAY")
+		self.pvpIcon:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
+		self.pvpIcon:SetTexture("texture")
+		self.pvpIcon:SetSize(22, 22)
+		unitPVP( self, "player")
+
+		self.pvpText = self:CreateFontString(nil, "OVERLAY")
+		self.pvpText:SetFont( font, fontsize  +3, "OUTLINE")
+		self.pvpText:SetPoint("RIGHT", self.pvpIcon, "LEFT", 0, 1)
+		self.pvpText:SetTextColor(1, .4, 0, 1)
+	end
+
+	if IsPVPTimerRunning() then
+		self.pvpIcon:Show()
+		self.pvpText:Show()
+		self.pvpText:SetText( timeFormat( GetPVPTimer() /1000))
+	else
+		self.pvpIcon:Hide()
+		self.pvpText:Hide()
+		self:SetScript("OnUpdate", nil)
+	end	
+end
+
 local function CalendarPend( self, event, ...)
 	--local pend = C_Calendar.GetNumPendingInvites()
 
@@ -222,12 +245,20 @@ local function CalendarPend( self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		MiniInit()
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		if IsPVPTimerRunning() then			
+			self:SetScript("OnUpdate", pvpTimer)
+		end	
 
 	elseif event == "CALENDAR_EVENT_ALARM" then
 		local title, hour, minute = ...;
 		local info = ChatTypeInfo["SYSTEM"];
 		DEFAULT_CHAT_FRAME:AddMessage(format(CALENDAR_EVENT_ALARM_MESSAGE, title), info.r, info.g, info.b, info.id);
 		UIFrameFlash(GameTimeCalendarEventAlarmTexture, 1.0, 1.0, 6);
+	
+	elseif event == "PLAYER_FLAGS_CHANGED" then
+		if IsPVPTimerRunning() then
+			self:SetScript("OnUpdate", pvpTimer)
+		end	
 	else
 		print("|cffff0000Debug event: |r", event, ... )
 	end	
@@ -243,6 +274,7 @@ local calevent = CreateFrame("Frame", nil, Minimap)
 calevent:RegisterEvent("CALENDAR_EVENT_ALARM")
 calevent:RegisterEvent("PLAYER_ENTERING_WORLD")
 calevent:RegisterEvent("MINIMAP_PING")
+calevent:RegisterEvent("PLAYER_FLAGS_CHANGED")
 calevent:SetScript("OnEvent", CalendarPend)
 
 function HidePing(...)
@@ -252,12 +284,9 @@ end
 ----------------------------------------------------------------------------------------
 --	Creating Coordinate 
 ----------------------------------------------------------------------------------------
-local tick = 0
-
 local function coordUpdate( self, elapsed)
 	tick  = tick + elapsed
 	if tick >= 1 then
-	
 		if not yo.Addons.MiniMapCoord then
 			self:SetScript("OnUpdate", nil)
 			self.MiniMapText:SetText("")
@@ -288,12 +317,12 @@ local function coordUpdate( self, elapsed)
 	end
 end
 
-local coordFrame = CreateFrame( "Frame", nil)
-coordFrame.MiniMapText = coordFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal"	)
+local coordFrame = CreateFrame( "Frame", nil, UIParent)
+coordFrame.MiniMapText = coordFrame:CreateFontString(nil, "OVERLAY")
+coordFrame.MiniMapText:SetFont( font, fontsize)
 coordFrame.MiniMapText:SetJustifyH("LEFT")
-coordFrame.MiniMapText:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, 10)
+coordFrame.MiniMapText:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, 15)
 coordFrame.MiniMapText:SetText("0, 0")
-coordFrame.MiniMapText:SetFont( font, fontsize - 4)
 coordFrame.MiniMapText:SetTextColor( 0.7, 0.7, 0.7)
 coordFrame:SetScript("OnUpdate",coordUpdate)
 
@@ -306,7 +335,7 @@ coords.PlayerText:SetPoint("BOTTOM", WorldMapFrame.ScrollContainer, "BOTTOM", 0,
 coords.PlayerText:SetJustifyH("LEFT")
 coords.PlayerText:SetText(UnitName("player")..": 0,0")
 
-coords.MouseText = coords:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+coords.MouseText = coords:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 coords.MouseText:SetJustifyH("LEFT")
 coords.MouseText:SetPoint("BOTTOMLEFT", coords.PlayerText, "TOPLEFT", 0, 5)
 coords.MouseText:SetText(L["MAP_CURSOR"]..": 0,0")
