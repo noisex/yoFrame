@@ -45,7 +45,7 @@ yo["Bags"] = {
 	["ladyMod"]				= true,
 	["ladyModShift"]		= false,
 	["showAltBags"]			= true,
-	["showGuilBank"]		= false,
+	["showGuilBank"]		= true,
 	["countAltBags"]		= true,
 }			
 yo["Addons"] = {

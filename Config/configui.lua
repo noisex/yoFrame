@@ -301,7 +301,7 @@ function InitOptions()
 					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
 					showAltBags		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full",},
 					countAltBags	= {	order = 42, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
-					showGuilBank	= {	order = 44, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full", disabled = true},
+					showGuilBank	= {	order = 44, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
 					ResetConfig 	= {	order = 99, type = "execute", confirm  = true, width = 1,	name = L["ResetBB"], desc = L["RESET_BB_DESC"], func = function() yo_BB = nil yo_BBCount = nil ReloadUI() end, },	
 				},
 			},

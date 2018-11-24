@@ -12,17 +12,7 @@ local bankas = {
 	["bags"] = {0, 1, 2, 3, 4},
 	["bank"] = {-1, 5, 6, 7, 8, 9, 10, 11},
 	["regs"] = {-3},
-}
---bankas[1] = {0, 1, 2, 3, 4}
---bankas[2] = {-1, 5, 6, 7, 8, 9, 10, 11} 
---bankas[3] = {-3}
-
-local menuFrame = CreateFrame("Frame", "GuildRightClickMenu", UIParent, "UIDropDownMenuTemplate")
-local menuList = {
-	{ text = BAGSLOT, isTitle = true, notCheckable=true}
-	--{ text = "REAGENTSLOT", notCheckable=true},
-	--{ text = INVITE, notCheckable=true,},
-	--{ text = CHAT_MSG_WHISPER_INFORM, notCheckable=true,}
+	["gbank"]= {1}, 	--, 2, 3, 4, 5, 6, 7, 8},
 }
 
 local function OnEnter( self)
@@ -30,6 +20,10 @@ local function OnEnter( self)
 	if self.link then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 		GameTooltip:SetHyperlink( self.link)
+		GameTooltip:Show()
+	elseif self.text then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:AddLine(self.text)
 		GameTooltip:Show()
 	end
 end
@@ -66,10 +60,6 @@ local function CreateteItemIcon( self, stolb, stroka, buttonSize, buttonSpacing)
 	icon.level:SetFont( font, fontsize, "OUTLINE")
 	icon.level:SetTextColor(1, 0.75, 0)
 	icon.level:SetPoint("TOP", icon, "TOP", 0, -2)
-
-	--local x = ( buttonSize + buttonSpacing) * ( stolb) + 10
-	--local y = ( buttonSize + buttonSpacing) * ( stroka) + 25
-	--icon:SetPoint("TOPLEFT", self, "TOPLEFT", x, -y)
 
 	CreateStyle( icon, 4)
 
@@ -110,16 +100,13 @@ local function GetMaxSlots( self, name, bank)
 	local numSlots = 0	
 	
 	--tprint( bankas[bank])
-	for k, bagID in pairs( bankas[bank]) do
-		
+	for k, bagID in pairs( bankas[bank]) do		
 		if yo_BB[myRealm][name] and yo_BB[myRealm][name][bagID] and yo_BB[myRealm][name][bagID][0] then
 			--print( k, v, yo_BB[myRealm][name][v][0])
 			numSlots  = numSlots + yo_BB[myRealm][name][bagID][0]
 		end
 	end
-
 	--print(self, name, bank, numSlots)
-
 	if numSlots == 0 then
 		print( "|cffff0000ERROR, NO DATA FOUND!|cffffff00 Pls, refresh bags and bank for this character...|r")
 	end 
@@ -127,7 +114,7 @@ local function GetMaxSlots( self, name, bank)
 	return numSlots
 end
 
-local function CreateBag( self, name, bank)
+local function CreateBag( self, name, bank, gtab)
 	
 	if not self.bag then
 		self.bag = CreateFrame("Frame", nil, UIParent)
@@ -156,13 +143,54 @@ local function CreateBag( self, name, bank)
 	local buttonSpacing 		= yo.Bags.buttonSpacing
 	local containerWidth 		= yo.Bags.containerWidth
 	local numMaxRow 			= yo.Bags.numMaxRow
+	local maxSlots
+	local rows
+	local cols, bankList = {}, {}
 
 	local maxStolbs, numContainerRows, holderWidth = 0, 0, 0
-	local maxSlots = GetMaxSlots( self, name, bank)
 	
-	if maxSlots == 0 then return	end
+	if bank == "gbank" then
+		if not yo_BB[myRealm][name] then
+			print( "|cffff0000ERROR, NO DATA FOUND!|cffffff00 Please, refresh guildbank!|r")
+			return
+		elseif not yo_BB[myRealm][name][gtab][0] then
+			print( "|cffff0000ERROR, NO DATA FOUND!|cffffff00 Pls, refresh guildbank for this tab...|r")
+			return
+		end
 
-	local rows
+		containerWidth 	= 570
+		maxSlots = 98
+		cols.r = 1 cols.g = .75 cols.b = 0
+		bankList = { gtab}
+
+		if not self.bag.gtab then
+			self.bag.gtab = CreateFrame("Frame", nil, self.bag)
+			self.bag.gtab:SetPoint("TOPLEFT", self.bag, "TOPRIGHT", 5, 0)
+			self.bag.gtab:SetSize( buttonSize + buttonSpacing * 2, 30) 
+			CreateStyle( self.bag.gtab, 3)
+
+			self.bag.gtab.icons = {}
+			for k,v in pairs( yo_BB[myRealm][name]) do
+
+				self.bag.gtab.icons[k] = CreateteItemIcon( self.bag.gtab, 1, k, buttonSize, buttonSpacing)
+				self.bag.gtab.icons[k]:SetPoint("TOPLEFT", self.bag.gtab, "TOPLEFT", 7, -( buttonSize + 5) * ( k - 1) - 7)
+				self.bag.gtab.icons[k].icon:SetTexture( v.icon)
+				self.bag.gtab.icons[k].text = v.name
+				self.bag.gtab.icons[k]:SetScript("OnClick", function(self, ...)
+					CreateBag( yo_BBFrame, GetGuildInfo('player') .. '*', "gbank", k)
+				end)
+			end
+		end
+		self.bag.gtab:Show()
+	else
+		maxSlots = GetMaxSlots( self, name, bank)
+		cols = yo_AllData[myRealm][name].Color
+		bankList = bankas[bank]
+		if self.bag.gtab then self.bag.gtab:Hide() end
+	end
+	
+	if maxSlots == 0 then return end
+	
 	repeat
 		maxStolbs = floor(containerWidth / (buttonSize + buttonSpacing));
 		holderWidth = ((buttonSize + buttonSpacing) * maxStolbs) - buttonSpacing;
@@ -174,22 +202,25 @@ local function CreateBag( self, name, bank)
 		--print( rows, maxStolbs, containerWidth, holderWidth, containerWidth / (buttonSize + buttonSpacing))
 	until rows <= numMaxRow
 
-	local holderHeight = rows * ( buttonSize + buttonSpacing)
-	local cols = yo_AllData[myRealm][name].Color
+	local holderHeight = rows * ( buttonSize + buttonSpacing)	
 
 	self.bag.text:SetText( name)
 	self.bag.text:SetTextColor(cols.r, cols.g, cols.b)
 	self.bag:SetSize( holderWidth + 20, holderHeight + 35)
+	
+	if self.bag.gtab then 
+		self.bag.gtab:SetSize( buttonSize + buttonSpacing * 2, holderHeight + 35) 
+	end
 
-	local index = 0
+	local index = 0	
 	
 	local needReload = false
-	for i, bagID in pairs( bankas[bank]) do		
+	for i, bagID in pairs( bankList) do	
 
 		--print( name, bank, maxSlots, bagID)--, yo_BB[myRealm][name][bagID][0])
-		if yo_BB[myRealm][name][bagID] and yo_BB[myRealm][name][bagID][0]  > 0  then
+		if yo_BB[myRealm][name][bagID] and yo_BB[myRealm][name][bagID][0]  > 0 then
 		
-			local numSlots  = yo_BB[myRealm][name][bagID][0]
+			local numSlots = yo_BB[myRealm][name][bagID][0]
 		
 			for i = 1, numSlots do
 				local stroka = math.modf( index / maxStolbs)
@@ -272,10 +303,15 @@ local function CreateBag( self, name, bank)
 	end
 end
 
+local menuFrame = CreateFrame("Frame", "GuildRightClickMenu", UIParent, "UIDropDownMenuTemplate")
+local menuList = {
+	{ text = BAGSLOT, isTitle = true, notCheckable=true},	
+}
+
 function CreateBagIconButton( self, parent)
 	local parent = parent and parent or yo_BagsFrame.bagFrame 
 	local gender = { "", 'Male', 'Female'}
-	local RACE_ICON 		= '|TInterface\\CharacterFrame\\TEMPORARYPORTRAIT-%s-%s:24:24:-5:0|t'
+	--local RACE_ICON 		= '|TInterface\\CharacterFrame\\TEMPORARYPORTRAIT-%s-%s:24:24:-5:0|t'
 	local RACE_PORTRAITS 	= 'Interface\\CharacterFrame\\TEMPORARYPORTRAIT-%s-%s'
 	local RACE_TEMP			= 'Interface\\CharacterFrame\\TempPortrait'	
 
@@ -298,17 +334,24 @@ function CreateBagIconButton( self, parent)
 
 	self.bagButton:SetScript("OnEnter", function(self, ...)
 		local index = 2
+
+		if yo.Bags.showGuilBank then
+			menuList[index] = { text = "|cff00ff00Guild Bank|r", notCheckable=true, func = function() CreateBag( yo_BBFrame, GetGuildInfo('player') .. '*', "gbank", 1) end}
+			index = index + 1
+		end
+
 		for name, player in pairs( yo_BB[myRealm]) do
 			if not name:match( "*") then
-				local icon
+				local iconPers
 				if not gender[yo_AllData[myRealm][name].Sex] or not yo_AllData[myRealm][name].Race then
-					icon = RACE_TEMP
+					iconPers = RACE_TEMP
 				else
-					icon = format( RACE_ICON, gender[yo_AllData[myRealm][name].Sex], yo_AllData[myRealm][name].Race)
+					iconPers = format( RACE_PORTRAITS, gender[yo_AllData[myRealm][name].Sex], yo_AllData[myRealm][name].Race)
 				end
 
-				menuList[index] = {text = icon .. name, notCheckable=true, hasArrow = true, func = function() CreateBag( yo_BBFrame, name, "bags") end, 
+				menuList[index] = {text = "|T" .. iconPers .. ":24:24:-5:0|t" .. name, notCheckable=true, hasArrow = true, func = function() CreateBag( yo_BBFrame, name, "bags") end, 
 					menuList = {
+						{ text = name, icon = iconPers	, isTitle = true, notCheckable=true},
 						{ text = BAGSLOT, 		notCheckable=true, func = function() CreateBag( yo_BBFrame, name, "bags") end},
 						{ text = BANK, 			notCheckable=true, func = function() CreateBag( yo_BBFrame, name, "bank") end},
 						{ text = REAGENT_BANK,	notCheckable=true, func = function() CreateBag( yo_BBFrame, name, "regs") end},
@@ -375,7 +418,8 @@ end
 local function SaveGuilds( self)
 	local id = GetGuildInfo('player') .. '*'
 	local guild = yo_BB[myRealm][id] or {}
-	guild.faction = UnitFactionGroup('player') == 'Alliance'
+	--guild.faction = UnitFactionGroup('player') == 'Alliance'
+	guild.faction = nil
 
 	for i = 1, GetNumGuildBankTabs() do
 		guild[i] = guild[i] or {}
@@ -391,11 +435,12 @@ local function SaveGuilds( self)
 			local link = GetGuildBankItemLink(tab, i)
 			local _, count = GetGuildBankItemInfo(tab, i)
 
-			items[i] = ParseItem( link, count)
+			items[i] = ParseItem( link, count)			
 		end
+		items[0] = 98
 	end
 
-	yo_BB[myRealm][id] = guild
+	yo_BB[myRealm][id] = guild	 
 end
 
 local function OnEvent( self, event, change)
