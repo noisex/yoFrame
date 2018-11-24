@@ -167,7 +167,7 @@ function InitOptions()
 
 
 			Addons = {
-				order = 20,	name = L["Addons"].. L["NEW"], type = "group",				
+				order = 20,	name = L["Addons"], type = "group",				
 				get = function(info) return yo["Addons"][info[#info]] end,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 
 				args = {	
@@ -193,7 +193,7 @@ function InitOptions()
 						name = L["MiniMaps"],	type = "group",	order = 30,	inline = true,
 						args = {	
 							MiniMap 		= {	order = 1,  type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = 1},
-							MiniMapSize		= {	order = 2,	type = "range", 	name = function(info) return tr( info[#info]).. L["NEW"] end, min = 100, max = 250, step = 10,},
+							MiniMapSize		= {	order = 2,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 100, max = 250, step = 10,},
 							MMColectIcons 	= {	order = 5,  type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
 							MiniMapCoord 	= {	order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end,  },
 							MiniMapHideText = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["MMHIDE_DESC"],},
@@ -229,8 +229,8 @@ function InitOptions()
 					AutoSellGrayTrash 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["SALE_DESC"],},
 					AutoScreenOnLvlUpAndAchiv={ order = 3, type = "toggle",	name = function(info) return tr( info[#info]) end, 	},	
 					AutoInvaitFromFriends 	= {	order = 4, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},	
-					AutoInvite 				= {	order = 5, type = "toggle",	name = function(info) return tr( info[#info]) ..L["NEW"] end,  width = "full", desc = "инв inv byd штм 123"},
-					AutoLeader 				= {	order = 6, type = "toggle",	name = function(info) return tr( info[#info]) ..L["NEW"] end,  width = "full"},	
+					AutoInvite 				= {	order = 5, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full", desc = "инв inv byd штм 123"},
+					AutoLeader 				= {	order = 6, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},	
 					equipNewItem			= {	order = 7, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					equipNewItemLevel		= {	order = 8, type = "range",	name = function(info) return tr( info[#info]) end, 	min = 0, max = 800, step = 1,},
 
@@ -285,7 +285,7 @@ function InitOptions()
 			},
 		
 			Bags = {
-				order = 35,	name = L["Bags"], type = "group",				
+				order = 35,	name = L["Bags"] ..L["NEW"], type = "group",				
 				get = function(info) return yo["Bags"][info[#info]] end,
 				set = function(info,val) Setlers( "Bags#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
@@ -296,20 +296,24 @@ function InitOptions()
 					buttonSpacing 	= {	order = 7,	type = "range", name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,desc = L["DEFAULT"] .. 7,},
 					containerWidth 	= {	order = 8, type = "range", 	name = function(info) return tr( info[#info]) end, min = 350, max = 800, step = 1,	desc = L["DEFAULT"] .. 438,},
 					newIconAnimation= { order = 10, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", },
-					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info])  end, width = "full",},
-					ladyMod			= {	order = 32, type = "toggle",name = function(info) return tr( info[#info])  end,width = "full",},
-					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info])  end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
-					},
+					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full",},
+					ladyMod			= {	order = 32, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
+					showAltBags		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full",},
+					countAltBags	= {	order = 42, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
+					showGuilBank	= {	order = 44, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full", disabled = true},
+					ResetConfig 	= {	order = 99, type = "execute", confirm  = true, width = 1,	name = L["ResetBB"], desc = L["RESET_BB_DESC"], func = function() yo_BB = nil yo_BBCount = nil ReloadUI() end, },	
+				},
 			},
 
 			Raid = {
-				order = 40,	name = L["Raid"] .. L["NEW"],type = "group",				
+				order = 40,	name = L["Raid"],type = "group",				
 				get = function(info) return yo["Raid"][info[#info]] end,
 				set = function(info,val) Setlers( "Raid#" .. info[#info], val) end, 
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,	
 				args = {	
 					enable 			= {	order = 1,  type = "toggle", name = L["RAIDenable"], disabled = false,},
-					simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info])  .. L["NEW"] end,},		
+					simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info]) end,},		
 					classcolor 		= {	order = 10, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
 					groupingOrder 	= {	order = 15, type = "select", name = function(info) return tr( info[#info]) end,	values = {["ID"] = L["SRT_ID"], ["GROUP"] = L["SRT_GR"], ["TDH"] = L["SRT_TDH"], ["THD"] = L["SRT_THD"]},},
 					width 			= {	order = 20,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 60, max = 150, step = 1,},
@@ -330,12 +334,12 @@ function InitOptions()
 					--aurasRaid		= {	order = 92, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					aurasParty		= {	order = 94, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					debuffHight		= {	order = 96, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
-					filterHighLight	= {	order = 97, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, width = "full",},
+					filterHighLight	= {	order = 97, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					classBackground = {	order = 98, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
-					showMT 			= {	order =100, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, width = 1,},
-					showMTT 		= {	order =102, type = "toggle", name = function(info) return tr( info[#info]) .. L["NEW"] end, width = 1,},
-					heightMT		= {	order =104,	type = "range",  name = function(info) return tr( info[#info]) .. L["NEW"] end,	min = 20, max = 60, step = 1,},
-					widthMT			= {	order =106,	type = "range",  name = function(info) return tr( info[#info]) .. L["NEW"] end,	min = 80, max = 220, step = 1,},
+					showMT 			= {	order =100, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
+					showMTT 		= {	order =102, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
+					heightMT		= {	order =104,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 20, max = 60, step = 1,},
+					widthMT			= {	order =106,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 80, max = 220, step = 1,},
 					},
 			},
 
@@ -439,7 +443,7 @@ function InitOptions()
 			},	
 
 			Chat = {
-				order = 80,	name = L["Chat"] .. L["NEW"], type = "group",
+				order = 80,	name = L["Chat"], type = "group",
 				get = function(info) return yo["Chat"][info[#info]] end,
 				set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, 
 				args = {	
@@ -459,7 +463,7 @@ function InitOptions()
 						get = function(info) return yo["Chat"][info[#info]] end,
 						set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, },
 
-					chatFont 		= {	order = 4, type = "select", 	name = function(info) return tr( info[#info]) .. L["NEW"] end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
+					chatFont 		= {	order = 4, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
 						get = function(info) 
 							for k, val in pairs( LSM:List("font")) do
 								--print( k, val, yo["Chat"][info[#info]], LSM:Fetch("font", val))

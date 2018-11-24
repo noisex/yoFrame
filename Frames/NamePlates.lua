@@ -16,6 +16,15 @@ local castStop = aGlow.AutoCastGlow_Stop
 local buttonStart = aGlow.ButtonGlow_Start
 local buttonStop = aGlow.ButtonGlow_Stop
 
+yo.pType = {
+	MAGE 		= { powerID = 16,	powerType = 'ARCANE_CHARGES', 	spec = 1},
+	WARLOCK 	= { powerID = 7, 	powerType = 'SOUL_SHARDS'		},
+	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER', 		spec = 3},
+	ROGUE 		= { powerID = 4, 	powerType = 'COMBO_POINTS'		},
+	DRUID 		= { powerID = 4, 	powerType = 'COMBO_POINTS', 	},	--spec = 2},
+	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},	
+	MONK 		= { powerID = 12, 	powerType = 'CHI', 				spec = 3},
+}
 
 DebuffTypeColor.none = { r = 0.09, g = 0.09, b = 0.09}
 
@@ -1032,7 +1041,7 @@ local function OnNamePlateCreated( frame)
 	
 	f:EnableMouse(false)
 
-	if yo.NamePlates.showResourses then
+	if yo.NamePlates.showResourses and yo.pType[myClass] then
 		f.classPower = CreateFrame("Frame", nil, f) 
 		f.classPower:SetPoint("CENTER", f.healthBar, "BOTTOM", 0, 0)
 		f.classPower:SetSize(60, 13)
@@ -1197,7 +1206,7 @@ end
 
 local function OnNamePlateAdded(unit)
 	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
-	local unitFrame = namePlate.UnitFrame
+	local unitFrame = namePlate.UnitFrame	
 	SetUnit(unitFrame, unit)
 	UpdateAll(unitFrame)
 	unitFrame.tick = 1

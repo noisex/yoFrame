@@ -1379,14 +1379,34 @@ ShoppingTooltip2:HookScript("OnTooltipSetItem", UpdateTooltip)
 ----------------------------------------------------------------------------------------
 --	Item count in tooltip(by Tukz)
 ----------------------------------------------------------------------------------------
-GameTooltip:HookScript("OnTooltipCleared", function(self) self.UIItemTooltip = nil end)
-GameTooltip:HookScript("OnTooltipSetItem", function(self)
-	if UIItemTooltip and not self.UIItemTooltip and UIItemTooltip.count then
-		local _, link = self:GetItem()
-		local numTotal = GetItemCount(link, true)
-		local item_count, itemBank = "", ""
+local UIItemTooltipCount
+local gender = { 'Female', 'Male' }
+--GameTooltip:HookScript("OnTooltipCleared", function(self) 
+--	UIItemTooltipCount = nil 
+--	--print("WE EHEREEEEEE")
+--end)
+GameTooltip:HookScript("OnTooltipSetItem", function(self)	
+	local _, link = self:GetItem()
+	if true then --link ~= UIItemTooltipCount then
+		local numTotal = GetItemCount(link, true)		
 
-		if UIItemTooltip.count and numTotal > 1 then
+		local oneDate
+		if yo.Bags.showAltBags and yo.Bags.countAltBags then
+			for name, player in pairs( yo_BBCount[myRealm]) do
+				local _, itemID = strsplit(":", link)
+				itemID = tonumber(itemID)
+				if name ~= myName and player[itemID] then
+					if not oneDate then
+						self:AddLine(" ")
+						oneDate = true
+					end
+					self:AddDoubleLine( name, player[itemID], 1, 1, 0, 1, 1, 1)
+				end
+			end
+		end
+
+		if numTotal > 1 then
+			local item_count, itemBank = "", ""		
 			local numBag = GetItemCount(link, false)
 			local numBank = numTotal - numBag
 			local cY, cW = "|cffffff00", "|cffffffff"
@@ -1395,10 +1415,14 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 				itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
 			end
 			
-			item_count = cY .. L["TOTAL"] ..": ".. cW ..numTotal .. itemBank
-		end
-
-		self:AddLine(item_count)
-		self.UIItemTooltip = 1
+			--item_count = cY .. myName ..": ".. cW ..numTotal .. itemBank
+			if not oneDate then
+				self:AddLine(" ")
+				oneDate = true
+			end
+			self:AddDoubleLine( myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
+		end			
+		self:AddLine(" ")
+		--UIItemTooltipCount = link
 	end
 end)

@@ -496,9 +496,7 @@ end
 --end
 
 local function IsItemEligibleForItemLevelDisplay(classID, subClassID, equipLoc, rarity)
-	if ((classID == 3 and subClassID == 11) --Artifact Relics
-		or (equipLoc ~= nil and equipLoc ~= "" and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_QUIVER" and equipLoc ~= "INVTYPE_TABARD"))
-		and (rarity and rarity > 1) then
+	if (equipLoc ~= nil and equipLoc ~= "" and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_QUIVER" and equipLoc ~= "INVTYPE_TABARD")	and (rarity and rarity > 1) then
 
 		return true
 	end
@@ -532,6 +530,8 @@ local slotEquipType = {
 	--["INVTYPE_RANGEDRIGHT"]={18,},
 	--["INVTYPE_RELIC"]	=	{18,},
 }
+
+---------http://wowprogramming.com/docs/api/IsEquippedItemType.html
 
 local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)  --- C_NewItems_IsNewItem(bagID, slotID))
 	local ret = false
@@ -1801,7 +1801,7 @@ end)
 
 local needCloseBags = false
 local function checkToClose(...)
-	if addon.bagFrame:IsShown() then
+	if addon.bagFrame:IsShown() or ( yo_BBFrame and yo_BBFrame.bag and yo_BBFrame.bag:IsShown()) then
 		needCloseBags = true
 	else
 		needCloseBags = false
@@ -1811,6 +1811,9 @@ end
 local function tryToClose(...)
 	if needCloseBags then
 		addon_Close()
+		if yo_BBFrame.bag and yo_BBFrame.bag:IsShown() then
+			yo_BBFrame.bag:Hide()
+		end
 		--PlaySound ( 863, "Master")   -- 863	IG_BACKPACK_CLOSE
 		HideUIPanel(GameMenuFrame);	
 		needCloseBags = false

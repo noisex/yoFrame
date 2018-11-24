@@ -25,6 +25,31 @@ local mythicRewards = {
 	{10,370,380,385},
 }
 
+--Сундук в подземелье
+
+--Ключ	Награда
+--2	375
+--3	375
+--4	380
+--5	385
+--6	385
+--7	390
+--8	395
+--9	395
+--10+	400
+--       	Еженедельный ларь
+
+--Ключ	Награда
+--2	385
+--3	385
+--4	390
+--5	390
+--6	395
+--7	400
+--8	400
+--9	405
+--10+	410
+
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 
 local affixWeeksLegs = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)

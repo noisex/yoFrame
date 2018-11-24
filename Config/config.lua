@@ -19,6 +19,8 @@ myLogin = GetTime()
 myClient = GetLocale()
 myFaction = UnitFactionGroup("player")
 myLevel = UnitLevel( "player")
+myRace	= select(2, UnitRace('player'))
+mySex	= UnitSex('player')
 
 dummy = function() return end	
 
@@ -40,8 +42,11 @@ yo["Bags"] = {
 	["newIconAnimation"]	= true,
 	["autoReagent"]			= true,
 	["newAnimationLoop"]	= true,
-	["ladyMod"]			= true,
-	["ladyModShift"]	= false,
+	["ladyMod"]				= true,
+	["ladyModShift"]		= false,
+	["showAltBags"]			= true,
+	["showGuilBank"]		= false,
+	["countAltBags"]		= true,
 }			
 yo["Addons"] = {
 	["ChangeSystemFonts"] 			= true,			--	
