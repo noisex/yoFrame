@@ -129,7 +129,7 @@ local function CreateBag( self, name, bank, gtab)
 	
 	if not self.bag then
 		self.bag = CreateFrame("Frame", nil, UIParent)
-		self.bag:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		self.bag:SetPoint("TOPLEFT", UIParent, "CENTER", -250, 300)
 		self.Items = {}
 
 		self.bag.text = self.bag:CreateFontString(nil, "OVERLAY")
@@ -150,7 +150,6 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 
 		CreateBagIconButton( self.bag, self.bag)
-
 		CreateStyle( self.bag, 3)
 	end
 
@@ -466,6 +465,7 @@ local function SaveGuilds( self)
 	for i = 1, GetNumGuildBankTabs() do
 		guild[i] = guild[i] or {}
 		guild[i].name, guild[i].icon, guild[i].view = GetGuildBankTabInfo(i)
+		guild[i].lgbtime = time()
 	end
 
 	local tab = GetCurrentGuildBankTab()
@@ -482,7 +482,8 @@ local function SaveGuilds( self)
 		items[0] = 98
 	end
 
-	yo_BB[myRealm][id] = guild	 
+	yo_BB[myRealm][id] = guild
+	yo_AllData[myRealm][myName]["LGBTime"] = time()
 end
 
 local function OnEvent( self, event, change)
