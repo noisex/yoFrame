@@ -15,6 +15,11 @@ L["BIND_DESC"]		= "Hover your mouse over any actionbutton to bind it. Press the 
 L["BIND_SAVE"]		= "|cff00a2ffKey settings changes have been saved.|r"
 L["BIND_ESC"]		= "|cffff9900Changes to key settings have been canceled.|r"
 
+L["gbank"] 	= GUILD_BANK
+L["bags"] 	= BAGSLOT
+L["bank"] 	= BANK
+L["regs"] 	= REAGENT_BANK
+
 ---------------------------------------------
 
 L["SCIP_VIDEO"] = "|cffffff00Autoquest: |cff00ffff I missed the awesome video, what a pity ... |r"
