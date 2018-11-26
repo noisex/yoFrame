@@ -70,12 +70,22 @@ local function OnEnter( self)
 		GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
 
 		local totalPlayed, oneDate = 0
-		for realmName, val in pairs ( yo_AllData) do
-			if type( val) == "table" then
-				oneDate = false
-				for name, value in pairs ( val) do
+		for realmName, realm in pairs ( yo_AllData) do
+			if type( realm) == "table" then
+				
+				local tkeys = {}
+      			for k, v in pairs( realm) do 
+         			table.insert(tkeys, { pleed = v.Played, name = k}) 
+      			end
+      
+      			local function tableSortCat (a,b) return a.pleed < b.pleed end
+       			table.sort( tkeys, tableSortCat)
+      
+				oneDate = false	
+				for _, v in pairs(tkeys) do 
+					value = realm[v.name]
 					if value.WorldBoss and timeLastWeeklyReset() < value.MoneyTime then 
-						name = name .. value.WorldBoss 
+						v.name = v.name .. value.WorldBoss 
 					end
 					if tonumber( value["Played"]) then
 						if not oneDate then
@@ -85,9 +95,9 @@ local function OnEnter( self)
 						totalPlayed = totalPlayed + tonumber( value.Played)
 						local cols = value.Color and value.Color or { 1, 0.75, 0}
 						if value.Played < 86400 then							
-							GameTooltip:AddDoubleLine( name, SecondsToClock( value.Played), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+							GameTooltip:AddDoubleLine( v.name, SecondsToClock( value.Played), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 						else
-							GameTooltip:AddDoubleLine( name, SecondsToClock( value.Played, true, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+							GameTooltip:AddDoubleLine( v.name, SecondsToClock( value.Played, true, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 						end
 					end	
 				end

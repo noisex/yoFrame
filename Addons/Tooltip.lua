@@ -1379,50 +1379,62 @@ ShoppingTooltip2:HookScript("OnTooltipSetItem", UpdateTooltip)
 ----------------------------------------------------------------------------------------
 --	Item count in tooltip(by Tukz)
 ----------------------------------------------------------------------------------------
-local UIItemTooltipCount
-local gender = { 'Female', 'Male' }
---GameTooltip:HookScript("OnTooltipCleared", function(self) 
---	UIItemTooltipCount = nil 
---	--print("WE EHEREEEEEE")
---end)
-GameTooltip:HookScript("OnTooltipSetItem", function(self)	
-	local _, link = self:GetItem()
-	if true then --link ~= UIItemTooltipCount then
-		local numTotal = GetItemCount(link, true)		
+--local UIItemTooltipCount
+--local gender = { 'Female', 'Male' }
+----GameTooltip:HookScript("OnTooltipCleared", function(self) 
+----	UIItemTooltipCount = nil 
+----	--print("WE EHEREEEEEE")
+----end)
 
-		local oneDate
-		if yo.Bags.showAltBags and yo.Bags.countAltBags then
-			for name, player in pairs( yo_BBCount[myRealm]) do
-				local _, itemID = strsplit(":", link)
-				itemID = tonumber(itemID)
-				if name ~= myName and player[itemID] then
-					if not oneDate then
-						self:AddLine(" ")
-						oneDate = true
-					end
-					self:AddDoubleLine( name, player[itemID], 1, 1, 0, 1, 1, 1)
-				end
-			end
-		end
+--local function attachItemTooltip( self)
+--	local _, link = self:GetItem()
+--	if true then --link ~= UIItemTooltipCount then
+--		local numTotal = GetItemCount(link, true)		
 
-		if numTotal > 1 then
-			local item_count, itemBank = "", ""		
-			local numBag = GetItemCount(link, false)
-			local numBank = numTotal - numBag
-			local cY, cW = "|cffffff00", "|cffffffff"
+--		local oneDate
+--		if yo.Bags.showAltBags and yo.Bags.countAltBags then
+--			for name, player in pairs( yo_BBCount[myRealm]) do
+--				local _, itemID = strsplit(":", link)
+--				itemID = tonumber(itemID)
+--				if name ~= myName and player[itemID] then
+--					if not oneDate then
+--						self:AddLine(" ")
+--						oneDate = true
+--					end
+--					self:AddDoubleLine( name, player[itemID], 1, 1, 0, 1, 1, 1)
+--				end
+--			end
+--		end
 
-			if numBank and numBank > 0 then
-				itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
-			end
+--		if numTotal > 1 then
+--			local item_count, itemBank = "", ""		
+--			local numBag = GetItemCount(link, false)
+--			local numBank = numTotal - numBag
+--			local cY, cW = "|cffffff00", "|cffffffff"
+
+--			if numBank and numBank > 0 then
+--				itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
+--			end
 			
-			--item_count = cY .. myName ..": ".. cW ..numTotal .. itemBank
-			if not oneDate then
-				self:AddLine(" ")
-				oneDate = true
-			end
-			self:AddDoubleLine( myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
-		end			
-		self:AddLine(" ")
-		--UIItemTooltipCount = link
-	end
-end)
+--			--item_count = cY .. myName ..": ".. cW ..numTotal .. itemBank
+--			if not oneDate then
+--				self:AddLine(" ")
+--				oneDate = true
+--			end
+--			self:AddDoubleLine( myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
+--		end			
+--		self:AddLine(" ")
+--		--UIItemTooltipCount = link
+--	end	
+--end
+
+--GameTooltip:HookScript("OnTooltipSetItem", function(self)	
+
+--end)
+
+--GameTooltip:HookScript("OnTooltipSetItem", attachItemTooltip)
+--ItemRefTooltip:HookScript("OnTooltipSetItem", attachItemTooltip)
+--ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", attachItemTooltip)
+--ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", attachItemTooltip)
+--ShoppingTooltip1:HookScript("OnTooltipSetItem", attachItemTooltip)
+--ShoppingTooltip2:HookScript("OnTooltipSetItem", attachItemTooltip)

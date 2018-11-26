@@ -1,9 +1,9 @@
 local L, yo = unpack( select( 2, ...))
 
-local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID,
-      GetGlyphSocketInfo, tonumber, strfind
-    = hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID,
-      GetGlyphSocketInfo, tonumber, strfind
+local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount
+    = hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount
+
+local cY, cW = "|cffffff00", "|cffffffff"
 
 local types = {
   spell = "SpellID:",
@@ -22,7 +22,7 @@ local types = {
 }
 
 local function addLine(tooltip, id, type)
-	if not yo["Addons"].IDInToolTip then return end
+	if not yo.Addons.IDInToolTip then return end
 	
 	local found = false
 
@@ -146,6 +146,7 @@ local function attachItemTooltip(self)
   end
 
   local id = string.match(link, "item:(%d*)")
+
   if (id == "" or id == "0") and TradeSkillFrame ~= nil and TradeSkillFrame:IsVisible() and GetMouseFocus().reagentIndex then
     local selectedRecipe = TradeSkillFrame.RecipeList:GetSelectedRecipeID()
     for i = 1, 8 do
@@ -157,6 +158,47 @@ local function attachItemTooltip(self)
   end
 
   if id and id ~= "" then
+
+    ----------------------------------------------------------------
+    ---   ITEM COUNT
+    ----------------------------------------------------------------
+    local numTotal = GetItemCount(id, true) 
+    local oneDate
+
+    if yo.Bags.showAltBags and yo.Bags.countAltBags then
+      for name, player in pairs( yo_BBCount[myRealm]) do
+        id = tonumber(id)
+        if name ~= myName and player[id] then
+          if not oneDate then
+            self:AddLine(" ")
+            oneDate = true
+          end
+          self:AddDoubleLine( name, player[id], 1, 1, 0, 1, 1, 1)
+        end
+      end
+    end
+
+    if numTotal > 1 then
+      local item_count, itemBank = "", ""   
+      local numBag = GetItemCount(id, false)
+      local numBank = numTotal - numBag      
+
+      if numBank and numBank > 0 then
+        itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
+      end
+      
+      if not oneDate then
+        self:AddLine(" ")
+        oneDate = true
+      end
+      self:AddDoubleLine( myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
+    end     
+    self:AddLine(" ")
+    
+    ----------------------------------------------------------------
+    ---   ITEM COUNT ( END)
+    ----------------------------------------------------------------
+
     addLine(self, id, types.item)
     if itemSplit[2] ~=0 then
       enchantid = itemSplit[2]

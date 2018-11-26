@@ -9,6 +9,7 @@ local nrFrame, nrSelf, nrName, nrGTab, gicon, guildTexCoord
 local gender = { "", 'Male', 'Female'}
 local RACE_PORTRAITS 	= 'Interface\\CharacterFrame\\TEMPORARYPORTRAIT-%s-%s'
 local RACE_TEMP			= 'Interface\\CharacterFrame\\TempPortrait'	
+local ERROR_HEAD		= "|cffff0000Oops, NO DATA FOUND!|cffffff00 "
 
 local bankBags = {-1, 5, 6, 7, 8, 9, 10, 11} 
 local bagBags  = {0, 1, 2, 3, 4}
@@ -19,6 +20,31 @@ local bankas = {
 	["regs"] = {-3},
 	["gbank"]= {1}, 	--, 2, 3, 4, 5, 6, 7, 8},
 }
+
+local bb = CreateFrame("Frame", "yo_BBFrame", UIParent)
+
+function bb:Tooltip_Show()
+	GameTooltip:SetOwner(self);
+	GameTooltip:ClearLines()
+	GameTooltip:AddLine(self.ttText)
+
+	if self.ttText2 then
+		if self.ttText2desc then
+			GameTooltip:AddLine(' ')
+			GameTooltip:AddDoubleLine(self.ttText2, self.ttText2desc, 1, 1, 1)
+		else
+			GameTooltip:AddLine(self.ttText2)
+		end
+	end
+	GameTooltip:Show()
+	local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
+	self.shadow:SetBackdropBorderColor(color.r, color.g, color.b)
+end
+
+function bb:Tooltip_Hide()
+	GameTooltip:Hide()
+	self.shadow:SetBackdropBorderColor( 0.15, 0.15, 0.15)
+end
 
 local function OnEnter( self)
 	if self.link then
@@ -36,7 +62,7 @@ local function OnLeave( self)
 	GameTooltip:Hide()	
 end
 
-local function CreateteItemIcon( self, buttonSize, noChecked)
+function bb:CreateteItemIcon( self, buttonSize, noChecked)
 	local icon = CreateFrame("CheckButton", nil, self)--, "BagSlotButtonTemplate")--, "BankItemButtonBagTemplate") 		-----, ["template"])
 	icon:SetSize(buttonSize, buttonSize)
 
@@ -83,7 +109,7 @@ local function CreateteItemIcon( self, buttonSize, noChecked)
 	return icon
 end
 
-local function RestoreLinkData(partial)
+function bb:RestoreLinkData(partial)
 	if type(partial) == 'string' and not partial:find(COMPLETE_LINK) then
 		if partial:sub(1,9) == 'battlepet' or partial:find(PET_STRING) then
 			local id, quality = partial:match('(%d+):%d+:(%d+)')
@@ -113,13 +139,13 @@ local function GetMaxSlots( self, name, bank)
 	local numSlots = 0	
 	
 	for k, bagID in pairs( bankas[bank]) do		
-		if yo_BB[myRealm][name] and yo_BB[myRealm][name][bagID] and yo_BB[myRealm][name][bagID][0] then
-			numSlots  = numSlots + yo_BB[myRealm][name][bagID][0]
+		if self.Realm[name] and self.Realm[name][bagID] and self.Realm[name][bagID][0] then
+			numSlots  = numSlots + self.Realm[name][bagID][0]
 		end
 	end
 
 	if numSlots == 0 then
-		print( "|cffff0000Oops, NO DATA FOUND!|cffffff00 Pls, refresh " .. L[bank] .. " for " .. name .. "...|r")
+		print( ERROR_HEAD .. "Please, refresh " .. L[bank] .. " for " .. name .. "...|r")
 	end 
 
 	return numSlots
@@ -130,6 +156,7 @@ local function CreateBag( self, name, bank, gtab)
 	if not self.bag then
 		self.bag = CreateFrame("Frame", nil, UIParent)
 		self.bag:SetPoint("TOPLEFT", UIParent, "CENTER", -250, 300)
+		self.bag:SetFrameStrata("HIGH")
 		self.Items = {}
 
 		self.bag.text = self.bag:CreateFontString(nil, "OVERLAY")
@@ -143,13 +170,43 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag.close = CreateFrame("Button", nil, self.bag, "UIPanelCloseButton")
 		self.bag.close:SetPoint("TOPRIGHT", self.bag, "TOPRIGHT", 3, 5)
 
+		self.bag.bag = CreateFrame("Button", nil, self.bag)
+		self.bag.bag:SetPoint("TOPRIGHT", self.bag, "TOPRIGHT", -35, -4)
+		self.bag.bag:SetNormalTexture( "Interface\\ICONS\\INV_Misc_Bag_07")
+		self.bag.bag:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
+		self.bag.bag:SetSize(17, 17)
+		self.bag.bag:RegisterForClicks('anyUp')		
+		self.bag.bag:SetScript("OnEnter", self.Tooltip_Show)
+		self.bag.bag:SetScript("OnLeave", self.Tooltip_Hide)
+		CreateStyleSmall( self.bag.bag, 1)
+
+		self.bag.bank = CreateFrame("Button", nil, self.bag)
+		self.bag.bank:SetPoint("TOPRIGHT", self.bag.bag, "TOPLEFT", -4, 0)
+		self.bag.bank:SetNormalTexture( "Interface\\ICONS\\INV_Misc_Coin_01")
+		self.bag.bank:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
+		self.bag.bank:SetSize(17, 17)
+		self.bag.bank:RegisterForClicks('anyUp')		
+		self.bag.bank:SetScript("OnEnter", self.Tooltip_Show)
+		self.bag.bank:SetScript("OnLeave", self.Tooltip_Hide)		
+		CreateStyleSmall( self.bag.bank, 1)
+
+		self.bag.regs = CreateFrame("Button", nil, self.bag)
+		self.bag.regs:SetPoint("TOPRIGHT", self.bag.bank, "TOPLEFT", -4, 0)
+		self.bag.regs:SetNormalTexture( "Interface\\ICONS\\Spell_Nature_Polymorph_Cow.blp") --"Interface\\ICONS\\INV_Misc_Herb_09")
+		self.bag.regs:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
+		self.bag.regs:SetSize(17, 17)
+		self.bag.regs:RegisterForClicks('anyUp')		
+		self.bag.regs:SetScript("OnEnter", self.Tooltip_Show)
+		self.bag.regs:SetScript("OnLeave", self.Tooltip_Hide)		
+		CreateStyleSmall( self.bag.regs, 1)
+
 		self.bag:EnableMouse(true)
 		self.bag:SetMovable(true)
 		self.bag:RegisterForDrag("LeftButton", "RightButton")
 		self.bag:SetScript("OnDragStart", function(self) self:StartMoving() end)
 		self.bag:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 
-		CreateBagIconButton( self.bag, self.bag)
+		self:CreateBagIconButton( self.bag, self.bag)
 		CreateStyle( self.bag, 3)
 	end
 
@@ -162,14 +219,14 @@ local function CreateBag( self, name, bank, gtab)
 	local maxStolbs, numContainerRows, holderWidth, rows, stroka, stolb = 0, 0, 0
 	
 	if bank == "gbank" then
-		if not yo_BB[myRealm][name] then
-			print( "|cffff0000ERROR, NO DATA FOUND!|cffffff00 Please, refresh guildbank!|r")
+		if not self.Realm[name] then
+			print( ERROR_HEAD .. "Please, refresh guildbank!|r")
 			return
-		elseif not yo_BB[myRealm][name][gtab] then
-			print( "|cffff0000ERROR, NO DATA FOUND!|cffffff00 Please, refresh guildbank for this tab...|r")
+		elseif not self.Realm[name][gtab] then
+			print( ERROR_HEAD  .. "Please, refresh guildbank for this tab...|r")
 			return
-		elseif not yo_BB[myRealm][name][gtab][0] then
-			print( "|cffff0000ERROR, NO DATA FOUND!|cffffff00 Please, wait for search this tab...|r")
+		elseif not self.Realm[name][gtab][0] then
+			print( ERROR_HEAD .. "Please, wait for search this tab...|r")
 			return
 		end
 
@@ -185,9 +242,9 @@ local function CreateBag( self, name, bank, gtab)
 			CreateStyle( self.bag.gtab, 3)
 
 			self.bag.gtab.icons = {}
-			for tabID, data in pairs( yo_BB[myRealm][name]) do
+			for tabID, data in pairs( self.Realm[name]) do
 
-				self.bag.gtab.icons[tabID] = CreateteItemIcon( self.bag.gtab, buttonSize)
+				self.bag.gtab.icons[tabID] = self:CreateteItemIcon( self.bag.gtab, buttonSize)
 				self.bag.gtab.icons[tabID]:SetPoint("TOPLEFT", self.bag.gtab, "TOPLEFT", 7, -( buttonSize + 5) * ( tabID - 1) - 7)
 				self.bag.gtab.icons[tabID].icon:SetTexture( data.icon)
 				self.bag.gtab.icons[tabID].text = data.name
@@ -237,6 +294,14 @@ local function CreateBag( self, name, bank, gtab)
 	--self.bag.text:SetTextColor(cols.r, cols.g, cols.b)
 	self.bag:SetSize( holderWidth + 20, holderHeight + 35)
 	
+	local buttonName 		= gtab and myName or name
+	self.bag.bank.ttText 	= buttonName .. ": " .. BANK	
+	self.bag.bag.ttText 	= buttonName .. ": " .. BAGSLOT
+	self.bag.regs.ttText 	= buttonName .. ": " .. REAGENT_BANK
+	self.bag.bag:SetScript( 'OnClick', function( ) CreateBag( self, buttonName, "bags") end)
+	self.bag.bank:SetScript('OnClick', function( ) CreateBag( self, buttonName, "bank") end)
+	self.bag.regs:SetScript('OnClick', function( ) CreateBag( self, buttonName, "regs") end)
+
 	if self.bag.gtab then 
 		self.bag.gtab:SetSize( buttonSize + buttonSpacing * 2, holderHeight + 35) 
 	end
@@ -246,11 +311,11 @@ local function CreateBag( self, name, bank, gtab)
 	local needReload = false
 	for i, bagID in pairs( bankList) do	
 
-		if yo_BB[myRealm][name][bagID] and yo_BB[myRealm][name][bagID][0]  > 0 then
+		if self.Realm[name][bagID] and self.Realm[name][bagID][0]  > 0 then
 		
-			for i = 1, yo_BB[myRealm][name][bagID][0] do				
+			for i = 1, self.Realm[name][bagID][0] do				
 								
-				self.Items[index] = self.Items[index] or CreateteItemIcon( self.bag, buttonSize, true)
+				self.Items[index] = self.Items[index] or self:CreateteItemIcon( self.bag, buttonSize, true)
 
 				if bank == "gbank" then
 					stroka = mod( index + rows , rows)
@@ -267,12 +332,12 @@ local function CreateBag( self, name, bank, gtab)
 
 				self.Items[index]:Show()
 
-				local itemStr = yo_BB[myRealm][name][bagID][i]
+				local itemStr = self.Realm[name][bagID][i]
 
 				if itemStr then									
 					local itemLinkStr, count = strsplit( ";", itemStr)	
 					
-					local itemLink, id, itemRarity, itemIcon, itemClass, equipLoc = RestoreLinkData( itemLinkStr)
+					local itemLink, id, itemRarity, itemIcon, itemClass, equipLoc = self:RestoreLinkData( itemLinkStr)
 
 					if itemLink and itemRarity and itemIcon then
 
@@ -346,7 +411,7 @@ local menuList = {
 	{ text = BAGSLOT, isTitle = true, notCheckable=true},	
 }
 
-function CreateBagIconButton( self, parent)
+function bb:CreateBagIconButton( self, parent)
 	local parent = parent and parent or yo_BagsFrame.bagFrame 
 
 	local icon = format( RACE_PORTRAITS, gender[mySex], myRace)
@@ -410,7 +475,7 @@ function CreateBagIconButton( self, parent)
 	end)
 end
 
-function ParseItem( link, count)
+function bb:ParseItem( link, count)
 	if link then
 
 		if link:find('0:0:0:0:0:%d+:%d+:%d+:0:0') then
@@ -431,13 +496,13 @@ end
 
 local function SaveBags( self, bag)
 	local size = GetContainerNumSlots(bag)
-	yo_BB[myRealm][myName][bag] = {}	--items = {}
+	self.Player[bag] = {}	--items = {}
 	--print( "Bag Size: ", bag, size)
 
 	if size > 0 then		
 		for slot = 1, size do
 			local _, count, _,_,_,_, link, _, _, itemID = GetContainerItemInfo(bag, slot)
-			yo_BB[myRealm][myName][bag][slot] = ParseItem( link, count)
+			self.Player[bag][slot] = self:ParseItem( link, count)
 			--items[slot] = ParseItem( link, count)
 
 			if itemID and count then
@@ -450,15 +515,15 @@ local function SaveBags( self, bag)
 			end
 		end
 
-		yo_BB[myRealm][myName][bag][0] = size		
+		self.Player[bag][0] = size		
 	else
-		yo_BB[myRealm][myName][bag][0] = 0 	--nil
+		self.Player[bag][0] = 0 	--nil
 	end
 end
 
 local function SaveGuilds( self)
 	local id = GetGuildInfo('player') .. '*'
-	local guild = yo_BB[myRealm][id] or {}
+	local guild = self.Realm[id] or {}
 	--guild.faction = UnitFactionGroup('player') == 'Alliance'
 	guild.faction = nil
 
@@ -477,12 +542,12 @@ local function SaveGuilds( self)
 			local link = GetGuildBankItemLink(tab, i)
 			local _, count = GetGuildBankItemInfo(tab, i)
 
-			items[i] = ParseItem( link, count)			
+			items[i] = self:ParseItem( link, count)			
 		end
 		items[0] = 98
 	end
 
-	yo_BB[myRealm][id] = guild
+	self.Realm[id] = guild
 	yo_AllData[myRealm][myName]["LGBTime"] = time()
 end
 
@@ -500,8 +565,8 @@ local function OnEvent( self, event, change)
 		if not yo_BBCount[myRealm] then yo_BBCount[myRealm] = {} end
 		if not yo_BBCount[myRealm][myName] then yo_BBCount[myRealm][myName] = {} end
 
-		--self.Realm  	= yo_BB[myRealm]
-		--self.Player 	= yo_BB[myRealm][myName]
+		self.Realm  	= yo_BB[myRealm]
+		self.Player 	= yo_BB[myRealm][myName]
 		--self.iRealm 	= yo_BBCount[myRealm]
 		--self.iPlayer 	= yo_BBCount[myRealm][myName]
 
@@ -512,7 +577,7 @@ local function OnEvent( self, event, change)
 		self:RegisterEvent('BANKFRAME_CLOSED')
 
 		if yo.Bags.showGuilBank then
-			self:RegisterEvent('GUILD_ROSTER_UPDATE')
+			--self:RegisterEvent('GUILD_ROSTER_UPDATE')
 			self:RegisterEvent('GUILDBANKFRAME_OPENED')
 			self:RegisterEvent('GUILDBANKFRAME_CLOSED')
 			self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
@@ -524,7 +589,7 @@ local function OnEvent( self, event, change)
 			end	
 		end
 
-		CreateBagIconButton( self)
+		self:CreateBagIconButton( self)
 
 	elseif event == "BAG_UPDATE" then
 		if change >= 0 and change <= 4 then
@@ -545,13 +610,19 @@ local function OnEvent( self, event, change)
 			self.needUpBank = false
 		end
 
-	elseif event == "GUILDBANKBAGSLOTS_CHANGED" then
-		SaveGuilds( self)
+	elseif event == "GUILDBANKFRAME_OPENED" then
+		self.needUpGB = true
 
+	elseif event == "GUILDBANKFRAME_CLOSED" then
+		self.needUpGB = false
+
+	elseif event == "GUILDBANKBAGSLOTS_CHANGED" then		
+		if self.needUpGB then
+			SaveGuilds( self)
+		end
 	end
 end
 
-local bb = CreateFrame("Frame", "yo_BBFrame", UIParent)
 bb:RegisterEvent("PLAYER_ENTERING_WORLD")
 bb:SetScript("OnEvent", OnEvent)
 
@@ -563,4 +634,125 @@ bb:SetScript("OnEvent", OnEvent)
 --itemID:enchant:gem1:gem2:gem3:gem4:suffixID:uniqueID:level:upgradeId:instanceDifficultyID:numBonusIds:bonusId1:bonusid2:..
 --158923:252:8:9:7:12:0
 --Hkeystone:158923:252:8:9:7:12:0[Ключ: Святилище Штормов (8)];1
+--[[
+function GuildMicroButton_UpdateTabard(forceUpdate)
+	local tabard = GuildMicroButtonTabard;
+	if ( not tabard.needsUpdate and not forceUpdate ) then
+		return;
+	end
+	-- switch textures if the guild has a custom tabard
+	local emblemFilename = select(10, GetGuildLogoInfo());
+	if ( emblemFilename ) then
+		if ( not tabard:IsShown() ) then
+			local button = GuildMicroButton;
+			button:SetNormalAtlas("hud-microbutton-Character-Up", true);
+			button:SetPushedAtlas("hud-microbutton-Character-Down", true);
+			-- no need to change disabled texture, should always be available if you're in a guild
+			tabard:Show();
+		end
+		SetSmallGuildTabardTextures("player", tabard.emblem, tabard.background);
+	else
+		if ( tabard:IsShown() ) then
+			local button = GuildMicroButton;
+			button:SetNormalAtlas("hud-microbutton-Socials-Up", true);
+			button:SetPushedAtlas("hud-microbutton-Socials-Down", true);
+			button:SetDisabledAtlas("hud-microbutton-Socials-Disabled", true);
+			tabard:Hide();
+		end
+	end
+	tabard.needsUpdate = nil;
+end
 
+function SetLargeGuildTabardTextures(unit, emblemTexture, backgroundTexture, borderTexture, tabardData)
+	-- texure dimensions are 1024x1024, icon dimensions are 64x64
+	local emblemSize, columns, offset;
+	if ( emblemTexture ) then
+		emblemSize = 64 / 1024;
+		columns = 16
+		offset = 0;
+		emblemTexture:SetTexture("Interface\\GuildFrame\\GuildEmblemsLG_01");
+	end
+	SetGuildTabardTextures(emblemSize, columns, offset, unit, emblemTexture, backgroundTexture, borderTexture, tabardData);
+end
+
+function SetSmallGuildTabardTextures(unit, emblemTexture, backgroundTexture, borderTexture, tabardData)
+	-- texure dimensions are 256x256, icon dimensions are 16x16, centered in 18x18 cells
+	local emblemSize, columns, offset;
+	if ( emblemTexture ) then
+		emblemSize = 18 / 256;
+		columns = 14;
+		offset = 1 / 256;
+		emblemTexture:SetTexture("Interface\\GuildFrame\\GuildEmblems_01");
+	end
+	SetGuildTabardTextures(emblemSize, columns, offset, unit, emblemTexture, backgroundTexture, borderTexture, tabardData);
+end
+
+function SetDoubleGuildTabardTextures(unit, leftEmblemTexture, rightEmblemTexture, backgroundTexture, borderTexture, tabardData)
+	if ( leftEmblemTexture and rightEmblemTexture ) then
+		SetGuildTabardTextures(nil, nil, nil, unit, leftEmblemTexture, backgroundTexture, borderTexture, tabardData);
+		rightEmblemTexture:SetTexture(leftEmblemTexture:GetTexture());
+		rightEmblemTexture:SetVertexColor(leftEmblemTexture:GetVertexColor());
+	end
+end
+
+function SetGuildTabardTextures(emblemSize, columns, offset, unit, emblemTexture, backgroundTexture, borderTexture, tabardData)
+	local bkgR, bkgG, bkgB, borderR, borderG, borderB, emblemR, emblemG, emblemB, emblemFilename;
+	if ( tabardData ) then
+		bkgR = tabardData[1];
+		bkgG = tabardData[2];
+		bkgB = tabardData[3];
+		borderR = tabardData[4];
+		borderG = tabardData[5];
+		borderB = tabardData[6];
+		emblemR = tabardData[7];
+		emblemG = tabardData[8];
+		emblemB = tabardData[9];
+		emblemFilename = tabardData[10];
+	else
+		bkgR, bkgG, bkgB, borderR, borderG, borderB, emblemR, emblemG, emblemB, emblemFilename = GetGuildLogoInfo(unit);
+	end
+	if ( emblemFilename ) then
+		if ( backgroundTexture ) then
+			backgroundTexture:SetVertexColor(bkgR / 255, bkgG / 255, bkgB / 255);
+		end
+		if ( borderTexture ) then
+			borderTexture:SetVertexColor(borderR / 255, borderG / 255, borderB / 255);
+		end
+		if ( emblemSize ) then
+			local index = emblemFilename:match("([%d]+)");
+			if ( index) then
+				index = tonumber(index);
+				local xCoord = mod(index, columns) * emblemSize;
+				local yCoord = floor(index / columns) * emblemSize;
+				emblemTexture:SetTexCoord(xCoord + offset, xCoord + emblemSize - offset, yCoord + offset, yCoord + emblemSize - offset);
+			end
+			emblemTexture:SetVertexColor(emblemR / 255, emblemG / 255, emblemB / 255);
+		elseif ( emblemTexture ) then
+			emblemTexture:SetTexture(emblemFilename);
+			emblemTexture:SetVertexColor(emblemR / 255, emblemG / 255, emblemB / 255);
+		end
+	else
+		-- tabard lacks design
+		if ( backgroundTexture ) then
+			backgroundTexture:SetVertexColor(0.2245, 0.2088, 0.1794);
+		end
+		if ( borderTexture ) then
+			borderTexture:SetVertexColor(0.2, 0.2, 0.2);
+		end
+		if ( emblemTexture ) then
+			if ( emblemSize ) then
+				if ( emblemSize == 18 / 256 ) then
+					emblemTexture:SetTexture("Interface\\GuildFrame\\GuildLogo-NoLogoSm");
+				else
+					emblemTexture:SetTexture("Interface\\GuildFrame\\GuildLogo-NoLogo");
+				end
+				emblemTexture:SetTexCoord(0, 1, 0, 1);
+				emblemTexture:SetVertexColor(1, 1, 1, 1);
+			else
+				emblemTexture:SetTexture("");
+			end
+		end
+	end
+end
+
+]]--

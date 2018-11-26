@@ -192,12 +192,23 @@ local function OnEvent(self, event, ...)
 		GameTooltip:AddLine(L["General information"])
 			
 		local oneDate
-		for k, v in pairs ( yo_AllData) do
-			if type( v) == "table" then		
+		for k, realm in pairs ( yo_AllData) do
+			if type( realm) == "table" then	
+
+      			local tkeys = {}
+      			for k, v in pairs( realm) do 
+         			table.insert(tkeys, { money = v.Money, name = k}) 
+      			end
+      
+      			local function tableSortCat (a,b) return a.money < b.money end
+       			table.sort( tkeys, tableSortCat)
+      
 				oneDate = false	
-				for name, value in pairs ( v) do
+				for _, v in pairs(tkeys) do 
+					value = realm[v.name]
+
 					if value.KeyStone and timeLastWeeklyReset() < value.KeyStoneTime then
-						name = name .. value.KeyStone
+						v.name = v.name .. value.KeyStone
 					end
 					if tonumber( value.Money) and tonumber( value.Money) > 100000 then
 						if not oneDate then
@@ -206,7 +217,7 @@ local function OnEvent(self, event, ...)
 						end	
 						totalMoney = totalMoney + tonumber( value.Money)
 						local cols = value.Color and value.Color or { 1, 0.75, 0}
-							GameTooltip:AddDoubleLine( name, formatMoney( value.Money, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
+							GameTooltip:AddDoubleLine( v.name, formatMoney( value.Money, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 					end
 					
 				end
