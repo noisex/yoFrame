@@ -1,4 +1,6 @@
 
+local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
+
 ----------------------------------------------------------------------------------------
 --	Kill object function
 ----------------------------------------------------------------------------------------

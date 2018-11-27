@@ -116,7 +116,7 @@ local function newConfigData( personalConfig)
 	yo_AllData[myRealm][myName]["Color"] = { ["r"] = myColor.r, ["g"] = myColor.g, ["b"] = myColor.b, ["colorStr"] = myColor.colorStr}
 	yo_AllData[myRealm][myName]["ColorStr"] = myColorStr
 	yo_AllData[myRealm][myName]["PersonalConfig"] = yo_AllData[myRealm][myName].PersonalConfig or personalConfig
-	yo_AllData[myRealm][myName]["WorldBoss"] = FlagActiveBosses()
+	yo_AllData[myRealm][myName]["WorldBoss"] =  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
 end
 
 local function OnEvent(self, event, ...)

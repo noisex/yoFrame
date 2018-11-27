@@ -1,5 +1,6 @@
-
 local L, yo = unpack( select( 2, ...))
+
+local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
 local rowCount = 3
 local affCount = 3

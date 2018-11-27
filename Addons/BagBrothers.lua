@@ -1,18 +1,28 @@
 local L, yo = unpack( select( 2, ...))
 
-local COMPLETE_LINK = '|c.+|H.+|h.+|h|r'
-local PET_LINK = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
-local PET_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
-local reloader = 0
-local nrFrame, nrSelf, nrName, nrGTab, gicon, guildTexCoord
+local GetContainerItemInfo, GetItemCount, GetContainerNumSlots, GetNumGuildBankTabs, GetGuildBankTabInfo, GetCurrentGuildBankTab, GetGuildBankItemLink, GetGuildBankItemInfo, GetItemInfo, GetItemQualityColor
+	= GetContainerItemInfo, GetItemCount, GetContainerNumSlots, GetNumGuildBankTabs, GetGuildBankTabInfo, GetCurrentGuildBankTab, GetGuildBankItemLink, GetGuildBankItemInfo, GetItemInfo, GetItemQualityColor 
 
-local gender = { "", 'Male', 'Female'}
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+--local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
+--local strlower, strsub, strlen, strupper, strtrim, strmatch = strlower, strsub, strlen, strupper, strtrim, strmatch
+
+local COMPLETE_LINK 	= '|c.+|H.+|h.+|h|r'
+local PET_LINK 			= '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
+local PET_STRING 		= '^' .. strrep('%d+:', 6) .. '%d+$'
 local RACE_PORTRAITS 	= 'Interface\\CharacterFrame\\TEMPORARYPORTRAIT-%s-%s'
 local RACE_TEMP			= 'Interface\\CharacterFrame\\TempPortrait'	
 local ERROR_HEAD		= "|cffff0000Oops, NO DATA FOUND!|cffffff00 "
 
-local bankBags = {-1, 5, 6, 7, 8, 9, 10, 11} 
-local bagBags  = {0, 1, 2, 3, 4}
+local reloader = 0
+
+local gender 	= { "", 'Male', 'Female'}
+local bankBags 	= {-1, 5, 6, 7, 8, 9, 10, 11} 
+local bagBags  	= {0, 1, 2, 3, 4}
+
+local borderCols= { 0.12, 0.12, 0.12, 0.7}
 
 local bankas = {
 	["bags"] = {0, 1, 2, 3, 4},
@@ -20,6 +30,20 @@ local bankas = {
 	["regs"] = {-3},
 	["gbank"]= {1}, 	--, 2, 3, 4, 5, 6, 7, 8},
 }
+
+
+local function table_copy(t)
+  	local u = { }
+  	for k, v in pairs(t) do 
+  		--u[k] = strsplit( ":", v) 
+  		local id, check = strsplit( ":", v)
+  		id = tonumber(id)
+  		if check then
+  			u[id] = id
+  		end
+  	end
+  	return setmetatable(u, getmetatable(t))
+end
 
 local bb = CreateFrame("Frame", "yo_BBFrame", UIParent)
 
@@ -36,14 +60,14 @@ function bb:Tooltip_Show()
 			GameTooltip:AddLine(self.ttText2)
 		end
 	end
-	GameTooltip:Show()
-	local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
+	GameTooltip:Show()	
+	local color = yo_BBFrame.nameColor
 	self.shadow:SetBackdropBorderColor(color.r, color.g, color.b)
 end
 
 function bb:Tooltip_Hide()
 	GameTooltip:Hide()
-	self.shadow:SetBackdropBorderColor( 0.15, 0.15, 0.15)
+	self.shadow:SetBackdropBorderColor( unpack( borderCols))
 end
 
 local function OnEnter( self)
@@ -135,6 +159,25 @@ function bb:RestoreLinkData(partial)
 	end
 end
 
+function bb:ParseItem( link, count)
+	if link then
+
+		if link:find('0:0:0:0:0:%d+:%d+:%d+:0:0') then
+			link = link:match('|H%l+:(%d+)')
+		elseif link:find('Hkeystone') then
+			link = "*keystoner" --.. link --:match('|H%l+:([%d:]+)')  --link = string.sub( link, 12)
+		else
+			link = link:match('|H%l+:([%d:]+)')
+		end
+
+		if count then -- and count > 1 then
+			link = link .. ';' .. count		
+		end
+
+		return link
+	end
+end
+
 local function GetMaxSlots( self, name, bank)
 	local numSlots = 0	
 	
@@ -161,7 +204,7 @@ local function CreateBag( self, name, bank, gtab)
 
 		self.bag.text = self.bag:CreateFontString(nil, "OVERLAY")
 		self.bag.text:SetFont( font, fontsize, "OUTLINE")
-		self.bag.text:SetPoint("TOPLEFT", self.bag, "TOPLEFT", 25, -5)		
+		self.bag.text:SetPoint("TOPLEFT", self.bag, "TOPLEFT", 30, -6)		
 
 		self.bag.header = self.bag:CreateFontString(nil, "OVERLAY")
 		self.bag.header:SetFont( font, fontsize+ 2, "OUTLINE")
@@ -170,18 +213,18 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag.close = CreateFrame("Button", nil, self.bag, "UIPanelCloseButton")
 		self.bag.close:SetPoint("TOPRIGHT", self.bag, "TOPRIGHT", 3, 5)
 
-		self.bag.bag = CreateFrame("Button", nil, self.bag)
-		self.bag.bag:SetPoint("TOPRIGHT", self.bag, "TOPRIGHT", -35, -4)
-		self.bag.bag:SetNormalTexture( "Interface\\ICONS\\INV_Misc_Bag_07")
-		self.bag.bag:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
-		self.bag.bag:SetSize(17, 17)
-		self.bag.bag:RegisterForClicks('anyUp')		
-		self.bag.bag:SetScript("OnEnter", self.Tooltip_Show)
-		self.bag.bag:SetScript("OnLeave", self.Tooltip_Hide)
-		CreateStyleSmall( self.bag.bag, 1)
-
+		self.bag.regs = CreateFrame("Button", nil, self.bag)
+		self.bag.regs:SetPoint("TOPRIGHT", self.bag, "TOPRIGHT", -35, -4)
+		self.bag.regs:SetNormalTexture( "Interface\\ICONS\\INV_Misc_Flower_02.blp")	--Spell_Nature_Polymorph_Cow.blp") --"Interface\\ICONS\\INV_Misc_Herb_09")
+		self.bag.regs:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
+		self.bag.regs:SetSize(17, 17)
+		self.bag.regs:RegisterForClicks('anyUp')		
+		self.bag.regs:SetScript("OnEnter", self.Tooltip_Show)
+		self.bag.regs:SetScript("OnLeave", self.Tooltip_Hide)		
+		CreateStyleSmall( self.bag.regs, 1)
+		
 		self.bag.bank = CreateFrame("Button", nil, self.bag)
-		self.bag.bank:SetPoint("TOPRIGHT", self.bag.bag, "TOPLEFT", -4, 0)
+		self.bag.bank:SetPoint("TOPRIGHT", self.bag.regs, "TOPLEFT", -4, 0)
 		self.bag.bank:SetNormalTexture( "Interface\\ICONS\\INV_Misc_Coin_01")
 		self.bag.bank:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
 		self.bag.bank:SetSize(17, 17)
@@ -190,15 +233,15 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag.bank:SetScript("OnLeave", self.Tooltip_Hide)		
 		CreateStyleSmall( self.bag.bank, 1)
 
-		self.bag.regs = CreateFrame("Button", nil, self.bag)
-		self.bag.regs:SetPoint("TOPRIGHT", self.bag.bank, "TOPLEFT", -4, 0)
-		self.bag.regs:SetNormalTexture( "Interface\\ICONS\\Spell_Nature_Polymorph_Cow.blp") --"Interface\\ICONS\\INV_Misc_Herb_09")
-		self.bag.regs:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
-		self.bag.regs:SetSize(17, 17)
-		self.bag.regs:RegisterForClicks('anyUp')		
-		self.bag.regs:SetScript("OnEnter", self.Tooltip_Show)
-		self.bag.regs:SetScript("OnLeave", self.Tooltip_Hide)		
-		CreateStyleSmall( self.bag.regs, 1)
+		self.bag.bag = CreateFrame("Button", nil, self.bag)
+		self.bag.bag:SetPoint("TOPRIGHT", self.bag.bank, "TOPLEFT", -4, 0)
+		self.bag.bag:SetNormalTexture( "Interface\\ICONS\\INV_Misc_Bag_07")
+		self.bag.bag:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
+		self.bag.bag:SetSize(17, 17)
+		self.bag.bag:RegisterForClicks('anyUp')		
+		self.bag.bag:SetScript("OnEnter", self.Tooltip_Show)
+		self.bag.bag:SetScript("OnLeave", self.Tooltip_Hide)
+		CreateStyleSmall( self.bag.bag, 1)
 
 		self.bag:EnableMouse(true)
 		self.bag:SetMovable(true)
@@ -215,25 +258,25 @@ local function CreateBag( self, name, bank, gtab)
 	local containerWidth 	= yo.Bags.containerWidth
 	local numMaxRow 		= yo.Bags.numMaxRow
 	
-	local cols, bankList = {}, {}	
+	local bankList = {}	
 	local maxStolbs, numContainerRows, holderWidth, rows, stroka, stolb = 0, 0, 0
 	
 	if bank == "gbank" then
 		if not self.Realm[name] then
-			print( ERROR_HEAD .. "Please, refresh guildbank!|r")
+			print( ERROR_HEAD .. "Please, refresh ".. GUILD_BANK .."!|r")
 			return
 		elseif not self.Realm[name][gtab] then
-			print( ERROR_HEAD  .. "Please, refresh guildbank for this tab...|r")
+			print( ERROR_HEAD  .. "Please, refresh #".. gtab.." tab ".. GUILD_BANK .."...|r")
 			return
 		elseif not self.Realm[name][gtab][0] then
-			print( ERROR_HEAD .. "Please, wait for search this tab...|r")
+			print( ERROR_HEAD  .. "Please, refresh #".. gtab.." tab ".. GUILD_BANK .."...|r")
 			return
 		end
 
 		containerWidth 	= 570
 		maxSlots = 98
-		cols.r = 1 cols.g = .75 cols.b = 0
 		bankList = { gtab}
+		self.nameColor 	= self.myColor
 
 		if not self.bag.gtab then
 			self.bag.gtab = CreateFrame("Frame", nil, self.bag)
@@ -260,20 +303,23 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag.header:SetTextColor( myColor.r, myColor.g, myColor.b)
 		self.bag.header:SetText( name .. " : " .. self.bag.gtab.icons[gtab].text)
 		
-		--self.bag.bagsChoice:SetTexCoord( unpack(guildTexCoord))
-		self.bag.bagsChoice:SetTexture( format( RACE_PORTRAITS, gender[yo_AllData[myRealm][myName].Sex], yo_AllData[myRealm][myName].Race))
+		self.bag.text:SetText( date( "%d.%m.%y %H:%M", self.Realm[name][gtab].lgbtime))
+		self.bag.text:SetTextColor( myColor.r, myColor.g, myColor.b)
 
+		self.bag.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[yo_AllData[myRealm][myName].Sex], yo_AllData[myRealm][myName].Race))
 		self.bag.gtab:Show()
 	else
 		maxSlots = GetMaxSlots( self, name, bank)
 		if maxSlots == 0 then return end
-
-		cols = yo_AllData[myRealm][name].Color
+		
 		bankList = bankas[bank]
+		self.nameColor = yo_AllData[myRealm][name].Color
+
 		if self.bag.gtab then self.bag.gtab:Hide() end
-		self.bag.header:SetTextColor( yo_AllData[myRealm][name].Color.r, yo_AllData[myRealm][name].Color.g, yo_AllData[myRealm][name].Color.b)
+		self.bag.header:SetTextColor( self.nameColor.r, self.nameColor.g, self.nameColor.b)
 		self.bag.header:SetText( name .. " : " .. L[bank])
-		self.bag.bagsChoice:SetTexture( format( RACE_PORTRAITS, gender[yo_AllData[myRealm][name].Sex], yo_AllData[myRealm][name].Race))
+		self.bag.text:SetText("")
+		self.bag.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[yo_AllData[myRealm][name].Sex], yo_AllData[myRealm][name].Race))
 	end
 	
 	if maxSlots == 0 then return end
@@ -290,8 +336,6 @@ local function CreateBag( self, name, bank, gtab)
 
 	local holderHeight = rows * ( buttonSize + buttonSpacing)	
 
-	--self.bag.text:SetText( name)
-	--self.bag.text:SetTextColor(cols.r, cols.g, cols.b)
 	self.bag:SetSize( holderWidth + 20, holderHeight + 35)
 	
 	local buttonName 		= gtab and myName or name
@@ -319,9 +363,9 @@ local function CreateBag( self, name, bank, gtab)
 
 				if bank == "gbank" then
 					stroka = mod( index + rows , rows)
-					stolb = math.modf( index / rows)
+					stolb = modf( index / rows) ---!!!!!
 				else
-					stroka = math.modf( index / maxStolbs)
+					stroka = modf( index / maxStolbs) 	--!!!!
 					stolb = mod( index + maxStolbs , maxStolbs)
 				end
 				local x = ( buttonSize + buttonSpacing) * ( stolb) + 10
@@ -340,20 +384,16 @@ local function CreateBag( self, name, bank, gtab)
 					local itemLink, id, itemRarity, itemIcon, itemClass, equipLoc = self:RestoreLinkData( itemLinkStr)
 
 					if itemLink and itemRarity and itemIcon then
-
-						local r, g, b = 0.2, 0.2, 0.2 -- !!! DEFAULT COLOR
-						local item 	= Item:CreateFromItemLink( itemLink)						
+						
+						local item 	= Item:CreateFromItemLink( itemLink)			
 						local itemLevel = item:GetCurrentItemLevel()
 						
-						if itemRarity > 1 then
-							r, g, b = GetItemQualityColor(itemRarity);
-						end
-
-						if itemClass == 12 then 		-- Quest item color
-							r, g, b =  1.0, 0.3, 0.3
-						end
+						local r, g, b = unpack( borderCols)				--0.12, 0.12, 0.12 -- !!! DEFAULT COLOR
+						if itemRarity > 1 then 	r, g, b = GetItemQualityColor(itemRarity) end
+						if itemClass == 12 then r, g, b = 1.0, 0.3, 0.3	end 					-- Quest item color
 					
-						if (equipLoc ~= nil and equipLoc ~= 0 and equipLoc ~= 18 and equipLoc ~= "" and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_QUIVER" and equipLoc ~= "INVTYPE_TABARD") and itemRarity > 1 and itemLevel > 1 then
+						--if (equipLoc ~= nil and equipLoc ~= 0 and equipLoc ~= 18 and equipLoc ~= "" and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_QUIVER" and equipLoc ~= "INVTYPE_TABARD") and itemRarity > 1 and itemLevel > 1 then
+						if ( equipLoc and _G[equipLoc] and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_TABARD") and itemRarity > 1 and itemLevel > 1 then
 							self.Items[index].level:SetText( itemLevel)
 						else
 							self.Items[index].level:SetText("")
@@ -377,26 +417,22 @@ local function CreateBag( self, name, bank, gtab)
 					self.Items[index].count:SetText( "") 
 					self.Items[index].level:SetText( "")
 					self.Items[index].icon:SetTexture( nil)
-					self.Items[index].shadow:SetBackdropBorderColor( 0.12, 0.12, 0.12, 0.7)
+					self.Items[index].shadow:SetBackdropBorderColor( unpack( borderCols))
 				end
 				index = index + 1
 			end
 		end
 	end	
 
-	for i = maxSlots, #self.Items do
-		self.Items[i]:Hide()
-	end
+	for i = maxSlots, #self.Items do self.Items[i]:Hide() end
 
 	self.bag:Show()
 
 	if needReload then 
-		nrSelf, nrName, nrBank, nrGTab = self, name, bank, gtab
-		
-		C_Timer.After( 0.5, function(self, ...)
+		C_Timer.After( 0.5, function()
 			reloader = reloader + 1
 			if reloader < 5 then
-				CreateBag( nrSelf, nrName, nrBank, nrGTab)
+				CreateBag( self, name, bank, gtab)
 			else
 				print("|cffff9900Warning!|r Hmmm... something going wrong, no found item info in cache!")
 			end
@@ -413,22 +449,18 @@ local menuList = {
 
 function bb:CreateBagIconButton( self, parent)
 	local parent = parent and parent or yo_BagsFrame.bagFrame 
-
-	local icon = format( RACE_PORTRAITS, gender[mySex], myRace)
+	local gicon, guildTexCoord
 
 	self.bagButton = CreateFrame("Button", nil, self)
-	self.bagButton:SetSize(20, 20)
+	self.bagButton:SetSize(22, 22)
 	self.bagButton:SetPoint("TOPLEFT", parent, "TOPLEFT", 1, -1)
 	self.bagButton:SetParent( parent)
-
-	self.bagsChoice = self.bagButton:CreateTexture(nil, "OVERLAY")
-	self.bagsChoice:SetTexture( icon)	
-	self.bagsChoice:SetAllPoints()
+	self.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[mySex], myRace))
 
 	if parent.editBox then
 		local a1, p, a2, x, y = parent.editBox:GetPoint(1)
 		parent.editBox:ClearAllPoints()
-		parent.editBox:SetPoint( a1, p, a2, x + 20, y)
+		parent.editBox:SetPoint( a1, p, a2, x + 25, y)
 	end
 
 	self.bagButton:SetScript("OnEnter", function(self, ...)
@@ -475,42 +507,20 @@ function bb:CreateBagIconButton( self, parent)
 	end)
 end
 
-function bb:ParseItem( link, count)
-	if link then
-
-		if link:find('0:0:0:0:0:%d+:%d+:%d+:0:0') then
-			link = link:match('|H%l+:(%d+)')
-		elseif link:find('Hkeystone') then
-			link = "*keystoner" --.. link --:match('|H%l+:([%d:]+)')  --link = string.sub( link, 12)
-		else
-			link = link:match('|H%l+:([%d:]+)')
-		end
-
-		if count then -- and count > 1 then
-			link = link .. ';' .. count		
-		end
-
-		return link
-	end
-end
-
 local function SaveBags( self, bag)
 	local size = GetContainerNumSlots(bag)
 	self.Player[bag] = {}	--items = {}
-	--print( "Bag Size: ", bag, size)
 
 	if size > 0 then		
 		for slot = 1, size do
 			local _, count, _,_,_,_, link, _, _, itemID = GetContainerItemInfo(bag, slot)
 			self.Player[bag][slot] = self:ParseItem( link, count)
-			--items[slot] = ParseItem( link, count)
 
-			if itemID and count then
-				--print(itemID, count, link)
+			if itemID and count > 0 then
+				--print( link, itemID, GetItemCount( itemID, true))
 				yo_BBCount[myRealm][myName][itemID] = GetItemCount( itemID, true)
-			else
-				if itemID and yo_BBCount[myRealm][myName][itemID] then
-					yo_BBCount[myRealm][myName][itemID] = nil
+				if self.tempBags and self.tempBags[bag] then
+					self.tempBags[bag][itemID] = nil
 				end
 			end
 		end
@@ -529,8 +539,7 @@ local function SaveGuilds( self)
 
 	for i = 1, GetNumGuildBankTabs() do
 		guild[i] = guild[i] or {}
-		guild[i].name, guild[i].icon, guild[i].view = GetGuildBankTabInfo(i)
-		guild[i].lgbtime = time()
+		guild[i].name, guild[i].icon, guild[i].view = GetGuildBankTabInfo(i)		
 	end
 
 	local tab = GetCurrentGuildBankTab()
@@ -545,10 +554,28 @@ local function SaveGuilds( self)
 			items[i] = self:ParseItem( link, count)			
 		end
 		items[0] = 98
-	end
+		guild[tab].lgbtime = time()
+	end	
 
-	self.Realm[id] = guild
+	self.Realm[id] = guild	
 	yo_AllData[myRealm][myName]["LGBTime"] = time()
+end
+
+function bb:CheckForClean( self)
+	for bagID, val in pairs( self.needUpBag) do
+
+		for itemID, bag in pairs( self.tempBags[bagID]) do
+			local count = GetItemCount( itemID, true)
+			if count > 0 then						
+				yo_BBCount[myRealm][myName][itemID] = count
+			else
+				if itemID and yo_BBCount[myRealm][myName][itemID] then
+					yo_BBCount[myRealm][myName][itemID] = nil
+				end
+			end
+		end
+		self.needUpBag[bagID] = nil
+	end
 end
 
 local function OnEvent( self, event, change)
@@ -565,8 +592,10 @@ local function OnEvent( self, event, change)
 		if not yo_BBCount[myRealm] then yo_BBCount[myRealm] = {} end
 		if not yo_BBCount[myRealm][myName] then yo_BBCount[myRealm][myName] = {} end
 
+		self.needUpBag 	= {}
 		self.Realm  	= yo_BB[myRealm]
 		self.Player 	= yo_BB[myRealm][myName]
+		self.myColor 	= yo_AllData[myRealm][myName].Color
 		--self.iRealm 	= yo_BBCount[myRealm]
 		--self.iPlayer 	= yo_BBCount[myRealm][myName]
 
@@ -583,6 +612,15 @@ local function OnEvent( self, event, change)
 			self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
 		end
 
+		yo_BagsFrame.bagFrame:HookScript("OnShow", function()
+			self.tempBags = {}
+			for i, bag in pairs( bankas["bags"]) do
+				self.tempBags[bag] = table_copy( self.Player[bag])
+			end
+		end)
+
+		yo_BagsFrame.bagFrame:HookScript("OnHide", function() bb:CheckForClean( self) end)
+
 		if firstRun then
 			for i, bag in pairs( bankas["bags"]) do
 				SaveBags( self, bag)
@@ -591,13 +629,20 @@ local function OnEvent( self, event, change)
 
 		self:CreateBagIconButton( self)
 
-	elseif event == "BAG_UPDATE" then
+	elseif event == "BAG_UPDATE" then		
 		if change >= 0 and change <= 4 then
-			SaveBags( self, change)	
-		end		
+			SaveBags( self, change)
+			self.needUpBag[change] = true
+		end
 	
 	elseif event == "BANKFRAME_OPENED" then
 		self.needUpBank = true
+		for i, bag in pairs( bankas["bank"]) do
+			self.tempBags[bag] = table_copy( self.Player[bag])
+		end
+		if IsReagentBankUnlocked() then
+			self.tempBags[-3] = table_copy( self.Player[-3])
+		end
 
 	elseif event == "BANKFRAME_CLOSED" then
 		if self.needUpBank then
@@ -623,9 +668,9 @@ local function OnEvent( self, event, change)
 	end
 end
 
+
 bb:RegisterEvent("PLAYER_ENTERING_WORLD")
 bb:SetScript("OnEvent", OnEvent)
-
 
 --[Virag's DT]: 19 - 
 --|cffa335ee|Hitem:

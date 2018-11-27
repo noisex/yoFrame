@@ -496,7 +496,7 @@ end
 --end
 
 local function IsItemEligibleForItemLevelDisplay(classID, subClassID, equipLoc, rarity)
-	if (equipLoc ~= nil and equipLoc ~= "" and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_QUIVER" and equipLoc ~= "INVTYPE_TABARD")	and (rarity and rarity > 1) then
+	if (equipLoc and _G[equipLoc] and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_TABARD") and (rarity and rarity > 1) then
 
 		return true
 	end
@@ -1883,4 +1883,11 @@ function addon:PLAYER_ENTERING_WORLD()
 	
 	hooksecurefunc( "CloseAllWindows", checkToClose)
 	hooksecurefunc( "ToggleGameMenu", tryToClose)
+
+	--Bag Assignment Dropdown Menu
+	ElvUIAssignBagDropdown = CreateFrame("Frame", "ElvUIAssignBagDropdown", UIParent, "UIDropDownMenuTemplate")
+	ElvUIAssignBagDropdown:SetID(1)
+	ElvUIAssignBagDropdown:SetClampedToScreen(true)
+	ElvUIAssignBagDropdown:Hide()
+	UIDropDownMenu_Initialize(ElvUIAssignBagDropdown, self.AssignBagFlagMenu, "MENU");
 end  

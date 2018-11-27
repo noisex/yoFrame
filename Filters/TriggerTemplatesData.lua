@@ -98,6 +98,7 @@ PlayerBuffWhiteListAll= {
   [35079]   = true, -- Misdirection
   [102351]  = true, -- Cenarion Ward
   [114018]  = true, -- Shroud of Concealment
+  --[25771]	= true,
 }
 
 generalAzeriteTraits = {
@@ -491,6 +492,7 @@ templates.class.PALADIN = {
         { spell = 214222, type = "debuff", unit = "target"}, -- Judgment
         { spell = 196941, type = "debuff", unit = "target", talent = 13}, -- Judgment of Light
         { spell = 20066, type = "debuff", unit = "multi", talent = 8}, -- Repentance
+		{ spell = 25771, type = "debuff", unit = "target"}, -- Воздержание
       },
       icon = 135952
     },
@@ -586,6 +588,7 @@ templates.class.PALADIN = {
         { spell = 204079, type = "debuff", unit = "target", talent = 13}, -- Final Stand
         { spell = 31935, type = "debuff", unit = "target"}, -- Avenger's Shield
         { spell = 20066, type = "debuff", unit = "multi", talent = 8}, -- Repentance
+		{ spell = 25771, type = "debuff", unit = "target"}, -- Воздержание
       },
       icon = 135952
     },
@@ -683,7 +686,7 @@ templates.class.PALADIN = {
         { spell = 183218, type = "debuff", unit = "target"}, -- Hand of Hindrance
         { spell = 20066, type = "debuff", unit = "multi", talent = 8}, -- Repentance
         { spell = 255937, type = "debuff", unit = "target", talent = 12}, -- Wake of Ashes
-
+		{ spell = 25771, type = "debuff", unit = "target"}, -- Воздержание
       },
       icon = 135952
     },

@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
+
 local function OnUpdate(f, elapsed)
 	f.elapsed = (f.elapsed or 0) + elapsed
 	if f.elapsed >= 0.1 then
