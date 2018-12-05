@@ -1,5 +1,5 @@
 
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_ArtifactPower(by Rainrider)
@@ -88,7 +88,7 @@ local function UpdateAP(self, ...)
 
 	if (show) then
 		local perc = current / cmax
-		element:SetStatusBarColor( 1 - perc, 0 + perc, 0, 0.5) 
+		element:SetStatusBarColor( 1 - perc, 0 + perc, 0, 0.7)
 		element:SetMinMaxValues(0, cmax)
 		element:SetValue(current)
 		element:Show()
@@ -105,7 +105,7 @@ local function EnableAP(self)
 	--element.__owner = self
 
 	if (not element:GetStatusBarTexture()) then
-		element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]]) 
+		element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		element:SetStatusBarColor(.901, .8, .601)
 	end
 
@@ -120,7 +120,7 @@ local function EnableAP(self)
 	element:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED")
 	element:RegisterEvent("UNIT_INVENTORY_CHANGED")
 	element:SetScript("OnEvent", UpdateAP)
-	
+
 	UpdateAP( element)
 	return true
 end
@@ -132,16 +132,11 @@ local function ArtifactPower( f)
 	ArtifactPower:SetPoint('CENTER', yo_MoveArtifact, 'CENTER', 0, 0)
 	ArtifactPower:SetStatusBarColor(.901, .8, .601)
 	ArtifactPower:EnableMouse(true)
-	ArtifactPower:SetWidth(6)
-	ArtifactPower:SetHeight( yo_MoveArtifact:GetHeight() )
+	ArtifactPower:SetSize( yo_MoveArtifact:GetSize())
 	ArtifactPower:SetOrientation("VERTICAL")
 	ArtifactPower:SetFrameLevel(2)
-
-	local h = CreateFrame("Frame", nil, ArtifactPower)
-	h:SetFrameLevel(1)
-	h:SetPoint("TOPLEFT",-5,5)
-	h:SetPoint("BOTTOMRIGHT",5,-5)
-	CreateStyle(h, -1)
+	table.insert( N.statusBars, ArtifactPower)
+	CreateStyle( ArtifactPower)
 
 	f.ArtifactPower = ArtifactPower
 end
@@ -152,7 +147,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo["Addons"].ArtifactPowerbar then return end
-	
+
 	ArtifactPower( plFrame)
 	EnableAP( plFrame)
 end)

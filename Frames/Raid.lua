@@ -1,10 +1,13 @@
 local _, ns = ...
-local oUF = ns.oUF or oUF 
+local oUF = ns.oUF or oUF
 
-local L, yo = ns[1], ns[2]
+local L, yo, N = ns[1], ns[2], ns[3]
+
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
 function testers(...)
-	
+
 end
 
 local function CreateClique()
@@ -69,9 +72,9 @@ local UnitSpecific = {
 	player = function(self)
 		-- Player specific layout code.
 	end,
-        
+
     party = function(self)
-		-- Party specific layout code.         
+		-- Party specific layout code.
     end,
 }
 
@@ -91,38 +94,38 @@ local UnitSpecific = {
 --	end
 --end
 
-function OnChangeTarget( self)	
+function OnChangeTarget( self)
 	--if(unit ~= self.unit) then return end
 
-	local unit = self.unit	
+	local unit = self.unit
 	local status = UnitThreatSituation( unit)
-	
+
 	if (status and status > 0) then
 		local r, g, b = GetThreatStatusColor(status)
 		self.shadow:SetBackdropBorderColor(r, g, b)
 	else
-		self.shadow:SetBackdropBorderColor( 0, 0, 0)
+		self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09)
 	end
-	
-	if UnitIsUnit( unit, "target") then 
+
+	if UnitIsUnit( unit, "target") then
 		local _, class = UnitClass(unit)
 		local t = self.colors.class[class]
 		self.shadow:SetBackdropBorderColor( t[1], t[2], t[3])
 		if yo.Raid.simpeRaid then
 			--self
-		end		
+		end
 	end
 end
 
 local PostIconUpdate = function( self, button)
-	button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)
+	button.icon:SetTexCoord( unpack( yo.tCoord))
 	CreateStyle( button, 4)
 end
 
 local function OnEnter( f)
 	if f.bgHlight then
-		f.bgHlight:Show()	
-	end	
+		f.bgHlight:Show()
+	end
 	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	GameTooltip:SetUnit( f.unit)
@@ -134,26 +137,26 @@ local function OnLeave( f)
 		f.bgHlight:Hide()
 	end
 	if GameTooltip:IsShown() then
-		GameTooltip:FadeOut( 2) 
+		GameTooltip:FadeOut( 2)
 	end
 end
 
-local funcWhiteList = function( self, button, ...) 
-	local spellID = select( 11, ...) 
-	if not blackSpells[spellID] then 
-		return true 
-	else 
-		return false 
-	end 
+local funcWhiteList = function( self, button, ...)
+	local spellID = select( 11, ...)
+	if not blackSpells[spellID] then
+		return true
+	else
+		return false
+	end
 end
 
-local funcBlackList = function( self, button, ...) 
-	local spellID = select( 11, ...)	
-	if RaidDebuffList[spellID] then 
-		return true 
-	else 
-		return false 
-	end 
+local funcBlackList = function( self, button, ...)
+	local spellID = select( 11, ...)
+	if RaidDebuffList[spellID] then
+		return true
+	else
+		return false
+	end
 end
 
 -------------------------------------------------------------------------------------------------------
@@ -163,7 +166,7 @@ end
 local Shared = function(self, unit)
 	local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 	local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
-	
+
 	-- Shared layout code.
 	local unit = 	( self:GetParent():GetName():match( "yo_Part")) and "party" or
 					( self:GetParent():GetName():match( "yo_Raid")) and "raid" or
@@ -180,12 +183,12 @@ local Shared = function(self, unit)
 	local posLFD 		= {"RIGHT", self, "RIGHT", -1, -1}
 	local posAuras		= {'LEFT', self, 'RIGHT', 12, 0}
 	local posRCheck		= {'RIGHT', self, 'RIGHT', -15, 0}
-	local sizeInfoFont 	= fontsize	
+	local sizeInfoFont 	= fontsize
 	local sizeLFDFont 	= fontsize - 1
 	local sizeDeadFont 	= fontsize - 1
 	local sizeRTarget	= 16
 	local sizeResurrect	= 25
-	local enablePower	= true	
+	local enablePower	= true
 	local enableBorder	= true
 	local enableAuras	= yo.Raid.aurasParty
 	local enableDeHight = yo.Raid.debuffHight
@@ -204,14 +207,14 @@ local Shared = function(self, unit)
 		posLFD			= {"RIGHT", self, "RIGHT", -1, 0}
 		posRCheck		= {'RIGHT', self, 'RIGHT', -25, 0}
 		sizeInfoFont 	= fontsize + 2
-		sizeLFDFont 	= fontsize - 3	
-		sizeRTarget		= 12	
+		sizeLFDFont 	= fontsize - 3
+		sizeRTarget		= 12
 		sizeResurrect	= 16
 		enablePower		= false
 		enableAuras 	= false
-		CreateStyleSmall(self, 1)	
+		CreateStyleSmall(self, 1)
 	else
-		CreateStyle(self, 3)
+		CreateStyle(self, 2)
 	end
 
 	if unit == "raid" then
@@ -225,7 +228,7 @@ local Shared = function(self, unit)
 	elseif unit == "tank" then
 		posInfo			= {"LEFT", self, "LEFT", 2, 2}
 		enableDeHight 	= false
-		enableBorder 	= false
+		enableBorder 	= true
 		enableHealPr	= yo.Raid.healPrediction
 		enableAuras 	= true
 		enablePower		= true
@@ -256,6 +259,8 @@ local Shared = function(self, unit)
 	self.Health:SetPoint("TOPRIGHT")
 	self.Health:SetAllPoints()
 	self.Health:SetStatusBarTexture( texture)
+	table.insert( N.statusBars, self.Health)
+
 	self.Health.frequentUpdates = true
 	self.Health.colorDisconnected = true
 	self.colors.disconnected = { 0.3, 0.3, 0.3}
@@ -267,14 +272,14 @@ local Shared = function(self, unit)
 	self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
-	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end	
-	
+	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
+
 	if yo.Raid.classcolor == 1 then
 		self.Health.colorClass = true
 	    self.Health.colorReaction = true
-	
+
 	elseif yo.Raid.classcolor == 2 then
-		self.Health.colorSmooth = true 
+		self.Health.colorSmooth = true
 		self.Health.colorReaction = true
 
 	else
@@ -290,15 +295,16 @@ local Shared = function(self, unit)
 
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR
-	------------------------------------------------------------------------------------------------------	
-	
-	if enablePower then 	
+	------------------------------------------------------------------------------------------------------
+
+	if enablePower then
 		self.Power = CreateFrame("StatusBar", nil, self)
 		self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
 		self.Power:SetStatusBarTexture( texture)
 		self.Power:SetFrameStrata( "MEDIUM")
 		self.Power:SetWidth( self:GetWidth() - 6)
 		self.Power:SetHeight( 2)
+		table.insert( N.statusBars, self.Power)
 
 		self.Power.PostUpdate = function(power, unit, cur, min, max)
 			local role = UnitGroupRolesAssigned( unit)
@@ -312,11 +318,11 @@ local Shared = function(self, unit)
 				power:Hide( )
 			end
 		end
-		
+
 		self.Power:SetFrameLevel(10)
 		self.Power.frequentUpdates = false
 		self.Power.colorDisconnected = true
-		if yo.Raid.manacolorClass then 
+		if yo.Raid.manacolorClass then
 			self.Power.colorClass = true
 		else
 			self.Power.colorPower = true
@@ -328,7 +334,7 @@ local Shared = function(self, unit)
 		self.Power.bg:SetTexture( texture)
 		self.Power.bg:SetAlpha(1)
 		self.Power.bg.multiplier = 0.2
-	
+
 		CreateStyle( self.Power, 2)
 	end
 
@@ -372,6 +378,7 @@ local Shared = function(self, unit)
 	self.Info:SetFont( font, sizeInfoFont)
 	self.Info:SetShadowOffset( 1, -1)
 	self.Info:SetShadowColor( 0, 0, 0, 1)
+	table.insert( N.strings, self.Info)
 	self:Tag( self.Info, "[GetNameColor][namemedium][afk]")
 
     local RaidTargetIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
@@ -382,57 +389,59 @@ local Shared = function(self, unit)
 
     local ResurrectIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
     ResurrectIndicator:SetSize( sizeResurrect, sizeResurrect)
-    ResurrectIndicator:SetPoint('CENTER', self, 'CENTER', 0, 0)	
-    self.ResurrectIndicator = ResurrectIndicator	
+    ResurrectIndicator:SetPoint('CENTER', self, 'CENTER', 0, 0)
+    self.ResurrectIndicator = ResurrectIndicator
 
 	local DeadText = self.Overlay:CreateFontString(nil ,"OVERLAY")
 	DeadText:SetFont( font, sizeDeadFont)
 	DeadText:SetPoint( unpack( posDead))
 	DeadText:SetShadowOffset( 1, -1)
 	DeadText:SetShadowColor( 0, 0, 0, 1)
+	self.DeadText = DeadText
+	table.insert( N.strings, self.DeadText)
 	self:Tag( DeadText, "[GetNameColor]".. yo.Raid.showHPValue)
 
 	if unit == "raid" and yo.Raid.showGroupNum then
 		self.rText = self.Overlay:CreateFontString(nil ,"OVERLAY")
 		self.rText:SetFont( fontpx, fontsize, "OUTLINE")
 		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -4)
+		table.insert( N.strings, self.rText)
 		self:Tag(self.rText, "[GetNameColor][group]")
 	end
-	
-	if unit ~= "tank" then
-		local LeaderIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
-    	LeaderIndicator:SetSize(10, 10)
-    	LeaderIndicator:SetPoint('LEFT', self, 'TOPLEFT', 10, 0)
-    	self.LeaderIndicator = LeaderIndicator
-	
-		local AssistantIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
-    	AssistantIndicator:SetSize(10, 10)
-    	AssistantIndicator:SetPoint('LEFT', self.rText, 'RIGHT', 0, 0)
-    	AssistantIndicator.PostUpdate = function(self)    	
-    		if yo.Raid.classBackground == true and yo.Raid.classcolor == 3 then
-    			local parent = self:GetParent():GetParent()
-				local t = self.__owner.colors.class[select( 2, UnitClass( parent.unit))]
-				if t then
-					parent.Health.hbg:SetVertexColor( t[1], t[2], t[3], 0.9)	
-				end	
-			end	
-    	end
-    	self.AssistantIndicator = AssistantIndicator
 
-    	local ReadyCheckIndicator = self.Overlay:CreateTexture(nil, 'BORDER')
-    	ReadyCheckIndicator:SetSize(16, 16)
-    	ReadyCheckIndicator:SetPoint( unpack( posRCheck))
-    	self.ReadyCheckIndicator = ReadyCheckIndicator
-		self.ReadyCheckIndicator.finishedTime = 5
+	local LeaderIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
+   	LeaderIndicator:SetSize(10, 10)
+   	LeaderIndicator:SetPoint('LEFT', self, 'TOPLEFT', 10, 0)
+   	self.LeaderIndicator = LeaderIndicator
 
-		if yo.Raid.showLFD then
-			local lfd =   self.Overlay:CreateFontString(nil ,"OVERLAY")
-			lfd:SetFont( fontsymbol, sizeLFDFont)
-			lfd:SetPoint( unpack( posLFD))
-			lfd:SetJustifyH"LEFT"
-			self:Tag(lfd, '[LFD]')
+	local AssistantIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
+   	AssistantIndicator:SetSize(10, 10)
+   	AssistantIndicator:SetPoint('LEFT', self.rText, 'RIGHT', 0, 0)
+   	AssistantIndicator.PostUpdate = function(self)
+		if yo.Raid.classBackground == true and yo.Raid.classcolor == 3 then
+			local parent = self:GetParent():GetParent()
+			local t = self.__owner.colors.class[select( 2, UnitClass( parent.unit))]
+			if t then
+				parent.Health.hbg:SetVertexColor( t[1], t[2], t[3], 0.9)
+			end
 		end
+   	end
+   	self.AssistantIndicator = AssistantIndicator
+
+   	local ReadyCheckIndicator = self.Overlay:CreateTexture(nil, 'BORDER')
+   	ReadyCheckIndicator:SetSize(16, 16)
+   	ReadyCheckIndicator:SetPoint( unpack( posRCheck))
+   	self.ReadyCheckIndicator = ReadyCheckIndicator
+	self.ReadyCheckIndicator.finishedTime = 5
+
+	if yo.Raid.showLFD and unit ~= "tank" then
+		local lfd =   self.Overlay:CreateFontString(nil ,"OVERLAY")
+		lfd:SetFont( fontsymbol, sizeLFDFont)
+		lfd:SetPoint( unpack( posLFD))
+		lfd:SetJustifyH"LEFT"
+		self:Tag(lfd, '[LFD]')
 	end
+	--end
 
 	------------------------------------------------------------------------------------------------------
 	---											AURAS
@@ -456,11 +465,11 @@ local Shared = function(self, unit)
 			--button:SetAlpha( 1)
 			--button:EnableMouse(false)
 			--button.icon:SetDesaturated( true)
-			button.icon:SetTexCoord( 0.07, 0.93, 0.07, 0.93)			
+			button.icon:SetTexCoord( unpack( yo.tCoord))
 			button.count:SetFont( fontpx, self:GetHeight() / 1.5, 'OUTLINE')
 			button.count:ClearAllPoints()
 			button.count:SetPoint( 'CENTER', button, 'TOPRIGHT', 0, 0)
-			button.count:SetTextColor( 0, 1, 0)			
+			button.count:SetTextColor( 0, 1, 0)
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
 			CreateStyle( button, 3)
@@ -469,10 +478,10 @@ local Shared = function(self, unit)
 
 	------------------------------------------------------------------------------------------------------
 	---										HEAL PREDICTION
-	------------------------------------------------------------------------------------------------------	
+	------------------------------------------------------------------------------------------------------
 	if enableHealPr then
 		--local myBar = CreateFrame('StatusBar', nil, self.Health)
-	 	--myBar:SetPoint('TOP')    
+	 	--myBar:SetPoint('TOP')
   		--myBar:SetPoint('BOTTOM')
   		--myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
   		--myBar:SetWidth(200)
@@ -511,19 +520,22 @@ local Shared = function(self, unit)
    	        healAbsorbBar = healAbsorbBar,
         	maxOverflow = 1,
     	    frequentUpdates = true,
-	    } 
+	    }
+	    table.insert( N.statusBars, self.HealthPred.otherBar)
+	    table.insert( N.statusBars, self.HealthPred.absorbBar)
+	    table.insert( N.statusBars, self.HealthPred.healAbsorbBar)
 	end
-    
+
    	if enableBorder then
 		table.insert(self.__elements, OnChangeTarget)
 		self:RegisterEvent('PLAYER_TARGET_CHANGED', OnChangeTarget)
 		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", OnChangeTarget)
 		self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", OnChangeTarget)
 	end
-		
+
 	------------------------------------------------------------------------------------------------------
 	---										Debuff highlight
-	------------------------------------------------------------------------------------------------------	
+	------------------------------------------------------------------------------------------------------
 	if enableDeHight then
 		self.DebuffHighlightMy = self.Health:CreateTexture(nil, "OVERLAY")
 		self.DebuffHighlightMy:SetAllPoints(self.Health)
@@ -537,7 +549,7 @@ local Shared = function(self, unit)
 
 
 	--self:SetAttribute("unit", "player") ------------------!!!!!!!!!!!!!!!!!!
-	
+
 	if yo.healBotka.enable then
 
 		self.menu = nil
@@ -551,7 +563,7 @@ local Shared = function(self, unit)
 
 		--self:SetAttribute("type-cliquebuttonA", "spell")
 		--self:SetAttribute("spell-cliquebuttonA", "Омоложение")
-	
+
 		--self:SetAttribute("type-w1", "spell")
 		--self:SetAttribute("spell-w1", "Буйный рост")
 
@@ -560,7 +572,7 @@ local Shared = function(self, unit)
 
 		self:SetAttribute("type-buttonA", "macro")
 		self:SetAttribute("macrotext-buttonA", "/cast [@mouseover] Омоложение")
-	
+
 		self:SetAttribute("type-whell1", "macro")
 		self:SetAttribute("macrotext-whell1", "/cast [@mouseover] Буйный рост")
 	else
@@ -568,7 +580,7 @@ local Shared = function(self, unit)
 		self:SetScript("OnEnter", OnEnter)
 		self:SetScript("OnLeave", OnLeave)
 	end
-		
+
 	--if(UnitSpecific[unit]) then
 	--	return UnitSpecific[unit](self)
 	--end
@@ -577,13 +589,13 @@ end
 
 ------------------------------------------------------------------------------------------------------
 ---										CREATE MOVIER
-------------------------------------------------------------------------------------------------------	
-local function CreateTempStyle(f, size, level, alpha, alphaborder) 
+------------------------------------------------------------------------------------------------------
+local function CreateTempStyle(f, size, level, alpha, alphaborder)
     if f.shadowMove then return end
 
 	local style = {
 		bgFile =  texture,
-		edgeFile = texglow, 
+		edgeFile = texglow,
 		edgeSize = 4,
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	}
@@ -616,40 +628,40 @@ local function CreateMovier(frame)
 
 	frame:SetPoint( "TOPLEFT", movePartyFrame, "TOPLEFT", delta, - delta)
 
-	movePartyFrame:SetScript("OnDragStart", function(self) 
-		self:StartMoving() 
+	movePartyFrame:SetScript("OnDragStart", function(self)
+		self:StartMoving()
 	end)
 
-	movePartyFrame:SetScript("OnDragStop", function(self) 
-		self:StopMovingOrSizing() 
+	movePartyFrame:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
 		yo_MoveRaid:ClearAllPoints()
 		yo_MoveRaid:SetPoint( self:GetPoint())
 		SetAnchPosition( yo_MoveRaid, self)
-	end)	
+	end)
 
-	movePartyFrame:SetScript("OnShow", function(self) 
+	movePartyFrame:SetScript("OnShow", function(self)
 		if InCombatLockdown() then return end
 
 		self:ClearAllPoints()
 		self:SetPoint( yo_MoveRaid:GetPoint())
 	end)
 
-	movePartyFrame:SetScript("OnHide", function(self) 
+	movePartyFrame:SetScript("OnHide", function(self)
 		if InCombatLockdown() then return end
 
 		yo_MoveRaid:ClearAllPoints()
 		yo_MoveRaid:SetPoint( self:GetPoint())
 	end)
 
-	frame:SetScript("OnSizeChanged", function(self, w, h)	
+	frame:SetScript("OnSizeChanged", function(self, w, h)
 		if h < 10 then
 			self.shadowMove:Hide()
 		else
 			self.shadowMove:Show()
 		end
-		
+
 		if InCombatLockdown() then return end
-		
+
 		self.shadow:SetWidth( self:GetWidth() + delta * 2)
 		self.shadow:SetHeight(self:GetHeight() + delta * 2)
 
@@ -664,7 +676,7 @@ end
 
 ------------------------------------------------------------------------------------------------------
 ---										MAKE RAID/PARTY FRAMES
-------------------------------------------------------------------------------------------------------	
+------------------------------------------------------------------------------------------------------
 --   groupheader:SetFrameRef("clickcast_header", addon.header)
 
 local logan = CreateFrame("Frame")
@@ -672,11 +684,11 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	
+
 	if not yo.Raid.enable then return end
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
 	if yo.healBotka.enable then CreateClique() end
-		
+
 	local unit_width = 	yo.Raid.width
 	local unit_height = yo.Raid.height
 	local spaicing = ( yo.Raid.spaicing or 6)
@@ -687,7 +699,7 @@ logan:SetScript("OnEvent", function(self, event)
 		unit_height = 13
 		spaicing	= 4
 		unitsPerColumn = 40
-	end	
+	end
 
 	InterfaceOptionsFrameCategoriesButton10:SetScale(0.00001)
 	InterfaceOptionsFrameCategoriesButton10:SetAlpha(0)
@@ -703,7 +715,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 	oUF:RegisterStyle("Raid", Shared)
 	oUF:Factory(function(self)
-		self:SetActiveStyle("Raid")		
+		self:SetActiveStyle("Raid")
 		local groupBy, groupingOrder
 
 		if yo.Raid.groupingOrder == "GROUP" then
@@ -727,13 +739,13 @@ logan:SetScript("OnEvent", function(self, event)
 					"columnAnchorPoint", "TOP"
 				)
 				if i == 1 then
-					raidgroup:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0) 
+					raidgroup:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0)
 				--elseif i == 5 then
 				--	raidgroup:SetPoint("TOPLEFT", raid[1], "TOPRIGHT", 7, 0)
 				else
 					raidgroup:SetPoint("TOPLEFT", raid[i-1], "TOPRIGHT", spaicing, 0)
 				end
-				raid[i] = raidgroup				
+				raid[i] = raidgroup
 			end
 			CreateMovier( raid[1], yo.Raid.numgroups, spaicing)
 
@@ -771,9 +783,9 @@ logan:SetScript("OnEvent", function(self, event)
 				"columnSpacing", spaicing,
 				"point", "TOP",
 				"columnAnchorPoint", "LEFT"
-			)			
-			--raid:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0) 
-			CreateMovier( yo_Raid)			
+			)
+			--raid:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0)
+			CreateMovier( yo_Raid)
 		end
 
 
@@ -798,7 +810,7 @@ logan:SetScript("OnEvent", function(self, event)
 			"point", "TOP",
 			"columnAnchorPoint", "LEFT"
 		)
-		--party:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0) 		
+		--party:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0)
 		CreateMovier( yo_Party)
 
 		if yo.Raid.showMT then --and not yo.Raid.simpeRaid then
@@ -814,7 +826,7 @@ logan:SetScript("OnEvent", function(self, event)
 				widthMTT	= min( 120, widthMT * .8)
 				offsetMTT	= offsetMT + heightMT - heightMTT
 				fullMTT		= offsetMT + widthMTT
-			end	
+			end
 			local showParty = true
 
 			local mt = self:SpawnHeader( 'yo_Tankets', nil, 'raid,party',
@@ -822,7 +834,7 @@ logan:SetScript("OnEvent", function(self, event)
     			'showParty', showParty,
     			'showPlayer', showParty,
     			--'groupFilter', 'MAINTANK',
-    			'roleFilter', 'TANK',    			
+    			'roleFilter', 'TANK',
     			'yOffset', -offsetMT,
     			'widthMT', fullMTT + offsetMT,
     			'oUF-initialConfigFunction', ([[
@@ -839,7 +851,7 @@ logan:SetScript("OnEvent", function(self, event)
     				'showParty', showParty,
     				'showPlayer', showParty,
     				--'groupFilter', 'MAINTANK',
-    				'roleFilter', 'TANK',				
+    				'roleFilter', 'TANK',
     				'yOffset', -offsetMTT,
     				'oUF-initialConfigFunction', ([[
         				self:SetAttribute('unitsuffix', 'target')
@@ -851,7 +863,7 @@ logan:SetScript("OnEvent", function(self, event)
 				mtt:SetPoint("TOPLEFT", mt, "TOPRIGHT", offsetMT, 0)
 			end
 		end
-	end)	
+	end)
 end)
 
 --[[
@@ -864,8 +876,8 @@ showSolo = [BOOLEAN] -- true if the header should be shown while not in a group 
 nameList = [STRING] -- a comma separated list of player names (not used if 'groupFilter' is set)
 groupFilter = [1-8, STRING] -- a comma seperated list of raid group numbers and/or uppercase class names and/or uppercase roles
 roleFilter = [STRING] -- a comma seperated list of MT/MA/Tank/Healer/DPS role strings
-strictFiltering = [BOOLEAN] 
--- if true, then 
+strictFiltering = [BOOLEAN]
+-- if true, then
 ---- if only groupFilter is specified then characters must match both a group and a class from the groupFilter list
 ---- if only roleFilter is specified then characters must match at least one of the specified roles
 ---- if both groupFilter and roleFilters are specified then characters must match a group and a class from the groupFilter list and a role from the roleFilter list

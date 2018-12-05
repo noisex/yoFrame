@@ -12,11 +12,11 @@ function ChangeSystemFonts( fontsSize)
 				local ft, fs, fd = var:GetFont()
 				if ft and fs then
 					--ind = ind +1
-					--if ind > 690 and ind < 695 then	
-					--	print(i)
-						var:SetFont( font, max(( fontsSize or sysfontsize), fs-2) , fd)	
+					--if ind > 690 and ind < 695 then
+						--print( fontsSize, sysfontsize, fs, font)
+						var:SetFont( font, max(( fontsSize or sysfontsize), fs-2) , fd)
 					--end
-				end				
+				end
 			end
 		end
 	end
@@ -34,10 +34,10 @@ end
 local Fonts = CreateFrame("Frame", nil, UIParent)
 Fonts:RegisterEvent("PLAYER_ENTERING_WORLD")
 Fonts:SetScript("OnEvent", function(self, event, addon)
-	
+
 	if not yo.Addons.ChangeSystemFonts then return end
-	
-	CHAT_FONT_HEIGHTS = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
+
+	CHAT_FONT_HEIGHTS = {10, 11, 12, 13, 14, 15, 16, 17, 18}
 	self:UnregisterAllEvents()
 
 	ChangeSystemFonts()

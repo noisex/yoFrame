@@ -1,3 +1,5 @@
+local _, yo, N = unpack( select( 2, ...))
+
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 	L = {}
 	L["Abilities"] = "Abilities"
@@ -68,7 +70,7 @@ templates =
     },
   }
 
-PlayerBuffWhiteListAll= {
+N.PlayerBuffWhiteListAll= {
   [126389]  = true, -- Goblin Glider [Goblin Glider Kit]
   [54861]   = true, -- Nitro Boosts
   [55001]   = true, -- Parachute
@@ -964,7 +966,7 @@ templates.class.HUNTER = {
         { spell = 186258, type = "buff", unit = "player"}, -- Aspect of the Cheetah
         { spell = 264667, type = "buff", unit = "player"}, -- Primal Rage
         { spell = 259388, type = "buff", unit = "player", talent = 17 }, -- Mongoose Fury
-        { spell = 225788, type = "buff", unit = "player"}, -- Sign of the Emissary
+        --{ spell = 225788, type = "buff", unit = "player"}, -- Sign of the Emissary
         { spell = 268552, type = "buff", unit = "player", talent = 1 }, -- Viper's Venom
         { spell = 260249, type = "buff", unit = "player"}, -- Predator
         { spell = 6197, type = "buff", unit = "player"}, -- Eagle Eye
@@ -1326,6 +1328,7 @@ templates.class.ROGUE = {
         { spell = 408, type = "debuff", unit = "target"}, -- Kidney Shot
         { spell = 6770, type = "debuff", unit = "multi"}, -- Sap
         { spell = 45181, type = "debuff", unit = "player", talent = 11 }, -- Cheated Death
+        { spell = 91021, type = "debuff", unit = "player", talent = 11 }, -- Выявление слабости
       },
       icon = 136175
     },
@@ -1663,11 +1666,11 @@ templates.class.SHAMAN = {
       args = {
         { spell = 263806, type = "buff", unit = "player", talent = 11}, -- Wind Gust
         { spell = 192082, type = "buff", unit = "player", talent = 15}, -- Wind Rush
-        { spell = 202192, type = "buff", unit = "player", talent = 6}, -- Resonance Totem
-        { spell = 210659, type = "buff", unit = "player", talent = 6}, -- Tailwind Totem
+        --{ spell = 202192, type = "buff", unit = "player", talent = 6}, -- Resonance Totem
+        --{ spell = 210659, type = "buff", unit = "player", talent = 6}, -- Tailwind Totem
         { spell = 173184, type = "buff", unit = "player", talent = 3}, -- Elemental Blast: Mastery
         { spell = 108271, type = "buff", unit = "player"}, -- Astral Shift
-        { spell = 210652, type = "buff", unit = "player", talent = 6}, -- Storm Totem
+        --{ spell = 210652, type = "buff", unit = "player", talent = 6}, -- Storm Totem
         { spell = 272737, type = "buff", unit = "player", talent = 19}, -- Unlimited Power
         { spell = 108281, type = "buff", unit = "player", talent = 14}, -- Ancestral Guidance
         { spell = 546, type = "buff", unit = "player"}, -- Water Walking
@@ -1679,7 +1682,7 @@ templates.class.SHAMAN = {
         { spell = 118337, type = "buff", unit = "player", talent = 16}, -- Harden Skin
         { spell = 974, type = "buff", unit = "player", talent = 8}, -- Earth Shield
         { spell = 6196, type = "buff", unit = "player"}, -- Far Sight
-        { spell = 210658, type = "buff", unit = "player", talent = 6}, -- Ember Totem
+        --{ spell = 210658, type = "buff", unit = "player", talent = 6}, -- Ember Totem
         { spell = 173183, type = "buff", unit = "player", talent = 3}, -- Elemental Blast: Haste
         { spell = 77762, type = "buff", unit = "player"}, -- Lava Surge
         { spell = 2645, type = "buff", unit = "player"}, -- Ghost Wolf
@@ -1775,7 +1778,7 @@ templates.class.SHAMAN = {
         { spell = 974, type = "buff", unit = "player", talent = 8 }, -- Earth Shield
         { spell = 262652, type = "buff", unit = "player", talent = 5 }, -- Forceful Winds
         { spell = 187878, type = "buff", unit = "player"}, -- Crash Lightning
-        { spell = 262397, type = "buff", unit = "player", talent = 6 }, -- Storm Totem
+        --{ spell = 262397, type = "buff", unit = "player", talent = 6 }, -- Storm Totem
         { spell = 192106, type = "buff", unit = "player", talent = 3 }, -- Lightning Shield
         { spell = 108271, type = "buff", unit = "player"}, -- Astral Shift
         { spell = 6196, type = "buff", unit = "player"}, -- Far Sight
@@ -1785,15 +1788,15 @@ templates.class.SHAMAN = {
         { spell = 114051, type = "buff", unit = "player", talent = 21 }, -- Ascendance
         { spell = 224125, type = "buff", unit = "player", talent = 19 }, -- Molten Weapon
         { spell = 202004, type = "buff", unit = "player", talent = 4 }, -- Landslide
-        { spell = 262400, type = "buff", unit = "player", talent = 6 }, -- Tailwind Totem
+        --{ spell = 262400, type = "buff", unit = "player", talent = 6 }, -- Tailwind Totem
         { spell = 58875, type = "buff", unit = "player"}, -- Spirit Walk
         { spell = 198300, type = "buff", unit = "player"}, -- Gathering Storms
         { spell = 224127, type = "buff", unit = "player", talent = 19 }, -- Crackling Surge
         { spell = 197211, type = "buff", unit = "player", talent = 17 }, -- Fury of Air
         { spell = 201846, type = "buff", unit = "player"}, -- Stormbringer
         { spell = 260881, type = "buff", unit = "player", talent = 7 }, -- Spirit Wolf
-        { spell = 262417, type = "buff", unit = "player", talent = 6 }, -- Resonance Totem
-        { spell = 262399, type = "buff", unit = "player", talent = 6 }, -- Ember Totem
+        --{ spell = 262417, type = "buff", unit = "player", talent = 6 }, -- Resonance Totem
+        --{ spell = 262399, type = "buff", unit = "player", talent = 6 }, -- Ember Totem
         { spell = 2645, type = "buff", unit = "player"}, -- Ghost Wolf
         { spell = 215785, type = "buff", unit = "player", talent = 2 }, -- Hot Hand
         { spell = 194084, type = "buff", unit = "player"}, -- Flametongue
@@ -3957,6 +3960,11 @@ templates.items[4] = {
     { spell = 273974, type = "buff", unit = "player", titleItemPrefix = 158153},
     { spell = 274430, type = "buff", unit = "player",  spellIds = {274430, 274431}, titleItemPrefix = 161113},
     { spell = 274459, type = "buff", unit = "player", titleItemPrefix = 161115},
+
+    { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 161115},
+    { spell = 268887, type = "buff", unit = "player", titleItemPrefix = 161115},
+    { spell = 268893, type = "buff", unit = "player", titleItemPrefix = 161115},
+    { spell = 281724, type = "buff", unit = "player", titleItemPrefix = 161115},
   }
 }
 
@@ -3982,25 +3990,25 @@ local function handleItem(item)
         print ("Error: Unknown spell", item.spell);
       end
     end
-    if (icon and not item.icon) then
-      item.icon = icon;
-    end
+    --if (icon and not item.icon) then
+    --  item.icon = icon;
+    --end
 
     item.title = item.overideTitle or name;
-    if (item.titleSuffix) then
-      item.title = item.title .. " " .. item.titleSuffix;
-    end
-    if (item.titlePrefix) then
-      item.title = item.titlePrefix .. item.title;
-    end
-    if (item.titleItemPrefix) then
-      local prefix = GetItemInfo(item.titleItemPrefix);
-      if (prefix) then
-        item.title = prefix .. "-" .. item.title;
-      else
-        waitingForItemInfo = true;
-      end
-    end
+    --if (item.titleSuffix) then
+    --  item.title = item.title .. " " .. item.titleSuffix;
+    --end
+    --if (item.titlePrefix) then
+    --  item.title = item.titlePrefix .. item.title;
+    --end
+    --if (item.titleItemPrefix) then
+    --  local prefix = GetItemInfo(item.titleItemPrefix);
+    --  if (prefix) then
+    --    item.title = prefix .. "-" .. item.title;
+    --  else
+    --    waitingForItemInfo = true;
+    --  end
+    --end
   end
   return waitingForItemInfo;
 end
@@ -4008,6 +4016,7 @@ end
 
 local delayedEnrichDatabase = false;
 local itemInfoReceived = CreateFrame("frame")
+itemInfoReceived:RegisterEvent("PLAYER_LOGIN");
 
 local enrichTries = 0;
 local function enrichDatabase()
@@ -4049,9 +4058,17 @@ local function enrichDatabase()
   end
 end
 
-enrichDatabase();
+itemInfoReceived:SetScript("OnEvent", function( self, event)
+  if event == "PLAYER_LOGIN" then
+    for k,v in pairs( templates.class) do
+      if k ~= myClass then
+        templates.class[k] = nil
+      end
+    end
+    enrichDatabase();
+    N.templates = templates
+  end
 
-itemInfoReceived:SetScript("OnEvent", function()
   if (not delayedEnrichDatabase) then
     delayedEnrichDatabase = true;
     C_Timer.After(2, function()

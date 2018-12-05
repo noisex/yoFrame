@@ -95,7 +95,7 @@ function rActionBar:CreateActionBar2(addonName,cfg)
   cfg.blizzardBar = MultiBarBottomLeft
   cfg.frameName = addonName.."Bar2"
   cfg.frameParent = cfg.frameParent or UIParent
-  cfg.frameTemplate = "SecureHandlerStateTemplate"  
+  cfg.frameTemplate = "SecureHandlerStateTemplate"
   cfg.frameVisibility = '[vehicleui] hide; [overridebar] hide; [petbattle] hide; show' --cfg.frameVisibility or  "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"
   local buttonName = "MultiBarBottomLeftButton"
   local numButtons = NUM_ACTIONBAR_BUTTONS

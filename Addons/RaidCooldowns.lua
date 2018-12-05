@@ -19,7 +19,9 @@ local bars = {}
 CreateAnchor("yo_MoveRaidCD", "Move RaidCD", 230, 150, 30, 150, "LEFT", "LEFT")
 
 local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
-RaidCDAnchor:SetPoint("BOTTOM", "yo_MoveRaidCD")
+--RaidCDAnchor:SetPoint("BOTTOM", "yo_MoveRaidCD")
+RaidCDAnchor:SetPoint("TOPLEFT", "yo_MoveRaid", "BOTTOMLEFT", 30, -40)
+
 RaidCDAnchor:SetSize(186 + 32, 20)
 
 local FormatTime = function(time)
@@ -43,7 +45,8 @@ local UpdatePositions = function()
 		if i == 1 then
 			bars[i]:SetPoint("BOTTOMRIGHT", RaidCDAnchor, "BOTTOMRIGHT", -2, 2)
 		else
-			bars[i]:SetPoint("BOTTOMLEFT", bars[i-1], "TOPLEFT", 0, 5)
+			--bars[i]:SetPoint("BOTTOMLEFT", bars[i-1], "TOPLEFT", 0, 5)
+			bars[i]:SetPoint("TOPLEFT", bars[i-1], "BOTTOMLEFT", 0, -5)
 		end
 		bars[i].id = i
 	end
@@ -95,7 +98,7 @@ local CreateBar = function()
 	local bar = CreateFrame("Statusbar", nil, UIParent)
 	--bar:SetFrameStrata("MEDIUM")
 	bar:SetSize(186 + 28, 20)
-	
+
 	bar:SetStatusBarTexture( texture)
 	bar:SetMinMaxValues(0, 100)
 
@@ -128,7 +131,7 @@ local CreateBar = function()
 	bar.icon.backdrop:SetPoint("BOTTOMRIGHT", 2, -2)
 	CreateStyle(bar.icon.backdrop, 2)
 	bar.icon.backdrop:SetFrameStrata("BACKGROUND")
-	
+
 	return bar
 end
 
@@ -141,7 +144,7 @@ local StartTimer = function(name, spellId)
 	bar.right:SetText(FormatTime(raid_CD_Spells[spellId]))
 	bar.icon:SetNormalTexture( icon)
 	bar.icon:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	
+
 	bar.spell = spell
 	bar:Show()
 	local color = RAID_CLASS_COLORS[select(2, UnitClass(name))]
@@ -168,27 +171,27 @@ local OnEvent = function(self, event, ...)
 		local _, eventType, _, _, sourceName, sourceFlags, _, _, _, _, _, spellId = CombatLogGetCurrentEventInfo ()
 
 		if band(sourceFlags, filter) == 0 then return end
-		
+
 		if raid_CD_Spells[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
 			StartTimer( strsplit( "-", sourceName), spellId)
 		end
-	
+
 	elseif event == "CHALLENGE_MODE_START" then
 		for k, v in pairs(bars) do	StopTimer(v)	end
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	
+
 	elseif event == "CHALLENGE_MODE_COMPLETED" then
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	
+
 	elseif event == "ENCOUNTER_END" or event == "ENCOUNTER_START" then
 		if UnitInRaid("player") then
-			for k, bar in pairs( bars) do 
+			for k, bar in pairs( bars) do
 				--print("fsfsfsdfsfsfsfsfs", bar)
-				StopTimer( bar) 
+				StopTimer( bar)
 			end
 		end
 	else
-		if not yo.Addons.RaidCoolDowns then 
+		if not yo.Addons.RaidCoolDowns then
 			self:UnregisterAllEvents()
 			self:SetScript("OnMouseDown", nil)
 			self:SetScript("OnEnter", nil)
@@ -198,7 +201,7 @@ local OnEvent = function(self, event, ...)
 			bar = nil
 		return
 	end
-	
+
 	end
 end
 

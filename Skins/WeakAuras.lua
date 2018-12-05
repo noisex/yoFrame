@@ -58,7 +58,7 @@ local function styleIcon( region)
 	end
 
 	
-	region.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)	--(0.1, 0.9, 0.1, 0.9) --(0.07, 0.93, 0.07, 0.93)
+	region.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)	--(0.1, 0.9, 0.1, 0.9) --(unpack( yo.tCoord))
 	region.icon.SetTexCoord = dummy
 
 	if region.bar then

@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local addon = CreateFrame("Button", "Butsu")
 local title = addon:CreateFontString(nil, "OVERLAY")
@@ -34,7 +34,7 @@ end
 
 local OnClick = function(self)
 	if not self:GetID() then return end
-	
+
 	if(IsModifiedClick()) then
 		HandleModifiedItemClick(GetLootSlotLink(self:GetID()))
 	else
@@ -42,7 +42,7 @@ local OnClick = function(self)
 		sq = self.quality
 		sn = self.name:GetText()
 		st = self.icon:GetTexture()
-		
+
 		-- master looter
 		LootFrame.selectedLootButton = self:GetName()
 		LootFrame.selectedSlot = ss
@@ -73,9 +73,9 @@ dummy = function() end
 
 CreateBD = function(f, a)
 	f:SetBackdrop({
-		bgFile = media.backdrop, 
-		edgeFile = media.backdrop, 
-		edgeSize = 1, 
+		bgFile = media.backdrop,
+		edgeFile = media.backdrop,
+		edgeSize = 1,
 	})
 	f:SetBackdropColor(.05,.05,.05, a or alpha)
 	f:SetBackdropBorderColor(0, 0, 0)
@@ -89,7 +89,7 @@ local createSlot = function(id)
 	frame:SetHeight(30)
 	frame:SetID(id)
 	CreateBD(frame)
-	
+
 	frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
 	frame:SetScript("OnEnter", OnEnter)
@@ -103,7 +103,7 @@ local createSlot = function(id)
 	iconFrame:ClearAllPoints()
 	iconFrame:SetPoint("RIGHT", frame)
 	CreateBD(iconFrame)
-	
+
 	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
 	icon:SetAlpha(1)
 	icon:SetTexCoord(.07, .93, .07, .93)
@@ -217,7 +217,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 	else
 		self:ClearAllPoints()
 		self:SetUserPlaced(false)
-		self:SetPoint("TOP", yo_MoveLoot, "TOP", 0, 0)		
+		self:SetPoint("TOP", yo_MoveLoot, "TOP", 0, 0)
 	end
 
 	local m, w, t = 0, 0, title:GetStringWidth()
@@ -225,12 +225,12 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 		for i=1, items do
 			local slot = addon.slots[i] or createSlot(i)
 			local texture, item, quantity, _, quality, locked = GetLootSlotInfo(i)
-			
+
 			if texture then
 				local color = ITEM_QUALITY_COLORS[quality]
-				
+
 				local r, g, b = color.r, color.g, color.b
-				
+
 --				print( texture, item, quantity, quality, r, g, b, color)
 
 				if(quantity > 1) then
@@ -250,7 +250,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 				slot.quality = quality
 				m = math.max(m, quality)
 				w = math.max(w, slot.name:GetStringWidth())
-					
+
 				slot.name:SetText(item)
 				slot.name:SetTextColor( r, g, b)
 				slot.icon:SetTexture(texture)
@@ -312,6 +312,8 @@ end
 
 addon.ADDON_LOADED = function(self, event, addon)
 	if(addon == "Butsu") then
+		--title:SetFont( font, fontsize, "OUTLINE")
+
 		db = setmetatable({}, {__index = defaults})
 
 		self:SetScale(frameScale)

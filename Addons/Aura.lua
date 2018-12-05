@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
@@ -65,7 +65,7 @@ local function AuraUpdate( f, lastID, filter)
 		--if isBossDebuff then print ( "|cffff0000 isBossDebuff:|r " .. name .. " ( " .. spellId .. ")" ) end
 		
 		--if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and nameplateShowPersonal and duration >= 10)) then
-		if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and DebuffWhiteList[name])) then
+		if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and N.DebuffWhiteList[name])) then
 			f[lastID].icon:SetTexture( icon)
 			f[lastID].filter = filter
 			f[lastID].id = i
@@ -134,7 +134,7 @@ local function BuffDEbuffDesign(...)
 			if not _G[bf].shadow then
 				blast[i] = idx
 				CreateStyle( _G[bf], 4)
-				_G[bf.."Icon"]:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+				_G[bf.."Icon"]:SetTexCoord(unpack( yo.tCoord))
 				_G[bf.."Count"]:SetFont( fontpx, 16, "OUTLINE")
 				_G[bf.."Count"]:ClearAllPoints()
 				_G[bf.."Count"]:SetPoint( "CENTER", _G[bf], "TOPRIGHT", 0, 0)
@@ -195,7 +195,7 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 				
 					icon.icon = icon:CreateTexture(nil, "BORDER")
 					icon.icon:SetAllPoints()
-					icon.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+					icon.icon:SetTexCoord(unpack( yo.tCoord))
 					icon.icon:SetVertexColor( 1,1,1,1)
 				
 					icon.overlay = CreateFrame("Frame", nil, icon)

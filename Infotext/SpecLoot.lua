@@ -35,7 +35,7 @@ local function OnEvent(self, event)
 		Text1:SetText("Spec: ")
 		
 		Icon1:SetPoint( "LEFT", Text1, "RIGHT", 0, 0)
-		Icon1:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+		Icon1:SetTexCoord(unpack( yo.tCoord))
 		Icon1:SetHeight( RightInfoPanel:GetHeight())
 		Icon1:SetWidth( RightInfoPanel:GetHeight())
 		
@@ -45,7 +45,7 @@ local function OnEvent(self, event)
 		Text2:SetText("Loot: ")
 		
 		Icon2:SetPoint( "LEFT", Text2, "RIGHT", 0, 0)
-		Icon2:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+		Icon2:SetTexCoord(unpack( yo.tCoord))
 		Icon2:SetHeight( RightInfoPanel:GetHeight())
 		Icon2:SetWidth( RightInfoPanel:GetHeight())
 	end

@@ -1,5 +1,5 @@
 
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)
@@ -16,7 +16,7 @@ local function SetTooltip(self)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddDoubleLine(L["Left"], "|cff00ff00" .. nums( max - min) .. " ( " .. floor((max - min) / max * 100 + 0.5) .. "%)")
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine( L["Collected"], "|cff00ff96" .. nums(min, min / max * 100) .. " ( " .. floor((min) / max * 100 + 0.5) .. "%)")	
+	GameTooltip:AddDoubleLine( L["Collected"], "|cff00ff96" .. nums(min, min / max * 100) .. " ( " .. floor((min) / max * 100 + 0.5) .. "%)")
 
 	if(self.rested) then
 		GameTooltip:AddDoubleLine( L["Rest"], "|cff0090ff" .. nums( self.rested) .. " ( " .. floor( self.rested / max * 100 + .5).. "%)")
@@ -28,7 +28,7 @@ end
 
 local function UpdateExp(self, event, owner)
 	--print( "UpdateExp: ", self, event, owner)
-	
+
 	local experience = self --.Experience
 	-- Conditional hiding
 	if(UnitLevel('player') == MAX_PLAYER_LEVEL) then
@@ -38,8 +38,8 @@ local function UpdateExp(self, event, owner)
 	local unit = "player"
 	local min, max = GetXP(unit)
 	local perc = min / max
-	
-	experience:SetStatusBarColor( 1 - perc, 0 + perc, 0, 0.5) 
+
+	experience:SetStatusBarColor( 1 - perc, 0 + perc, 0, 0.7)
 	experience:SetMinMaxValues(0, max)
 	experience:SetValue(min)
 	experience:Show()
@@ -69,7 +69,7 @@ local function EnableExp( self)
 	if (not element or unit ~= "player") then return end
 
 	if (not element:GetStatusBarTexture()) then
-		element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]]) 
+		element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		element:SetStatusBarColor(.901, .8, .601)
 	end
 
@@ -77,7 +77,7 @@ local function EnableExp( self)
 		element.onAlpha = element.onAlpha or 1
 		element.offAlpha = element.offAlpha or 1
 		element:SetAlpha(element.offAlpha)
-		
+
 		element:HookScript('OnLeave', GameTooltip_Hide)
 		element:HookScript('OnEnter', SetTooltip)
 --		element:SetScript("OnLeave", element.OnLeave or HideTooltip)
@@ -86,13 +86,13 @@ local function EnableExp( self)
 	element:RegisterEvent('PLAYER_XP_UPDATE')
 	element:RegisterEvent('PLAYER_LEVEL_UP')
 	element:RegisterEvent('UNIT_PET')
-		
+
 	if(element.Rested) then
 		element:RegisterEvent('UPDATE_EXHAUSTION')
 	end
-	
+
 	element:SetScript("OnEvent", UpdateExp)
-	
+
 	UpdateExp( element)
 	return true
 end
@@ -104,25 +104,20 @@ local function Experience( f)
 	Experience:SetPoint('CENTER', yo_MoveExperience, 'CENTER', 0, 0)
 	Experience:SetStatusBarColor(.901, .8, .601)
 	Experience:EnableMouse(true)
-	Experience:SetWidth(6)
-	Experience:SetHeight(168)
+	Experience:SetSize( yo_MoveExperience:GetSize())
 	Experience:SetOrientation("VERTICAL")
 	Experience:SetFrameLevel(3)
+	table.insert( N.statusBars, Experience)
 
 	Experience.Rested = CreateFrame('StatusBar', nil, f)
 	Experience.Rested:SetStatusBarTexture( texture)
 	Experience.Rested:SetPoint('CENTER', yo_MoveExperience, 'CENTER', 0, 0)
 	Experience.Rested:SetStatusBarColor( 0, 0.5, 1, 0.3)
-	Experience.Rested:SetWidth(6)
-	Experience.Rested:SetHeight(168)
+	Experience.Rested:SetSize( yo_MoveExperience:GetSize())
 	Experience.Rested:SetOrientation("VERTICAL")
 	Experience.Rested:SetFrameLevel(4)
-	
-	local h = CreateFrame("Frame", nil, Experience)
-	h:SetFrameLevel(1)
-	h:SetPoint("TOPLEFT",-5,5)
-	h:SetPoint("BOTTOMRIGHT",5,-5)
-	CreateStyle(h, -1)
+	table.insert( N.statusBars, Experience.Rested)
+	CreateStyle( Experience)
 
 	f.Experience = Experience
 end
@@ -133,7 +128,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if (UnitLevel('player') == MAX_PLAYER_LEVEL) then return end  -- not yo["Addons"].Experience or
-	
+
 	Experience( plFrame)
 	EnableExp( plFrame)
 end)

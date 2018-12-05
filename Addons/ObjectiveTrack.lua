@@ -76,7 +76,7 @@ local function ShowQuestLevelInWatchFrame()
 
 						block.itemButton.NormalTexture = nil
 						block.itemButton:SetNormalTexture( nil)
-						block.itemButton.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+						block.itemButton.icon:SetTexCoord(unpack( yo.tCoord))
 						CreateStyle( block.itemButton, 4, 0, 0)
 						--block.itemButton.shadow:SetBackdropColor( 0, 0, 0, 0)
 						block.itemButton.shadow:SetBackdropBorderColor( 1, 0.7, 0, 1)

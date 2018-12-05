@@ -1,6 +1,6 @@
 local addon, ns = ...
 -- constants
---local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( ns)
 
 --L_GUI_ANNOUNCEMENTS_FEASTS = "Сообщать, когда ставят пир/почту/ремонт"
 --L_GUI_AUTOMATION_CURRENCY_CAP = "Напоминание, если достигнут лимит валюты (Доблесть/Честь)"
@@ -10,28 +10,31 @@ local addon, ns = ...
 
 --L_GUI_MAP_EXPLORE = "Отслеживать на карте 'Первооткрыватель' и 'Хранитель мудрости'"
 
-myClass = select( 2, UnitClass( "player"))
-myColor = RAID_CLASS_COLORS[myClass]
-myColorStr = "|c" .. RAID_CLASS_COLORS[myClass].colorStr 
-myName	= UnitName( "player")
-myRealm = GetRealmName()
-myLogin = GetTime()
-myClient = GetLocale()
-myFaction = UnitFactionGroup("player")
-myLevel = UnitLevel( "player")
-myRace	= select(2, UnitRace('player'))
-mySex	= UnitSex('player')
+myClass 	= select( 2, UnitClass( "player"))
+myColor 	= RAID_CLASS_COLORS[myClass]
+myColorStr 	= "|c" .. RAID_CLASS_COLORS[myClass].colorStr
+myName		= UnitName( "player")
+myRealm 	= GetRealmName()
+myLogin 	= GetTime()
+myClient 	= GetLocale()
+myFaction 	= UnitFactionGroup("player")
+myLevel 	= UnitLevel( "player")
+myRace		= select(2, UnitRace('player'))
+mySex		= UnitSex('player')
 
-dummy = function() return end	
+yo.tCoord 		= {0.07, 0.93, 0.07, 0.93}
+--yo.tCoord 		= {0,1,0,1}
+yo.tCoordBig 	= {0.22, 0.78, 0.22, 0.78}
+yo.tCoordSmall 	= {0.07, 0.93, 0.07, 0.93}
 
-local yo = {} 
+dummy = function() return end
 
 yo["General"] = {
 	["1st"] 	= true,
 	["cFrame"] 	= 0,
 	["cConfig"] = 0,
-	["scriptErrors"]	= false, 
-}	
+	["scriptErrors"]	= false,
+}
 yo["Bags"] = {
 	["enable"] 				= true,
 	["numContainerColumns"] = 11,
@@ -47,10 +50,10 @@ yo["Bags"] = {
 	["showAltBags"]			= true,
 	["showGuilBank"]		= true,
 	["countAltBags"]		= true,
-}			
+}
 yo["Addons"] = {
-	["ChangeSystemFonts"] 			= true,			--	
-	["FlashIconCooldown"] 			= true,				
+	["ChangeSystemFonts"] 			= true,			--
+	["FlashIconCooldown"] 			= true,
 	["RaidUtilityPanel"] 			= true,
 	["ArtifactPowerbar"] 			= true,
 	["PredictionHealth"] 			= true,
@@ -103,7 +106,7 @@ yo["ActionBar"] = {
 	["enable"]		= true,
 	["ShowGrid"]	= true,
 	["HideHotKey"]	= true,
-	["CountSize"]	= 14,  
+	["CountSize"]	= 14,
 	["HideName"]	= true,
 	["MicroMenu"]	= true,
 	["MicroScale"]	= 0.75,
@@ -225,10 +228,10 @@ yo["NamePlates"] = {
 	["badGood"]			= "1,0.5,0.5",
 	["glowTarget"]		= true,
 	["glowBadType"]		= "pixel", 	-- button, cast, false
-	["maxDispance"]		= 40, 
+	["maxDispance"]		= 40,
 	["showResourses"]	= true,
 }
-	
+
 yo["Media"] = {
 	--["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\statusbar4",
 	["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\bar_dground",
@@ -241,6 +244,10 @@ yo["Media"] = {
 	["sysfontsize"]	= 10,
 	["AutoScale"] 	= "auto",
 	["ScaleRate"] 	= 0.71,
+	["fontScala"]	= 0,
+	["shadowColor"]	= "0.09,0.09,0.09",
+	["edgeSize"]	= 4,
+	["classBorder"]	= false,
 }
 
 yo["Raid"] = {
@@ -310,8 +317,8 @@ yo["fliger"] = {
 	["pBuffSize"]		= 40,
 	["pDebuffSize"]		= 50,
 	["tDebuffDirect"]	= "RIGHT",
-	["pCDDirect"]		= "RIGHT",	
-	["pProcDirect"]		= "LEFT",	
+	["pCDDirect"]		= "RIGHT",
+	["pProcDirect"]		= "LEFT",
 	["pBuffDirect"]		= "LEFT",
 	["pDebuffDirect"]	= "LEFT",
 	["pCDTimer"]		= 15,
@@ -339,6 +346,14 @@ yo["CTA"] = {
 	["hideLast"]= false,
 }
 
+texture 	= 	yo.Media.texture
+texhl 		=	yo.Media.texhl
+texglow 	= 	yo.Media.texglow
+font 		= 	yo.Media.font
+fontChat	=	yo.Chat.chatFont
+fontpx		=	yo.Media.fontpx
+fontsize 	=	yo.Media.fontsize
+fontstyle 	= 	"OUTLINE"
 
 local logan = CreateFrame("Frame")
 logan:RegisterEvent("ADDON_LOADED")
@@ -348,13 +363,13 @@ logan:SetScript("OnEvent", function(self, event, name)
 	--print(name)
 
 	if addon ~= name then return end
-	
+
 	if yo_AllData 		== nil then yo_AllData = {} end
 	if yo_AllConfig 	== nil then yo_AllConfig = {} end
 	if yo_PersonalConfig== nil then yo_PersonalConfig = {} end
 
 	local yo_tCfg = {}
-	
+
 	if yo_AllData[myRealm] and yo_AllData[myRealm][myName] and yo_AllData[myRealm][myName].PersonalConfig then
 		yo_tCfg = yo_PersonalConfig
 	else
@@ -366,16 +381,16 @@ logan:SetScript("OnEvent", function(self, event, name)
 		if yo[group1] == nil then
 			yo_tCfg[group1] = nil
 		else
-		
-			if type( options1) == "table" then			
+
+			if type( options1) == "table" then
 				for group2, options2 in pairs( options1) do
-	
+
 					if type( options2) == "table" then
 						--print( group2, type( options2), ( yo[group1][group2] or "BAD GROUP 2 lvl"))
 						if yo[group1][group2] == nil then
 							yo_tCfg[group1][group2] = nil
 						else
-					
+
 							for group3, options3 in pairs( options2) do
 								--print( "-- ", group1, group2, group3, options3)  -- 3  plant data
 								if yo[group1][group2][group3] == options3 then
@@ -383,9 +398,9 @@ logan:SetScript("OnEvent", function(self, event, name)
 								else
 									yo[group1][group2][group3] = options3
 								end
-							end	
+							end
 						end
-	
+
 					else
 						--print( "- ", group1, group2, options2)  -- 2  plant data
 						if yo[group1][group2] == options2 then
@@ -404,7 +419,7 @@ logan:SetScript("OnEvent", function(self, event, name)
 		if yo_AllConfig[group1] == nil then
 			yo_AllConfig[group1] = {}
 		end
-			
+
 		if yo_PersonalConfig[group1] == nil then
 			yo_PersonalConfig[group1] = {}
 		end
@@ -422,7 +437,7 @@ logan:SetScript("OnEvent", function(self, event, name)
 			end
 		end
 	end
-	
+
 	texture 	= 	yo.Media.texture
 	texhl 		=	yo.Media.texhl
 	texglow 	= 	yo.Media.texglow
@@ -431,11 +446,8 @@ logan:SetScript("OnEvent", function(self, event, name)
 	fontpx		=	yo.Media.fontpx
 	fontsize 	=	yo.Media.fontsize
 	fontstyle 	= 	"OUTLINE"
-	
+
 	sysfontsize	=	yo.Media.sysfontsize
 
-	ns[2] = yo
+	--ns[2] = yo
 end)
-
-ns[2] = yo
---yoFrame = ns

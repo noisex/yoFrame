@@ -70,9 +70,9 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 	if not itemLink then return end
 
 	local itemID, _, _, slot = GetItemInfoInstant(itemLink);
-	
-	if ( slot and #slot > 5 and slot ~= "INVTYPE_FINGER" and slot ~= "INVTYPE_TRINKET" and slot ~= "INVTYPE_NECK" and slot ~= "INVTYPE_BAG") and itemLink ~= cashed then		
-		
+
+	if ( slot and #slot > 5 and slot ~= "INVTYPE_FINGER" and slot ~= "INVTYPE_TRINKET" and slot ~= "INVTYPE_NECK" and slot ~= "INVTYPE_BAG") and itemLink ~= cashed then
+
 		cashed = itemLink
 		local x,y = self:GetCenter();
 		local mogpoint, ownerpoint, shiftX
@@ -94,7 +94,7 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 			ownerpoint = "BOTTOM"..ownerpoint;
 		end
 
-		--print( slot, mogpoint, ownerpoint)	
+		--print( slot, mogpoint, ownerpoint)
 		yo_Model:ClearAllPoints();
 		yo_Model:SetPoint(mogpoint, GameTooltip, ownerpoint, shiftX, 0);
 
@@ -103,14 +103,14 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 --myModel:SetCamera(2);     -- Selects camera at 0,0,0 (movable)
 
 		yo_Model:Show()
-		yo_Model:Undress()	
+		yo_Model:Undress()
 		--yo_Model:SetItem(itemID)
 		yo_Model:TryOn( itemLink)
 
 		yo_Model:SetScript("OnUpdate",function(self,elapsed)
 			yo_Model:SetFacing( yo_Model:GetFacing() + elapsed);
 		end)
-	end	
+	end
 end)
 
 GameTooltip:HookScript( "OnHide", function(self)
@@ -140,7 +140,7 @@ end)
         --    known:SetText(label)
         --    known:Show()
         --end
-        
+
 ----------------------------------------------------------------------------------------
 --	Test Icons
 ----------------------------------------------------------------------------------------
@@ -181,15 +181,15 @@ end)
 --end
 
 local function test_icon()
-	f = CreateFrame( "Button", "yo_test", UIParent) --, "SecureUnitButtonTemplate") 
+	f = CreateFrame( "Button", "yo_test", UIParent) --, "SecureUnitButtonTemplate")
 	f:SetWidth(50)
 	f:SetHeight(50)
 	f:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
-	
+
 	--f.icon = f:CreateTexture( nil, "OVERLAY")
 	--f.icon:SetAllPoints( f)
 	--f.icon:SetTexture( 511726)
-	
+
 	f.outerGlow = f:CreateTexture( "OuterGlow", "ARTWORK")
 	f.outerGlow:SetPoint("CENTER", f)
 	f.outerGlow:SetWidth( f:GetWidth() * 2)
@@ -205,12 +205,12 @@ local function test_icon()
 	--f.outerGlow:Hide()
 
 	--f:RegisterForClicks("AnyDown")
-	--f:EnableMouse( true)	
+	--f:EnableMouse( true)
 	--f:EnableMouseWheel( true)
 	--f:EnableKeyboard( false)
 
 	--f:SetScript("OnKeyDown", KeyPressed)
-	
+
 	--f:SetScript("OnMouseDown", KeyPressed)
 	--f:SetScript("OnMouseWheel", function(self, delta) if delta>0 then KeyPressed( self, "MOUSEWHEELUP") else KeyPressed( self, "MOUSEWHEELDOWN") end end)
 
@@ -220,30 +220,30 @@ local function test_icon()
 	--	print('OnLeave')
 	--end)
 
-	--f:SetScript("OnEnter", function(self, ...)		
+	--f:SetScript("OnEnter", function(self, ...)
 	--	f:EnableKeyboard( true)
 	--	f:SetScript("OnKeyDown", KeyPressed)
 	--	print('OnEnter')
 	--end)
-	
+
 	--local aButtonId, aModiKey, anAction = 1, "", "Омоложение"
 
 	--f:SetAttribute("unit", "player")
 	--f:SetAttribute("type1", "spell");
-	--f:SetAttribute("spell1", "Омоложение");	
+	--f:SetAttribute("spell1", "Омоложение");
 
 	--f:SetAttribute( "type2", "spell");
-	--f:SetAttribute( "spell2", "Жизнецвет");	
+	--f:SetAttribute( "spell2", "Жизнецвет");
 
 	--f:SetAttribute( "shift-type1", "spell");
-	--f:SetAttribute( "shift-spell1", "Восстановление");	
+	--f:SetAttribute( "shift-spell1", "Восстановление");
 
 	--f:SetAttribute( "shift-type2", "spell");
-	--f:SetAttribute( "shift-spell2", "Буйный рост");	
+	--f:SetAttribute( "shift-spell2", "Буйный рост");
 
 	--f:SetAttribute( "type-w2", "macro");
-	--f:SetAttribute( "macrotext-w2", "/cast Буйный рост");	
-	
+	--f:SetAttribute( "macrotext-w2", "/cast Буйный рост");
+
 	--RegisterUnitWatch( f)
 	f:Show()
 end
@@ -277,62 +277,98 @@ SLASH_TEST_YO2 = "/нщеуые"
 ---------------------------------------------------------------------------------------------------
 --- Auto Repare and Gray Sell
 ---------------------------------------------------------------------------------------------------
+local stop = true
+local list = {}
 
-local f = CreateFrame("Frame")
-f:SetScript("OnEvent", function()
-	if yo.Addons.AutoSellGrayTrash then
-		--local empowering = select(1, GetSpellInfo(228111)) 
-		local c = 0
-		for b=0,4 do
-			for s=1,GetContainerNumSlots(b) do
-				local l, ID = GetContainerItemLink(b, s), GetContainerItemID (b, s)
-				if (l and ID) then
-									
-					local p = 0
-					local Mult1, Mult2 = select(11, GetItemInfo(l)), select(2, GetContainerItemInfo(b, s))
+--local function SellGray()
+--  if stop then return end
+--  for bag = 0, 4 do
+--    for slot= 0, GetContainerNumSlots( bag) do
+--      if stop then return end
+--      local link = GetContainerItemLink(bag, slot)
+--      if link and select(3, GetItemInfo(link)) == 0 and not list["b"..bag.."s"..slot] then
+--        print( A, "selling", link, "bag", bag, "slot", slot)
+--        list["b"..bag.."s"..slot] = true
+--        UseContainerItem( bag, slot)
+--        C_Timer.After( 0.2, SellGray)
+--        return
+--      end
+--    end
+--  end
+--end
 
-					if (Mult1 and Mult2) then
-						p = Mult1 * Mult2
-					end
 
-					if select(3, GetItemInfo(l))==0 and p>0 then
-						UseContainerItem(b, s)
-						PickupMerchantItem()
-						c = c+p
-					end
+local function SellGray()
+	--local empowering = select(1, GetSpellInfo(228111))
+	local c = 0
+	for b = 0, 4 do
+		for s = 1, GetContainerNumSlots(b) do
+			local l, ID = GetContainerItemLink(b, s), GetContainerItemID (b, s)
+			if (l and ID) then
+
+				local p = 0
+				local Mult1, Mult2 = select(11, GetItemInfo(l)), select(2, GetContainerItemInfo(b, s))
+
+				if (Mult1 and Mult2) then
+					p = Mult1 * Mult2
+				end
+
+				if select(3, GetItemInfo(l)) == 0 and p > 0 then
+					UseContainerItem(b, s)
+					--PickupMerchantItem()
+					c = c + p
 				end
 			end
-		end
-	
-		if c>0 then
-			DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." " .. formatMoney( c),255,255,0)
 		end
 	end
-	
-	if yo.Addons.AutoRepair then
-		cost, possible = GetRepairAllCost()
-		if cost>0 then
-			if possible then
-				if CanGuildBankRepair() then
-					RepairAllItems( true)
-					PlaySound(SOUNDKIT.ITEM_REPAIR);
-					cost, possible = GetRepairAllCost()
-					if possible then
+
+	if c>0 then
+		DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." " .. formatMoney( c),255,255,0)
+	end
+end
+
+local function OnMerchEvent(self,event)
+
+  	if event == "MERCHANT_SHOW" then
+
+  		if yo.Addons.AutoSellGrayTrash then
+    		stop = false
+    		wipe(list)
+    		SellGray()
+    	end
+
+  		if yo.Addons.AutoRepair then
+			cost, possible = GetRepairAllCost()
+			if cost > 0 then
+				if possible then
+					if CanGuildBankRepair() then
+						RepairAllItems( true)
+						PlaySound(SOUNDKIT.ITEM_REPAIR);
+						cost, possible = GetRepairAllCost()
+						if possible then
+							RepairAllItems()
+						end
+					else
 						RepairAllItems()
+						PlaySound(SOUNDKIT.ITEM_REPAIR);
 					end
+					DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. formatMoney( cost),255,255,0)
 				else
-					RepairAllItems()
-					PlaySound(SOUNDKIT.ITEM_REPAIR);
+					DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY,255,0,0)
 				end
-				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. formatMoney( cost),255,255,0)
-			else
-				DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY,255,0,0)
 			end
 		end
-	end		
-end)
 
+  	elseif event == "MERCHANT_CLOSED" then
+    	stop = true
+  	end
+end
+
+local f = CreateFrame("Frame")
 f:RegisterEvent("MERCHANT_SHOW")
+f:RegisterEvent("MERCHANT_CLOSED")
+f:SetScript("OnEvent", OnMerchEvent)
+
 hooksecurefunc("MerchantItemButton_OnModifiedClick", function(self, ...)
 	if ( IsAltKeyDown() ) then
 		local maxStack = select(8, GetItemInfo(GetMerchantItemLink(self:GetID())))
@@ -407,7 +443,7 @@ local AchScreen = CreateFrame("Frame")
 --agog:RegisterEvent("START_LOOT_ROLL")
 --agog:SetScript("OnEvent", function(_, _, id)
 --	if not yo.Addons.AutoGreedOnLoot then return end
---	if not id then return end 
+--	if not id then return end
 --	local _, _, _, quality, bop, _, _, canDE = GetLootRollItemInfo(id)
 --	if quality == 2 and not bop then RollOnLoot(id, canDE and 3 or 2) end
 --end)
@@ -426,7 +462,7 @@ local AchScreen = CreateFrame("Frame")
 --		if frame.which == "CONFIRM_LOOT_ROLL" and frame.data == id and frame.data2 == rollType and frame:IsVisible() then StaticPopup_OnClick(frame, 1) end
 --	end
 --end)
-	
+
 --StaticPopupDialogs["LOOT_BIND"].OnCancel = function(self, slot)
 --	if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then ConfirmLootSlot(slot) end
 --end
@@ -439,7 +475,7 @@ local function update()
 	local numButtons = #buttons
 	local scrollOffset = HybridScrollFrame_GetOffset(QuestLogScrollFrame)
 	local numEntries = GetNumQuestLogEntries()
-	
+
 	for i = 1, numButtons do
 		local questIndex = i + scrollOffset
 		local questLogTitle = buttons[i]
@@ -533,34 +569,34 @@ end
 --------------------------------------------------------------------------------------
 
 local function IsFriend( name)
-	for i = 1, GetNumFriends() do 
-		if( GetFriendInfo( i) == name) then 
-			return true 
-		end 
+	for i = 1, GetNumFriends() do
+		if( GetFriendInfo( i) == name) then
+			return true
+		end
 	end
-	if( IsInGuild()) then 
-		for i = 1, GetNumGuildMembers() do 
-			if( strsplit( "-", GetGuildRosterInfo( i) or "?") == name) then 
-				return true 
-			end 
-		end 
+	if( IsInGuild()) then
+		for i = 1, GetNumGuildMembers() do
+			if( strsplit( "-", GetGuildRosterInfo( i) or "?") == name) then
+				return true
+			end
+		end
 	end
-	local b, a = BNGetNumFriends() 
-	for i = 1, a do 
-		local bName = select( 5, BNGetFriendInfo( i)) 
-		if bName == name then 
-			return true 
-		end 
+	local b, a = BNGetNumFriends()
+	for i = 1, a do
+		local bName = select( 5, BNGetFriendInfo( i))
+		if bName == name then
+			return true
+		end
 	end
 end
 
 local function OnEvent( self, event, ...)
 	--print( self, event, ...)
-	
+
 	if event == "PARTY_INVITE_REQUEST" then
 		if not yo.Addons.AutoInvaitFromFriends then return end
-		
-		local nameinv, _ = ... 
+
+		local nameinv, _ = ...
 		nameinv = strsplit( "-", nameinv) -- and ExRT.F.delUnitNameServer(nameinv)
 		if nameinv and (IsFriend( nameinv)) then
 			AcceptGroup()
@@ -668,7 +704,7 @@ function f:OnEvent(event)
     self.galaxy:SetRotation(math.rad(180))
     return
   end
-  if UnitIsAFK("player") and yo.Addons.afk then    
+  if UnitIsAFK("player") and yo.Addons.afk then
     self:Enable()
   else
     self:Disable()
@@ -791,9 +827,9 @@ autoinvite:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 	end
 
 	if yo.Addons.AutoLeader then
-		if ( UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) 
-			and ( UnitInParty( strsplit( "-", arg2)) or UnitInRaid( strsplit( "-", arg2))) 
-			and ( arg1:lower():match( "!leader") or arg1:lower():match( "!лидер")) 
+		if ( UnitIsGroupLeader("player") or UnitIsGroupAssistant("player"))
+			and ( UnitInParty( strsplit( "-", arg2)) or UnitInRaid( strsplit( "-", arg2)))
+			and ( arg1:lower():match( "!leader") or arg1:lower():match( "!лидер"))
 			and UnitIsInMyGuild( strsplit( "-", arg2))
 				then
 
@@ -810,7 +846,7 @@ autoinvite:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 end)
 
 ----------------------------------------------------------------------------------------
---	Undress button 
+--	Undress button
 ----------------------------------------------------------------------------------------
 local strip = CreateFrame("Button", "DressUpFrameUndressButton", DressUpFrame, "UIPanelButtonTemplate")
 strip:SetText( "DRESS OFF")
@@ -828,5 +864,5 @@ end)
 strip.model = DressUpModel
 
 function GameTooltipOnLeave()
-	GameTooltip:Hide() 
+	GameTooltip:Hide()
 end

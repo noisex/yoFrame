@@ -16,7 +16,7 @@ L.addonShortcut   = "rab"
 -----------------------------
 -- rActionBar Global
 -----------------------------
---					_G[bf.."Icon"]:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+--					_G[bf.."Icon"]:SetTexCoord(unpack( yo.tCoord))
 
 rActionBar = {}
 rActionBar.addonName = A

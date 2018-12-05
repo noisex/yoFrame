@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local tick, ptick = 1, 0
 
@@ -26,7 +26,7 @@ local lasttime = 0
 local function Hide()
   	if Minimap:IsMouseOver() then return end
   	if time() == lasttime then return end
-  	
+
   	GameTimeFrame:SetAlpha( C_Calendar.GetNumPendingInvites())
   	TimeManagerClockButton:SetAlpha( 1)
   	MiniMapTracking:SetAlpha(0)
@@ -34,7 +34,7 @@ local function Hide()
   	MiniMapInstanceDifficulty:SetAlpha(0)
   	GuildInstanceDifficulty:SetAlpha(0)
 
-	if yo.Addons.MiniMapHideText then  	
+	if yo.Addons.MiniMapHideText then
 		MinimapZoneTextButton:SetAlpha(0)
 	end
 
@@ -50,14 +50,14 @@ end
 
 local function MiniInit()
 	if not yo.Addons.MiniMap then return end
-	
+
 	--CreateStyle( DurabilityFrame, 3, 0)
 	DurabilityFrame:ClearAllPoints()
 	DurabilityFrame:SetPoint("BOTTOM", plFrame, "TOP", 0, 20)
 	--DurabilityFrame:SetFrameLevel( 10)
 	DurabilityFrame.ClearAllPoints = dummy
 	DurabilityFrame.SetPoint = dummy
-	
+
 
 	--MinimapCluster
 	MinimapCluster:SetScale(cfg.scale)
@@ -92,7 +92,7 @@ local function MiniInit()
 	MinimapZoneTextButton:SetFrameStrata("MEDIUM")
 	MinimapZoneTextButton:SetPoint("TOP", Minimap, "TOP", 0, 2)
 	--MinimapZoneTextButton:SetAlpha(0.7)
-	
+
 	--dungeon info
 	MiniMapInstanceDifficulty:ClearAllPoints()
 	MiniMapInstanceDifficulty:SetPoint("TOP",Minimap,"TOP",0,-10)
@@ -214,7 +214,7 @@ local function pvpTimer( self, elapsed)
 		self.pvpIcon:Hide()
 		self.pvpText:Hide()
 		self:SetScript("OnUpdate", nil)
-	end	
+	end
 end
 
 local function CalendarPend( self, event, ...)
@@ -222,15 +222,15 @@ local function CalendarPend( self, event, ...)
 
 	if event == "MINIMAP_PING" then
 		local unit = ...
-		if unit 
-			--and not UnitIsUnit("player", unit) 
+		if unit
+			--and not UnitIsUnit("player", unit)
 			then
-		
+
 			if not self.pingText then
 				self.pingText = self:CreateFontString(nil, "OVERLAY")
 				self.pingText:SetFont( font, fontsize, "OUTLINE")
 				self.pingText:SetPoint("CENTER", Minimap, "TOP", 0, -40)
-				self.pingText:Hide()			
+				self.pingText:Hide()
 			end
 
 			local uclass = ( select( 2, UnitClass( unit)) or 1)
@@ -245,23 +245,23 @@ local function CalendarPend( self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		MiniInit()
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		if IsPVPTimerRunning() then			
+		if IsPVPTimerRunning() then
 			self:SetScript("OnUpdate", pvpTimer)
-		end	
+		end
 
 	elseif event == "CALENDAR_EVENT_ALARM" then
 		local title, hour, minute = ...;
 		local info = ChatTypeInfo["SYSTEM"];
 		DEFAULT_CHAT_FRAME:AddMessage(format(CALENDAR_EVENT_ALARM_MESSAGE, title), info.r, info.g, info.b, info.id);
 		UIFrameFlash(GameTimeCalendarEventAlarmTexture, 1.0, 1.0, 6);
-	
+
 	elseif event == "PLAYER_FLAGS_CHANGED" then
 		if IsPVPTimerRunning() then
 			self:SetScript("OnUpdate", pvpTimer)
-		end	
+		end
 	else
 		print("|cffff0000Debug event: |r", event, ... )
-	end	
+	end
 end
 
 local calevent = CreateFrame("Frame", nil, Minimap)
@@ -282,7 +282,7 @@ function HidePing(...)
 end
 
 ----------------------------------------------------------------------------------------
---	Creating Coordinate 
+--	Creating Coordinate
 ----------------------------------------------------------------------------------------
 local function coordUpdate( self, elapsed)
 	tick  = tick + elapsed
@@ -293,18 +293,18 @@ local function coordUpdate( self, elapsed)
 			return
 		else
 			local r, b, g = strsplit( ",", yo.Addons.MMCoordColor)
-			
+
 			local fontsize = yo.Addons.MMCoordSize
 			self.MiniMapText:SetTextColor( r, b, g)
 			self.MiniMapText:SetFont( font, fontsize)
 		end
-		
+
 		tick = 0
-		
+
 		local mapID = C_Map.GetBestMapForUnit("player")
 
 		if mapID and C_Map.GetPlayerMapPosition( mapID, "player") then
-			local x, y = C_Map.GetPlayerMapPosition( mapID, "player"):GetXY() 
+			local x, y = C_Map.GetPlayerMapPosition( mapID, "player"):GetXY()
 
 			x = math.floor(100 * x) or 0
 			y = math.floor(100 * y) or 0
@@ -404,11 +404,11 @@ end)
 		-- Minimap_OnClick(self)
 	-- end
 -- end
-	
+
 	--menuFrame:SetTemplate("Transparent", true)
-	
-	
-	
+
+
+
 -- local f = CreateFrame('Button', nil, UIParent)
 -- f:SetSize(11,8)
 -- f:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOMLEFT', 0, 0)
@@ -449,13 +449,13 @@ end)
     -- GameTooltip:Hide()
 -- end)
 
--- f:SetScript('OnEnter', function(self) 
+-- f:SetScript('OnEnter', function(self)
     -- GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 25, -5)
     -- GameTooltip:AddLine(MAINMENU_BUTTON)
     -- GameTooltip:Show()
 -- end)
 
--- f:SetScript('OnLeave', function() 
+-- f:SetScript('OnLeave', function()
     -- GameTooltip:Hide()
 -- end)
 -- end

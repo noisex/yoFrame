@@ -1,13 +1,5 @@
-local L, yo = unpack( select( 2, ...))
-
-texture	=	yo.Media.texture
-texhl 	=	yo.Media.texhl
-texglow = 	yo.Media.texglow
-font 	= 	yo.Media.font
-fontpx	=	yo.Media.fontpx
---fontsize =	yo.Media.fontsize
-
-fontsize = yo.Chat.fontsize
+local addon, ns = ...
+local L, yo, N = unpack( ns)
 
 RGBToHex1 = function(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
@@ -99,12 +91,12 @@ end
 
 local function CreateBackdrop(f, t, tex)
 	if f.backdrop then return end
-	
+
 	local b = CreateFrame("Frame", nil, f)
 	b:SetPoint("TOPLEFT", -2, 2)
 	b:SetPoint("BOTTOMRIGHT", 2, -2)
 	CreateStyle(b, 2)
-	
+
 	f.backdrop = b
 end
 
@@ -138,7 +130,7 @@ local function SetChatStyle(frame)
 	else
 		_G[chat]:SetFading( false)
 	end
-	
+
 	-- Hide textures
 	for j = 1, #CHAT_FRAME_TEXTURES do
 		_G[chat..CHAT_FRAME_TEXTURES[j]]:SetTexture(nil)
@@ -167,30 +159,30 @@ local function SetChatStyle(frame)
 	--Kill(_G[format("ChatFrame%sButtonFrameBottomButton", id)])
 	--Kill(_G[format("ChatFrame%sButtonFrameMinimizeButton", id)])
 	--Kill(_G[format("ChatFrame%sButtonFrame", id)])
-	
+
 	Kill(_G[format("ChatFrame%sEditBoxFocusLeft", id)])
 	Kill(_G[format("ChatFrame%sEditBoxFocusMid", id)])
 	Kill(_G[format("ChatFrame%sEditBoxFocusRight", id)])
-	
+
 	-- Kills off the retarded new circle around the editbox
 	Kill(_G[format("ChatFrame%sEditBoxLeft", id)])
 	Kill(_G[format("ChatFrame%sEditBoxMid", id)])
 	Kill(_G[format("ChatFrame%sEditBoxRight", id)])
 
 	Kill(_G[format("ChatFrame%sTabGlow", id)])
-	
-	
+
+
 	-- Kill bubble tex/glow
 	if _G[chat.."Tab"].conversationIcon then Kill(_G[chat.."Tab"].conversationIcon) end
 
 	-- Disable alt key usage
 	_G[chat.."EditBox"]:SetAltArrowKeyMode(false)
 	_G[chat.."EditBox"]:Hide()
-	
+
 		-- Script to hide editbox instead of fading editbox to 0.35 alpha via IM Style
 	_G[chat.."EditBox"]:HookScript("OnEditFocusGained", function(self) self:Show() end)
 	_G[chat.."EditBox"]:HookScript("OnEditFocusLost", function(self) self:Hide() end)
-	
+
 	_G[chat.."Tab"]:HookScript("OnClick", function() _G[chat.."EditBox"]:Hide() end)
 
 	local editbox = _G["ChatFrame"..id.."EditBox"]
@@ -217,7 +209,7 @@ local function SetChatStyle(frame)
 		end
 	end)
 
-	
+
 	-- Rename combat log tab
 	if _G[chat] == _G["ChatFrame2"] then
 		StripTextures(CombatLogQuickButtonFrame_Custom)
@@ -284,12 +276,12 @@ local function SetupChatPosAndFont(self)
 		chat.ScrollBar.SetPoint = function() return end
 		chat.ScrollBar.ClearAllPoints = function() return end
 		--chat.ScrollBar:SetPoint( "TOPRIGHT", LeftDataPanel, "TOPRIGHT", 50, 0)
-	
+
 		chat.ScrollToBottomButton:ClearAllPoints()
 		chat.ScrollToBottomButton:SetPoint( "TOPRIGHT", LeftDataPanel, "TOPRIGHT", 0, 0)
 		chat.ScrollToBottomButton.SetPoint = function() return end
 		chat.ScrollToBottomButton.ClearAllPoints = function() return end
-		
+
 		-- Font and font style for chat
 		chat:SetFont( yo.Chat.chatFont, fontsize, "OVERLAY")
 		chat:SetShadowOffset(1, -1)
@@ -299,7 +291,7 @@ local function SetupChatPosAndFont(self)
 			chat:ClearAllPoints()
 			chat:SetSize(435, 132)
 			chat:SetPoint("BOTTOMLEFT", LeftDataPanel, "BOTTOMLEFT", 3, 20)
-			
+
 			FCF_SavePositionAndDimensions(chat)
 		elseif i == 2 then
 			if false then  												---Qulight["chatt"].combatlog ~= true then
@@ -344,7 +336,7 @@ local function SetupChatPosAndFont(self)
 		ChatFrameToggleVoiceDeafenButton:SetPushedTexture(nil)
 		ChatFrameToggleVoiceDeafenButton:ClearAllPoints()
 		ChatFrameToggleVoiceDeafenButton:SetPoint( "RIGHT", ChatFrameChannelButton, "LEFT", 6, 0)
-	
+
 		ChatFrameToggleVoiceMuteButton:SetNormalTexture(nil)
 		ChatFrameToggleVoiceMuteButton:SetPushedTexture(nil)
 		ChatFrameToggleVoiceMuteButton:ClearAllPoints()
@@ -355,7 +347,7 @@ local function SetupChatPosAndFont(self)
 		ChatFrameChannelButton:ClearAllPoints()
 		ChatFrameToggleVoiceDeafenButton:ClearAllPoints()
 		ChatFrameToggleVoiceMuteButton:ClearAllPoints()
-		
+
 		ChatFrameMenuButton:SetParent(nil)
 		ChatFrameChannelButton:SetParent(nil)
 		ChatFrameToggleVoiceDeafenButton:SetParent(nil)
@@ -371,7 +363,7 @@ local function SetupChatPosAndFont(self)
 	ChatFrame1ButtonFrame:SetPoint( "TOPRIGHT", LeftDataPanel, "TOPRIGHT", 0, 0)
 
 	FCF_SetLocked( ChatFrame1, true)
-	
+
 	-- Reposition battle.net popup over chat #1
 	ChatAlertFrame:ClearAllPoints()
 	ChatAlertFrame:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 0, 35)
@@ -400,7 +392,7 @@ UIChat:SetScript("OnEvent", function(self, event, addon)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		if not yo.Chat.EnableChat then return end
 		SetupChat(self)
-		SetupChatPosAndFont(self)		
+		SetupChatPosAndFont(self)
 	end
 end)
 
@@ -530,23 +522,25 @@ local faneifyTab = function(frame, sel)
 	end
 end
 
-hooksecurefunc("FCF_StartAlertFlash", function(frame)
-	local tab = _G["ChatFrame"..frame:GetID().."Tab"]
-	updateFS(tab, true, 1, 0, 0)
-end)
-
-hooksecurefunc("FCFTab_UpdateColors", faneifyTab)
-
-for i = 1, NUM_CHAT_WINDOWS do
-	faneifyTab(_G["ChatFrame"..i.."Tab"])
-end
-
-function Fane:ADDON_LOADED(event, addon)
-	if addon == "Blizzard_CombatLog" then
+function Fane:ADDON_LOADED(event, name)
+	if name == "Blizzard_CombatLog" then
 		self:UnregisterEvent(event)
 		self[event] = nil
 
 		return CombatLogQuickButtonFrame_Custom:SetAlpha(0.4)
+	end
+
+	if addon == name then
+		for i = 1, NUM_CHAT_WINDOWS do
+			faneifyTab(_G["ChatFrame"..i.."Tab"])
+		end
+
+		hooksecurefunc("FCF_StartAlertFlash", function(frame)
+			local tab = _G["ChatFrame"..frame:GetID().."Tab"]
+			updateFS(tab, true, 1, 0, 0)
+		end)
+
+		hooksecurefunc("FCFTab_UpdateColors", faneifyTab)
 	end
 end
 Fane:RegisterEvent("ADDON_LOADED")
@@ -650,8 +644,8 @@ for i = 1, NUM_CHAT_WINDOWS do
 	button:SetScript("OnMouseUp", function(self)
 		Copy(cf)
 	end)
-	button:SetScript("OnEnter", function() 
-		button:SetAlpha(1) 
+	button:SetScript("OnEnter", function()
+		button:SetAlpha(1)
 	end)
 	button:SetScript("OnLeave", function() button:SetAlpha(0.1) end)
 
@@ -686,7 +680,7 @@ local FindURL = function(self, event, msg, ...)
 	--print( "find url", event, msg, ...)
 	local newMsg, found = gsub(msg, "(%a+)://(%S+)%s?", PrintURL("%1://%2"))
 	if found > 0 then return false, newMsg, ... end
-	
+
 	newMsg, found = gsub(msg, "www%.([_A-Za-z0-9-]+)%.(%S+)%s?", PrintURL("www.%1.%2"))
 	if found > 0 then return false, newMsg, ... end
 
@@ -738,7 +732,7 @@ for i=1, NUM_CHAT_WINDOWS do
 					if unitname and not UnitIsSameServer("player", "target") then
 						unitname = unitname .. "-" .. gsub(realm, " ", "")
 					end
-					
+
 					ChatFrame_SendTell((unitname), ChatFrame1)
 				end
 			end
@@ -772,7 +766,7 @@ local function SaveLine( text, channel, sender, color, senderGUID, classFilename
 			[text]	= { text, channel, sender, color, senderGUID, classFilename}
 			}
 		CheckLine( yo_ChatHistory)
-		tinsert(yo_ChatHistory, array)	
+		tinsert(yo_ChatHistory, array)
 end
 
 local function Chat_GetColoredChatName(chatType, chatTarget)
@@ -823,7 +817,7 @@ local function OnChatHistory( self, event, ...)
 		if arg12 then
 			englishClass = select( 2, GetPlayerInfoByGUID( arg12))
 		end
-		
+
 		--SaveLine( text, chanName, sender, chanColor, senderGUID, englishClass)
 		SaveLine( arg1, chanName, arg2, chanColor, arg12, englishClass, cols)
 	end
@@ -832,7 +826,7 @@ local function OnChatHistory( self, event, ...)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
 		if not yo.Chat.showHistory then return end
-		
+
 		self:RegisterEvent("CHAT_MSG_GUILD")
 		self:RegisterEvent("CHAT_MSG_PARTY")
 		self:RegisterEvent("CHAT_MSG_PARTY_LEADER")
@@ -842,9 +836,9 @@ local function OnChatHistory( self, event, ...)
 		--self:RegisterEvent("CHAT_MSG_SAY")
 
 		CheckLine( yo_ChatHistory)
-		
+
 		for i,v in ipairs( yo_ChatHistory ) do
-			
+
 			for ii,vv in pairs( v) do
 				local channel, sender, text, chanColor, uclass, cols = vv[2], strsplit( "-",vv[3]), vv[1], vv[4], vv[6], vv[7]
 				--print(channel, sender, text, chanColor, uclass) --, RAID_CLASS_COLORS[uclass].colorStr)

@@ -9,7 +9,7 @@ SetAnchPosition = function(anch, realAnch)
 	local ap, _, rp, x, y = anch:GetPoint()
 
 	if realAnch then
-		ap, _, rp, x, y = realAnch:GetPoint()	
+		ap, _, rp, x, y = realAnch:GetPoint()
 		--print(ap, f, rp, x, y)
 	end
 
@@ -29,11 +29,11 @@ end
 local function framemove(f)
 	f:SetBackdrop({
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-        edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1, 
-		insets = {left = -1, right = -1, top = -1, bottom = -1} 
+        edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1,
+		insets = {left = -1, right = -1, top = -1, bottom = -1}
 	})
 	f:SetBackdropColor(.05,.05,.05,0.5)
-	f:SetBackdropBorderColor(.23,.45,.13, 1)	
+	f:SetBackdropBorderColor(.23,.45,.13, 1)
 end
 
 function CreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
@@ -50,12 +50,12 @@ function CreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
 	f:SetScript("OnDragStop", OnDragStop)
 	f:SetWidth(width)
 	f:SetHeight(height)
-	
+
 	local h = CreateFrame("Frame", nil)
 	h:SetFrameLevel(30)
 	h:SetAllPoints(f)
 	f.dragtexture = h
-	
+
 	local v = CreateFrame("Frame", nil, h)
 	v:SetPoint("TOPLEFT",0,0)
 	v:SetPoint("BOTTOMRIGHT",0,0)
@@ -160,8 +160,8 @@ CreateAnchor("yo_MoveBoss", 	"Move Boss", 170, 35, -370, -200, "TOPRIGHT", "TOPR
 CreateAnchor("yo_MoveQuestFrame", "Move Quest Frame", 230, 500, -5, -175, "TOPRIGHT", "TOPRIGHT")
 CreateAnchor("yo_MoveFlashIcon", "Move flash icon", 70, 70, 0, 200)
 --CreateAnchor("yo_MoveArtifact", "Move Artifact", 10, 173, 452, 4, "BOTTOM", "BOTTOMLEFT", yo_MoveLeftPanel)
-CreateAnchor("yo_MoveArtifact", "Move Artifact", 10, 173, 5, 0, "TOPLEFT", "TOPRIGHT", yo_MoveLeftPanel)
-CreateAnchor("yo_MoveExperience", "Move Experience", 10, 173, -452, 4, "BOTTOM", "BOTTOMRIGHT")
+CreateAnchor("yo_MoveArtifact", "Move Artifact", 7, 173, 5, -1, "TOPLEFT", "TOPRIGHT", yo_MoveLeftPanel)
+CreateAnchor("yo_MoveExperience", "Move Experience", 7, 173, -452, 4, "BOTTOM", "BOTTOMRIGHT")
 CreateAnchor("yo_MovePlayerCastBar", "Move Player CastBar", 436, 20, 0, 91, "CENTER", "BOTTOM")
 CreateAnchor("yo_MoveRUP", 		"Move Utility Panel", 226, 18, 0, -10, "TOP", "TOP")
 CreateAnchor("yo_MovePotatos", 	"Move Potatos", 40, 40, 250, 270, "BOTTOMLEFT", "BOTTOMLEFT")
@@ -173,7 +173,7 @@ CreateAnchor("yo_MoveABar2", 	"Move Action Bar #2", 445, 35, 0, 40, "BOTTOM", "B
 CreateAnchor("yo_MoveABar3", 	"Move Action Bar #3", 40, 40, -300, 300, "TOPRIGHT", "BOTTOMRIGHT")
 CreateAnchor("yo_MoveABar4", 	"Move Action Bar #4", 445, 35, -1, 182, "BOTTOMRIGHT", "BOTTOMRIGHT")
 CreateAnchor("yo_MoveABar5", 	"Move Action Bar #5", 35, 445, -5, -110, "RIGHT", "RIGHT")
-CreateAnchor("yo_MoveAMicro", 	"Move MicroMenu Bar", 220, 18, -470, 2, "BOTTOMRIGHT", "BOTTOMRIGHT")
+CreateAnchor("yo_MoveAMicro", 	"Move MicroMenu Bar", 220, 18, -470, 3, "BOTTOMRIGHT", "BOTTOMRIGHT")
 
 --CreateAnchor("yo_MovePetBar", 	"Move Pet Bar", 330, 30, 449, 197, "RIGHT", "BOTTOMLEFT", yo_MoveLeftPanel)
 CreateAnchor("yo_MovePetBar", 	"Move Pet Bar", 330, 30, 0, 5, "BOTTOMRIGHT", "TOPRIGHT", yo_MoveLeftPanel)
@@ -229,5 +229,5 @@ CreateAnchor(Anchortank, "Move tank", 80, 18)
 			self.isSizing = false;
 		end
 	end)
-	frame:SetFrameStrata("DIALOG") 
+	frame:SetFrameStrata("DIALOG")
 ]]--

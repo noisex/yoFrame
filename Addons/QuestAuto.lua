@@ -8,7 +8,7 @@ QuestTypesIndex = {
 	[62] = " |cff00ff00"..LFG_TYPE_RAID.."|r",			--Raid
 	[81] = " |cff0080ff" ..LFG_TYPE_DUNGEON.. "|r",
 	[83] = " |cffff7000"..LOOT_JOURNAL_LEGENDARIES.."|r", 		--Legendary
-	[85] = " |cff8000ff"..ITEM_HEROIC.."|r",		--Heroic 
+	[85] = " |cff8000ff"..ITEM_HEROIC.."|r",		--Heroic
 	[98] = " |cffff8000"..TRACKER_HEADER_SCENARIO.."|r", 	--Scenario QUEST_TYPE_SCENARIO
 	[102]= " |cff0080ffAccount|r", 		-- Account
 }
@@ -42,12 +42,13 @@ local ignorTypes = {
 local autoGossipNPC = {
 	[138476]	= true,
 	[138480]	= true,
+	[138478]	= true,
 
 	[144476]	= true,
 	[144350]	= true,
 	[144351]	= true,
 	[144354]	= true,
-	
+
 	[144478]	= true,
 	[144353]	= true,
 	[144354]	= true,
@@ -59,6 +60,7 @@ local autoGossipNPC = {
 	[144360]	= true,
 	[144361]	= true,
 	[144362]	= true,
+	[144352]	= true,
 }
 
 local autoGossipInstance = {
@@ -77,7 +79,7 @@ local function GetActiveOptions(...)
 	local _, instance, _, _, _, _, _, mapID = GetInstanceInfo()
 	if ( autoGossipInstance[instance] or autoGossipNPC[GetNPCID()]) and GetNumGossipOptions() == 1 then
 		SelectGossipOption(1, "", true)
-	end	
+	end
 end
 
 local function GetAvailableQuests( ... )
@@ -95,7 +97,7 @@ end
 
 local function GetActiveQuests( ... )
 	for i=1, select("#", ...), 6 do
-		local isComplete = select( i+3, ...) 
+		local isComplete = select( i+3, ...)
 		if ( isComplete ) then
 			SelectGossipActiveQuest( math.floor( i/6) + 1)
 		end
@@ -107,7 +109,7 @@ local function CheckSlot( itemType )
 	for i = 1, 18 do
 		local itemLink = GetInventoryItemLink("player", i)
 		if itemLink then
-			
+
 			local _, _, _, _, _, _, _, _, slotName = GetItemInfo(itemLink)
 			if WeaponTypes[slotName] == true then
 				slotName = "INVTYPE_MYWEAPON"
@@ -126,17 +128,17 @@ local function CheckSlot( itemType )
 end
 
 local function OnEvent( self, event, ...)
-	
+
 	--print(event, ...)
-	
+
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		
+
 		if not yo.Addons.AutoQuest then return end
-		
+
 		self:RegisterEvent("QUEST_GREETING")
-		self:RegisterEvent("GOSSIP_SHOW")	
-		self:RegisterEvent("QUEST_DETAIL")	
+		self:RegisterEvent("GOSSIP_SHOW")
+		self:RegisterEvent("QUEST_DETAIL")
 		self:RegisterEvent("QUEST_PROGRESS")
 		self:RegisterEvent("QUEST_COMPLETE")
 		self:RegisterEvent("QUEST_ACCEPTED")
@@ -147,12 +149,12 @@ local function OnEvent( self, event, ...)
 	if event == "QUEST_PROGRESS" then
 		if IsShiftKeyDown() == true then return end
 		if not yo.Addons.AutoQuestComplete then return end
-		
+
 		local isDaily = QuestIsDaily();
 		local isWeekly = QuestIsWeekly();
 		--print( isWeekly, isDaily)
 
-		if ( isDaily or isWeekly) then --or (UnitLevel('player') == MAX_PLAYER_LEVEL) then 
+		if ( isDaily or isWeekly) then --or (UnitLevel('player') == MAX_PLAYER_LEVEL) then
 			local money = GetQuestMoneyToGet()
 			local name, texture, amount = GetQuestCurrencyInfo("required", 1)
 			local iname, itexture, numItems, iquality, isUsable = GetQuestItemInfo("required", 1)
@@ -199,7 +201,7 @@ local function OnEvent( self, event, ...)
 
 			local slvl, delta
 			local bestString, bestChoice, bestDelta = "", 1, -9999
-			
+
 			for i=1, GetNumQuestChoices() do
 				local _, _, itemRarity, _, _, _, _, _, itemEquipLoc = GetItemInfo(GetQuestItemLink("choice", i))
 				local _, _, _, hexColor = GetItemQualityColor(itemRarity)
@@ -244,8 +246,8 @@ local function OnEvent( self, event, ...)
 			--print("Q_Detail: ", isDaily, isWeekly, curNum)
 			QuestInfoDescriptionText:SetAlphaGradient(0, -1)
 			QuestInfoDescriptionText:SetAlpha(1)
-			AcceptQuest()		
-		end	
+			AcceptQuest()
+		end
 
 	elseif event == "GOSSIP_SHOW" then
 		if IsShiftKeyDown() == true then return end
@@ -271,24 +273,24 @@ local function OnEvent( self, event, ...)
 
    		for index=1, numAvailableQuests do -- index=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
            	local isTrivial, isDaily, isRepeatable, isLegendary  = GetAvailableQuestInfo(index)
-			--if (isIgnored) then return end 
-			
+			--if (isIgnored) then return end
+
            	if isTrivial ~= true then --and not ( isDaily == LE_QUEST_FREQUENCY_DAILY or isDaily == LE_QUEST_FREQUENCY_WEEKLY ) then
             	SelectAvailableQuest(index)
             else
 				print("|cffff0000SKIP_IT: |r", isTrivial ) --.. titleText)
             end
    		end
-   		
+
 	elseif event == "QUEST_ACCEPTED" then
-		
+
 		local index, questID = select( 1, ...)
 		if QuestUtils_IsQuestWorldQuest(questID) then return end
-		
+
 		SelectQuestLogEntry(index)
 
 		local questTitle, level, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, questID = GetQuestLogTitle( index);
-		
+
 		if questTitle == nil then return end
 
 		local questDescription, questObjectives = GetQuestLogQuestText( index)
@@ -298,12 +300,12 @@ local function OnEvent( self, event, ...)
 		if ( isDaily == LE_QUEST_FREQUENCY_DAILY or isDaily == LE_QUEST_FREQUENCY_WEEKLY ) then
 			cHeader = "|cff0070de"
 		else
-			cHeader = hex( GetQuestDifficultyColor( UnitLevel("player"))) 
+			cHeader = hex( GetQuestDifficultyColor( UnitLevel("player")))
 		end
 
 		local qString = ""
 
-	
+
 		if #questObjectives > 1 then
 			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives)
 		end
@@ -328,14 +330,14 @@ local function OnEvent( self, event, ...)
 	   				bestString = " |cffff0000"..L["Better than"].." [" .. slvl .. "] " .. L["on"] .. ilvl - slvl .. "|r"
 	   			end
 
-				print( "|cffffff00"..L["Choice"].." #" .. i ..": |r" .. " [|c" ..hexColor .. ilvl .. "|r] " .. ( _G[itemEquipLoc] or "") .. " " .. itemLink .. bestString)	
-			end	
-		end	
+				print( "|cffffff00"..L["Choice"].." #" .. i ..": |r" .. " [|c" ..hexColor .. ilvl .. "|r] " .. ( _G[itemEquipLoc] or "") .. " " .. itemLink .. bestString)
+			end
+		end
 
 		if GetNumQuestLogRewards() > 0 then
 			for i = 1, GetNumQuestLogRewards() do
 				if GetQuestLogItemLink("reward", i) then
-					print( "|cffffff00"..REWARD.." #" .. i ..": |r" .. GetQuestLogItemLink("reward", i).. "|r")	
+					print( "|cffffff00"..REWARD.." #" .. i ..": |r" .. GetQuestLogItemLink("reward", i).. "|r")
 				end
 			end
 		end
@@ -348,7 +350,7 @@ local function OnEvent( self, event, ...)
 					local link = GetCurrencyLink( currencyID, numItems or 10)
 					print( "|cffffff00"..CURRENCY..": |r" .. numItems .. " x " .. ( link or name).. "|r")
 				end
-			end		
+			end
 		end
 
 		if GetQuestLogRewardXP() > 0 then
@@ -378,7 +380,7 @@ quest:SetScript("OnEvent", OnEvent)
 
 -- autoclose AutoQuestPopupTracker
 hooksecurefunc( AUTO_QUEST_POPUP_TRACKER_MODULE, "Update", function(self, ...)
-	
+
 	for i = 1, GetNumAutoQuestPopUps() do
 		local questID, popUpType = GetAutoQuestPopUp(i);
 		if questID and popUpType then --== "COMPLETE"

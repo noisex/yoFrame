@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
@@ -31,7 +31,7 @@ local function UpdateAP(self, ...)
 	if (show) then
 		local _, _, name, _, totalPower, traitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 		local numTraitsLearnable, power, powerForNextTrait = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(traitsLearned, totalPower, tier)
-		
+
 		--print( "UpdateAP: ", name, powerForNextTrait, power)
 		element:SetMinMaxValues(0, powerForNextTrait)
 		element:SetValue(power)
@@ -58,7 +58,7 @@ local function EnableAP(self)
 	--element.__owner = self
 
 	if (not element:GetStatusBarTexture()) then
-		element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]]) 
+		element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		element:SetStatusBarColor(.901, .8, .601)
 	end
 
@@ -73,7 +73,7 @@ local function EnableAP(self)
 	element:RegisterEvent("ARTIFACT_XP_UPDATE")
 	element:RegisterEvent("UNIT_INVENTORY_CHANGED")
 	element:SetScript("OnEvent", UpdateAP)
-	
+
 	UpdateAP( element)
 	return true
 end
@@ -85,16 +85,11 @@ local function ArtifactPower( f)
 	ArtifactPower:SetPoint('CENTER', yo_MoveArtifact, 'CENTER', 0, 0)
 	ArtifactPower:SetStatusBarColor(.901, .8, .601)
 	ArtifactPower:EnableMouse(true)
-	ArtifactPower:SetWidth(6)
-	ArtifactPower:SetHeight(168)
+	ArtifactPower:SetSize( yo_MoveArtifact:GetSize())
 	ArtifactPower:SetOrientation("VERTICAL")
 	ArtifactPower:SetFrameLevel(2)
-
-	local h = CreateFrame("Frame", nil, ArtifactPower)
-	h:SetFrameLevel(1)
-	h:SetPoint("TOPLEFT",-5,5)
-	h:SetPoint("BOTTOMRIGHT",5,-5)
-	CreateStyle(h, -1)
+	table.insert( N.statusBars, ArtifactPower)
+	CreateStyle( ArtifactPower)
 
 	f.ArtifactPower = ArtifactPower
 end
@@ -105,7 +100,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.ArtifactPowerbar then return end
-	
+
 	ArtifactPower( plFrame)
 	EnableAP( plFrame)
 end)

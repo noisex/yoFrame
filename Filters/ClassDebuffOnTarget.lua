@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 yo.pType = {
 	MAGE 		= { powerID = 16,	powerType = 'ARCANE_CHARGES', 	spec = 1},
@@ -6,7 +6,7 @@ yo.pType = {
 	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER', 		spec = 3},
 	ROGUE 		= { powerID = 4, 	powerType = 'COMBO_POINTS'		},
 	DRUID 		= { powerID = 4, 	powerType = 'COMBO_POINTS', 	},	--spec = 2},
-	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},	
+	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},
 	MONK 		= { powerID = 12, 	powerType = 'CHI', 				spec = 3},
 }
 
@@ -20,154 +20,188 @@ local function SpellName(id)
 	end
 end
 
-DebuffWhiteList = {
-	-- Death Knight
-	[SpellName(108194)] = true,	-- Asphyxiate
-	[SpellName(47476)] = true,	-- Strangulate
-	[SpellName(55078)] = true,	-- Blood Plague
-	[SpellName(55095)] = true,	-- Frost Fever
-	[SpellName(45524)] = true,	-- Ледяные оковы
-	-- Druid
-	[SpellName(33786)] = true,	-- Cyclone
-	[SpellName(339)] = true,	-- Entangling Roots
-	[SpellName(164812)] = true,	-- Moonfire
-	[SpellName(164815)] = true,	-- Sunfire
-	[SpellName(58180)] = true,	-- Infected Wounds
-	[SpellName(155722)] = true,	-- Rake
-	[SpellName(1079)] = true,	-- Rip
-	[SpellName(106830)] = true,	-- взбучка
-	-- Hunter
-	[SpellName(3355)] = true,	-- Freezing Trap
-	[SpellName(259491)] = true,	-- Укус змеи
-	[SpellName(270339)] = true,	-- Шрапнельная бомба
-	[SpellName(271049)] = true,	-- Нестабильная бомба
-	[SpellName(270332)] = true,	-- Феромонная бомба
-	[SpellName(217200)] = true,	-- Разрывательный выстрел
+N.DebuffWhiteList = {}
+local DebuffWhiteListTemplate = {
+	["ALL"] = {
+		[SpellName(25046)] = true,	-- Arcane Torrent
+		[SpellName(20549)] = true,	-- War Stomp
+		[SpellName(107079)]= true,	-- Quaking Palm
+	},
+	["DEATHKNIGHT"]= {
+		[SpellName(108194)] = true,	-- Asphyxiate
+		[SpellName(47476)] = true,	-- Strangulate
+		[SpellName(55078)] = true,	-- Blood Plague
+		[SpellName(55095)] = true,	-- Frost Fever
+		[SpellName(45524)] = true,	-- Ледяные оковы
+	},
+	["DRUID"] = {
+		[SpellName(33786)] = true,	-- Cyclone
+		[SpellName(339)] = true,	-- Entangling Roots
+		[SpellName(164812)] = true,	-- Moonfire
+		[SpellName(164815)] = true,	-- Sunfire
+		[SpellName(58180)] = true,	-- Infected Wounds
+		[SpellName(155722)] = true,	-- Rake
+		[SpellName(1079)] = true,	-- Rip
+		[SpellName(106830)] = true,	-- взбучка
+		[SpellName(127797)] = true,	-- взбучка
+	},
+	["HUNTER"] = {
+		[SpellName(3355)] = true,	-- Freezing Trap
+		[SpellName(259491)] = true,	-- Укус змеи
+		[SpellName(270339)] = true,	-- Шрапнельная бомба
+		[SpellName(271049)] = true,	-- Нестабильная бомба
+		[SpellName(270332)] = true,	-- Феромонная бомба
+		[SpellName(217200)] = true,	-- Разрывательный выстрел
 	--[SpellName(272790)] = true,	-- Разрывательный выстрел PET
 	--[SpellName(131894)] = true,	-- Crows
-	-- Mage
-	[SpellName(118)] = true,	-- Polymorph
-	[SpellName(31661)] = true,	-- Dragon's Breath
-	[SpellName(122)] = true,	-- Frost Nova
-	[SpellName(44457)] = true,	-- Living Bomb
-	[SpellName(114923)] = true,	-- Nether Tempest
-	--[SpellName(112948)] = true,	-- Frost Bomb - NOT EXISTS
-	[SpellName(120)] = true,	-- Cone of Cold
-	-- Monk
-	[SpellName(115078)] = true,	-- Paralysis
-	-- Paladin
-	[SpellName(20066)] = true,	-- Repentance
-	[SpellName(853)] = true,	-- Hammer of Justice
-	[SpellName(25771)] = true,	-- Воздержание
-	-- Priest
-	[SpellName(9484)] = true,	-- Shackle Undead
-	[SpellName(8122)] = true,	-- Psychic Scream
-	[SpellName(64044)] = true,	-- Psychic Horror
-	[SpellName(15487)] = true,	-- Silence
-	[SpellName(589)] = true,	-- Shadow Word: Pain
-	[SpellName(34914)] = true,	-- Vampiric Touch
-	-- Rogue
-	[SpellName(6770)] = true,	-- Sap
-	[SpellName(2094)] = true,	-- Blind
-	[SpellName(1776)] = true,	-- Gouge
-	[SpellName(195452)] = true,		 -- Nightblade 
-	-- Shaman
-	[SpellName(51514)] = true,	-- Hex
-	[SpellName(3600)] = true,	-- Earthbind
-	[SpellName(196840)] = true,	-- Frost Shock
-	[SpellName(188389)] = true,	-- Flame Shock
-	-- Warlock
-	[SpellName(710)] = true,	-- Banish
-	[SpellName(6789)] = true,	-- Mortal Coil
-	[SpellName(5782)] = true,	-- Fear
-	[SpellName(5484)] = true,	-- Howl of Terror
-	[SpellName(6358)] = true,	-- Seduction
-	[SpellName(30283)] = true,	-- Shadowfury
-	[SpellName(603)] = true,	-- Doom
-	[SpellName(980)] = true,	-- Agony
-	[SpellName(146739)] = true,	-- Corruption
-	[SpellName(48181)] = true,	-- Haunt
-	[SpellName(348)] = true,	-- Immolate
-	[SpellName(30108)] = true,	-- Unstable Affliction
-	[SpellName(63106)] = true,	-- ???????
-	[SpellName(27243)] = true,	-- ?????
-	[SpellName(80240)] = true,	-- хаос
-	-- Warrior
-	[SpellName(5246)] = true,	-- Intimidating Shout
-	[SpellName(132168)] = true,	-- Shockwave
-	[SpellName(115767)] = true,	-- Deep Wounds
-	-- Racial
-	[SpellName(25046)] = true,	-- Arcane Torrent
-	[SpellName(20549)] = true,	-- War Stomp
-	[SpellName(107079)] = true,	-- Quaking Palm
+	},
+	["MAGE"] = {
+		[SpellName(118)] = true,	-- Polymorph
+		[SpellName(31661)] = true,	-- Dragon's Breath
+		[SpellName(122)] = true,	-- Frost Nova
+		[SpellName(44457)] = true,	-- Living Bomb
+		[SpellName(114923)] = true,	-- Nether Tempest
+		--[SpellName(112948)] = true,	-- Frost Bomb - NOT EXISTS
+		[SpellName(120)] = true,	-- Cone of Cold
+	},
+	["MONK"] = {
+		[SpellName(115078)] = true,	-- Paralysis
+	},
+	["PALADIN"] = {
+		[SpellName(20066)] = true,	-- Repentance
+		[SpellName(853)] = true,	-- Hammer of Justice
+		[SpellName(25771)] = true,	-- Воздержание
+	},
+	["PRIEST"] = {
+		[SpellName(9484)] = true,	-- Shackle Undead
+		[SpellName(8122)] = true,	-- Psychic Scream
+		[SpellName(64044)] = true,	-- Psychic Horror
+		[SpellName(15487)] = true,	-- Silence
+		[SpellName(589)] = true,	-- Shadow Word: Pain
+		[SpellName(34914)] = true,	-- Vampiric Touch
+	},
+	["ROGUE"] = {
+		[SpellName(6770)] = true,	-- Sap
+		[SpellName(2094)] = true,	-- Blind
+		[SpellName(1776)] = true,	-- Gouge
+		[SpellName(195452)] = true,	 -- Nightblade
+		[SpellName(91021)] = true,	 -- Выявление слабости
+		[SpellName(27615)] = true,	 -- Удар по почкам
+	},
+	["SHAMAN"] = {
+		[SpellName(51514)] = true,	-- Hex
+		[SpellName(3600)] = true,	-- Earthbind
+		[SpellName(196840)] = true,	-- Frost Shock
+		[SpellName(188389)] = true,	-- Flame Shock
+	},
+	["WARLOCK"] = {
+		[SpellName(710)] = true,	-- Banish
+		[SpellName(6789)] = true,	-- Mortal Coil
+		[SpellName(5782)] = true,	-- Fear
+		[SpellName(5484)] = true,	-- Howl of Terror
+		[SpellName(6358)] = true,	-- Seduction
+		[SpellName(30283)] = true,	-- Shadowfury
+		[SpellName(603)] = true,	-- Doom
+		[SpellName(980)] = true,	-- Agony
+		[SpellName(146739)] = true,	-- Corruption
+		[SpellName(48181)] = true,	-- Haunt
+		[SpellName(348)] = true,	-- Immolate
+		[SpellName(30108)] = true,	-- Unstable Affliction
+		[SpellName(63106)] = true,	-- ???????
+		[SpellName(27243)] = true,	-- ?????
+		[SpellName(80240)] = true,	-- хаос
+	},
+	["WARRIOR"] = {
+		[SpellName(5246)] = true,	-- Intimidating Shout
+		[SpellName(132168)] = true,	-- Shockwave
+		[SpellName(115767)] = true,	-- Deep Wounds
+	}
 }
 
-BuffWhiteList = {	-- ElvUI
-	--PRIEST = {
-	[SpellName(194384)] = true,		-- Atonement
-	[SpellName(214206)] = true, 	-- Atonement (PvP)
-	[SpellName(41635)] = true, 		-- Prayer of Mending
-	[SpellName(193065)] = true, 	-- Masochism
-	[SpellName(139)] = true, 		-- Renew
-	[SpellName(17)] = true, 		-- Power Word: Shield
-	[SpellName(47788)] = true, 		-- Guardian Spirit
-	[SpellName(33206)] = true, 		-- Pain Suppression
-	--},
-	--DRUID = {
-	[SpellName(774)] = true, 		-- Rejuvenation
-	[SpellName(155777)] = true,		-- Germination
-	[SpellName(8936)] = true,		-- Regrowth
-	[SpellName(33763)] = true, 		-- Lifebloom
-	[SpellName(48438)] = true,		-- Wild Growth
-	[SpellName(207386)] = true, 	-- Spring Blossoms
-	[SpellName(102351)] = true, 	-- Cenarion Ward (Initial Buff)
-	[SpellName(102352)] = true, 	-- Cenarion Ward (HoT)
-	[SpellName(200389)] = true, 	-- Cultivation
-	[SpellName(22812)] = true, 		-- Ironskin
-	[SpellName(102342)] = true, 	-- Ironskin
-	[SpellName(29166)] = true, 		-- ozarenie
-	--},
-	--PALADIN = {
-	[SpellName(53563)] = true, 		-- Beacon of Light
-	[SpellName(156910)] = true, 	-- Beacon of Faith
-	[SpellName(200025)] = true, 	-- Beacon of Virtue
-	[SpellName(1022)] = true, 		-- Hand of Protection
-	[SpellName(1044)] = true, 		-- Hand of Freedom
-	[SpellName(6940)] = true,		-- Hand of Sacrifice
-	[SpellName(223306)] = true, 	-- Bestow Faith
-	--},
-	--SHAMAN = {
-	[SpellName(61295)] = true, 		-- Riptide
-	[SpellName(974)] = true, 	 	-- Earth Shield
-	--},
-	--MONK = {
-	[SpellName(119611)] = true, 	-- Renewing Mist
-	[SpellName(116849)] = true, 	-- Life Cocoon
-	[SpellName(124682)] = true, 	-- Enveloping Mist
-	[SpellName(191840)] = true, 	-- Essence Font
-	--},
-	--ROGUE = {
-	[SpellName(57934)] = true,		 -- Tricks of the Trade
-	--},
-	--WARRIOR = {
-	[SpellName(114030)] = true, 	-- Vigilance
-	--[SpellName(3411)] = true, 	 	-- Intervene
-	--},
-	--PET = {
-	-- Warlock Pets
-	[SpellName(193396)] = true, 	-- Demonic Empowerment
-	-- Hunter Pets
-	[SpellName(19615)] = true, 		-- Frenzy
-	[SpellName(136)] = true, 		-- Mend Pet
-	--},
-	--HUNTER = {}, --Keep even if it's an empty table, so a reference to G.unitframe.buffwatch[E.myclass][SomeValue] doesn't trigger error
-	--DEMONHUNTER = {},
-	--WARLOCK = {},
-	--MAGE = {},
-	--DEATHKNIGHT = {},
+
+N.BuffWhiteList ={}
+local BuffWhiteListTemplate = {	-- ElvUI
+	["ALL"] = {
+	},
+	["PRIEST"] = {
+		[SpellName(194384)] = true,		-- Atonement
+		[SpellName(214206)] = true, 	-- Atonement (PvP)
+		[SpellName(41635)] = true, 		-- Prayer of Mending
+		[SpellName(193065)] = true, 	-- Masochism
+		[SpellName(139)] = true, 		-- Renew
+		[SpellName(17)] = true, 		-- Power Word: Shield
+		[SpellName(47788)] = true, 		-- Guardian Spirit
+		[SpellName(33206)] = true, 		-- Pain Suppression
+	},
+	["DRUID"] = {
+		[SpellName(774)] = true, 		-- Rejuvenation
+		[SpellName(155777)] = true,		-- Germination
+		[SpellName(8936)] = true,		-- Regrowth
+		[SpellName(33763)] = true, 		-- Lifebloom
+		[SpellName(48438)] = true,		-- Wild Growth
+		[SpellName(207386)] = true, 	-- Spring Blossoms
+		[SpellName(102351)] = true, 	-- Cenarion Ward (Initial Buff)
+		[SpellName(102352)] = true, 	-- Cenarion Ward (HoT)
+		[SpellName(200389)] = true, 	-- Cultivation
+		[SpellName(22812)] = true, 		-- Ironskin
+		[SpellName(102342)] = true, 	-- Ironskin
+		[SpellName(29166)] = true, 		-- ozarenie
+	},
+	["PALADIN"] = {
+		[SpellName(53563)] = true, 		-- Beacon of Light
+		[SpellName(156910)] = true, 	-- Beacon of Faith
+		[SpellName(200025)] = true, 	-- Beacon of Virtue
+		[SpellName(1022)] = true, 		-- Hand of Protection
+		[SpellName(1044)] = true, 		-- Hand of Freedom
+		[SpellName(6940)] = true,		-- Hand of Sacrifice
+		[SpellName(223306)] = true, 	-- Bestow Faith
+	},
+	["SHAMAN"] = {
+		[SpellName(61295)] = true, 		-- Riptide
+		[SpellName(974)] = true, 	 	-- Earth Shield
+	},
+	["MONK"] = {
+		[SpellName(119611)] = true, 	-- Renewing Mist
+		[SpellName(116849)] = true, 	-- Life Cocoon
+		[SpellName(124682)] = true, 	-- Enveloping Mist
+		[SpellName(191840)] = true, 	-- Essence Font
+	},
+	["ROGUE"] = {
+		[SpellName(57934)] = true,		 -- Tricks of the Trade
+	},
+	["WARRIOR"] = {
+		[SpellName(114030)] = true, 	-- Vigilance
+		--[SpellName(3411)] = true, 	 	-- Intervene
+	},
+
+	["HUNTER"] = {
+			-- Hunter Pets
+		[SpellName(19615)] = true, 		-- Frenzy
+		[SpellName(136)] = true, 		-- Mend Pet
+	},
+	["DEMONHUNTER"] = {},
+	["WARLOCK"] = {
+		-- Warlock Pets
+		[SpellName(193396)] = true, 	-- Demonic Empowerment
+	},
+	["MAGE"] = {},
+	["DEATHKNIGHT"] = {},
 }
 
-PlayerBuffWhiteList = {
+local logan = CreateFrame("Frame", nil)
+logan:RegisterEvent("PLAYER_LOGIN")
+logan:SetScript("OnEvent", function(self, ...)
+	N.DebuffWhiteList = DebuffWhiteListTemplate[myClass]
+	N.BuffWhiteList   = BuffWhiteListTemplate[myClass]
+
+	for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do N.DebuffWhiteList[k] = v end
+	for k,v in pairs( BuffWhiteListTemplate["ALL"])   do N.BuffWhiteList[k]   = v end
+
+	wipe( DebuffWhiteListTemplate)
+	wipe( BuffWhiteListTemplate)
+end)
+
+N.PlayerBuffWhiteList = {
 	--Consumables
 		[SpellName(251231)] = true, -- Steelskin Potion (BfA Armor)
 		[SpellName(251316)] = true, -- Potion of Bursting Blood (BfA Melee)
@@ -219,7 +253,7 @@ PlayerBuffWhiteList = {
 		-- [SpellName(212552)] = true, -- Wraith Walk
 		-- [SpellName(215711)] = true, -- Soul Reaper
 		-- [SpellName(194918)] = true, -- Blighted Rune Weapon
-		-- [SpellName(195181)] = true, -- Bone Shield		
+		-- [SpellName(195181)] = true, -- Bone Shield
 		-- [SpellName(77535)]  = true,	-- щит крови
 		-- [SpellName(48265)]  = true,	-- поступь смерти
 		-- [SpellName(194879)] = true,	-- ледяные когти
@@ -264,7 +298,7 @@ PlayerBuffWhiteList = {
 		-- [SpellName(137452)] = true, -- Displacer Beast
 		-- [SpellName(102416)] = true, -- Wild Charge
 		-- [SpellName(77764)]  = true, -- Stampeding Roar (Cat)
-		-- [SpellName(77761)]  = true, -- Stampeding Roar (Bear)		
+		-- [SpellName(77761)]  = true, -- Stampeding Roar (Bear)
 		-- --[SpellName(203727)] = true, -- Thorns
 		-- [SpellName(233756)] = true, -- Eclipse (it's this one or the other)
 		-- [SpellName(234084)] = true, -- Eclipse
@@ -484,4 +518,4 @@ PlayerBuffWhiteList = {
 		-- [SpellName(26297)] = true, -- Berserking
 		-- [SpellName(68992)] = true, -- Darkflight
 		-- [SpellName(58984)] = true, -- Shadowmeld
-} 
+}

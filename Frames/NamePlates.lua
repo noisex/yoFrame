@@ -1,4 +1,16 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
+
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local GetTime, UnitIsPlayer, UnitAura, UnitIsPlayer, SetRaidTarget, UnitIsUnit, UnitName, UnitClass, UnitHealth, UnitHealthMax, InCombatLockdown, UnitIsTapDenied
+	= GetTime, UnitIsPlayer, UnitAura, UnitIsPlayer, SetRaidTarget, UnitIsUnit, UnitName, UnitClass, UnitHealth, UnitHealthMax, InCombatLockdown, UnitIsTapDenied
+
+local GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo
+	= GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo
+
+local UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation
+	= UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation
 
 local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badTypes, showToolTip
 local treatColor = {}
@@ -22,11 +34,11 @@ yo.pType = {
 	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER', 		spec = 3},
 	ROGUE 		= { powerID = 4, 	powerType = 'COMBO_POINTS'		},
 	DRUID 		= { powerID = 4, 	powerType = 'COMBO_POINTS', 	},	--spec = 2},
-	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},	
+	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},
 	MONK 		= { powerID = 12, 	powerType = 'CHI', 				spec = 3},
 }
 
-DebuffTypeColor.none = { r = 0.09, g = 0.09, b = 0.09}
+--DebuffTypeColor.none = { r = 0.09, g = 0.09, b = 0.09}
 
 local badClassTypes = {
 	["WARRIOR"]		=	{},
@@ -47,9 +59,9 @@ local badClassTypes = {
 local badMobes = {
 	--[130771] = true,	--	Дамми у ханта
 	--[123352] = true, 	--	Дамми у лока
-	[144082]	= true, 
+	[144082]	= true,
 
-	[136330] = true, 	-- голиаф шипы 
+	[136330] = true, 	-- голиаф шипы
 	[137103] = true, 	-- кровавый образ
 	[120651] = true,  	-- 	Взрывчатка
 
@@ -103,35 +115,35 @@ local eTeam = {
 	[133734] = 8,	--Начертатель рун Лузарис	<Высокорожденные>
 
 	[140682] = 8,	--Ледяной Кулак				<Снегобородый патриарх>
-	
+
 	[130872] = 8,	--Леди Сена					<Механики Газлоу>
 	[134997] = 7,	--Газлоу					<Механики Газлоу>
 	[134998] = 7,	--Газлоу					<Механики Газлоу>
 	[130871] = 5,	--Скеггит					<Механики Газлоу>
-	
+
 	[134332] = 7,	--Капитан Зеленобрюшка		<Налетчики Зеленобрюшки>
 	[129364] = 8,	--Пит Проныра				<Налетчики Зеленобрюшки>
 	[134333] = 5,	--Тупень					<Налетчики Зеленобрюшки>
-	
+
 }
 
 -----------------------------------------------------------------------------------------------
 --	AURAS
 -----------------------------------------------------------------------------------------------
 
-local function BuffOnEnter( f) 
+local function BuffOnEnter( f)
 	if showToolTip == "cursor" then
 		GameTooltip:SetOwner( f, "ANCHOR_BOTTOMRIGHT", 8, -16)
 	else
 		GameTooltip:SetOwner( f, "ANCHOR_NONE", 0, 0)
 		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-	end	
+	end
 	GameTooltip:SetUnitAura( f.unit, f.id, f.filter)
 	GameTooltip:Show()
 end
 
 local function BuffOnLeave( f)
-	GameTooltip:Hide()	
+	GameTooltip:Hide()
 end
 
 function CreateAuraIcon(parent, index, noToolTip, timerPosition)
@@ -145,16 +157,18 @@ function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 	button.icon = button:CreateTexture(nil, "OVERLAY")
 	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
 	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
-	button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	button.icon:SetTexCoord( unpack( yo.tCoord))
 
 	--button.cd = CreateFrame("Cooldown", nil, button)
 	--button.cd:SetAllPoints(button)
 	--button.cd:SetReverse(true)
-	
+
 	button.count = button:CreateFontString(nil, "OVERLAY")
 	button.count:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
-	button.count:SetShadowOffset(1, -1)	
+	button.count:SetShadowOffset(1, -1)
 	button.count:SetTextColor( 0, 1, 0)
+	table.insert( N.strings, button.count)
+
 	if timerPosition == "BOTTOM" then
 		button.count:SetPoint("TOPRIGHT", button, "TOPRIGHT", 6, 6)
 	else
@@ -164,13 +178,15 @@ function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 	button.timer = button:CreateFontString(nil, "OVERLAY")
 	button.timer:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
 	button.timer:SetShadowOffset(1, -1)
+	table.insert( N.strings, button.timer)
+
 	if timerPosition == "BOTTOM" then
-		button.timer:SetPoint("CENTER", button, "BOTTOM", 0, 0)	
+		button.timer:SetPoint("CENTER", button, "BOTTOM", 0, 0)
 	else
-		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)	
+		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
 	end
-	
-	
+
+
 	CreateStyle( button, max( 3, sh - 1))
 
 	local p1, p2, shX, shY = "LEFT", "RIGHT", sh, 0
@@ -186,13 +202,13 @@ function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 	else
 		button:SetPoint( p1, parent[index-1], p2, shX, shY)
 	end
-	
+
 	if not noToolTip and showToolTip ~= "none" then
 		button:EnableMouse(true)
 		button:SetScript("OnEnter", BuffOnEnter)
 		button:SetScript("OnLeave", BuffOnLeave)
 	end
-	
+
 	return button
 end
 
@@ -208,7 +224,7 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 	button.tick = 1
 
 	local color = DebuffTypeColor[debuffType] or DebuffTypeColor.none
-	button.shadow:SetBackdropBorderColor(color.r, color.g, color.b)	
+	button.shadow:SetBackdropBorderColor(color.r, color.g, color.b)
 
 	if count and count > 1 then
 		button.count:SetText(count)
@@ -220,9 +236,9 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 		button.tick = button.tick + el
 		if button.tick <= 0.1 then return end
 		button.tick = 0
-		
+
 		local est = expirationTime - GetTime()
-			
+
 		if est <= 2 then
 			button.timer:SetTextColor( 1, 0, 0)
 		elseif est <= 0 then
@@ -237,7 +253,7 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 			button.timer:SetText( formatTime( est))
 		else
 			button.timer:SetText( "")
-		end		
+		end
 	end)
 
 	button:Show()
@@ -269,37 +285,37 @@ local function UpdateBuffs(unitFrame)
 			if not name then break end
 			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
 
-			if ( caster == "player" and DebuffWhiteList[name]) or namepmateshowall then --or isStealable then
-				
+			if ( caster == "player" and N.DebuffWhiteList[name]) or namepmateshowall then --or isStealable then
+
 				debuffType = blueDebuff and debuffType or nil
 
 				if not unitFrame.debuffIcons[idebuff] then	unitFrame.debuffIcons[idebuff] = CreateAuraIcon(unitFrame.debuffIcons, idebuff)	end
-										
+
 				UpdateAuraIcon(unitFrame.debuffIcons[idebuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 				idebuff = idebuff + 1
-			
+
 			elseif spellID == 277242 then showGuune = true
 
 			elseif ( filter == "HELPFUL" and not isPlayer and not blackSpells[spellID]) then
 
 				if dissIcons ~= "none"	or iDisp > 2 then
-					if ( dissIcons == "dispell" and badClassTypes[myClass][debuffType])  
+					if ( dissIcons == "dispell" and badClassTypes[myClass][debuffType])
 						or ( dissIcons == "all" and debuffType) then
 
-						if not unitFrame.disIcons[iDisp] then unitFrame.disIcons[iDisp] = CreateAuraIcon(unitFrame.disIcons, iDisp)end			
-						
+						if not unitFrame.disIcons[iDisp] then unitFrame.disIcons[iDisp] = CreateAuraIcon(unitFrame.disIcons, iDisp)end
+
 						UpdateAuraIcon(unitFrame.disIcons[iDisp], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
-						iDisp = iDisp + 1		
+						iDisp = iDisp + 1
 					end
 				end
-				
+
 				if buffIcons ~= "none" or ibuff > 4 then
-					if buffIcons == "all" 
-						or ( buffIcons == "dispell" and badTypes[debuffType])  
+					if buffIcons == "all"
+						or ( buffIcons == "dispell" and badTypes[debuffType])
 						or ( buffIcons == "buff" and not badTypes[debuffType]) then
 
 						if not unitFrame.buffIcons[ibuff] then unitFrame.buffIcons[ibuff] = CreateAuraIcon(unitFrame.buffIcons, ibuff) end
-				
+
 						UpdateAuraIcon(unitFrame.buffIcons[ibuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 						ibuff = ibuff + 1
 					end
@@ -313,18 +329,18 @@ local function UpdateBuffs(unitFrame)
 	for index = idebuff, #unitFrame.debuffIcons do unitFrame.debuffIcons[index]:Hide() end
 	for index = ibuff,   #unitFrame.buffIcons   do unitFrame.buffIcons[index]:Hide()   end
 	for index = iDisp,   #unitFrame.disIcons    do unitFrame.disIcons[index]:Hide()   end
-	
+
 	ShowGuune( unitFrame, showGuune)
 end
 
------------------------------------------------------------------------------------------------ 
+-----------------------------------------------------------------------------------------------
 --	CASTBAR
 -----------------------------------------------------------------------------------------------
 
 local function NamePlates_UpdateCastBar( f, ...)
 	if not f:IsShown() then return end
 	local current, width, min, max = f:GetValue(), f:GetWidth(), f:GetMinMaxValues()
-	
+
 	f.Time:SetFormattedText("%.1f / %.2f", current-min, max-min)
 end
 
@@ -341,7 +357,7 @@ end
 
 local function stopCast( f)
 	f:SetValue( 0)   --f.reversed and 0 or (f.endTime - f.startTime))
-	f.endTime = GetTime()	
+	f.endTime = GetTime()
 	--f:SetScript('OnUpdate', FadingOut)
 	-- no fading - hide
 	f:Hide()
@@ -352,18 +368,18 @@ local function UpdateCastBar( f, id)
 	if not unit then return  end
 
 	local name, icon, startTime, endTime, notInterruptible, spellID
-	
+
 	if f.reversed then
 		name, _, icon, startTime, endTime, _, notInterruptible = UnitChannelInfo( unit)
 	else
 		name, _, icon, startTime, endTime, _, _, notInterruptible, spellID = UnitCastingInfo( unit)
 	end
-	
+
 	if not name then
 		stopCast( f)
 		return
 	end
-	
+
 	if notInterruptible then
 		--f.BorderShield:Show()
 		if f.ibg then
@@ -390,11 +406,11 @@ local function UpdateCastBar( f, id)
 			f.ibg:Hide()
 		end
 	end
-	
+
 	f.spellDelay = yo.General.spellDelay
 	f.endTime = endTime/1000
 	f.startTime = startTime/1000
-		
+
 	f:SetMinMaxValues(0, f.endTime - f.startTime)
 
 	if yo.NamePlates.showCastName then
@@ -402,11 +418,11 @@ local function UpdateCastBar( f, id)
 		if yo.NamePlates.showCastTarget then
 			if UnitExists( unit .. "target") then
 				if yo.NamePlates.anonceCast and not UnitInRaid("player") then
-					if UnitIsUnit("player", unit .. "target") 
-						--and ( myRole == "HEALER" or myRole == "DAMAGER" ) 
+					if UnitIsUnit("player", unit .. "target")
+						--and ( myRole == "HEALER" or myRole == "DAMAGER" )
 						then
 							print( myColorStr .. name .. " on me!")
-					end					
+					end
 				end
 				local uname = UnitName( unit .. "target")
 				if uname then
@@ -425,7 +441,7 @@ local function UpdateCastBar( f, id)
 
 	f:SetScript('OnUpdate', CastTimerUpdate)
 	f:SetAlpha( 1)
-	f:Show()	
+	f:Show()
 end
 
 function CastTimerUpdate( f)
@@ -457,7 +473,7 @@ local function CastingBarFrame_OnEvent( f, event, unit, name, id)
 		--f.fadeDuration = 1.5
 	--elseif event == "UNIT_SPELLCAST_CHANNEL_INTERRUPTED" then
 	--	f:SetStatusBarColor( 1, 0, 0, 1)
-	--	f.fadeDuration = 1.5		
+	--	f.fadeDuration = 1.5
 	end
 end
 
@@ -512,17 +528,17 @@ local function UpdateHealth(unitFrame)
 end
 
 local function UpdateHealthColor(unitFrame, elapsed)
-	
-	if InCombatLockdown() then 
-		unitFrame:SetScript("OnUpdate", nil) 
+
+	if InCombatLockdown() then
+		unitFrame:SetScript("OnUpdate", nil)
 	else
 		unitFrame.tick = ( unitFrame.tick or 1) + elapsed
-		if unitFrame.tick <= 0.5 then 
-			return 
+		if unitFrame.tick <= 0.5 then
+			return
 		end
 		unitFrame.tick = 0
 	end
-	
+
 	local unit = unitFrame.displayedUnit
 	local cols = { .6, .6, .6}
 	local unitTarget = unit .. "target"
@@ -546,7 +562,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 				treatText = floor( rawPercent) .. "%"
 			end
 			unitFrame.threat:SetTextColor( cols[1], cols[2], cols[3])
-		end		
+		end
 
 		if UnitGroupRolesAssigned( "player") == "TANK" then
 			cols = treatColor[status +10]
@@ -567,7 +583,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 
 	else 	--if UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then
 		cols = _G["yo_Player"].colors.reaction[UnitReaction( unit, "player")]			-- цвет реакшн
-	end    	
+	end
 
 	unitFrame.threat:SetText( treatText)
 	unitFrame.healthBar:SetStatusBarColor( cols[1], cols[2], cols[3])
@@ -608,14 +624,14 @@ local function UpdateName( unitFrame)
 		else
 			unitFrame.level:SetText(level)
 		end
-		
+
 		local _, _, _, _, _, mobID = strsplit( "-", UnitGUID( unitFrame.displayedUnit))
 		mobID = tonumber( mobID)
-		
+
 		unitFrame.name:SetText(name)
 		unitFrame.level:SetTextColor(r, g, b)
-		
-		if UnitIsUnit( unitFrame.displayedUnit, "target") then				
+
+		if UnitIsUnit( unitFrame.displayedUnit, "target") then
 			glowTargetStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
 			if showArrows then unitFrame.arrows:Show() end
 			if unitFrame.classPower then
@@ -623,15 +639,15 @@ local function UpdateName( unitFrame)
 				unitFrame.classPower:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 				unitFrame.classPower:SetShown( isDruid())
 			end
-		else			
+		else
 			glowTargetStop( unitFrame.healthBar, 1)
 			if showArrows then unitFrame.arrows:Hide() end
-			if unitFrame.classPower and unitFrame.classPower:IsVisible() then 
+			if unitFrame.classPower and unitFrame.classPower:IsVisible() then
 				unitFrame.classPower:Hide()
 				unitFrame.classPower:UnregisterEvent("UNIT_POWER_UPDATE")
 			end
 		end
-		
+
 		if mobID and ( badMobes[mobID] or eTeam[mobID]) then
 			--lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key)
 			glowBadStart( unitFrame.healthBar, glowColor, glowN, 0.2, glowLength, 3, 0, 0, false, 2)
@@ -642,7 +658,7 @@ local function UpdateName( unitFrame)
 			--unitFrame.healthBar.shadow:SetBackdropBorderColor( .09, .09, .09)
 			--unitFrame.healthBar.HightLight:Hide()
 		end
-		
+
 		if 	--UnitClass( unitFrame.displayedUnit)
 			UnitIsPlayer( unitFrame.displayedUnit) or eTeam[mobID] 	then
 
@@ -660,7 +676,7 @@ local function UpdateName( unitFrame)
 				--unitFrame.Class.Icon:SetTexCoord(0, 0, 0, 0)
 				unitFrame.Class:Hide()
 			end
-		end		
+		end
 	end
 end
 
@@ -669,14 +685,14 @@ local function UpdateTheatSit( self)
 
 	if UnitInRaid("player") or UnitInParty("player") then
 		local isTanking, status, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation( "player", self.displayedUnit)
-	
+
 		if status then
 			if yo.NamePlates.showPercTreat == "scaledPercent" then
-				self.threat:SetText( floor( scaledPercent) .. "%")	
+				self.threat:SetText( floor( scaledPercent) .. "%")
 			else
 				self.threat:SetText( floor( rawPercent) .. "%")
 			end
-			
+
 			self.threat:SetTextColor( GetThreatStatusColor( status))
 		else
 			self.threat:SetText( "")
@@ -694,7 +710,7 @@ local function UpdateAll(unitFrame)
 		UpdateBuffs(unitFrame)
 		UpdateRaidTarget(unitFrame)
 		--UpdateTheatSit( unitFrame)
-		 
+
 		if UnitIsUnit("player", unitFrame.displayedUnit) then
 			unitFrame.castBar:UnregisterAllEvents()
 		end
@@ -709,12 +725,12 @@ local function ClearCPoints( self)
 		for i = 1, #self.cPoints do
 			Kill( self.cPoints[i])
 		end
-	end	
-	
+	end
+
 	if myClass == "DEATHKNIGHT" then
 		self:UnregisterEvent("RUNE_POWER_UPDATE")
 	else
-		self:UnregisterEvent("UNIT_POWER_UPDATE", "player")	
+		self:UnregisterEvent("UNIT_POWER_UPDATE", "player")
 		self:UnregisterEvent("UNIT_MAXPOWER", "player")
 		--self:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 		self:UnregisterEvent("UNIT_DISPLAYPOWER", "player")
@@ -729,11 +745,11 @@ local function UpdateRunes( self)
 		else --if start then
 			self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1);
 		end
-	end		
+	end
 end
 
-function UpdateUnitPower( self)	
-	
+function UpdateUnitPower( self)
+
 	if myClass == "DEATHKNIGHT" then
 		UpdateRunes( self)
 		return
@@ -763,11 +779,11 @@ function UpdateUnitPower( self)
 end
 
 local function OnCPEvent( self, event, unit, powerType)
-	
+
 	if event == "UNIT_POWER_UPDATE" and self.powerType ~= powerType then
 		return
-	
-	elseif event == "UNIT_MAXPOWER" then  --PLAYER_TALENT_UPDATE		
+
+	elseif event == "UNIT_MAXPOWER" then  --PLAYER_TALENT_UPDATE
 		if powerType == self.powerType then
 			for idx, frame in pairs(C_NamePlate.GetNamePlates()) do
         		CreateCPpoints( frame.UnitFrame.classPower)
@@ -775,10 +791,10 @@ local function OnCPEvent( self, event, unit, powerType)
         end
 
 	elseif event == "UNIT_DISPLAYPOWER" then
-		for idx, frame in pairs(C_NamePlate.GetNamePlates()) do            
+		for idx, frame in pairs(C_NamePlate.GetNamePlates()) do
         	self:SetShown( isDruid( self))
-        	--isDruid( self) 
-        end			
+        	--isDruid( self)
+        end
 
 	elseif myClass == "DEATHKNIGHT" then
 		UpdateRunes( self)
@@ -790,11 +806,11 @@ end
 function CreateCPpoints( self)
 	if not yo.pType[myClass].powerID then return end
 	if yo.pType[myClass].spec and yo.pType[myClass].spec ~= GetSpecialization() then return end
-	
-	local size = 8	
+
+	local size = 8
 	local maxComboPoints = UnitPowerMax("player", self.powerID);
-	
-	if maxComboPoints == self.maxComboPoints then return end
+
+	--if maxComboPoints == self.maxComboPoints then return end
 
 	ClearCPoints( self)
 
@@ -803,8 +819,8 @@ function CreateCPpoints( self)
 	self.cPoints = CreateFrame("Frame", nil, self)
 	self.cPoints:SetAllPoints()
 
-	for i = 1, maxComboPoints do	
-		self.cPoints[i] = CreateFrame("Frame", nil, self) --, "ClassNameplateBarComboPointFrameYo") 
+	for i = 1, maxComboPoints do
+		self.cPoints[i] = CreateFrame("Frame", nil, self) --, "ClassNameplateBarComboPointFrameYo")
 		self.cPoints[i]:SetParent( self)
 		self.cPoints[i]:SetSize( size, size)
 
@@ -813,7 +829,7 @@ function CreateCPpoints( self)
 		self.cPoints[i].Back:SetSize(10, 10)
 		self.cPoints[i].Back:SetAtlas( "ClassOverlay-ComboPoint-Off")
 		self.cPoints[i].Back:SetAlpha( 1)
-		
+
 		self.cPoints[i].Point = self.cPoints[i]:CreateTexture(nil, "ARTWORK")
 		self.cPoints[i].Point:SetPoint( "CENTER")
 		self.cPoints[i].Point:SetSize(10, 10)
@@ -841,12 +857,12 @@ function CreateCPpoints( self)
 	if myClass == "DEATHKNIGHT" then
 		self:RegisterEvent("RUNE_POWER_UPDATE")
 	else
-		self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")	
+		self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 		self:RegisterUnitEvent("UNIT_MAXPOWER", "player")
 		self:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
 		--self:RegisterEvent("PLAYER_TALENT_UPDATE");
-		--self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")		
-	end	
+		--self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+	end
 	--isDruid( self)
 	OnCPEvent( self)
 end
@@ -860,10 +876,11 @@ local function OnNamePlateCreated( frame)
 	f:SetAllPoints( frame)
 	f:SetFrameLevel( frame:GetFrameLevel())
 	f:SetScale( UIParent:GetScale())
-	
+
 	f.healthBar = CreateFrame("StatusBar", nil, f)
 	f.healthBar:SetPoint("CENTER", f, "CENTER", 0, 0)
 	f.healthBar:SetSize( nameplatewidth, nameplateheight)
+	table.insert( N.statusBars, f.healthBar)
 	--f.healthBar:SetAllPoints(f)
 
 	f.healthBar:SetStatusBarTexture( texture)
@@ -882,14 +899,15 @@ local function OnNamePlateCreated( frame)
    	f.healthBar.HightLight:SetPoint('BOTTOMRIGHT', f.healthBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
 	f.healthBar.HightLight:SetVertexColor( r, g, b, 1)
 	f.healthBar.HightLight:SetBlendMode( "ADD")
-	f.healthBar.HightLight:SetTexture( texhl)	
+	f.healthBar.HightLight:SetTexture( texhl)
 	f.healthBar.HightLight:SetAlpha( 0.2)
-	f.healthBar.HightLight:Hide()	
-	
+	f.healthBar.HightLight:Hide()
+
 	f.healthBar.perc = f.healthBar:CreateFontString(nil, "OVERLAY")
 	f.healthBar.perc:SetFont( font, fontsize, "THINOUTLINE")
 	f.healthBar.perc:SetPoint("RIGHT", f.healthBar, "RIGHT", -5, 0)
 	f.healthBar.perc:SetTextColor(1, 1, 1)
+	table.insert( N.strings, f.healthBar.perc)
 
 	--f.healthBar.value = f.healthBar:CreateFontString(nil, "OVERLAY")
 	--f.healthBar.value:SetFont( font, fontsize, "THINOUTLINE")
@@ -900,25 +918,29 @@ local function OnNamePlateCreated( frame)
 	f.name:SetFont( font, fontsize, "THINOUTLINE")
 	f.name:SetPoint("BOTTOM", f.healthBar, "TOP", 0, 2)
 	f.name:SetTextColor(1, 1, 1)
-	
+	table.insert( N.strings, f.name)
+
 	f.level = f.healthBar:CreateFontString(nil, "OVERLAY")
 	f.level:SetFont( font, fontsize, "THINOUTLINE")
 	f.level:SetTextColor(1, 1, 1)
 	f.level:SetPoint("LEFT", f.healthBar, "LEFT", 10, 0)
+	table.insert( N.strings, f.level)
 
 	--if yo.NamePlates.showPercTreat then
 		f.threat = f.healthBar:CreateFontString(nil, "OVERLAY")
 		f.threat:SetFont( font, fontsize, "THINOUTLINE")
 		f.threat:SetTextColor(1, 1, 1)
 		f.threat:SetPoint("LEFT", f.level, "RIGHT", 6, 0)
+		table.insert( N.strings, f.threat)
 	--end
-			
+
 	f.castBar = CreateFrame("StatusBar", nil, f)
 	f.castBar:Hide()
 	f.castBar:SetPoint("TOP", f.healthBar, "BOTTOM", 0, -2)
 	f.castBar:SetSize( nameplatewidth, 5)
 	f.castBar:SetStatusBarTexture( texture)
 	f.castBar:SetStatusBarColor(1, 0.8, 0)
+	table.insert( N.statusBars, f.castBar)
 
 	f.castBar.Background = f.castBar:CreateTexture(nil, "BACKGROUND")
 	f.castBar.Background:SetAllPoints( f.castBar)
@@ -930,28 +952,30 @@ local function OnNamePlateCreated( frame)
 	f.castBar.Time:SetFont( font, fontsize - 1, "THINOUTLINE")
 	f.castBar.Time:SetShadowOffset(1, -1)
 	f.castBar.Time:SetTextColor(1, 1, 1)
+	table.insert( N.strings, f.castBar.Time)
 
 	f.castBar.Spark = f.castBar:CreateTexture(nil, "OVERLAY")
 	f.castBar.Spark:SetTexture("")
-	
+
 	f.castBar.Text = f.castBar:CreateFontString(nil, "OVERLAY")
 	f.castBar.Text:SetPoint("TOP", f.castBar, "BOTTOM", 0, -1)
 	f.castBar.Text:SetFont( font, fontsize, "THINOUTLINE")
 	f.castBar.Text:SetTextColor(1, 1, 1)
 	f.castBar.Text:SetJustifyH("CENTER")
-	
+	table.insert( N.strings, f.castBar.Text)
+
 	if yo.NamePlates.showCastIcon then
-		f.castBar.ibg = CreateFrame("Frame", "BACKGROUND", f.castBar) 
-    	f.castBar.ibg:SetPoint("BOTTOM", f.healthBar,"CENTER", 0, -2);  
+		f.castBar.ibg = CreateFrame("Frame", "BACKGROUND", f.castBar)
+    	f.castBar.ibg:SetPoint("BOTTOM", f.healthBar,"CENTER", 0, -2);
     	f.castBar.ibg:SetSize( yo.NamePlates.iconCastSize, yo.NamePlates.iconCastSize)
 		f.castBar.ibg:SetFrameLevel( 10)
 		CreateStyle( f.castBar.ibg, 3, 6)
-	
+
 		f.castBar.Icon = f.castBar.ibg:CreateTexture(nil, "BORDER")
 		f.castBar.Icon:SetAllPoints( f.castBar.ibg)
 		f.castBar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	end
-	
+
 	--f.castBar.BorderShield = f.castBar:CreateTexture(nil, "OVERLAY", 1)
 	--f.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
 	--f.castBar.BorderShield:SetSize(12, 12)
@@ -974,14 +998,14 @@ local function OnNamePlateCreated( frame)
 		f.arrows.arrowleft:SetSize( auras_size, auras_size)
     	f.arrows.arrowleft:SetPoint( "RIGHT", f.healthBar, "LEFT", 10, 0)
 		f.arrows.arrowleft:SetVertexColor( 0.8, 1, 0)
-			
+
     	f.arrows.arrowright = f.arrows:CreateTexture( nil, 'ARTWORK', nil, 7)
     	f.arrows.arrowright:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\target-arrow")
 		f.arrows.arrowright:SetTexCoord(.72,0,0,1)
     	f.arrows.arrowright:SetSize(  auras_size, auras_size)
     	f.arrows.arrowright:SetPoint( "LEFT", f.healthBar, "RIGHT", -10, 0)
 		f.arrows.arrowright:SetVertexColor( 0.8, 1, 0)
-    end	
+    end
 
 	f.RaidTargetFrame = CreateFrame("Frame", nil, f)
 	f.RaidTargetFrame:SetSize( auras_size +3, auras_size +3)
@@ -1020,7 +1044,7 @@ local function OnNamePlateCreated( frame)
 	f.Class.Icon:SetAllPoints()
 	f.Class.Icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
 	f.Class.Icon:SetTexCoord(0, 0, 0, 0)
-	--CreateStyle(f.Class, 3) 
+	--CreateStyle(f.Class, 3)
 
 	--f.Shine = CreateFrame("Frame", "$parentShine", f.healthBar, "AutoCastShineTemplate")
 	--f.Shine:SetPoint("CENTER", f.healthBar, "CENTER", 0, 0)
@@ -1032,17 +1056,17 @@ local function OnNamePlateCreated( frame)
 	f.guune.icon = f.guune:CreateTexture(nil, "OVERLAY")
 	f.guune.icon:SetAllPoints()
 	f.guune.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	CreateStyle(f.guune, 3) 
+	CreateStyle(f.guune, 3)
 
 	CastingBarFrame_OnLoad(f.castBar, nil, false, true)
-	
+
 	f.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
 	f.castBar:HookScript("OnValueChanged", function() NamePlates_UpdateCastBar(f.castBar) end)
-	
+
 	f:EnableMouse(false)
 
 	if yo.NamePlates.showResourses and yo.pType[myClass] then
-		f.classPower = CreateFrame("Frame", nil, f) 
+		f.classPower = CreateFrame("Frame", nil, f)
 		f.classPower:SetPoint("CENTER", f.healthBar, "BOTTOM", 0, 0)
 		f.classPower:SetSize(60, 13)
 		f.classPower:SetFrameStrata("MEDIUM")
@@ -1052,9 +1076,9 @@ local function OnNamePlateCreated( frame)
 		--f.classPower.TurnOff 	= TurnOff
 		--f.classPower.TurnOn 	= TurnOn
 		f.classPower.powerID 	= yo.pType[myClass].powerID
-		f.classPower.powerType	= yo.pType[myClass].powerType		
+		f.classPower.powerType	= yo.pType[myClass].powerType
 		CreateCPpoints( f.classPower)
-		
+
 		f.classPower:SetScript("OnEvent", OnCPEvent)
 	end
 
@@ -1063,13 +1087,13 @@ end
 
 
 ----------------------------------------------------------------------------------------------------------------
--- 		NAMEPLATES CONSTRUCT 
+-- 		NAMEPLATES CONSTRUCT
 ----------------------------------------------------------------------------------------------------------------
 
 
 function NamePlates_UpdateNamePlateOptions()
 	-- Called at VARIABLES_LOADED and by "Larger Nameplates" interface options checkbox
-	local baseNamePlateWidth = nameplatewidth 
+	local baseNamePlateWidth = nameplatewidth
 	local baseNamePlateHeight = nameplateheight
 	local horizontalScale = 1 --noscalemult	--tonumber(GetCVar("NamePlateHorizontalScale"))
 
@@ -1119,9 +1143,9 @@ end
 
 local function NamePlate_OnEvent(self, event, ...)
 	local arg1, arg2, arg3, arg4 = ...
-	
+
 	--print(event, InCombatLockdown(), self.tick)
-	
+
 	if event == "PLAYER_TARGET_CHANGED" then
 		UpdateName(self)
 	elseif event == "PLAYER_ENTERING_WORLD" then
@@ -1180,7 +1204,7 @@ local function RegisterNamePlateEvents(unitFrame)
 	--InCombatLockdown()
 	unitFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 	unitFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-	
+
 	UpdateNamePlateEvents(unitFrame)
 	unitFrame:SetScript("OnEvent", NamePlate_OnEvent)
 	--unitFrame:SetAlpha( 1)
@@ -1206,14 +1230,14 @@ end
 
 local function OnNamePlateAdded(unit)
 	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
-	local unitFrame = namePlate.UnitFrame	
+	local unitFrame = namePlate.UnitFrame
 	SetUnit(unitFrame, unit)
 	UpdateAll(unitFrame)
 	unitFrame.tick = 1
 	unitFrame:SetScript("OnUpdate", UpdateHealthColor)
 
 	--if pType[myClass] then
-	--	CreateShardsBar( unitFrame)	
+	--	CreateShardsBar( unitFrame)
 	--end
 end
 
@@ -1233,12 +1257,12 @@ local function NamePlates_OnEvent(self, event, ...)
 				[1]			={	strsplit(",", yo.NamePlates.c1)},
 				[2]			={	strsplit(",", yo.NamePlates.c2)},
 				[3]			={	strsplit(",", yo.NamePlates.c3)},
-				
+
 				[10]		={	strsplit(",", yo.NamePlates.c0t)},
 				[11]		={	strsplit(",", yo.NamePlates.c1)},
 				[12]		={	strsplit(",", yo.NamePlates.c2)},
 				[13]		={	strsplit(",", yo.NamePlates.c3t)},
-				
+
 				["myPet"]	={	strsplit(",", yo.NamePlates.myPet)},
 				["tankOT"]	={ 	strsplit(",", yo.NamePlates.tankOT)},
 				["badGood"]	={ 	strsplit(",", yo.NamePlates.badGood)},
@@ -1256,7 +1280,7 @@ local function NamePlates_OnEvent(self, event, ...)
 			buffIcons		= yo.NamePlates.buffIcons
 			classDispell	= yo.NamePlates.classDispell
 			showToolTip		= yo.NamePlates.showToolTip
-			
+
 			if yo.NamePlates.glowTarget then
 				glowTargetStart	= glowStart
 				glowTargetStop = glowStop
@@ -1265,18 +1289,18 @@ local function NamePlates_OnEvent(self, event, ...)
 				glowTargetStop  = dummy
 			end
 
-			if yo.NamePlates.glowBadType == "pixel" then 
+			if yo.NamePlates.glowBadType == "pixel" then
 				glowBadStart 	= glowStart
 				glowBadStop  	= glowStop
 				glowColor 		= { 0.95, 0.1, 0.1, 1}
 				glowN			= 12
 				glowLength		= 12
-			elseif yo.NamePlates.glowBadType == "button" then 
+			elseif yo.NamePlates.glowBadType == "button" then
 				glowBadStart 	= buttonStart
 				glowBadStop  	= buttonStop
 				glowColor 		= { 1, 0.75, 0, 1}
 				glowN			= 2
-			elseif yo.NamePlates.glowBadType == "cast" then 
+			elseif yo.NamePlates.glowBadType == "cast" then
 				glowBadStart 	= castStart
 				glowBadStop  	= castStop
 				glowColor 		= { 1, 0.75, 0, 1}
@@ -1287,8 +1311,14 @@ local function NamePlates_OnEvent(self, event, ...)
 				glowBadStop  = dummy
 			end
 
+			local br, bg, bb = strsplit( ",", yo.Media.shadowColor)
+			if yo.Media.classBorder then
+				br, bg, bb = myColor.r, myColor.g, myColor.b
+			end
+			DebuffTypeColor.none = { r = br, g = bg, b = bb}
+
 			badTypes = classDispell and badClassTypes[myClass] or badClassTypes["HUNTER"]
-	
+
 			HideBlizzard()
 			NamePlates_UpdateNamePlateOptions()
 
@@ -1319,7 +1349,7 @@ end
 
 local NamePlatesFrame = CreateFrame("Frame", "yo_NamePlatesFrame", UIParent)
 	--NamePlatesFrame:RegisterEvent("VARIABLES_LOADED") PLAYER_ENTERING_WORLD
-	NamePlatesFrame:RegisterEvent("PLAYER_ENTERING_WORLD") 
+	NamePlatesFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	NamePlatesFrame:RegisterEvent("NAME_PLATE_CREATED")
 	NamePlatesFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 	NamePlatesFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")

@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local errorTicker
 
@@ -8,12 +8,12 @@ function unitPVP( f, unit)
 	local element = f.pvpIcon
 	if not element then return end
 
-	local factionGroup = UnitFactionGroup(unit) 	
+	local factionGroup = UnitFactionGroup(unit)
 
 	if (UnitIsPVPFreeForAll( unit)) then
 		status = 'FFA'
 	elseif(factionGroup and factionGroup ~= 'Neutral' and UnitIsPVP(unit)) then
-		
+
 		if(unit == 'player' and UnitIsMercenary(unit)) then
 			if(factionGroup == 'Horde') then
 				factionGroup = 'Alliance'
@@ -23,7 +23,7 @@ function unitPVP( f, unit)
 		end
 
 		status = factionGroup
-	end 
+	end
 
 	if(status) then
 		element:Show()
@@ -46,7 +46,7 @@ end
 local function OnLeave(f, event)
 	f.bgHlight:Hide()
 	if GameTooltip:IsShown() then
-		GameTooltip:FadeOut(2) 
+		GameTooltip:FadeOut(2)
 	end
 end
 
@@ -55,11 +55,11 @@ local function enableRC( f, unit, name)
 		f:SetScript("OnMouseUp", function( this, a1)
 			if a1 == "LeftButton" then
 				DoReadyCheck()
-			elseif a1 == "RightButton" then 
+			elseif a1 == "RightButton" then
 				DoReadyCheck()
-			end 
+			end
 		end)
-		
+
 		f:SetScript("OnEnter", function(this)
 			GameTooltip:SetOwner(this, "ANCHOR_BOTTOMLEFT", 0, 0)
 			GameTooltip:SetText( READY_CHECK, 0, 1, 0)
@@ -75,18 +75,18 @@ end
 
 function flag_update( f, unit)
 	if UnitIsGroupAssistant( unit) == true then
-		f.rAssist:Show()		
+		f.rAssist:Show()
 		enableRC( f.rAssist)
-		f.rLeader:Hide() 		
+		f.rLeader:Hide()
 	elseif UnitIsGroupLeader( unit) == true then
 		f.rLeader:Show()
 		enableRC( f.rLeader)
 		f.rAssist:Hide()
 	else
 		f.rAssist:Hide()
-		f.rLeader:Hide() 
+		f.rLeader:Hide()
 	end
-	
+
 	--local method, pid, rid = GetLootMethod()
 	--if(method == 'master') then
 	--	local mlUnit
@@ -106,14 +106,14 @@ function flag_update( f, unit)
 	--	end
 	--else
 	--	f.rLoot:Hide()
-	--end 
-		
+	--end
+
 	f.rText:Hide()
 	if IsInRaid() == true then
-		for i=1, GetNumGroupMembers() do 
+		for i=1, GetNumGroupMembers() do
 			local rname, _, grp = GetRaidRosterInfo( i)
 			if UnitExists( rname) and UnitIsUnit( rname, unit) then
-				f.rText:SetText( grp)		
+				f.rText:SetText( grp)
 				f.rText:Show()
 				break
 			end
@@ -123,18 +123,18 @@ function flag_update( f, unit)
 end
 
 function nm_update( f, unit, levelUP)
-	
+
 	local level = ""
-	if unit == "player" and (( levelUP and levelUP ~= MAX_PLAYER_LEVEL) or UnitLevel( "player") ~= MAX_PLAYER_LEVEL) then 
+	if unit == "player" and (( levelUP and levelUP ~= MAX_PLAYER_LEVEL) or UnitLevel( "player") ~= MAX_PLAYER_LEVEL) then
 		level = levelUP or UnitLevel( "player")
 		level = level .. " "
-	end	
+	end
 
 	local lenght = math.floor( f:GetWidth() / 7)
 	local name = utf8sub( UnitName( unit), lenght, false)
 	if name then
-		f.nameText:SetText( format( "%s%s", level, name))	
-	end	
+		f.nameText:SetText( format( "%s%s", level, name))
+	end
 
 	if UnitIsAFK(unit) == true then
 		f.nameText:SetText( f.nameText:GetText() .. " |cffffffff afk")
@@ -142,8 +142,14 @@ function nm_update( f, unit, levelUP)
 	--print(level, unit, name)
 end
 
-function hp_update( f, unit)  
+function hp_update( f, unit)
 	local thText
+	local absorb = UnitGetTotalAbsorbs( unit) or 0
+	local absorbText = absorb > 0 and "|cffffff00 " .. nums( absorb).. "|r" or ""
+
+	local healthMax = UnitHealthMax( unit)
+	local healthCur = UnitHealth( unit)
+
 	if not UnitIsConnected( unit) then
 		thText = "Off"
 	elseif UnitIsDead( unit) then
@@ -155,22 +161,24 @@ function hp_update( f, unit)
 			--thText = math.ceil( UnitHealth( unit) / UnitHealthMax( unit) * 100) .. "%"
 			thText = ""
 		else
-			local min, max = UnitHealth( unit), UnitHealthMax( unit)
-			if min == max then
-				thText = nums( min)
+			if healthCur == healthMax then
+				thText = nums( healthCur)
 			else
-				thText = nums( min) .. " | " .. math.ceil( min / max * 100) .. "%"
-			end			
+				thText = nums( healthCur) .. absorbText .. " | " .. math.ceil( healthCur / healthMax * 100) .. "%"
+			end
 		end
-    end        
-	
+    end
+
     f.healthBar.healthText:SetText( thText)
-	f.healthBar:SetMinMaxValues( 0, UnitHealthMax( unit))     
+	f.healthBar:SetMinMaxValues( 0, healthMax + absorb)
+
+	f.absorbBar:SetMinMaxValues( 0, healthMax)-- + absorb)
+	f.absorbBar:SetValue( absorb)
 
 	if not UnitIsConnected(unit) then
-		f.healthBar:SetValue( UnitHealthMax( unit))
+		f.healthBar:SetValue( healthMax + absorb)
 	else
-		f.healthBar:SetValue( UnitHealth( unit))
+		f.healthBar:SetValue( healthCur + absorb)
 	end
 end
 
@@ -184,16 +192,23 @@ function rmark_update( f, unit)
 		end
 end
 
-function pw_update( f, unit)  
+function pw_update( f, unit)
 	local uPP, uPText
-	local pmin, pmax = UnitPower( unit), UnitPowerMax( unit)
-	
+	local pmin, pmax
+
+	if myClass == "WARLOCK" and mySpec == 3 then
+		pmin, pmax = UnitPower( unit, 7, true), 10
+		pmin = mod( pmin, 10)
+	else
+		pmin, pmax = UnitPower( unit), UnitPowerMax( unit)
+	end
+
 	if pmin >= 1 then
         uPP = math.floor( pmin / pmax * 100)
     else
         uPP = 0
     end
-	
+
     if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) or pmin == 0 then
         uPText = ""
 	elseif f.isboss then
@@ -202,17 +217,21 @@ function pw_update( f, unit)
     	if pmin == pmax then
     		uPText = nums( pmin)
     	else
-    		uPText = nums( pmin) .. " | " .. uPP .. "%"
-    	end		
-    end    
+    		if myClass == "WARLOCK" and mySpec == 3 then
+				uPText = nums( pmin) .. " | 10"
+    		else
+    			uPText = nums( pmin) .. " | " .. uPP .. "%"
+    		end
+    	end
+    end
 
-	f.powerBar.powerText:SetText( uPText)	
-	f.powerBar:SetMinMaxValues( 0, pmax)     
+	f.powerBar.powerText:SetText( uPText)
+	f.powerBar:SetMinMaxValues( 0, pmax)
 	f.powerBar:SetValue( pmin)
 end
 
 function initFrame( f)
-	
+
 	local unit = f.unit
 	local cols = f.colors.disc
 
@@ -226,9 +245,9 @@ function initFrame( f)
 	elseif UnitIsTapDenied( unit) then
 		cols = f.colors.tapped
 	elseif f.isboss then
-		if UnitIsUnit( unit, "target") then 
+		if UnitIsUnit( unit, "target") then
 			--f.shadow:SetBackdropColor( 1, 0, 0, .9)
-			f.shadow:SetBackdropBorderColor( 1, 0, 0, 1)			
+			f.shadow:SetBackdropBorderColor( 1, 0, 0, 1)
 		else
 			--f.shadow:SetBackdropColor( .08, .08, .08, .9)
 			f.shadow:SetBackdropBorderColor( 0, 0, 0, 1)
@@ -236,10 +255,10 @@ function initFrame( f)
 		cols = f.colors.reaction[UnitReaction( unit, "player")]
 	elseif UnitReaction( unit, 'player') or UnitPlayerControlled( unit) then
 		cols = f.colors.reaction[UnitReaction( unit, "player")]
-	end    	
-	
-	f.colr, f.colg, f.colb = cols[1], cols[2], cols[3]	
-		
+	end
+
+	f.colr, f.colg, f.colb = cols[1], cols[2], cols[3]
+
 	f.rText:SetTextColor( f.colr, f.colg, f.colb, 1)
 	f.nameText:SetTextColor( f.colr, f.colg, f.colb, 1)
 
@@ -250,7 +269,7 @@ function initFrame( f)
 	--print( powerType, powerToken, r, g, b)
 	--f.healthBar:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
 	--f.healthBar.bgHealth:SetVertexColor(0.3,0.3,0.3,0.9)
-	
+
 	--f.healthBar:SetStatusBarColor( f.colr / 8, f.colg / 8, f.colb / 8, 0.8)
 	--f.healthBar.bgHealth:SetVertexColor( f.colr, f.colg, f.colb, 1)
 
@@ -271,7 +290,7 @@ end
 local function OnEvent(f, event, ...)
 	--print( "Event :", f:GetName(), event, ...)
 	local unit = f.unit
-	if event == "UNIT_HEALTH" or event == "UNIT_HEALTH_FREQUENT" then
+	if event == "UNIT_HEALTH" or event == "UNIT_HEALTH_FREQUENT" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
 		if f.alive == true then
 			initFrame( f)
 			f.alive = false
@@ -289,35 +308,35 @@ local function OnEvent(f, event, ...)
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		if UnitExists( unit) then
 			initFrame(f)
-		end		
+		end
 	elseif event == "RAID_TARGET_UPDATE" then
 		rmark_update( f, unit)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		f.rCombat:Hide()
-		--errorTicker = C_Timer.NewTimer( 2, function() 
-		--	UIErrorsFrame:Clear() 
+		--errorTicker = C_Timer.NewTimer( 2, function()
+		--	UIErrorsFrame:Clear()
 		--	UIErrorsFrame:Show()
 		--end)
-	
+
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		f.rCombat:SetTexCoord(0.58, 0.90, 0.08, 0.41)
 		f.rCombat:Show()
 		--UIErrorsFrame:Hide()
-		--if errorTicker then 
-		--	errorTicker:Cancel() 
+		--if errorTicker then
+		--	errorTicker:Cancel()
 		--	errorTicker = nil
 		--end
 
 	elseif event == "PLAYER_UPDATE_RESTING"	or event == "ZONE_CHANGED_NEW_AREA" then
-		if( IsResting() and unit == 'player') then 
-			f.rCombat:SetTexCoord(0, .5, 0, .421875) 
+		if( IsResting() and unit == 'player') then
+			f.rCombat:SetTexCoord(0, .5, 0, .421875)
 			f.rCombat:Show()
 		else
 			f.rCombat:Hide()
 		end
 	elseif event == "PLAYER_FLAGS_CHANGED" then
 		nm_update( f, unit)
-	elseif event == "PLAYER_DEAD" or event == "PLAYER_ALIVE" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" or event == "PLAYER_UNGHOST" or event == "UNIT_PET" or event == "PLAYER_FOCUS_CHANGED" then
+	elseif event == "PLAYER_DEAD" or event == "PLAYER_ALIVE" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" or event == "PLAYER_UNGHOST" or event == "UNIT_PET" or event == "PLAYER_FOCUS_CHANGED" or event == "UNIT_NAME_UPDATE" then
 		initFrame( f)
 	elseif event == "INCOMING_RESURRECT_CHANGED" then
 		--print( event, UnitHasIncomingResurrection( unit))
@@ -325,10 +344,10 @@ local function OnEvent(f, event, ...)
 			f.nameText:SetTextColor( 0, 1, 0, 1)
 		else
 			f.nameText:SetTextColor( f.colr, f.colg, f.colb, 1)
-		end		
+		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		f:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		initFrame( f)				
+		initFrame( f)
 	elseif event == "UNIT_FACTION" then
 		unitPVP( f, unit)
 	elseif event == "PLAYER_LEVEL_UP" then
@@ -336,7 +355,7 @@ local function OnEvent(f, event, ...)
 		nm_update( f, unit, level)
 	else
 		print( "UnknownEvent: |cffff0000" .. event .. "|r from: " .. f:GetName())
-	end	
+	end
 end
 
 local function updateTOTAuras( self, unit)
@@ -347,13 +366,13 @@ local function updateTOTAuras( self, unit)
 	while true and fligerPD < self.pDebuff.count do
 		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
 		if not name then break end
-			
-		if --unit == self.pDebuff.unit and 
+
+		if --unit == self.pDebuff.unit and
 			not blackSpells[spellID] then
 
 			if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM")end
 			UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
-			fligerPD = fligerPD + 1						
+			fligerPD = fligerPD + 1
 		end
 
 		index = index + 1
@@ -367,7 +386,7 @@ local function OnUpdate(f, elapse)
 	if f.tick > 0.7 then
 		f.tick = 0
 		if f:IsShown() then
-			initFrame( f) 
+			initFrame( f)
 			updateTOTAuras( f, f.unit)
 		end
 	end
@@ -380,19 +399,19 @@ local function makeInspect( uf, unit, name)
 		f:SetSize( 15,15)
 		f:SetFrameLevel( 4)
 		f:SetPoint("CENTER", uf, "TOPRIGHT", 0, 0)
-		f:SetBackdrop({ bgFile="Interface\\HELPFRAME\\HelpIcon-Bug", }) 
+		f:SetBackdrop({ bgFile="Interface\\HELPFRAME\\HelpIcon-Bug", })
 
 		f:SetScript("OnMouseUp", function( this, a1)
 			if not UnitIsVisible("target") then return end
 			if a1 == "LeftButton" then
 				InspectUnit("target")
-			elseif a1 == "RightButton" then 
-				if not DressUpFrame:IsShown() then 
-					ShowUIPanel(DressUpFrame) 
+			elseif a1 == "RightButton" then
+				if not DressUpFrame:IsShown() then
+					ShowUIPanel(DressUpFrame)
 				end
 				DressUpModel:SetUnit("target")
 				SetPortraitTexture(DressUpFramePortrait, "target")
-			end 
+			end
 		end)
 
 		f:SetScript("OnEnter", function(this)
@@ -401,7 +420,7 @@ local function makeInspect( uf, unit, name)
 			GameTooltip:AddLine(" <Left-click> " ..INSPECT .." \n<Right-click> " .. DRESSUP_FRAME, 0, 1, 0)
 			GameTooltip:Show()
 		end)
-		
+
 		f:SetScript("OnLeave", GameTooltipOnLeave)
 		uf[name] = f
 	else
@@ -420,33 +439,49 @@ menu = function(self)
 end
 
 function CreateUFrame( f, unit)
-	f.healthBar = CreateFrame("StatusBar", "healthBar", f)
+	f.healthBar = CreateFrame("StatusBar", nil, f)
 	f.healthBar:SetAllPoints()
 	f.healthBar:SetFrameLevel(1)
 	f.healthBar:SetStatusBarTexture( texture)
 	--f.healthBar:SetStatusBarColor( 0.09, 0.09, 0.09, 1)
 	f.healthBar:SetStatusBarColor( 0.15, 0.15, 0.15, 1)
 	f.healthBar:GetStatusBarTexture():SetHorizTile(false)
+	table.insert( N.statusBars, f.healthBar)
 
-	f.powerBar = CreateFrame("StatusBar" , "powerBar", f)
+    local absorbBar = CreateFrame('StatusBar', nil, f.healthBar)
+    absorbBar:SetPoint('TOP')
+    absorbBar:SetPoint('BOTTOM')
+    absorbBar:SetPoint('RIGHT', f.healthBar:GetStatusBarTexture(), 'RIGHT')
+    absorbBar:SetWidth( f:GetWidth())
+	absorbBar:SetStatusBarTexture(texture)
+	absorbBar:SetFillStyle( 'REVERSE')
+	absorbBar:SetStatusBarColor( 0.25, 0.25, 0.25, 1)
+	absorbBar:SetFrameLevel(2)
+	f.absorbBar = absorbBar
+
+	f.powerBar = CreateFrame("StatusBar" , nil, f)
 	f.powerBar:SetPoint("BOTTOM", f,"BOTTOM", 0, 4);
 	f.powerBar:SetStatusBarTexture( texture)
 	f.powerBar:SetHeight( 4)
-	f.powerBar:SetWidth( f:GetWidth() - 10) 
+	f.powerBar:SetWidth( f:GetWidth() - 10)
 	f.powerBar:SetFrameLevel( 4)
- 
-	f.nameText =  f:CreateFontString(nil ,"OVERLAY")
+	table.insert( N.statusBars, f.powerBar)
+
+	f.nameText =  f.absorbBar:CreateFontString(nil ,"OVERLAY")
 	f.nameText:SetFont( font, fontsize, "OUTLINE")
 	f.nameText:SetPoint("BOTTOMLEFT", f.powerBar, "TOPLEFT", 0, 3)
+	table.insert( N.strings, f.nameText)
 
-	f.healthBar.healthText =  f:CreateFontString(nil ,"OVERLAY")
+	f.healthBar.healthText =  f.absorbBar:CreateFontString(nil ,"OVERLAY")
 	f.healthBar.healthText:SetFont( font, fontsize -1, "OUTLINE")
-	f.healthBar.healthText:SetPoint("TOPRIGHT", f, "TOPRIGHT", -2, -2)
+	f.healthBar.healthText:SetPoint("TOPRIGHT", f, "TOPRIGHT", 0, -2)
+	table.insert( N.strings, f.healthBar.healthText)
 
-	f.powerBar.powerText =  f:CreateFontString(nil ,"OVERLAY")
+	f.powerBar.powerText =  f.absorbBar:CreateFontString(nil ,"OVERLAY")
 	f.powerBar.powerText:SetFont( font, fontsize -1, "OUTLINE")
 	f.powerBar.powerText:SetPoint("TOPRIGHT", f.healthBar.healthText, "BOTTOMRIGHT", 0, -3)
-	  
+	table.insert( N.strings, f.powerBar.powerText)
+
 	f.healthBar.bgHealth = f:CreateTexture(nil, 'BACKGROUND')
 	f.healthBar.bgHealth:SetAllPoints(f)
 	f.healthBar.bgHealth:SetVertexColor(0.5,0.5,0.5,0.9)
@@ -473,29 +508,29 @@ function CreateUFrame( f, unit)
 	f.rText =  f:CreateFontString(nil ,"OVERLAY")
 	f.rText:SetFont( yo.Media.fontpx, fontsize, "OUTLINE")
 	f.rText:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 2, 0)
-	
+
 	f.rLeader = CreateFrame("Button", nil, f)
     f.rLeader:SetPoint("CENTER", f, "TOPLEFT", 15, 4)
-	f.rLeader:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-LeaderIcon", }) 
+	f.rLeader:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-LeaderIcon", })
     f.rLeader:SetSize(10, 10)
 	enableRC( f.rLeader)
-	
+
 	f.rAssist = CreateFrame("Button", nil, f)
     f.rAssist:SetPoint("CENTER", f.rLeader, "CENTER", 0, 0)
 	f.rAssist:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-AssistantIcon"})
     f.rAssist:SetSize(10, 10)
 	enableRC( f.rAssist)
-	
+
 	--f.rLoot = f:CreateTexture(nil,'OVERLAY')
  --   f.rLoot:SetPoint("LEFT", f.rLeader, "RIGHT", 0, 0)
 	--f.rLoot:SetTexture("Interface\\GroupFrame\\UI-Group-MasterLooter")
  --   f.rLoot:SetSize( 8, 8)
-	
+
 	if unit == "player" or unit == "target" then
 		f.pvpIcon = f:CreateTexture(nil,'OVERLAY')
 		f.pvpIcon:SetPoint("CENTER", f, "CENTER", 0, 0)
 		f.pvpIcon:SetSize(20, 20)
-		f.pvpIcon:Hide()		
+		f.pvpIcon:Hide()
 	end
 
 
@@ -513,60 +548,61 @@ function CreateUFrame( f, unit)
 
 		--f:RegisterUnitEvent("PLAYER_TARGET_CHANGED", unit)
 		--f:RegisterEvent("UNIT_PET")
-		
+
 		f:RegisterEvent("PLAYER_UPDATE_RESTING")
 		f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-		
+
 		f:RegisterEvent("PLAYER_DEAD")
 		f:RegisterEvent("PLAYER_ALIVE")
 		f:RegisterEvent("PLAYER_UNGHOST")
-		
+
 		--f:RegisterEvent("PLAYER_TOTEM_UPDATE")
 		--f:RegisterEvent("UNIT_MAXHEALTH")
 		--UNIT_THREAT_LIST_UPDATE
 		--UNIT_THREAT_SITUATION_UPDATE
-	
+
 		f.rCombat = f:CreateTexture(nil, 'OVERLAY')
 		f.rCombat:SetSize(19,19)
 		f.rCombat:SetPoint( "CENTER", f, "LEFT", 0, 6)
-		f.rCombat:SetTexture('Interface\\CharacterFrame\\UI-StateIcon') 
+		f.rCombat:SetTexture('Interface\\CharacterFrame\\UI-StateIcon')
 		f.rCombat:SetTexCoord(0.58, 0.90, 0.08, 0.41)
 		f.rCombat:Hide()
-		if IsResting() then 
-			f.rCombat:SetTexCoord(0, .5, 0, .421875) 
+		if IsResting() then
+			f.rCombat:SetTexCoord(0, .5, 0, .421875)
 			f.rCombat:Show()
 		else
 			f.rCombat:Hide()
 		end
-		
-	elseif unit == "target" then 
-			
+
+	elseif unit == "target" then
+
 		f:RegisterEvent("PLAYER_ENTERING_WORLD");
-	
+
 		--f:RegisterEvent("PLAYER_ALIVE")
 		--f:RegisterEvent("PLAYER_DEAD")
 		--f:RegisterEvent("PLAYER_UNGHOST")
 		f:RegisterEvent("GROUP_ROSTER_UPDATE")
 		f:RegisterEvent("PLAYER_TARGET_CHANGED")
-		
+
 		f:RegisterUnitEvent("UNIT_HEALTH", unit)
 		f:RegisterUnitEvent("UNIT_POWER_FREQUENT", unit)
 		f:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit)
 		f:RegisterUnitEvent("INCOMING_RESURRECT_CHANGED", unit)
-				
+
 		makeInspect( f, unit, "inspect")
-	elseif unit == "pet" then 
+	elseif unit == "pet" then
 		f:RegisterEvent("UNIT_PET")
+		f:RegisterUnitEvent("UNIT_NAME_UPDATE", unit)
 		f:RegisterUnitEvent("UNIT_HEALTH", unit)
 		f:RegisterUnitEvent("UNIT_POWER_FREQUENT", unit)
-	elseif unit == "focus" then 
+	elseif unit == "focus" then
 		f.powerBar:SetHeight( 2)
 		f:RegisterEvent("GROUP_ROSTER_UPDATE")
 		f:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		f:RegisterUnitEvent("UNIT_HEALTH", unit)
 		f:RegisterUnitEvent("UNIT_POWER_FREQUENT", unit)
 		f:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit)
-	elseif( unit:match'(boss)%d?$' == 'boss') then 
+	elseif( unit:match'(boss)%d?$' == 'boss') then
 		f.isboss = "boss"
 		f:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 		f:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -576,7 +612,7 @@ function CreateUFrame( f, unit)
 	elseif unit == "targettarget" then
 		f.tick = 1
 		f:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit)
-		
+
 		local pDebuff = CreateFrame("Frame", nil, f)
 		pDebuff:SetPoint("TOPLEFT", f, "BOTTOMLEFT",  0, -5)
 		pDebuff:SetWidth( f:GetWidth())
@@ -590,20 +626,21 @@ function CreateUFrame( f, unit)
 	end
 
 	f:RegisterEvent("RAID_TARGET_UPDATE")
+	f:RegisterUnitEvent('UNIT_ABSORB_AMOUNT_CHANGED', unit)
 	--f:RegisterEvent("PARTY_MEMBER_ENABLE")
 	--f:RegisterEvent("PARTY_MEMBER_DISABLE")
-	
+
 	f:RegisterForClicks("AnyDown")
-	
+
 	f:SetScript("OnEnter", OnEnter)
 	f:SetScript("OnLeave", OnLeave)
 	f:SetScript("OnEvent", OnEvent)
-	
+
 	f:SetAttribute("*type1", "target")
 	f:SetAttribute("*type2", "togglemenu")
 	f:SetAttribute("unit", unit)
-	RegisterUnitWatch( f)
-	
+	RegisterUnitWatch( f)--, true)
+
 	--f.rLoot:Hide()
 
 	f.rAssist:Hide()
@@ -612,14 +649,14 @@ function CreateUFrame( f, unit)
 	f:SetFrameStrata("BACKGROUND")
 	GetColors( f)
 	CreateStyle( f, 4)
-	CreateStyle( f.powerBar, 4, 4, .3, .3)
+	CreateStyle( f.powerBar, 2, 4, .3, .9)
 	--f.menu = menu
 	DisableBlizzard( unit)
 	initFrame( f)
 end
 
 --self:RegisterEvent('INCOMING_RESURRECT_CHANGED', Path, true)
---resurrect:SetTexture[[Interface\RaidFrame\Raid-Icon-Rez]] 
+--resurrect:SetTexture[[Interface\RaidFrame\Raid-Icon-Rez]]
 
 	--if ( event == "QUEST_FINISHED" ) then
 	--	HideUIPanel(QuestFrame);

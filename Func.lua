@@ -1,3 +1,15 @@
+local addon, ns = ...
+
+local yo, N = {}, {}
+
+ns[2] = yo
+ns[3] = N
+
+yoFrame = ns
+
+N["statusBars"] = {}
+N["strings"]	= {}
+N["shadows"]	= {}
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
@@ -104,12 +116,12 @@ function SetUpAnimGroup(object, type, ...)
 		object.Fadein.AlphaAnim = object.Fadein:CreateAnimation("Alpha")
 		object.Fadein.AlphaAnim:SetFromAlpha( minAlpha or 0)
 		object.Fadein.AlphaAnim:SetToAlpha( maxAlpha or 1)
-		object.Fadein.AlphaAnim:SetDuration( duration or 0.5)		
+		object.Fadein.AlphaAnim:SetDuration( duration or 0.5)
 		--object.Fadein.AlphaAnim:SetSmoothing("IN")
 		object.Fadein.maxAlpha = maxAlpha or 1
-  		if parent then object.Fadein.AlphaAnim:SetTarget( parent) end  		
+  		if parent then object.Fadein.AlphaAnim:SetTarget( parent) end
   		--object.Fadein:SetScript("OnFinished", function() 	--	object.Fadein.AlphaAnim:GetTarget():SetAlpha( object.Fadein.maxAlpha) --end)
-  		
+
 	elseif type == 'Fadeout' then
 		local minAlpha, maxAlpha, duration, finalAlpha, parent = ...
 		object.Fadeout = object:CreateAnimationGroup( "Fadeout")
@@ -121,7 +133,7 @@ function SetUpAnimGroup(object, type, ...)
 		object.Fadeout.AlphaAnim:SetDuration( duration or 0.5)
 		--object.Fadeout.AlphaAnim:SetSmoothing("OUT")
 		object.Fadeout.minAlpha = minAlpha or 0
-		if parent then	object.Fadeout.AlphaAnim:SetTarget( parent)	end  		
+		if parent then	object.Fadeout.AlphaAnim:SetTarget( parent)	end
 		--object.Fadeout:SetScript("OnFinished", function()	--	object.Fadeout.AlphaAnim:GetTarget():SetAlpha( object.Fadeout.minAlpha) --end )
 	else
 		local x, y, duration, customName = ...
@@ -190,12 +202,12 @@ function makeUIButton(id, text, w, h, x, y)
 	return button
 end
 
-function formatMoney(money, noColor)	
+function formatMoney(money, noColor)
 	local goldColor, silverColor, copperColor, back = "|cffffaa00", "|cffbbbbbb", "|cffff6600", "|r"
 	if noColor then
 		goldColor, silverColor, copperColor, back = "", "", "", ""
 	end
-	
+
 	if money == 0 then return format( copperColor .. COPPER_AMOUNT_TEXTURE, money) end
 
 	local gold   = commav( floor(math.abs(money) / 10000))
@@ -221,7 +233,7 @@ end
 function timeLastWeeklyReset()
 	local resetDays = { 2, 4, 3, 4, 4}
 	local region = GetCurrentRegion()
-	
+
 	local weekDayReset = resetDays[region]
 	local nextResetTime = time() + GetQuestResetTime()
 	local nextResetTimeWeekDay = tonumber( date("%w", nextResetTime))
@@ -363,7 +375,7 @@ function SecondsToClock(seconds, noSec, noMin)
 
   	years 	= years == 0 and "" or ( format( LASTONLINE_YEARS, years) .. " ")
   	month 	= month == 0 and "" or ( format( LASTONLINE_MONTHS, month) .. " ")
-    days 	= days  == 0 and "" or ( format( LASTONLINE_DAYS, days) .. " ") 
+    days 	= days  == 0 and "" or ( format( LASTONLINE_DAYS, days) .. " ")
     hours 	= hours == 0 and "" or ( format( LASTONLINE_HOURS, hours) .. " ")
 	mins 	= mins  == 0 and "" or ( format( LASTONLINE_MINUTES, mins) .. " ")
 	secs 	= secs  == 0 and "" or ( format( INT_SPELL_DURATION_SEC, secs))
@@ -400,7 +412,7 @@ end
 
 function commav(amount)
   local formatted = amount
-  while true do  
+  while true do
     formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1 %2')
     if (k==0) then
       break
@@ -418,7 +430,7 @@ function hex(r, g, b)
 		return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 	end
 end
-	
+
 function nums(num)
 	TRILLION = 1000000000000
 	BILLION  = 1000000000
@@ -452,7 +464,7 @@ function CreateVirtualFrame(frame, point, size, alpha, alphaback)
 	frame.back:SetDrawLayer("BORDER", -8)
 	frame.back:SetPoint("TOPLEFT", point, "TOPLEFT", -3, 3)
 	frame.back:SetPoint("BOTTOMRIGHT", point, "BOTTOMRIGHT", 3, -3)
-	frame.back:SetColorTexture( 0.15, 0.15, 0.15, alphaback) 
+	frame.back:SetColorTexture( 0.15, 0.15, 0.15, alphaback)
 
 	frame.bordertop = frame:CreateTexture(nil, "BORDER")
 	frame.bordertop:SetPoint("TOPLEFT", point, "TOPLEFT", -size, size)
@@ -496,7 +508,7 @@ end
 
 function CreateNewBorder( f)
 	if f.border then return end
-	
+
 	f.border = CreateFrame( "Button", nil, f)
 	f.border:SetAllPoints( f)
 	f.border:SetFrameLevel( level or 0)
@@ -506,7 +518,7 @@ function CreateNewBorder( f)
 	f.border.glow = f.border:CreateTexture(nil, "BORDER")
 	f.border.glow:SetPoint( "CENTER", f.border, "CENTER", 0, 0)
 	f.border.glow:SetVertexColor( 0.15, 0.15, 0.15, 0.9)
-	f.border.glow:SetTexture( "Interface\\Buttons\\UI-Quickslot2")		
+	f.border.glow:SetTexture( "Interface\\Buttons\\UI-Quickslot2")
 	f.border.glow:SetHeight( f:GetHeight() * 1.85)
 	f.border.glow:SetWidth( f:GetWidth() * 1.85)
 	--f.border.glow:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
@@ -515,14 +527,20 @@ function CreateNewBorder( f)
 	--f.border.glow:SetWidth( f:GetWidth() * 1.3)
 end
 
-function CreateStyle(f, size, level, alpha, alphaborder) 
+function CreateStyle(f, size, level, alpha, alphaborder)
     if f.shadow then return end
     local size = size or 3
+    size = max( 1, size + yo.Media.edgeSize)
+
 	local style = {
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-		edgeFile = texglow, 
-		edgeSize = 4,
-		insets = { left = 3, right = 3, top = 3, bottom = 3 }	
+		edgeFile = texglow,
+		--edgeFile = "Interface\\Buttons\\WHITE8x8",
+		--edgeFile = [=[Interface\Addons\yoFrame\Media\blank.tga]=],
+
+		edgeSize = size,
+		--insets = { left = size, right = size, top = size, bottom = size }
+		insets = { left = size, right = size, top = size, bottom = size }
 	}
 
     local shadow = CreateFrame("Frame", nil, f)
@@ -531,13 +549,19 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     shadow:SetPoint("TOPLEFT", -size, size)
     shadow:SetPoint("BOTTOMRIGHT", size, -size)
     shadow:SetBackdrop(style)
-    shadow:SetBackdropColor(.08,.08,.08, alpha or .9)
-	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
+    local r, g, b = strsplit( ",", yo.Media.shadowColor)
+    if yo.Media.classBorder then
+		r, g, b = myColor.r, myColor.g, myColor.b
+	end
+    --shadow:SetBackdropColor( r, g, b, alpha or .9)
+    shadow:SetBackdropColor(.07,.07,.07, alpha or .9)
+	shadow:SetBackdropBorderColor( r, g, b, alphaborder or 1)	--(0, 0, 0, alphaborder or 1)
     f.shadow = shadow
+    table.insert( N["shadows"], f.shadow)
     return shadow
 end
 
-function CreateStyleSmall(f, size, level, alpha, alphaborder) 
+function CreateStyleSmall(f, size, level, alpha, alphaborder)
     if f.shadow then return end
 
     local size = size or 3
@@ -555,8 +579,9 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
     shadow:SetPoint("TOPLEFT", -size, size)
     shadow:SetPoint("BOTTOMRIGHT", size, -size)
     shadow:SetBackdrop(style)
-    shadow:SetBackdropColor(.08,.08,.08, alpha or 1)
+    shadow:SetBackdropColor(.07,.07,.07, alpha or 0.9)
 	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
+	table.insert( N["shadows"], f.shadow)
     f.shadow = shadow
     return shadow
 end
@@ -569,24 +594,29 @@ function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	f:SetPoint(a1, p, a2, x, y)
 	f:SetBackdrop({
 	  bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-      edgeFile = "Interface\\Buttons\\WHITE8x8", 
-	  tile = false, tileSize = 0, edgeSize = 1, 
+      edgeFile = "Interface\\Buttons\\WHITE8x8",
+	  tile = false, tileSize = 0, edgeSize = 1,
 	  insets = { left = -1, right = -1, top = -1, bottom = -1}
 	})
-	f:SetBackdropColor(.05,.05,.05, alpha or .9)
-	f:SetBackdropBorderColor(.15,.15,.15, alphaborder  or 0)
+	f:SetBackdropColor(.07,.07,.07, alpha or .9)
+	local r, g, b = strsplit( ",", yo.Media.shadowColor)
+	if yo.Media.classBorder then
+			r, g, b = myColor.r, myColor.g, myColor.b
+	end
+	f:SetBackdropBorderColor( r, g, b, alphaborder or 0)	--(.15,.15,.15, alphaborder  or 0)
+	--table.insert( N["shadows"], f)
 	return f
 end
 
 function frame1px(f)
 	f:SetBackdrop({
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-        edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1, 
-		insets = {left = -1, right = -1, top = -1, bottom = -1} 
+        edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1,
+		insets = {left = -1, right = -1, top = -1, bottom = -1}
 	})
-	f:SetBackdropColor(.05,.05,.05, .9)
-	f:SetBackdropBorderColor(.15,.15,.15, 0)	
-end 
+	f:SetBackdropColor(.07,.07,.07, .9)
+	f:SetBackdropBorderColor(.15,.15,.15, 0)
+end
 
 function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	--local _, class = UnitClass("player")
@@ -598,12 +628,17 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	f:SetPoint(a1, p, a2, x, y)
 	f:SetBackdrop({
 		bgFile = texture,
-		edgeFile = texture, 
-		tile = false, tileSize = 0, edgeSize = 1, 
+		edgeFile = texglow,
+		tile = false, tileSize = 0, edgeSize = 1,
 		insets = { left = 1, right = 1, top = 1, bottom = 1}
 	})
-	f:SetBackdropColor(.07,.07,.07, alpha or 1)
-	f:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
+	f:SetBackdropColor(.07,.07,.07, alpha or 0.9)
+	local r, g, b = strsplit( ",", yo.Media.shadowColor)
+	if yo.Media.classBorder then
+			r, g, b = myColor.r, myColor.g, myColor.b
+	end
+	f:SetBackdropBorderColor( r, g, b, alphaborder or 0) --(0, 0, 0, alphaborder or 1)
+	--table.insert( N["shadows"], f)
 end
 
 
@@ -763,7 +798,7 @@ local borderFrame1 = CreateFrame("Frame", nil, UIParent)
 borderFrame1:SetPoint("CENTER")
 borderFrame1:SetSize(250, 50)
 borderFrame1:Hide()
-CreateStyle( borderFrame1, 4)
+--CreateStyle( borderFrame1, 4)
 
 --borderFrame1.texture = borderFrame1:CreateTexture(nil, "OVERLAY")
 --borderFrame1.texture:SetAllPoints()
@@ -785,9 +820,9 @@ borderFrame3.texture = borderFrame3:CreateTexture(nil, "OVERLAY")
 borderFrame3.texture:SetAllPoints()
 borderFrame3.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidbg")
 
---CreateBorder(borderFrame1, 16) 
-CreateBorder(borderFrame2, 12) 
-CreateBorder(borderFrame3, 8) 
+--CreateBorder(borderFrame1, 16)
+CreateBorder(borderFrame2, 12)
+CreateBorder(borderFrame3, 8)
 
 
 --borderFrame1.texture:SetVertexColor( 0.2, 0.2, 0.2, 0.9)
@@ -798,7 +833,7 @@ borderFrame3.texture:SetVertexColor( 0, 1, 1, 0.9)
 SetBorderColor(borderFrame2, 1, 0, 0, 1)
 
 local toggle = true
-SlashCmdList["TB"] = function() 	
+SlashCmdList["TB"] = function()
 	borderFrame1:SetShown( toggle)
 	borderFrame2:SetShown( toggle)
 	borderFrame3:SetShown( toggle)

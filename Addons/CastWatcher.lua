@@ -35,7 +35,7 @@ local function CreateText( self)
 	
 	self.icon = self:CreateTexture(nil, "BORDER")
 	self.icon:SetAllPoints()
-	self.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+	self.icon:SetTexCoord(unpack( yo.tCoord))
 	self.icon:SetVertexColor( 1,1,1,1)
 	
 	self.watchText = self:CreateFontString(nil, "OVERLAY")
