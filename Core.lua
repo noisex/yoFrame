@@ -112,7 +112,6 @@ local function loginEvent(self, ...)
 	SetCVar("countdownForCooldowns", 0)
 	SetCVar("showTargetOfTarget", 1)
 
-
 	local hiddenOptions = {
 		["showTargetOfTarget"] = 				{ description = OPTION_TOOLTIP_SHOW_TARGET_OF_TARGET, type = "boolean" },
 		["TargetNearestUseNew"] = 				{ description = "Use 7.2 'nearest target' functionality", type = "boolean" },

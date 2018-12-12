@@ -117,8 +117,8 @@ L["iconincombat"]	= "Show icon in combat"
 L["CBclasscolor"]	= "Castbar in class color"
 L["BCB"] 			= "Big CastBar"
 L["castbarAlpha"]	= "CastBar Alpha"
-
 L["treatborder"]	= "Interrupt color border"
+
 L["DESC_BCB_TREAT"] = "Castbar border in cast-interapt possible color"
 L["DESC_BCB_CC"] 	= "Castbar in class color or cast-interapt possible color"
 
@@ -230,6 +230,7 @@ L["showToolTip"]	= "Show tooltip on buffs on mousover:"
 L["glowBadType"]	= "Glow type on bad mobs"
 L["glowTarget"]		= "Show glow amination ot target"
 L["showResourses"]	= "Show player resourses ( cp, arcane, shards)"
+L["tankMode"]		= "Fixed Tank Mode"
 
 L["c0"]			= "0. Good agro ( DPS, Healer)"
 L["c0t"]		= "0. Tank"

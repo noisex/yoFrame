@@ -1,7 +1,7 @@
 local L, yo, N = unpack( select( 2, ...))
 
-local addon = CreateFrame("Button", "Butsu")
-local title = addon:CreateFontString(nil, "OVERLAY")
+local logon = CreateFrame("Button", "Butsu", UIParent)
+local title = logon:CreateFontString(nil, "OVERLAY")
 
 local iconSize = 30
 local frameScale = 1
@@ -39,16 +39,16 @@ local OnClick = function(self)
 		HandleModifiedItemClick(GetLootSlotLink(self:GetID()))
 	else
 		ss = self:GetID()
-		sq = self.quality
-		sn = self.name:GetText()
-		st = self.icon:GetTexture()
+		--sq = self.quality
+		--sn = self.name:GetText()
+		--st = self.icon:GetTexture()
 
 		-- master looter
-		LootFrame.selectedLootButton = self:GetName()
-		LootFrame.selectedSlot = ss
-		LootFrame.selectedQuality = sq
-		LootFrame.selectedItemName = sn
-		LootFrame.selectedTexture = st
+		--LootFrame.selectedLootButton = self:GetName()
+		--LootFrame.selectedSlot = ss
+		--LootFrame.selectedQuality = sq
+		--LootFrame.selectedItemName = sn
+		--LootFrame.selectedTexture = st
 
 		LootSlot(ss)
 	end
@@ -74,18 +74,18 @@ dummy = function() end
 CreateBD = function(f, a)
 	f:SetBackdrop({
 		bgFile = media.backdrop,
-		edgeFile = media.backdrop,
-		edgeSize = 1,
+		edgeFile = media.glow,
+		edgeSize = 2,
 	})
-	f:SetBackdropColor(.05,.05,.05, a or alpha)
+	f:SetBackdropColor(.05,.05,.05, a or 0.9)
 	f:SetBackdropBorderColor(0, 0, 0)
 end
 
 local createSlot = function(id)
 	local iconsize = iconSize
-	local frame = CreateFrame("Button", 'ButsuSlot'..id, addon)
-	frame:SetPoint("LEFT", 8, 0)
-	frame:SetPoint("RIGHT", -8, 0)
+	local frame = CreateFrame("Button", 'ButsuSlot'..id, logon)
+	frame:SetPoint("LEFT", 4, 0)
+	frame:SetPoint("RIGHT", -4, 0)
 	frame:SetHeight(30)
 	frame:SetID(id)
 	CreateBD(frame)
@@ -137,7 +137,7 @@ local createSlot = function(id)
 	drop:SetAlpha(.3)
 	frame.drop = drop
 
-	addon.slots[id] = frame
+	logon.slots[id] = frame
 	return frame
 end
 
@@ -150,44 +150,43 @@ local anchorSlots = function(self)
 			shownSlots = shownSlots + 1
 
 			-- We don't have to worry about the previous slots as they're already hidden.
-			frame:SetPoint("TOP", addon, 4, (-8 + iconsize) - (shownSlots * iconsize))
+			frame:SetPoint("TOP", logon, 4, (-4 + iconsize) - (shownSlots * iconsize))
 		end
 	end
 
-	self:SetHeight(math.max(shownSlots * iconsize + 16, 20))
+	self:SetHeight(math.max(shownSlots * iconsize + 8, 20))
 end
 
 title:SetFont( font, fontsize, "OUTLINE")
-title:SetPoint("TOP", addon, "TOP", 0, 15)
+title:SetPoint("TOP", logon, "TOP", 0, 15)
 
-addon:SetScript("OnMouseDown", function(self) if(IsAltKeyDown()) then self:StartMoving() end end)
-addon:SetScript("OnMouseUp", function(self) self:StopMovingOrSizing() end)
-addon:SetScript("OnHide", function(self)
+logon:SetScript("OnMouseDown", function(self) if(IsAltKeyDown()) then self:StartMoving() end end)
+logon:SetScript("OnMouseUp", function(self) self:StopMovingOrSizing() end)
+logon:SetScript("OnHide", function(self)
 	StaticPopup_Hide"CONFIRM_LOOT_DISTRIBUTION"
 	CloseLoot()
 end)
-addon:SetMovable(true)
-addon:RegisterForClicks"anyup"
+logon:SetMovable(true)
+logon:RegisterForClicks"anyup"
 
-addon:SetParent( UIParent)
---addon:SetUserPlaced(true)
-addon:SetPoint("TOP", yo_MoveLoot, "TOP", 0, 0)
---addon:SetAllPoints(yo_MoveLoot)
-CreateStyle(addon, 2)
+logon:SetParent( UIParent)
+--logon:SetUserPlaced(true)
+logon:SetPoint("TOP", yo_MoveLoot, "TOP", 0, 0)
+CreateStyle(logon, 2)
 
-addon:SetWidth(200)
-addon:SetHeight(60)
-addon:SetBackdropColor(.05,.05,.05,0)
+logon:SetWidth(200)
+logon:SetHeight(60)
+logon:SetBackdropColor(.05,.05,.05,0)
 
---addon:SetClampedToScreen(true)
---addon:SetClampRectInsets(0, 0, 14, 0)
---addon:SetHitRectInsets(0, 0, -14, 0)
-addon:SetFrameStrata"HIGH"
-addon:SetToplevel(true)
+--logon:SetClampedToScreen(true)
+--logon:SetClampRectInsets(0, 0, 14, 0)
+--logon:SetHitRectInsets(0, 0, -14, 0)
+logon:SetFrameStrata"HIGH"
+logon:SetToplevel(true)
 
-addon.slots = {}
+logon.slots = {}
 
-addon.LOOT_OPENED = function(self, event, autoloot)
+logon.LOOT_OPENED = function(self, event, autoloot)
 	self:Show()
 
 	if(not self:IsShown()) then
@@ -223,7 +222,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 	local m, w, t = 0, 0, title:GetStringWidth()
 	if(items > 0) then
 		for i=1, items do
-			local slot = addon.slots[i] or createSlot(i)
+			local slot = logon.slots[i] or createSlot(i)
 			local texture, item, quantity, _, quality, locked = GetLootSlotInfo(i)
 
 			if texture then
@@ -260,7 +259,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 			end
 		end
 	else
-		local slot = addon.slots[1] or createSlot(1)
+		local slot = logon.slots[1] or createSlot(1)
 		local color = ITEM_QUALITY_COLORS[0]
 
 		slot.name:SetText( "loot empty")
@@ -286,14 +285,14 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 	--self:SetWidth(math.max(w, t))
 end
 
-addon.LOOT_SLOT_CLEARED = function(self, event, slot)
+logon.LOOT_SLOT_CLEARED = function(self, event, slot)
 	if(not self:IsShown()) then return end
 
-	addon.slots[slot]:Hide()
+	logon.slots[slot]:Hide()
 	anchorSlots(self)
 end
 
-addon.LOOT_CLOSED = function(self)
+logon.LOOT_CLOSED = function(self)
 	StaticPopup_Hide"LOOT_BIND"
 	self:Hide()
 
@@ -302,16 +301,16 @@ addon.LOOT_CLOSED = function(self)
 	end
 end
 
-addon.OPEN_MASTER_LOOT_LIST = function(self)
-	ToggleDropDownMenu(nil, nil, GroupLootDropDown, addon.slots[ss], 0, 0)
+logon.OPEN_MASTER_LOOT_LIST = function(self)
+	ToggleDropDownMenu(nil, nil, GroupLootDropDown, logon.slots[ss], 0, 0)
 end
 
-addon.UPDATE_MASTER_LOOT_LIST = function(self)
+logon.UPDATE_MASTER_LOOT_LIST = function(self)
 	UIDropDownMenu_Refresh(GroupLootDropDown)
 end
 
-addon.ADDON_LOADED = function(self, event, addon)
-	if(addon == "Butsu") then
+logon.ADDON_LOADED = function(self, event, logon)
+	if(logon == "Butsu") then
 		--title:SetFont( font, fontsize, "OUTLINE")
 
 		db = setmetatable({}, {__index = defaults})
@@ -324,56 +323,56 @@ addon.ADDON_LOADED = function(self, event, addon)
 	end
 end
 
-addon:SetScript("OnEvent", function(self, event, ...)
+logon:SetScript("OnEvent", function(self, event, ...)
 	self[event](self, event, ...)
 end)
 
-addon:RegisterEvent"LOOT_OPENED"
-addon:RegisterEvent"LOOT_SLOT_CLEARED"
-addon:RegisterEvent"LOOT_CLOSED"
-addon:RegisterEvent"OPEN_MASTER_LOOT_LIST"
-addon:RegisterEvent"UPDATE_MASTER_LOOT_LIST"
-addon:RegisterEvent"ADDON_LOADED"
-addon:Hide()
+logon:RegisterEvent"LOOT_OPENED"
+logon:RegisterEvent"LOOT_SLOT_CLEARED"
+logon:RegisterEvent"LOOT_CLOSED"
+logon:RegisterEvent"OPEN_MASTER_LOOT_LIST"
+logon:RegisterEvent"UPDATE_MASTER_LOOT_LIST"
+logon:RegisterEvent"ADDON_LOADED"
+logon:Hide()
 
 -- Fuzz
 LootFrame:UnregisterAllEvents()
-table.insert(UISpecialFrames, "Butsu")
+--table.insert(UISpecialFrames, "Butsu")
 
-local hexColors = {}
-for k, v in pairs(RAID_CLASS_COLORS) do
-	hexColors[k] = "|c"..v.colorStr
-end
-hexColors["UNKNOWN"] = string.format("|cff%02x%02x%02x", 0.6 * 255, 0.6 * 255, 0.6 * 255)
+--local hexColors = {}
+--for k, v in pairs(RAID_CLASS_COLORS) do
+--	hexColors[k] = "|c"..v.colorStr
+--end
+--hexColors["UNKNOWN"] = string.format("|cff%02x%02x%02x", 0.6 * 255, 0.6 * 255, 0.6 * 255)
 
-if CUSTOM_CLASS_COLORS then
-	local function update()
-		for k, v in pairs(CUSTOM_CLASS_COLORS) do
-			hexColors[k] = "|c"..v.colorStr
-		end
-	end
-	CUSTOM_CLASS_COLORS:RegisterCallback(update)
-	update()
-end
+--if CUSTOM_CLASS_COLORS then
+--	local function update()
+--		for k, v in pairs(CUSTOM_CLASS_COLORS) do
+--			hexColors[k] = "|c"..v.colorStr
+--		end
+--	end
+--	CUSTOM_CLASS_COLORS:RegisterCallback(update)
+--	update()
+--end
 
-local playerName = UnitName("player")
-local classesInRaid = {}
-local players, player_indices = {}, {}
-local randoms = {}
-local wipe = table.wipe
+--local playerName = UnitName("player")
+--local classesInRaid = {}
+--local players, player_indices = {}, {}
+--local randoms = {}
+--local wipe = table.wipe
 
-local function MasterLoot_RequestRoll(frame)
-	DoMasterLootRoll(frame.value)
-end
+--local function MasterLoot_RequestRoll(frame)
+--	DoMasterLootRoll(frame.value)
+--end
 
-local function MasterLoot_GiveLoot(frame)
-	MasterLooterFrame.slot = LootFrame.selectedSlot
-	MasterLooterFrame.candidateId = frame.value
-	if LootFrame.selectedQuality >= MASTER_LOOT_THREHOLD then
-		StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[LootFrame.selectedQuality].hex..LootFrame.selectedItemName..FONT_COLOR_CODE_CLOSE, frame:GetText() or UNKNOWN, "LootWindow")
-	else
-		GiveMasterLoot(LootFrame.selectedSlot, frame.value)
-	end
-	CloseDropDownMenus()
-end
+--local function MasterLoot_GiveLoot(frame)
+--	MasterLooterFrame.slot = LootFrame.selectedSlot
+--	MasterLooterFrame.candidateId = frame.value
+--	if LootFrame.selectedQuality >= MASTER_LOOT_THREHOLD then
+--		StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[LootFrame.selectedQuality].hex..LootFrame.selectedItemName..FONT_COLOR_CODE_CLOSE, frame:GetText() or UNKNOWN, "LootWindow")
+--	else
+--		GiveMasterLoot(LootFrame.selectedSlot, frame.value)
+--	end
+--	CloseDropDownMenus()
+--end
 

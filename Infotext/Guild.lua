@@ -1,5 +1,5 @@
 
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 --------------------------------------------------------------------
 -- GUILD ROSTER
@@ -69,15 +69,15 @@ local function BuildGuildTable()
 		name, rank, rankIndex, level, _, zone, note, officernote, connected, status, class = GetGuildRosterInfo(i)
 		name = string.gsub(name, "-.*", "")
 		-- we are only interested in online members
-		
+
 		if status == 1 then
 			status = "|cffFFFFFF[|r|cffFF0000"..'AFK'.."|r|cffFFFFFF]|r"
 		elseif status == 2 then
 			status = "|cffFFFFFF[|r|cffFF0000"..'DND'.."|r|cffFFFFFF]|r"
-		else 
+		else
 			status = '';
 		end
-		
+
 		guildTable[i] = { name, rank, level, zone, note, officernote, connected, status, class, rankIndex }
 		if connected then totalOnline = totalOnline + 1 end
 	end
@@ -91,11 +91,11 @@ end
 local function UpdateGuildXP()
 	local currentXP, remainingXP = UnitGetGuildXP("player")
 	local nextLevelXP = currentXP + remainingXP
-	
+
 	if nextLevelXP == 0 or maxDailyXP == 0 then return end
-	
+
 	local percentTotal = tostring(math.ceil((currentXP / nextLevelXP) * 100))
-	
+
 	guildXP[0] = { currentXP, nextLevelXP, percentTotal }
 end
 
@@ -134,7 +134,7 @@ end
 Stat:SetScript("OnMouseUp", function(self, btn)
 	if btn ~= "RightButton" or not IsInGuild() then return end
 	if InCombatLockdown() then return end
-	
+
 	GameTooltip:Hide()
 
 	local classc, levelc, grouped
@@ -165,6 +165,37 @@ Stat:SetScript("OnMouseUp", function(self, btn)
 	EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 2)
 end)
 
+Stat.ShowGuild = function(self, btn)
+	local menuWIM = {
+		{ text = "Гильдейский шептун", isTitle = true, notCheckable=true},
+	}
+
+	GameTooltip:Hide()
+
+	BuildGuildTable()
+
+	local classc, levelc, grouped
+	local menuCountWhispers = 1
+
+	for i = 1, #guildTable do
+		if (guildTable[i][7] and (guildTable[i][1] ~= UnitName("player") and guildTable[i][1] ~= UnitName("player").."-"..GetRealmName())) then
+			local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[guildTable[i][9]], GetQuestDifficultyColor(guildTable[i][3])
+
+			if UnitInParty(guildTable[i][1]) or UnitInRaid(guildTable[i][1]) then
+				grouped = "|cffaaaaaa*|r"
+			else
+				grouped = ""
+			end
+
+			menuCountWhispers = menuCountWhispers + 1
+			menuWIM[menuCountWhispers] = {text = string.format(levelNameString, levelc.r*255,levelc.g*255,levelc.b*255, guildTable[i][3], classc.r*255,classc.g*255,classc.b*255, guildTable[i][1], grouped), arg1 = guildTable[i][1],notCheckable=true, func = whisperClick}
+		end
+	end
+
+	EasyMenu(menuWIM, menuFrame, "cursor", 5, -5, "MENU", 2)
+end
+
+
 Stat:SetScript("OnMouseDown", function(self, btn)
 	if btn ~= "LeftButton" then return end
 	ToggleGuildFrame()
@@ -172,7 +203,7 @@ end)
 
 Stat:SetScript("OnEnter", function(self)
 	if not IsInGuild() then return end
-	
+
 	GuildRoster()
 	UpdateGuildMessage()
 	BuildGuildTable()
@@ -187,9 +218,9 @@ Stat:SetScript("OnEnter", function(self)
 	GameTooltip:AddDoubleLine(format(guildInfoString, GuildInfo, GuildLevel), format(guildInfoString2, online, #guildTable),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
 	GameTooltip:AddLine(GuildRank, unpack(tthead))
 	GameTooltip:AddLine(' ')
-	
+
 	if guildMotD ~= "" then GameTooltip:AddLine(format(guildMotDString, GUILD_MOTD, guildMotD), ttsubh.r, ttsubh.g, ttsubh.b, 1) end
-	
+
 	local col = RGBToHex(ttsubh.r, ttsubh.g, ttsubh.b)
 	GameTooltip:AddLine(' ')
 	if GuildInfo and GuildLevel then
@@ -199,7 +230,7 @@ Stat:SetScript("OnEnter", function(self)
 			GameTooltip:AddLine(format(guildXpCurrentString, ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
 		end
 	end
-	
+
 	local _, _, standingID, barMin, barMax, barValue = GetGuildFactionInfo()
 	if standingID ~= 8 then -- Not Max Rep
 		barMax = barMax - barMin
@@ -207,12 +238,12 @@ Stat:SetScript("OnEnter", function(self)
 		barMin = 0
 		GameTooltip:AddLine(format(standingString, COMBAT_FACTION_CHANGE, ShortValue(barValue), ShortValue(barMax), ceil((barValue / barMax) * 100)))
 	end
-	
+
 	if online > 1 then
 		local Count = 0
-	
+
 	GameTooltip:AddLine(' ')
-	for i = 1, #guildTable do			
+	for i = 1, #guildTable do
 			if online <= 1 then
 				break
 			end
@@ -223,12 +254,12 @@ Stat:SetScript("OnEnter", function(self)
 				if 80 - Count <= 1 then
 			if online - 30 > 1 then GameTooltip:AddLine(format(moreMembersOnlineString, online - 30), ttsubh.r, ttsubh.g, ttsubh.b) end
 				end
-				
+
 				if GetRealZoneText() == zone then zonec = activezone else zonec = inactivezone end
 				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
-				
+
 				if isMobile then zone = "" end
-				
+
 				if IsShiftKeyDown() then
 					GameTooltip:AddDoubleLine(string.format(nameRankString, name, rank), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
 					if note ~= "" then GameTooltip:AddLine(string.format(noteString, note), ttsubh.r, ttsubh.g, ttsubh.b, 1) end
@@ -236,16 +267,16 @@ Stat:SetScript("OnEnter", function(self)
 				else
 					GameTooltip:AddDoubleLine(string.format(levelNameStatusString, levelc.r*255, levelc.g*255, levelc.b*255, level, name, status), zone, classc.r,classc.g,classc.b, zonec.r,zonec.g,zonec.b)
 				end
-				
+
 				Count = Count + 1
 			end
 		end
-	end	
+	end
 
 	GameTooltip:Show()
 end)
 
-local function Update(self, event, ...)	
+local function Update(self, event, ...)
 	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnMouseDown", nil)
@@ -271,15 +302,15 @@ local function Update(self, event, ...)
 		if not GuildFrame and IsInGuild() then
 			LoadAddOn("Blizzard_GuildUI")
 			GuildRoster()
-		end 
+		end
 	end
 
 	if (not IsInGuild()) then
 		Text:SetText(noGuildString) -- I need a string :(
-		
+
 		return
 	end
-	
+
 	GuildRoster() -- Bux Fix on 5.4.
 	local _, online = GetNumGuildMembers()
 	Text:SetFormattedText(displayString, online)
@@ -290,3 +321,5 @@ Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
 Stat:SetScript("OnEvent", Update)
 --end
+
+N.InfoGuild = Stat

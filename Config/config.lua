@@ -9,6 +9,14 @@ local L, yo, N = unpack( ns)
 --L_GUI_CHAT_SKIN_BUBBLE = "Стилизация облачков чата"
 
 --L_GUI_MAP_EXPLORE = "Отслеживать на карте 'Первооткрыватель' и 'Хранитель мудрости'"
+	ClassNameplateManaBar = dummy
+	NamePlateDriverMixin = dummy
+	--PixelUtil.SetWidth = dummy
+	--PixelUtil.SetHeight = dummy
+	PixelUtil.GetNearestPixelSize = function(...)
+		--print(...)
+		return 1
+	end
 
 myClass 	= select( 2, UnitClass( "player"))
 myColor 	= RAID_CLASS_COLORS[myClass]
@@ -230,6 +238,7 @@ yo["NamePlates"] = {
 	["glowBadType"]		= "pixel", 	-- button, cast, false
 	["maxDispance"]		= 40,
 	["showResourses"]	= true,
+	["tankMode"]		= false,
 }
 
 yo["Media"] = {

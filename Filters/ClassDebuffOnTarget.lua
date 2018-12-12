@@ -87,6 +87,9 @@ local DebuffWhiteListTemplate = {
 		[SpellName(195452)] = true,	 -- Nightblade
 		[SpellName(91021)] = true,	 -- Выявление слабости
 		[SpellName(27615)] = true,	 -- Удар по почкам
+		[SpellName(703)] 	= true,	 -- Гаррота
+		--[SpellName(2818)] 	= true,	 -- Смертоносный яд
+		[SpellName(1943)] 	= true,	 -- Рваная рана
 	},
 	["SHAMAN"] = {
 		[SpellName(51514)] = true,	-- Hex
@@ -176,7 +179,7 @@ local BuffWhiteListTemplate = {	-- ElvUI
 
 	["HUNTER"] = {
 			-- Hunter Pets
-		[SpellName(19615)] = true, 		-- Frenzy
+		--[SpellName(19615)] = true, 		-- Frenzy
 		[SpellName(136)] = true, 		-- Mend Pet
 	},
 	["DEMONHUNTER"] = {},

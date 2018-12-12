@@ -313,6 +313,16 @@ local function SetupChatPosAndFont(self)
 		--end
 	end
 
+	local wimButton = CreateFrame("Button", nil, LeftDataPanel)
+	wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
+	wimButton:SetSize( 1, 1)
+	if yo_WIM then
+		wimButton:SetSize( 28, 28)
+		wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
+		wimButton:SetNormalTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat")
+		wimButton:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+		wimButton:SetScript("OnClick", function() yo_WIM:SetShown( not yo_WIM:IsShown())	end)
+	end
 
 	if yo.Chat.showVoice then
 		ChatFrameMenuButton:SetSize( 35, 35)
@@ -320,7 +330,11 @@ local function SetupChatPosAndFont(self)
 		ChatFrameMenuButton:SetNormalTexture( nil)
 		ChatFrameMenuButton:SetPushedTexture(nil)
 		ChatFrameMenuButton:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-		ChatFrameMenuButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
+		if yo_WIM then
+			ChatFrameMenuButton:SetPoint( "RIGHT", wimButton, "LEFT", 6, 0)
+		else
+			ChatFrameMenuButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
+		end
 		ChatFrameMenuButton.Icon = ChatFrameMenuButton:CreateTexture(nil, "OVERLAY")
 		ChatFrameMenuButton.Icon:SetPoint( "CENTER")
 		ChatFrameMenuButton.Icon:SetTexture("Interface\\ChatFrame\\UI-ChatWhisperIcon.blp")

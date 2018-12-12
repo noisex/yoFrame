@@ -1,5 +1,5 @@
 
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 StaticPopupDialogs.SET_BN_BROADCAST = {
 	text = BN_BROADCAST_TOOLTIP,
@@ -51,12 +51,12 @@ local menuList = {
 			{ text = "|cffFF0000"..AFK.."|r", notCheckable=true, func = function() if not IsChatAFK() then SendChatMessage("", "AFK") end end },
 		},
 	},
-	{ text = BN_BROADCAST_TOOLTIP, notCheckable=true, func = function() StaticPopup_Show("SET_BN_BROADCAST") end },
+	--{ text = BN_BROADCAST_TOOLTIP, notCheckable=true, func = function() StaticPopup_Show("SET_BN_BROADCAST") end },
 }
 
 local function inviteClick(self, name)
 	menuFrame:Hide()
-	
+
 	if type(name) ~= 'number' then
 		InviteUnit(name)
 	else
@@ -65,12 +65,12 @@ local function inviteClick(self, name)
 end
 
 local function whisperClick(self, name, battleNet)
-	menuFrame:Hide() 
-	
+	menuFrame:Hide()
+
 	if battleNet then
 		ChatFrame_SendSmartTell(name)
 	else
-		SetItemRef( "player:"..name, ("|Hplayer:%1$s|h[%1$s]|h"):format(name), "LeftButton" )		 
+		SetItemRef( "player:"..name, ("|Hplayer:%1$s|h[%1$s]|h"):format(name), "LeftButton" )
 	end
 end
 
@@ -88,7 +88,7 @@ local activezone, inactivezone = {r=0.3, g=1.0, b=0.3}, {r=0.65, g=0.65, b=0.65}
 local displayString = "%s: ".. myColorStr .. "%d|r"
 local statusTable = { " |cff888888[AFK]|r ", " |cff888888[DND] |r", "" }
 local gstatusTable = { " |cffFF0000[AFK]|r ", " |cff0000ff[DND] |r", "" }
-local groupedTable = { "|cffaaaaaa*|r", "" } 
+local groupedTable = { "|cffaaaaaa*|r", "" }
 local friendTable, BNTable, BNTableWoW, BNTableD3, BNTableSC, BNTableWTCG, BNTableApp, BNTableHOTS, BNTableOW, BNTableBSAp = {}, {}, {}, {}, {}, {}, {}, {}, {} , {}
 local tableList = {[wowString] = BNTableWoW, [d3String] = BNTableD3, [scString] = BNTableSC, [wtcgString] = BNTableWTCG, [appString] = BNTableApp, [hotsString] = BNTableHOTS, [owString] = BNTableOW, [bsapString] = BNTableBSAp}
 local friendOnline, friendOffline = gsub(ERR_FRIEND_ONLINE_SS,"\124Hplayer:%%s\124h%[%%s%]\124h",""), gsub(ERR_FRIEND_OFFLINE_S,"%%s","")
@@ -195,11 +195,11 @@ local function BuildBNTable(total)
 	for i = 1, total do
 		bnetIDAccount, accountName, battleTag, _, characterName, bnetIDGameAccount, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
 		hasFocus, charName, gclient , realmName, realmID, faction, race, class, guild, zoneName, level, gameText, broadcastText, broadcastTime, canSoR, toonID, bnetIDAccount, isGameAFK, isGameBusy = BNGetGameAccountInfo(bnetIDGameAccount or bnetIDAccount);
-		
+
 		--print( bnetIDAccount, accountName, battleTag,  characterName, bnetIDGameAccount, "Client:" , client, isOnline, "AFK: ", isAFK, isDND, noteText)
 		--print( hasFocus, charName, gclient, realmName, realmID, faction, race, class, guild, zoneName, level, "Game: ", gameText, broadcastText, broadcastTime, canSoR, toonID, bnetIDAccount, "AFK: ", isGameAFK, isAFK, isGameBusy)
 		--print( "----")
-		
+
 		if isOnline then
 			characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client) or "";
 			for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
@@ -223,7 +223,7 @@ local function BuildBNTable(total)
 			else
 				BNTableWoW[#BNTableWoW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK,  isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-WoW", "World of Warcraft", isGameAFK, isGameBusy }
 			end
-			
+
 			--print ( bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, "AFK: ", isAFK,  isDND, zoneName, level, isGameAFK, isGameBusy)
 		end
 	end
@@ -253,7 +253,7 @@ local function Update(self, event, ...)
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		Text:SetFont( font, ( yo.Media.fontsize), "OVERLAY")		
+		Text:SetFont( font, ( yo.Media.fontsize), "OVERLAY")
 		self:SetAllPoints(Text)
 
 		Stat:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
@@ -289,7 +289,7 @@ local function Update(self, event, ...)
 	-- special handler to detect friend coming online or going offline
 	-- when this is the case, we invalidate our buffered table and update the
 	-- datatext information
-	
+
 	if event == "CHAT_MSG_SYSTEM" then
 	--	local message = select(1, ...)
 	--	if not (find(message, friendOnline) or find(message, friendOffline)) then return end
@@ -355,6 +355,76 @@ Stat:SetScript("OnMouseDown", function(self, btn)
 	end
 end)
 
+Stat.ShowFiends = function(self, btn)
+	GameTooltip:Hide()
+
+	local numberOfFriends, onlineFriends = GetNumFriends()
+	local totalBNet, numBNetOnline = BNGetNumFriends()
+
+	local totalonline = onlineFriends + numBNetOnline
+
+	-- no friends online, quick exit
+  	if totalonline == 0 then return end
+
+	if not dataValid then
+		-- only retrieve information for all on-line members when we actually view the tooltip
+		if numberOfFriends > 0 then BuildFriendTable(numberOfFriends) end
+		if totalBNet > 0 then BuildBNTable(totalBNet) end
+		dataValid = true
+	end
+
+
+	local menuCountWhispers = 1
+		local classc, levelc, info
+	local menuWIM = {
+		{ text = "Дружеский шептун", isTitle = true,notCheckable=true},
+	}
+
+	if #friendTable > 0 then
+		for i = 1, #friendTable do
+			info = friendTable[i]
+			if (info[5]) then
+				menuCountWhispers = menuCountWhispers + 1
+
+				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
+				classc = classc or GetQuestDifficultyColor(info[2]);
+
+				menuWIM[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],classc.r*255,classc.g*255,classc.b*255,info[1]), arg1 = info[1],notCheckable=true, func = whisperClick}
+			end
+		end
+	end
+
+	if #BNTable > 0 then
+		local grouped
+		for i = 1, #BNTable do
+			info = BNTable[i]
+			if (info[5]) then
+				if info[6] == wowString and UnitFactionGroup("player") == info[12] then
+					classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[14]], GetQuestDifficultyColor(info[16])
+					classc = classc or GetQuestDifficultyColor(info[16])
+
+					if UnitInParty(info[4]) or UnitInRaid(info[4]) then grouped = 1 else grouped = 2 end
+					menuCountWhispers = menuCountWhispers + 1
+					menuWIM[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[16],classc.r*255,classc.g*255,classc.b*255,info[4]), arg1 = info[5], notCheckable=true, func = inviteClick}
+				end
+			end
+		end
+	end
+
+	if #BNTable > 0 then
+		local realID
+		for i = 1, #BNTable do
+			info = BNTable[i]
+			if (info[5]) then
+				realID = info[2]
+				menuCountWhispers = menuCountWhispers + 1
+				menuWIM[menuCountWhispers] = {text = realID, arg1 = realID, arg2 = true, notCheckable=true, func = whisperClick}
+			end
+		end
+	end
+
+	EasyMenu(menuWIM, menuFrame, "cursor", 5, -5, "MENU", 2)
+end
 
 Stat:SetScript("OnEnter", function(self)
 
@@ -384,11 +454,11 @@ Stat:SetScript("OnEnter", function(self)
 		for i = 1, #friendTable do
 			info = friendTable[i]
 			if info[5] then
-				
+
 				--local mapID = C_Map.GetBestMapForUnit("player")
 				--local zoneText = mapID and GetZoneText( mapID)
 				--print( info[4], zoneText)
-				
+
 				if GetZoneText( C_Map.GetBestMapForUnit("player")) == info[4] then zonec = activezone else zonec = inactivezone end
 				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
 
@@ -411,14 +481,14 @@ Stat:SetScript("OnEnter", function(self)
 				--GameTooltip:AddLine( BNTable[1][16])
 				for i = 1, #BNTable do
 					info = BNTable[i]
-					
+
 		--			tprint( BNTable)
-					
+
 					if info[6] then
 						if info[5] == wowString then
 							if (info[7] == true) then status = 1 elseif (info[8] == true) then status = 2 else status = 3 end
 							if (info[19] == true) then gstatus = 1 elseif (info[20] == true) then gstatus = 2 else gstatus = 3 end
-					
+
 							if (info[19] == true) then gstatus = 1 elseif (info[20] == true) then gstatus = 2 else gstatus = 3 end
 							classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[13]]
 							if info[15] ~= '' then
@@ -438,7 +508,7 @@ Stat:SetScript("OnEnter", function(self)
 						else
 							if (info[7] == true) then status = 1 elseif (info[8] == true) then status = 2 else status = 3 end
 							if (info[19] == true) then gstatus = 1 elseif (info[20] == true) then gstatus = 2 else gstatus = 3 end
-							
+
 							GameTooltip:AddDoubleLine(info[3] .. gstatusTable[gstatus], statusTable[status] .. info[2], .9, .9, .9, .9, .9, .9)
 							if IsShiftKeyDown() then
 								if GetZoneText( C_Map.GetBestMapForUnit("player")) == info[14] then zonec = activezone else zonec = inactivezone end
@@ -459,3 +529,4 @@ Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
 Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:SetScript("OnEvent", Update)
 --end
+N.InfoFriend = Stat

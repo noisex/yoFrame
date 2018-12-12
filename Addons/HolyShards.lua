@@ -1,5 +1,11 @@
 local L, yo, N = unpack( select( 2, ...))
 
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown
+	= GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown
+
 function isDruid( self)
 	if myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
 		--self:Hide()

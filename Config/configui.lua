@@ -10,27 +10,27 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 
 LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
 
-LSM:Register("statusbar", "yo Plain Gray", "Interface\\AddOns\\yoFrame\\Media\\bar16")
+LSM:Register("statusbar", "yo Plain Gray", 	"Interface\\AddOns\\yoFrame\\Media\\bar16")
 LSM:Register("statusbar", "yo Plain White", "Interface\\AddOns\\yoFrame\\Media\\plain_white")
-LSM:Register("statusbar", "yo StatusBar", "Interface\\AddOns\\yoFrame\\Media\\statusbar4")
-LSM:Register("statusbar", "yo DGroung", "Interface\\AddOns\\yoFrame\\Media\\bar_dground")
-LSM:Register("statusbar", "yo Striped", "Interface\\AddOns\\yoFrame\\Media\\striped")
-LSM:Register("statusbar", "yo Smooth", "Interface\\AddOns\\yoFrame\\Media\\flatsmooth")
-LSM:Register("statusbar", "yo Bar 04", "Interface\\AddOns\\yoFrame\\Media\\bar4")
-LSM:Register("statusbar", "yo Bar 07", "Interface\\AddOns\\yoFrame\\Media\\bar7")
-LSM:Register("statusbar", "yo Bar 08", "Interface\\AddOns\\yoFrame\\Media\\bar8")
-LSM:Register("statusbar", "yo Bar 17", "Interface\\AddOns\\yoFrame\\Media\\bar17")
-LSM:Register("statusbar", "yo Neal", "Interface\\AddOns\\yoFrame\\Media\\Neal")
+LSM:Register("statusbar", "yo StatusBar", 	"Interface\\AddOns\\yoFrame\\Media\\statusbar4")
+LSM:Register("statusbar", "yo DGroung", 	"Interface\\AddOns\\yoFrame\\Media\\bar_dground")
+LSM:Register("statusbar", "yo Striped", 	"Interface\\AddOns\\yoFrame\\Media\\striped")
+LSM:Register("statusbar", "yo Smooth", 		"Interface\\AddOns\\yoFrame\\Media\\flatsmooth")
+LSM:Register("statusbar", "yo Bar 04", 		"Interface\\AddOns\\yoFrame\\Media\\bar4")
+LSM:Register("statusbar", "yo Bar 07", 		"Interface\\AddOns\\yoFrame\\Media\\bar7")
+LSM:Register("statusbar", "yo Bar 08", 		"Interface\\AddOns\\yoFrame\\Media\\bar8")
+LSM:Register("statusbar", "yo Bar 17", 		"Interface\\AddOns\\yoFrame\\Media\\bar17")
+LSM:Register("statusbar", "yo Neal", 		"Interface\\AddOns\\yoFrame\\Media\\Neal")
 
-LSM:Register("sound", "Tick 01", "Interface\\Addons\\yoFrame\\Media\\Bip.ogg")
-LSM:Register("sound", "Tick 02", "Interface\\Addons\\yoFrame\\Media\\CSDroplet.ogg")
-LSM:Register("sound", "Applause", "Interface\\Addons\\yoFrame\\Media\\Applause.ogg")
-LSM:Register("sound", "Shotgun", "Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg")
-LSM:Register("sound", "Wisper", "Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
-LSM:Register("sound", "Murloc", "Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
+LSM:Register("sound", "Tick 01", 	"Interface\\Addons\\yoFrame\\Media\\Bip.ogg")
+LSM:Register("sound", "Tick 02", 	"Interface\\Addons\\yoFrame\\Media\\CSDroplet.ogg")
+LSM:Register("sound", "Applause", 	"Interface\\Addons\\yoFrame\\Media\\Applause.ogg")
+LSM:Register("sound", "Shotgun", 	"Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg")
+LSM:Register("sound", "Wisper", 	"Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
+LSM:Register("sound", "Murloc", 	"Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
 
 LSM:Register("font", "yoMagistral", "Interface\\Addons\\yoFrame\\Media\\qFont.ttf", 130)
-LSM:Register("font", "yoSansNarrow", "Interface\\Addons\\yoFrame\\Media\\qSans.ttf", 130)
+LSM:Register("font", "yoSansNarrow","Interface\\Addons\\yoFrame\\Media\\qSans.ttf", 130)
 
 local function UpdateShadowEdge( scale)
 	for k, shadow in pairs( N.shadows) do
@@ -131,7 +131,7 @@ end
 
 local function tr( path)
 	if not L[path] or L[path] == "" then
-		print( "|cffff0000UNKNOWN LOCALE : |cff00ffff" .. path)
+		--print( "|cffff0000UNKNOWN LOCALE : |cff00ffff" .. path)
 		L[path] = "|cffff0000UNKNOWN LOCALE: ".. path
 	end
 
@@ -162,7 +162,6 @@ function InitOptions()
 
 	local options = {
 		name = function(info) return tr( info[#info]) end,
-		handler = GottaGoFast,
 		type = "group",
 		args = {
 			System = {
@@ -270,9 +269,9 @@ function InitOptions()
 					ArtifactPowerbar= {	order = 8, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					unitFrames		= {	order = 9, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					afk				= {	order =10, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
-					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info])  end, 	width = "full",	},
-					MoveBlizzFrames = {	order =13, type = "toggle", name = function(info) return tr( info[#info])  end, 	width = "full",	},
-					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info])  end, 	width = "full",	},
+					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
+					MoveBlizzFrames = {	order =13, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
+					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					-- lootbox
 					-- cooldowns
 					ObjectiveHeight = { order = 20, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	},
@@ -482,13 +481,14 @@ function InitOptions()
 					showResourses	= { width = "full",	order = 63, type = "toggle",	name = function(info) return tr( info[#info]) .. L["NEW"] end, },
 					showArrows 		= { width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					blueDebuff 		= { width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					tankMode		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					classDispell 	= { width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
-					glowTarget		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					glowBadType		= {	order = 69, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
+					glowTarget		= { width = "full",	order = 69, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					glowBadType		= {	order = 70, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
 
 					showToolTip 	= {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
 
-					executePhaze ={ order = 70, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full"	},
+					executePhaze ={ order = 71, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full"	},
 					executeProc  ={ order = 75,	type = "range", name = function(info) return tr( info[#info]) end,	min = 0, max = 100, step = 1,},
 					executeColor ={	order = 72, type = "color",	name = function(info) return tr( info[#info]) end,
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,

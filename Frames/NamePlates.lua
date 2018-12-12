@@ -1,4 +1,7 @@
-local L, yo, N = unpack( select( 2, ...))
+local addon, ns = ...
+
+local L, yo, N = unpack( ns)
+local oUF = ns.oUF
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -164,7 +167,7 @@ function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 	--button.cd:SetReverse(true)
 
 	button.count = button:CreateFontString(nil, "OVERLAY")
-	button.count:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
+	button.count:SetFont( fontpx, max( 10, size / 1.5), "THINOUTLINE")
 	button.count:SetShadowOffset(1, -1)
 	button.count:SetTextColor( 0, 1, 0)
 	table.insert( N.strings, button.count)
@@ -176,7 +179,7 @@ function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 	end
 
 	button.timer = button:CreateFontString(nil, "OVERLAY")
-	button.timer:SetFont( fontpx, max( 10, size / 1.85), "THINOUTLINE")
+	button.timer:SetFont( fontpx, max( 10, size / 1.5), "THINOUTLINE")
 	button.timer:SetShadowOffset(1, -1)
 	table.insert( N.strings, button.timer)
 
@@ -187,7 +190,7 @@ function CreateAuraIcon(parent, index, noToolTip, timerPosition)
 	end
 
 
-	CreateStyle( button, max( 3, sh - 1))
+	CreateStyle( button, max( 2, sh - 1))
 
 	local p1, p2, shX, shY = "LEFT", "RIGHT", sh, 0
 
@@ -481,6 +484,16 @@ end
 -----------------------------------------------------------------------------------------------
 --	CREATE PLATE
 -----------------------------------------------------------------------------------------------
+
+local function myUnitGroupRolesAssigned( unit)
+
+	if yo.NamePlates.tankMode then 	--and unit == "player"
+		return "TANK"
+	else
+		return UnitGroupRolesAssigned( unit)
+	end
+end
+
 local function UpdateRaidTarget(unitFrame)
 	local icon = unitFrame.RaidTargetFrame.RaidTargetIcon
 	local index = GetRaidTargetIndex(unitFrame.displayedUnit)
@@ -550,7 +563,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 		cols = { .6, .6, .6}
 
 	elseif UnitPlayerControlled( unit) then 											-- юнит-игрок / цвет класса
-		cols = _G["yo_Player"].colors.class[ select( 2, UnitClass( unit))]
+		cols = oUF.colors.class[ select( 2, UnitClass( unit))]
 
 	elseif status then
 		cols = treatColor[status]
@@ -564,7 +577,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 			unitFrame.threat:SetTextColor( cols[1], cols[2], cols[3])
 		end
 
-		if UnitGroupRolesAssigned( "player") == "TANK" then
+		if myUnitGroupRolesAssigned( "player") == "TANK" then
 			cols = treatColor[status +10]
 
 			if not isTanking and UnitGroupRolesAssigned( unitTarget) == "TANK" then  	-- танк, бьет оффтанка
@@ -582,7 +595,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 		cols = treatColor.badGood
 
 	else 	--if UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then
-		cols = _G["yo_Player"].colors.reaction[UnitReaction( unit, "player")]			-- цвет реакшн
+		cols = oUF.colors.reaction[UnitReaction( unit, "player")]			-- цвет реакшн
 	end
 
 	unitFrame.threat:SetText( treatText)
@@ -605,7 +618,7 @@ local function UpdateName( unitFrame)
 			r, g, b = color.r, color.g, color.b
 		end
 
-		if level == UnitLevel("player") then
+		if level == myLevel then
 			level = ""
 		end
 
@@ -619,11 +632,11 @@ local function UpdateName( unitFrame)
 			level = level.." WB"
 		end
 
-		if (tonumber(level) == UnitLevel("player") and not classification == "elite") or UnitIsUnit(unitFrame.displayedUnit, "player") then
-			unitFrame.level:SetText("")
-		else
+		--if (tonumber(level) == UnitLevel("player") and not classification == "elite") or UnitIsUnit(unitFrame.displayedUnit, "player") then
+		--	unitFrame.level:SetText("")
+		--else
 			unitFrame.level:SetText(level)
-		end
+		--end
 
 		local _, _, _, _, _, mobID = strsplit( "-", UnitGUID( unitFrame.displayedUnit))
 		mobID = tonumber( mobID)
@@ -651,12 +664,8 @@ local function UpdateName( unitFrame)
 		if mobID and ( badMobes[mobID] or eTeam[mobID]) then
 			--lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key)
 			glowBadStart( unitFrame.healthBar, glowColor, glowN, 0.2, glowLength, 3, 0, 0, false, 2)
-			--unitFrame.healthBar.shadow:SetBackdropBorderColor( 0, 1, 1)
-			--unitFrame.healthBar.HightLight:Show()
 		else
 			glowBadStop( unitFrame.healthBar, 2)
-			--unitFrame.healthBar.shadow:SetBackdropBorderColor( .09, .09, .09)
-			--unitFrame.healthBar.HightLight:Hide()
 		end
 
 		if 	--UnitClass( unitFrame.displayedUnit)
@@ -673,7 +682,6 @@ local function UpdateName( unitFrame)
 			end
 		else
 			if unitFrame.Class then
-				--unitFrame.Class.Icon:SetTexCoord(0, 0, 0, 0)
 				unitFrame.Class:Hide()
 			end
 		end
@@ -758,7 +766,7 @@ function UpdateUnitPower( self)
 	local charges = UnitPower("player", self.powerID);
 	local showFX = charges == self.maxComboPoints and true or false
 
-	for i = 1, self.maxComboPoints do
+	for i = 1, self.maxComboPoints or 0 do
 		if showFX then
 			self.cPoints[i].BackFX:Show()
 		else
@@ -809,12 +817,12 @@ function CreateCPpoints( self)
 
 	local size = 8
 	local maxComboPoints = UnitPowerMax("player", self.powerID);
-
+	--print( maxComboPoints, self.powerID, UnitPowerMax("player", self.powerID))
 	--if maxComboPoints == self.maxComboPoints then return end
 
 	ClearCPoints( self)
 
-	self.maxComboPoints = maxComboPoints
+	self.maxComboPoints = maxComboPoints or 0
 
 	self.cPoints = CreateFrame("Frame", nil, self)
 	self.cPoints:SetAllPoints()
@@ -885,7 +893,7 @@ local function OnNamePlateCreated( frame)
 
 	f.healthBar:SetStatusBarTexture( texture)
 	f.healthBar:SetMinMaxValues(0, 1)
-	CreateStyle( f.healthBar, 3)
+	CreateStyle( f.healthBar, 2)
 
 	f.healthBar.Background = f.healthBar:CreateTexture(nil, "BACKGROUND")
 	f.healthBar.Background:SetAllPoints( f.healthBar)
@@ -1110,13 +1118,23 @@ end
 
 
 local function HideBlizzard()
-	NamePlateDriverFrame:UnregisterAllEvents()
-	ClassNameplateManaBarFrame:Hide()
+	--NamePlateDriverFrame:HookScript('OnEvent', function(_, event, unit)
+	--	if(event == 'NAME_PLATE_UNIT_ADDED' and unit) then
+	--		self:DisableBlizzard(unit)
+	--	end
+	--end)
 
-	hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
-		NamePlateTargetResourceFrame:Hide()
-		NamePlatePlayerResourceFrame:Hide()
-	end)
+	NamePlateDriverFrame:UnregisterAllEvents()
+	--ClassNameplateManaBar:
+	ClassNameplateManaBarFrame:Hide()
+	ClassNameplateManaBarFrame:UnregisterAllEvents()
+	ClassNameplateManaBar = dummy
+	 NamePlateDriverMixin = dummy
+	--- TODO
+	--hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
+	--	NamePlateTargetResourceFrame:Hide()
+	--	NamePlatePlayerResourceFrame:Hide()
+	--end)
 
 	local checkBox = InterfaceOptionsNamesPanelUnitNameplatesMakeLarger
 	function checkBox.setFunc(value)

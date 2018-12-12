@@ -529,7 +529,7 @@ end
 
 function CreateStyle(f, size, level, alpha, alphaborder)
     if f.shadow then return end
-    local size = size or 3
+    local size = size or 2
     size = max( 1, size + yo.Media.edgeSize)
 
 	local style = {

@@ -474,28 +474,29 @@ bars:SetScript("OnEvent", function(self, event)
 		hooksecurefunc(PlayerPowerBarAlt, "ClearAllPoints", Position)
 	end
 
+	-- TODO
 	if yo["ActionBar"].ShowGrid == true then
 		ActionButton_HideGrid = dummy
 		for i = 1, 12 do
 			local button = _G[format("ActionButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button)
+			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarRightButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button)
+			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarBottomRightButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button)
+			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarLeftButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button)
+			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarBottomLeftButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button)
+			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 		end
 	end
 

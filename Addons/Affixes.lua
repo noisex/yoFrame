@@ -236,7 +236,7 @@ local function UpdateAffixes( self)
     if not affixIds then return end
     for week, affixes in ipairs( affixWeeks) do
        	--if affixes[1] == affixIds[3] and affixes[2] == affixIds[1] and affixes[3] == affixIds[2] then
-       	if affixes[1] == affixIds[1] and affixes[2] == affixIds[2] and affixes[3] == affixIds[3] then
+       	if affixes[1] == affixIds[1].id and affixes[2] == affixIds[2].id and affixes[3] == affixIds[3].id then
            	currentWeek = week
        	end
     end

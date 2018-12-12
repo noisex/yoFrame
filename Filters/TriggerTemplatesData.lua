@@ -39,7 +39,7 @@ local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = 
 	L["Unknown Spell"] = "Unknown Spell"
 
 -- The templates tables are created on demand
-templates =
+local templates =
   {
     class = { },
     race = {
@@ -1108,7 +1108,7 @@ templates.class.ROGUE = {
         { spell = 1784, type = "buff", unit = "player"}, -- Stealth
         { spell = 31224, type = "buff", unit = "player"}, -- Cloak of Shadows
         { spell = 11327, type = "buff", unit = "player"}, -- Vanish
-        { spell = 3408, type = "buff", unit = "player"}, -- Crippling Poison
+        --{ spell = 3408, type = "buff", unit = "player"}, -- Crippling Poison
         { spell = 2983, type = "buff", unit = "player"}, -- Sprint
         { spell = 45182, type = "buff", unit = "player", talent = 11 }, -- Cheating Death
       },

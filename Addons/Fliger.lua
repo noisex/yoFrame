@@ -192,11 +192,19 @@ end
 local function CheckClassTemplates( myClass, mySpec)
 
 	for i,v in pairs( N.templates.class[myClass][mySpec][1]["args"]) do
-		N.PlayerBuffWhiteList[GetSpellInfo( v.spell)] = true
+		local spellId = GetSpellInfo( v.spell)
+		if spellId then
+			N.PlayerBuffWhiteList[spellId] = true
+		else
+			--print("Spell ".. v.spell .. " removed from his game...")
+		end
 	end
 
 	for i,v in pairs( N.templates.class[myClass][mySpec][5]["args"]) do
-		N.PlayerBuffWhiteList[GetSpellInfo( v.spell)] = true
+		local spellId = GetSpellInfo( v.spell)
+		if spellId then
+			N.PlayerBuffWhiteList[spellId] = true
+		end
 	end
 
 	for i,v in pairs( N.PlayerBuffWhiteListAll) do
@@ -219,7 +227,10 @@ local function CheckTemplates( myClass, mySpec)
 	--end
 
 	for i,v in pairs( N.templates.items[2]["args"]) do
-		PlayerProcWhiteList[GetSpellInfo( v.spell)] = true
+		local spellId = GetSpellInfo( v.spell)
+		if spellId then
+			PlayerProcWhiteList[spellId] = true
+		end
 	end
 
 	for i,v in pairs( N.templates.items[3]["args"]) do
@@ -232,7 +243,10 @@ local function CheckTemplates( myClass, mySpec)
 
 	if yo.fliger.gAzetit then
 		for i,v in pairs( generalAzeriteTraits) do
-			PlayerProcWhiteList[GetSpellInfo( v.spell)] = true
+			local spellId = GetSpellInfo( v.spell)
+			if spellId then
+				PlayerProcWhiteList[spellId] = true
+			end
 		end
 	end
 	wipe( N.templates.items)

@@ -1,26 +1,22 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 ----------------------------------------------------------------------------------------
 --	Raid cooldowns(alRaidCD by Allez)
 ----------------------------------------------------------------------------------------
-local show = {
-	raid = true,
-	party = true,
---	arena = true,
-}
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
 local filter = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
 local band = bit.band
-local sformat = string.format
-local floor = math.floor
+local sformat = format
 local timer = 0
 local bars = {}
 
 CreateAnchor("yo_MoveRaidCD", "Move RaidCD", 230, 150, 30, 150, "LEFT", "LEFT")
 
 local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
---RaidCDAnchor:SetPoint("BOTTOM", "yo_MoveRaidCD")
-RaidCDAnchor:SetPoint("TOPLEFT", "yo_MoveRaid", "BOTTOMLEFT", 30, -40)
+RaidCDAnchor:SetPoint("BOTTOM", "yo_MoveRaidCD")
+--RaidCDAnchor:SetPoint("TOPLEFT", "yo_MoveRaid", "BOTTOMLEFT", 30, -40)
 
 RaidCDAnchor:SetSize(186 + 32, 20)
 
@@ -190,7 +186,22 @@ local OnEvent = function(self, event, ...)
 				StopTimer( bar)
 			end
 		end
-	else
+	elseif event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
+
+		if UnitInRaid("player") and yo_Raid then
+			yo_RaidCD:ClearAllPoints()
+			yo_RaidCD:SetPoint("TOPLEFT", yo_Raid, "BOTTOMLEFT", 30, -30)
+
+		elseif UnitInParty("player") and yo_Party then
+			yo_RaidCD:ClearAllPoints()
+			yo_RaidCD:SetPoint("TOPLEFT", yo_Party, "BOTTOMLEFT", 30, -40)
+
+		else
+			yo_RaidCD:ClearAllPoints()
+			yo_RaidCD:SetPoint("BOTTOM", yo_MoveRaidCD)
+		end
+
+		--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		if not yo.Addons.RaidCoolDowns then
 			self:UnregisterAllEvents()
 			self:SetScript("OnMouseDown", nil)
@@ -211,6 +222,7 @@ addon:RegisterEvent("PLAYER_ENTERING_WORLD")
 addon:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 addon:RegisterEvent("CHALLENGE_MODE_START")
 addon:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+addon:RegisterEvent("GROUP_ROSTER_UPDATE")
 
 addon:RegisterEvent("ENCOUNTER_END")
 addon:RegisterEvent("ENCOUNTER_START")

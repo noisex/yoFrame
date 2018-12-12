@@ -106,6 +106,7 @@ Addons\Scripts.lua
 Addons\TalkingHead.lua
 Addons\ToolTip.lua
 Addons\IDTooltip.lua
+#Addons\wim.lua
 
 Infotext\System.lua
 Infotext\Durability.lua

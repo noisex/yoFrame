@@ -837,6 +837,7 @@ logan:SetScript("OnEvent", function(self, event)
     			'roleFilter', 'TANK',
     			'yOffset', -offsetMT,
     			'widthMT', fullMTT + offsetMT,
+    			'point', "TOP",
     			'oUF-initialConfigFunction', ([[
             		self:SetWidth(%d)
             		self:SetHeight(%d)
@@ -853,6 +854,7 @@ logan:SetScript("OnEvent", function(self, event)
     				--'groupFilter', 'MAINTANK',
     				'roleFilter', 'TANK',
     				'yOffset', -offsetMTT,
+    				'point', "TOP",
     				'oUF-initialConfigFunction', ([[
         				self:SetAttribute('unitsuffix', 'target')
         				self:SetWidth(%d)
