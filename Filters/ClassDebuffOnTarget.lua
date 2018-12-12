@@ -118,7 +118,9 @@ local DebuffWhiteListTemplate = {
 		[SpellName(5246)] = true,	-- Intimidating Shout
 		[SpellName(132168)] = true,	-- Shockwave
 		[SpellName(115767)] = true,	-- Deep Wounds
-	}
+	},
+	["DEMONHUNTER"] = {
+	},
 }
 
 
@@ -197,9 +199,16 @@ logan:SetScript("OnEvent", function(self, ...)
 	N.DebuffWhiteList = DebuffWhiteListTemplate[myClass]
 	N.BuffWhiteList   = BuffWhiteListTemplate[myClass]
 
-	for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do N.DebuffWhiteList[k] = v end
-	for k,v in pairs( BuffWhiteListTemplate["ALL"])   do N.BuffWhiteList[k]   = v end
-
+	for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do
+		if k and v then
+			N.DebuffWhiteList[k] = v
+		end
+	end
+	for k,v in pairs( BuffWhiteListTemplate["ALL"])   do
+		if k and v then
+			N.BuffWhiteList[k]   = v
+		end
+	end
 	wipe( DebuffWhiteListTemplate)
 	wipe( BuffWhiteListTemplate)
 end)

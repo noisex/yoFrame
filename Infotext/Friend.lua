@@ -66,7 +66,7 @@ end
 
 local function whisperClick(self, name, battleNet)
 	menuFrame:Hide()
-
+	print(name, battleNet)
 	if battleNet then
 		ChatFrame_SendSmartTell(name)
 	else
@@ -389,7 +389,7 @@ Stat.ShowFiends = function(self, btn)
 				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
 				classc = classc or GetQuestDifficultyColor(info[2]);
 
-				menuWIM[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],classc.r*255,classc.g*255,classc.b*255,info[1]), arg1 = info[1],notCheckable=true, func = whisperClick}
+				menuWIM[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],classc.r*255,classc.g*255,classc.b*255,info[1]), arg1 = info[4],notCheckable=true, func = whisperClick}
 			end
 		end
 	end
@@ -405,7 +405,7 @@ Stat.ShowFiends = function(self, btn)
 
 					if UnitInParty(info[4]) or UnitInRaid(info[4]) then grouped = 1 else grouped = 2 end
 					menuCountWhispers = menuCountWhispers + 1
-					menuWIM[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[16],classc.r*255,classc.g*255,classc.b*255,info[4]), arg1 = info[5], notCheckable=true, func = inviteClick}
+					menuWIM[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[16],classc.r*255,classc.g*255,classc.b*255,info[4]), arg1 = info[4], notCheckable=true, func = whisperClick}
 				end
 			end
 		end

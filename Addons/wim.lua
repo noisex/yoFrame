@@ -103,7 +103,7 @@ local function CheckTabForUnit(self, guid, unit, bTag)
 	local findUnit, tabID
 	if unit then
 		for ind, tab in pairs( self.tabber.tabs) do
-			if unit == tab.name then
+			if unit == tab.fullName then
 				self:Show()
 				findUnit = true
 				tabID = ind
@@ -121,6 +121,7 @@ local function CheckTabForUnit(self, guid, unit, bTag)
 	if bTag then
 		self.tabber.tabs[tabID].name 	= unit
 		self.tabber.tabs[tabID].bTag 	= bTag
+		self.tabber.tabs[tabID].fullName= unit
 	elseif guid then
 		local _, classId, _, raceId, gender = GetPlayerInfoByGUID( guid)
 		local name, realm = strsplit("-", unit)
@@ -128,13 +129,14 @@ local function CheckTabForUnit(self, guid, unit, bTag)
 		self.tabber.tabs[tabID].guid 	= guid
 		self.tabber.tabs[tabID].name 	= name
 		self.tabber.tabs[tabID].realm 	= realm
-		--self.tabber.tabs[tabID].fullName= fullName
+		self.tabber.tabs[tabID].fullName= unit
 		self.tabber.tabs[tabID].gender 	= gender
 		self.tabber.tabs[tabID].race 	= raceId
 		self.tabber.tabs[tabID].class 	= classId
 		self.tabber.tabs[tabID].guild 	= GetGuildInfo( name)
 	elseif unit then
 		local name, realm = strsplit( "-", unit)
+		self.tabber.tabs[tabID].fullName= unit
 		self.tabber.tabs[tabID].name 	= name
 		self.tabber.tabs[tabID].realm 	= realm
 		self.tabber.tabs[tabID].class 	= select( 2, UnitClass( unit))
@@ -144,7 +146,7 @@ local function CheckTabForUnit(self, guid, unit, bTag)
 	end
 
 	if self:IsShown() then
-		self.editBox:SetFocus()
+		--self.editBox:SetFocus()
 	end
 
 	self.tabber.checked = tabID
@@ -335,27 +337,26 @@ local function OnEvent( self, event, ...)
 		self:Show()
 		local time = date("%H:%M", time())
 		local text, fullName, _, _, unit, _, _, _, _, _, _, guid = ...
+		unit = 	Ambiguate( unit, "none")
 		CheckTabForUnit( self, guid, unit)
 		self.textBox:AddMessage( time .. " [".. unit .. "] > " .. text, 0.5607843137254902, 0.03137254901960784, 0.7607843137254902, 1)
 
 	elseif event == "CHAT_MSG_WHISPER_INFORM" then
 		local time = date("%H:%M", time())
 		local text, fullName, _, _, unit, _, _, _, _, _, _, guid = ...
+		unit = 	Ambiguate( unit, "none")
 		CheckTabForUnit( self, guid, unit)
 		self.textBox:AddMessage( time .. " [".. unit .. "] < " .. text,   1, 0.07843137254901961, 0.9882352941176471, 1)
 
 	elseif event == "CHAT_MSG_BN_WHISPER_INFORM" then
 		local time = date("%H:%M", time())
 		local text, unit, _, _, _, _, _, _, _, _, _, _, bTag = ...
-		--print( text, unit, bTag)
 		CheckTabForUnit( self, nil, unit, bTag)
 		self.textBox:AddMessage( time .. " [".. unit .. "] < " .. text, 0.1725490196078431, 0.6352941176470588, 1, 1)
 
 	elseif event == "CHAT_MSG_BN_WHISPER" then
 		local time = date("%H:%M", time())
 		local text, unit, _, _, _, _, _, _, _, _, _, _, bTag = ...
-		--print(event, ...)
-		--print( text, unit, bTag)
 		CheckTabForUnit( self, nil, unit, bTag)
 		self.textBox:AddMessage( time .. " [".. unit .. "] > " .. text, 0, 0.4862745098039216, 0.6549019607843137, 1)
 
@@ -425,7 +426,7 @@ function CF_ExtractTellTarget(editBox, msg)
 		while (string.find(target, "%s")) do
 			--Pull off everything after the last space.
 			target = string.match(target, "(.+)%s+[^%s]*");
-			target = _G.Ambiguate(target, "none")
+			target = Ambiguate(target, "none")
 			if (_G.GetAutoCompleteResults(target, 1, 0, tellTargetExtractionAutoComplete.include, tellTargetExtractionAutoComplete.exclude, 1, nil, true)) then
 				break;
 			end
