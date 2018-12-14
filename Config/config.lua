@@ -23,6 +23,7 @@ myColor 	= RAID_CLASS_COLORS[myClass]
 myColorStr 	= "|c" .. RAID_CLASS_COLORS[myClass].colorStr
 myName		= UnitName( "player")
 myRealm 	= GetRealmName()
+myRealmShort= select( 2, UnitFullName("player"))
 myLogin 	= GetTime()
 myClient 	= GetLocale()
 myFaction 	= UnitFactionGroup("player")

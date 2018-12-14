@@ -1799,12 +1799,18 @@ hooksecurefunc( 'SetItemButtonCount', function( slot)
 	end
 end)
 
-local needCloseBags = false
+local needCloseBags, needCloseWIM = false, false
 local function checkToClose(...)
 	if addon.bagFrame:IsShown() or ( yo_BBFrame and yo_BBFrame.bag and yo_BBFrame.bag:IsShown()) then
 		needCloseBags = true
 	else
 		needCloseBags = false
+	end
+
+	if yo_WIM and yo_WIM:IsShown() then
+		needCloseWIM = true
+	else
+		needCloseWIM = false
 	end
 end
 
@@ -1817,6 +1823,12 @@ local function tryToClose(...)
 		--PlaySound ( 863, "Master")   -- 863	IG_BACKPACK_CLOSE
 		HideUIPanel(GameMenuFrame);
 		needCloseBags = false
+	end
+
+	if needCloseWIM then
+		yo_WIM:Hide()
+		HideUIPanel(GameMenuFrame);
+		needCloseWIM = false
 	end
 end
 
