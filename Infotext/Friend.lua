@@ -79,7 +79,7 @@ local clientLevelNameString = "%s |cff%02x%02x%02x(%d|r |cff%02x%02x%02x%s|r%s) 
 local levelNameClassString = "|cff%02x%02x%02x%d|r %s%s%s"
 local worldOfWarcraftString = WORLD_OF_WARCRAFT
 local battleNetString = BATTLENET_OPTIONS_LABEL
-local wowString, scString, d3String, wtcgString, appString, hotsString, owString, bsapString 	 = BNET_CLIENT_WOW, BNET_CLIENT_SC2, BNET_CLIENT_D3, BNET_CLIENT_WTCG, "App", BNET_CLIENT_HEROES, "Pro", "BSAp"  -- BNET_CLIENT_OVERWATCH
+local wowString, scString, d3String, wtcgString, appString, hotsString, owString, bsapString, dst2String 	 = BNET_CLIENT_WOW, BNET_CLIENT_SC2, BNET_CLIENT_D3, BNET_CLIENT_WTCG, "App", BNET_CLIENT_HEROES, "Pro", "BSAp", BNET_CLIENT_DESTINY2  -- BNET_CLIENT_OVERWATCH
 local otherGameInfoString = "%s (%s)"
 local otherGameInfoString2 = "%s %s"
 local totalOnlineString = FRIENDS_LIST_ONLINE .. ": %s/%s"
@@ -89,8 +89,8 @@ local displayString = "%s: ".. myColorStr .. "%d|r"
 local statusTable = { " |cff888888[AFK]|r ", " |cff888888[DND] |r", "" }
 local gstatusTable = { " |cffFF0000[AFK]|r ", " |cff0000ff[DND] |r", "" }
 local groupedTable = { "|cffaaaaaa*|r", "" }
-local friendTable, BNTable, BNTableWoW, BNTableD3, BNTableSC, BNTableWTCG, BNTableApp, BNTableHOTS, BNTableOW, BNTableBSAp = {}, {}, {}, {}, {}, {}, {}, {}, {} , {}
-local tableList = {[wowString] = BNTableWoW, [d3String] = BNTableD3, [scString] = BNTableSC, [wtcgString] = BNTableWTCG, [appString] = BNTableApp, [hotsString] = BNTableHOTS, [owString] = BNTableOW, [bsapString] = BNTableBSAp}
+local friendTable, BNTable, BNTableWoW, BNTableD3, BNTableSC, BNTableWTCG, BNTableApp, BNTableHOTS, BNTableOW, BNTableBSAp, BNTableDST = {}, {}, {}, {}, {}, {}, {}, {}, {} , {}, {}
+local tableList = { [wowString] = BNTableWoW, [d3String] = BNTableD3, [dst2String] = BNTableDST, [scString] = BNTableSC, [wtcgString] = BNTableWTCG, [appString] = BNTableApp, [hotsString] = BNTableHOTS, [owString] = BNTableOW, [bsapString] = BNTableBSAp}
 local friendOnline, friendOffline = gsub(ERR_FRIEND_ONLINE_SS,"\124Hplayer:%%s\124h%[%%s%]\124h",""), gsub(ERR_FRIEND_OFFLINE_S,"%%s","")
 local dataValid = false
 local totalOnline, BNTotalOnline = 0, 0
@@ -189,6 +189,7 @@ local function BuildBNTable(total)
 	wipe(BNTableHOTS)
 	wipe(BNTableOW)
 	wipe(BNTableBSAp)
+	wipe(BNTableDST)
 
 	local _, bnetIDAccount, accountName, battleTag, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText
 	local hasFocus, realmName, realmID, faction, race, class, guild, zoneName, level, gameText
@@ -204,24 +205,26 @@ local function BuildBNTable(total)
 			characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client) or "";
 			for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
 			for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if class == v then class = k end end
-			BNTable[i] = { bnetIDAccount, accountName, battleTag, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-SC2", "StarCraft", isGameAFK, isGameBusy }
+			BNTable[i] = { bnetIDAccount, accountName, battleTag, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-Scicon", "StarCraft", isGameAFK, isGameBusy }
 
 			if client == scString then
-				BNTableSC[#BNTableSC + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-SC2", "StarCraft", isGameAFK, isGameBusy }
+				BNTableSC[#BNTableSC + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-Sc2icon", "StarCraft", isGameAFK, isGameBusy }
 			elseif client == d3String then
-				BNTableD3[#BNTableD3 + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-D3", "Diablo 3", isGameAFK, isGameBusy }
+				BNTableD3[#BNTableD3 + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-D3icon", "Diablo 3", isGameAFK, isGameBusy }
 			elseif client == wtcgString then
-				BNTableWTCG[#BNTableWTCG + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-WTCG", "Hearstone", isGameAFK, isGameBusy }
+				BNTableWTCG[#BNTableWTCG + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-WTCGicon", "Hearstone", isGameAFK, isGameBusy }
 			elseif client == hotsString then
-				BNTableHOTS[#BNTableHOTS + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-HotS", "Heroes of Storm", isGameAFK, isGameBusy }
+				BNTableHOTS[#BNTableHOTS + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-HotSicon", "Heroes of Storm", isGameAFK, isGameBusy }
 			elseif client == owString then
-				BNTableOW[#BNTableOW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-Overwatch", L["Ovirva4zzz"], isGameAFK, isGameBusy }
+				BNTableOW[#BNTableOW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-Overwatchicon", L["Ovirva4zzz"], isGameAFK, isGameBusy }
 			elseif client == bsapString then
-				BNTableBSAp[#BNTableBSAp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", L["In MobilApps"], isAFK, isDND}
+				BNTableBSAp[#BNTableBSAp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\FriendsFrame\\Battlenet-Battleneticon.blp", L["In MobilApps"], isAFK, isDND}
 			elseif client == appString then
-				BNTableApp[#BNTableApp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\CHATFRAME\\UI-ChatIcon-Battlenet", L["In Apps"], isAFK, isDND }
+				BNTableApp[#BNTableApp + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\friendsframe\\battlenet-portrait", L["In Apps"], isAFK, isDND }
+			elseif client == dst2String then
+				BNTableDST[#BNTableDST + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-Destiny2icon", "Destiny 2", isGameAFK, isGameBusy }
 			else
-				BNTableWoW[#BNTableWoW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK,  isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\CHATFRAME\\UI-ChatIcon-WoW", "World of Warcraft", isGameAFK, isGameBusy }
+				BNTableWoW[#BNTableWoW + 1] = { bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK,  isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-WoWicon", "World of Warcraft", isGameAFK, isGameBusy }
 			end
 
 			--print ( bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, "AFK: ", isAFK,  isDND, zoneName, level, isGameAFK, isGameBusy)
@@ -237,6 +240,7 @@ local function BuildBNTable(total)
 	sort(BNTableHOTS, Sort)
 	sort(BNTableOW, Sort)
 	sort(BNTableBSAp, Sort)
+	sort(BNTableDST, Sort)
 end
 
 local function Update(self, event, ...)
@@ -455,7 +459,7 @@ Stat:SetScript("OnEnter", function(self)
 	GameTooltip:ClearLines()
 	GameTooltip:AddDoubleLine( FRIENDS, format(totalOnlineString, totalonline, totalfriends),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
 	if onlineFriends > 0 then
-		GameTooltip:AddLine(' ')
+		--GameTooltip:AddLine(' ')
 		GameTooltip:AddLine(worldOfWarcraftString)
 		for i = 1, #friendTable do
 			info = friendTable[i]
@@ -471,7 +475,7 @@ Stat:SetScript("OnEnter", function(self)
 				classc = classc or GetQuestDifficultyColor(info[2])
 
 				if UnitInParty(info[1]) or UnitInRaid(info[1]) then grouped = 1 else grouped = 2 end
-				GameTooltip:AddDoubleLine(format(levelNameClassString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],info[1],groupedTable[grouped]," "..info[6]),info[4],classc.r,classc.g,classc.b,zonec.r,zonec.g,zonec.b)
+				GameTooltip:AddDoubleLine(format(levelNameClassString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],info[1],groupedTable[grouped]," "..info[6]), info[4],classc.r,classc.g,classc.b,zonec.r,zonec.g,zonec.b)
 			end
 		end
 	end
@@ -483,8 +487,9 @@ Stat:SetScript("OnEnter", function(self)
 				GameTooltip:AddLine(' ')
 				--GameTooltip:AddLine(battleNetString..' ('.. BNTable[1][16] ..')') --('..client..')')
 
-				GameTooltip:AddDoubleLine( "|T" .. BNTable[1][17] .. ":0|t", BNTable[1][18])   -- 16
+				GameTooltip:AddDoubleLine( "|T" .. BNTable[1][17] .. ":24:24:0:0:64:64:10:54:10:54|t", BNTable[1][18])   -- 16
 				--GameTooltip:AddLine( BNTable[1][16])
+				local bnetColor = hex( 0.000, 0.486, 0.654)
 				for i = 1, #BNTable do
 					info = BNTable[i]
 
@@ -505,17 +510,17 @@ Stat:SetScript("OnEnter", function(self)
 							end
 
 							if UnitInParty(info[4]) or UnitInRaid(info[4]) then grouped = 1 else grouped = 2 end
-							GameTooltip:AddDoubleLine(format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[15],classc.r*255,classc.g*255,classc.b*255,info[3] .. gstatusTable[gstatus], groupedTable[grouped], 255, 0, 0), statusTable[status] .. info[2],238,238,238,238,238,238)
+								GameTooltip:AddDoubleLine(format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[15],classc.r*255,classc.g*255,classc.b*255,info[3] .. gstatusTable[gstatus], groupedTable[grouped], 255, 0, 0), statusTable[status] .. bnetColor .. info[2],238,238,238,238,238,238)
 							if IsShiftKeyDown() then
 								if GetZoneText( C_Map.GetBestMapForUnit("player")) == info[14] then zonec = activezone else zonec = inactivezone end
 								if GetRealmName() == info[10] then realmc = activezone else realmc = inactivezone end
-								GameTooltip:AddDoubleLine(info[14], info[10], zonec.r, zonec.g, zonec.b, realmc.r, realmc.g, realmc.b)
+								GameTooltip:AddDoubleLine( info[14], info[10], zonec.r, zonec.g, zonec.b, realmc.r, realmc.g, realmc.b)
 							end
 						else
 							if (info[7] == true) then status = 1 elseif (info[8] == true) then status = 2 else status = 3 end
 							if (info[19] == true) then gstatus = 1 elseif (info[20] == true) then gstatus = 2 else gstatus = 3 end
 
-							GameTooltip:AddDoubleLine(info[3] .. gstatusTable[gstatus], statusTable[status] .. info[2], .9, .9, .9, .9, .9, .9)
+							GameTooltip:AddDoubleLine(info[3] .. gstatusTable[gstatus], statusTable[status] .. bnetColor .. info[2], .9, .9, .9, .9, .9, .9)
 							if IsShiftKeyDown() then
 								if GetZoneText( C_Map.GetBestMapForUnit("player")) == info[14] then zonec = activezone else zonec = inactivezone end
 								if GetRealmName() == info[10] then realmc = activezone else realmc = inactivezone end

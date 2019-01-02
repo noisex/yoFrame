@@ -2,26 +2,21 @@ local addon, ns = ...
 local L, yo, N = unpack( ns)
 local oUF = ns.oUF
 
-local minAlpha = 1
-
-local cols = {
-	["CHAT_MSG_WHISPER"]			= {	r = 0.560, g = 0.031, b = 0.760, d = " > "},
-	["CHAT_MSG_WHISPER_INFORM"]		= {	r = 1.000, g = 0.078, b = 0.988, d = " < "},
-	["CHAT_MSG_BN_WHISPER"]			= { r = 0.000, g = 0.486, b = 0.654, d = " > "},
-	["CHAT_MSG_BN_WHISPER_INFORM"]	= {	r = 0.172, g = 0.635, b = 1.000, d = " < "},
-}
+local minAlpha 	= 1
+local maxLine, showLine	= 200, 15
 
 CreateAnchor("yo_MoveWIM", 	"Move PM Chat", 350, 250, 0, 0, "LEFT", "LEFT")
 
 local function UpdateTabs( self)
 	if not self.lastTab then return end
 
+	self:ResizeTabs()
+
 	local prevInd = 0
 	for ind = self.minTab or 1, self.lastTab do
 		local tab = self.tabs[ind]
 		if tab then
-			tab:SetWidth((( self:GetWidth() +0) - 3 * ( self.tabCount -1)) / ( self.tabCount ))
---self.resize
+
 			if self.tabUpdate then
 				tab:ClearAllPoints()
 
@@ -29,7 +24,7 @@ local function UpdateTabs( self)
 					self.minTab = tab:GetID()
 					tab:SetPoint("LEFT", self, "LEFT", 0, 0)
 				else
-					tab:SetPoint("LEFT", self.tabs[prevInd], "RIGHT", 3, 0)
+					tab:SetPoint("LEFT", self.tabs[prevInd], "RIGHT", 4, 0)
 				end
 				prevInd = tab:GetID()
 			end
@@ -41,13 +36,14 @@ local function UpdateTabs( self)
 				r, g, b = 0, 0.4862745098039216, 0.6549019607843137
 			end
 
-			tab.text:SetTextColor(r, g, b)
-			tab.shadow:SetBackdropColor( 0.2, 0.2, 0.1, 0.9)
+			tab.header:SetTextColor(r, g, b)
+			--tab.tabNum:SetTextColor(r, g, b)
+			tab.shadow:SetBackdropColor( 0.07, 0.07, 0.07, 0.5)
 
 			if self.checked == tab:GetID() then
 				tab.textBox:Show()
 				tab.editBox:Show()
-				tab.editBox:SetFocus()
+				--tab.editBox:SetFocus()
 				--tab.shadow:SetBackdropColor(r, g, b, 0.8)
 				tab.shadow:SetBackdropBorderColor( r, g, b, 1)
 			else
@@ -55,11 +51,11 @@ local function UpdateTabs( self)
 				tab.editBox:Hide()
 				tab.editBox:ClearFocus()
 				--tab.shadow:SetBackdropColor(r, g, b, 0.15)
-				tab.shadow:SetBackdropBorderColor( 0, 0, 0, 0.7)
+				tab.shadow:SetBackdropBorderColor( 0, 0, 0, 0.6)
 			end
 
-			tab.tabNum:SetText( tab:GetID())
-			tab.text:SetText( tab.name)
+			--tab.tabNum:SetText( tab:GetID())
+			tab.header:SetText( Ambiguate( tab.fullName, "none"))
 
 			self.lastTab = tab:GetID()
 		end
@@ -74,48 +70,47 @@ local function CreateTabs(self, ID)
 	tab:SetFrameLevel(10)
 	tab:RegisterForClicks( "LeftButtonDown", "RightButtonUp")
 
-	local text = tab:CreateFontString(nil, "OVERLAY")
-	text:SetFont( font, fontsize)	--, "OUTLINE")
-	text:SetShadowOffset(1, -1)
-	text:SetShadowColor(0, 0, 0, 1)
-	text:SetPoint("TOPLEFT", 0, -1)
-	text:SetPoint("BOTTOMRIGHT", 0, 1)
-	text:SetJustifyV("MIDDLE")
-	text:SetJustifyH("CENTER")
-	tab.text = text
+	local header = tab:CreateFontString(nil, "OVERLAY")
+	header:SetFont( font, fontsize)	--, "OUTLINE")
+	header:SetShadowOffset(1, -1)
+	header:SetShadowColor(0, 0, 0, 1)
+	header:SetPoint("TOPLEFT", 0, -1)
+	header:SetPoint("BOTTOMRIGHT", 0, 1)
+	header:SetJustifyV("MIDDLE")
+	header:SetJustifyH("CENTER")
+	tab.header = header
 
-	local tabNum = tab:CreateFontString(nil, "OVERLAY")
-	tabNum:SetFont( fontpx, fontsize, "OUTLINE")
-	tabNum:SetPoint("TOPLEFT", 1, 1)
-	tab.tabNum = tabNum
+	--local tabNum = tab:CreateFontString(nil, "OVERLAY")
+	--tabNum:SetFont( fontpx, fontsize, "OUTLINE")
+	--tabNum:SetPoint("TOPLEFT", 1, 1)
+	--tab.tabNum = tabNum
 
 	local hover = tab:CreateTexture(nil, "OVERLAY")
 	hover:SetTexture( texture)
-	hover:SetVertexColor( 0.5, 0.5, 0, 0.5)
-	hover:SetPoint("TOPLEFT", -1, 1)
-	hover:SetPoint("BOTTOMRIGHT", 1, -1)
+	hover:SetVertexColor( 0.5, 0.5, 0.5, 0.5)
+	hover:SetPoint("TOPLEFT", 0, 0)
+	hover:SetPoint("BOTTOMRIGHT", 0, 0)
 	hover:SetAlpha( 0.3)
 	tab.hover = hover
 	tab:SetHighlightTexture( hover)
 
-	local editBox = CreateFrame('EditBox', nil, self);
+	local editBox = CreateFrame('EditBox', nil, self)--, "InputBoxTemplate");
 	editBox:SetFrameLevel( editBox:GetFrameLevel() + 2);
 	editBox:SetHeight( 16)
 	editBox:SetText("")
 	editBox:SetAutoFocus(false)
 	editBox:SetHistoryLines(32);
-	--editBox:SetAltArrowKeyMode(true)
 	editBox:SetFont( font, fontsize)
 	editBox:SetPoint('BOTTOMLEFT', self:GetParent(), 'BOTTOMLEFT', 6, 6);
-	editBox:SetPoint('BOTTOMRIGHT', self:GetParent(), 'BOTTOMRIGHT', -20, 6);
-	editBox:SetScript("OnLeave", function() self:SetAlpha( minAlpha) editBox:ClearFocus() end)
-	editBox:SetScript("OnEnter", function() self:SetAlpha(1) end)
-	editBox:SetScript("OnEscapePressed", function() editBox:ClearFocus() self:Hide() end)
-	editBox:SetScript("OnEditFocusLost", function(self) self:ClearFocus() end)
-	editBox:SetScript("OnEditFocusGained", editBox.HighlightText)
-	editBox:SetScript("OnEnterPressed", self:GetParent().editBoxOnterPressed)
-	editBox:SetScript("OnEditFocusGained", function() self.focused = tab:GetID() end)
-	editBox:SetScript("OnEditFocusLost", function() if self.focused == tab:GetID() then self.focused = false end end)
+	editBox:SetPoint('BOTTOMRIGHT', self:GetParent(), 'BOTTOMRIGHT', -23, 6);
+	editBox:SetScript("OnLeave", 			function() self:SetAlpha( minAlpha) end)
+	editBox:SetScript("OnEnter", 			function() self:SetAlpha(1) end)
+	editBox:SetScript("OnEscapePressed", 	function() editBox:ClearFocus() end) --self:Hide()
+	editBox:SetScript("OnEditFocusGained", 	function() self.focused = tab:GetID() end)
+	editBox:SetScript("OnEditFocusLost", 	function() if self.focused == tab:GetID() then self.focused = false end end)
+	editBox:SetScript("OnEditFocusLost", 	function(self) self:ClearFocus() end)
+	editBox:SetScript("OnEditFocusGained", 	editBox.HighlightText)
+	editBox:SetScript("OnEnterPressed", 	self:GetParent().editBoxOnterPressed)
 	tab.editBox = editBox
 
 	local textBox = CreateFrame("ScrollingMessageFrame", nil, self)
@@ -127,10 +122,11 @@ local function CreateTabs(self, ID)
 	textBox:SetMaxLines( 200)
 	textBox:SetMouseMotionEnabled( true)
 	textBox:SetHyperlinksEnabled(true)
+	textBox:RegisterForDrag("LeftButton")
 	textBox:SetFading( false)
-	textBox:SetScript("OnEnter", function() self:GetParent():SetAlpha(1) end)
-	textBox:SetScript("OnLeave", function() self:GetParent():SetAlpha( minAlpha) end)
-	textBox:SetScript("OnMouseWheel", function(self, ...)
+	textBox:SetScript("OnEnter", 		function() self:GetParent():SetAlpha(1) end)
+	textBox:SetScript("OnLeave", 		function() self:GetParent():SetAlpha( minAlpha) end)
+	textBox:SetScript("OnMouseWheel", 	function(self, ...)
         if(select(1, ...) > 0) then
 			if( IsControlKeyDown() ) then self:ScrollToTop();
 		else 	if( IsShiftKeyDown() ) then self:PageUp() else self:ScrollUp() end end
@@ -138,18 +134,23 @@ local function CreateTabs(self, ID)
 				else 	if( IsShiftKeyDown() ) then self:PageDown() else self:ScrollDown() end end
 	    end
 	end)
-	--textBox:SetScript("OnDragStart", function() wim:StartMoving() end)
-	--textBox:SetScript("OnDragStop", function()
-	--	wim:StopMovingOrSizing()
-	--	yo_MoveWIM:ClearAllPoints()
-	--	yo_MoveWIM:SetPoint( self:GetPoint())
-	--	SetAnchPosition( yo_MoveWIM, self)
-	--end)
+	textBox:SetScript("OnHyperlinkClick", ChatFrame_OnHyperlinkShow)
+	textBox:SetScript("OnHyperlinkEnter", OnHyperlinkEnter) 	-- from Chat.lua
+	textBox:SetScript("OnHyperlinkLeave", OnHyperlinkLeave)
+
+	textBox:SetScript("OnDragStart", function() yo_WIM:StartMoving() end)
+	textBox:SetScript("OnDragStop", function()
+		yo_WIM:StopMovingOrSizing()
+		yo_MoveWIM:ClearAllPoints()
+		yo_MoveWIM:SetPoint( self:GetPoint())
+		SetAnchPosition( yo_MoveWIM, self)
+	end)
 	tab.textBox = textBox
 
 	tab:SetScript("OnEnter", function() self:GetParent():SetAlpha(1) end)
 	tab:SetScript("OnLeave", function() self:GetParent():SetAlpha( minAlpha) end)
 	tab:SetScript("OnClick", function( this, button)
+		self:GetParent().stopFlash( self, header)
 		if button == "LeftButton" then
 			self.checked = tab:GetID()
 		else
@@ -168,16 +169,15 @@ local function CreateTabs(self, ID)
 	self.lastTab = ID
 	CreateStyleSmall( textBox, 1, nil, 0.7, 0.7)
 	CreateStyleSmall( editBox, 1, nil, 0.9, 0.7)
-	CreateStyleSmall( tab, 1, 10)
+	CreateStyleSmall( tab, 2, 10, 0.7)
 	return tab
 end
 
-local function CheckTabForUnit(self, unit, guid, btag)
+local function CheckTabForUnit(self, unit, guid, btag, force)
 	local findUnit, tabID
 	if unit then
-
 		for ind, tab in pairs( self.tabber.tabs) do
-			if strlower( unit) == strlower( tab.fullName) then
+			if strlower( Ambiguate( unit, "none")) == strlower( Ambiguate( tab.fullName, "none")) then
 				findUnit = true
 				tabID = ind
 			end
@@ -189,12 +189,14 @@ local function CheckTabForUnit(self, unit, guid, btag)
 		self.tabber.tabs[tabID] 		= CreateTabs(self.tabber, tabID)
 		self.tabber.tabUpdate 			= true
 		self.tabber.tabCount 			= self.tabber.tabCount + 1
+		self.tabber.tabs[tabID].preHistoric	= true
 	end
 
 	if btag then
 		self.tabber.tabs[tabID].name 	= unit
 		self.tabber.tabs[tabID].btag 	= btag
 		self.tabber.tabs[tabID].fullName= unit
+		self.tabber.tabs[tabID].fullTag	= select( 3 , BNGetFriendInfoByID( btag))
 	elseif guid then
 		local _, classId, _, raceId, gender = GetPlayerInfoByGUID( guid)
 		local name, realm = strsplit("-", unit)
@@ -214,11 +216,59 @@ local function CheckTabForUnit(self, unit, guid, btag)
 		self.tabber.tabs[tabID].realm 	= realm
 	end
 
-	--if self:IsShown() then
-		--self.editBox:SetFocus()
-	--end
+	--print( self.tabber.tabs[tabID].preHistoric, self.tabber.tabs[tabID].fullName, unit )
 
-	self.tabber.checked = tabID
+	if self.tabber.tabs[tabID].preHistoric then
+		local target = btag and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( unit, "none"))
+
+		if not yo_WIMSTER then yo_WIMSTER = {} end
+		if not yo_WIMSTER[myRealm] then yo_WIMSTER[myRealm] = {} end
+		if not yo_WIMSTER[myRealm][myName] then yo_WIMSTER[myRealm][myName] = {} end
+
+		if yo_WIMSTER[myRealm][myName][target] then
+			local logArray 	= yo_WIMSTER[myRealm][myName][target]
+			local longArray = #logArray
+
+			if longArray > 0 then
+				local oldDate
+				local fromArray = longArray > showLine and longArray - showLine  + 1 or 1
+				for ind = fromArray, longArray do
+				--for ind, info in ipairs( logArray) do
+					local info 		= logArray[ind]
+					local col 		= self.cols[info.event]
+					local newDate 	= date("%d.%m.%Y", info.time)
+					local time 		= date("%H:%M", info.time)
+
+					if newDate ~= oldDate then
+						self.tabber.tabs[tabID].textBox:AddMessage( " ")
+						self.tabber.tabs[tabID].textBox:AddMessage( "|cffffcc00 " .. newDate .. " " .. _G["WEEKDAY_" .. string.upper(date("%A", info.time))] )
+						oldDate = newDate
+					end
+					self.tabber.tabs[tabID].textBox:AddMessage( "|cffffcc00" .. time .. info.msg, col.r, col.g, col.b, 1)
+					--self.tabber.tabs[tabID].textBox:AddMessage( "|cffffcc00" .. time)
+				end
+				self.tabber.tabs[tabID].textBox:AddMessage( "|cffffcc00--------------------------------")
+				self.tabber.tabs[tabID].textBox:AddMessage( " ")
+				self.tabber.tabs[tabID].preHistoric = false
+			end
+
+			if longArray > maxLine then
+				for i = 1, longArray - maxLine do
+					tremove( logArray, 1)
+				end
+			end
+		else
+			self.tabber.tabs[tabID].preHistoric = false
+		end
+	end
+
+	if force then
+		self.tabber.checked = tabID
+		if self:IsShown() then
+			self.tabber.tabs[tabID].editBox:SetFocus()
+		end
+	end
+
 	UpdateTabs( self.tabber)
 
 	if InCombatLockdown() then
@@ -228,50 +278,64 @@ local function CheckTabForUnit(self, unit, guid, btag)
 		self:Show()
 	end
 
+	if tabID ~= self.tabber.checked then 	self:startFlash( self.tabber.tabs[tabID].header, 0.75, true) end
+	if not self:IsShown() then 				self:startFlash( self.wimButton, 0.75, true) end
+
 	return tabID
 end
 
 local function CreateWIM( self)
-	self:SetSize( yo_MoveWIM:GetSize())
+	yo_MoveWIM:SetSize( yo.Chat.wimWidth, yo.Chat.winHeight)
+	self:SetSize( yo.Chat.wimWidth, yo.Chat.winHeight)
 	self:SetPoint("TOPLEFT", yo_MoveWIM, "TOPLEFT", 0, 0)
 	self:Hide()
+	self:SetFrameStrata("HIGH")
 	self:EnableMouse( true)
 	self:SetMovable( true)
 	self:SetResizable(true)
 	self:SetMinResize( 300, 200)
 	self:SetClampedToScreen(true)
 	self:RegisterForDrag( "LeftButton")
-	self:SetScript("OnDragStart", function() self:StartMoving() end)
-	self:SetScript("OnDragStop", function()
-		self:StopMovingOrSizing()
+	self:SetScript("OnEnter", 		function() self:SetAlpha(1) end)
+	self:SetScript("OnLeave", 		function() self:SetAlpha( minAlpha) end)
+	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) end)
+	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
+	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
 		yo_MoveWIM:ClearAllPoints()
 		yo_MoveWIM:SetPoint( self:GetPoint())
 		SetAnchPosition( yo_MoveWIM, self)
 	end)
-
-	self:SetScript("OnEnter", function() self:SetAlpha(1) end)
-	self:SetScript("OnLeave", function() self:SetAlpha( minAlpha) end)
 	--self:SetScript("OnEscapePressed", function(self) self:Hide() end)
 
 	self.buttons = {}
 	local hider = CreateFrame("Button", nil, self)
-	hider:SetSize( 22, 22)
-	hider:SetPoint("TOPRIGHT", self, "TOPRIGHT", 2, -3)
-	hider:SetNormalTexture( 	"Interface\\CHATFRAME\\UI-ChatIcon-ScrollEnd-Up")
-	hider:SetPushedTexture( 	"Interface\\CHATFRAME\\UI-ChatIcon-ScrollEnd-Down")
+	hider:SetSize( 24, 24)
+	hider:SetPoint("TOPRIGHT", self, "TOPRIGHT", 2, -2)
+	hider:SetNormalTexture( 	"Interface\\CHATFRAME\\UI-ChatIcon-Minimize-Up")
+	hider:SetPushedTexture( 	"Interface\\CHATFRAME\\UI-ChatIcon-Minimize-Down")
 	hider:SetHighlightTexture( 	"Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-	hider.text = "Hide frame"
+	hider:GetNormalTexture():SetVertexColor(1, 0.75, 0, 1)
+	hider.text = HIDE
 	hider:SetScript("OnClick", function() self:Hide() end)
 	hider:SetScript("OnEnter", self.tooltipShow)
 	hider:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.hider = hider
 
+	local figter = CreateFrame("CheckButton", nil, self, "OptionsBaseCheckButtonTemplate")
+	figter:SetSize( 26, 26)
+	figter:SetPoint("TOP", hider, "BOTTOM", 0, 4)
+	figter:SetScript("OnClick", function() Setlers( "Chat#wimFigter", figter:GetChecked()) self.onFigterEnter( figter) end)
+	figter:SetScript("OnEnter", function() self.onFigterEnter( figter) end)
+	figter:SetScript("OnLeave", self.tooltipHide)
+	figter:SetChecked( yo.Chat.wimFigter)
+	self.buttons.figter = figter
+
 	local guild = CreateFrame("Button", nil, self)
-	guild:SetSize( 22, 22)
-	guild:SetPoint("TOP", hider, "BOTTOM", 0, -20)
-	guild.text = "Guild list"
-	guild:SetNormalTexture( 	"Interface\\FriendsFrame\\UI-FriendsList-Large-Up")
-	guild:SetPushedTexture( 	"Interface\\FriendsFrame\\UI-FriendsList-Large-Down")
+	guild:SetSize( 24, 24)
+	guild:SetPoint("TOP", figter, "BOTTOM", 0, -1)
+	guild.text = GUILD_ROSTER
+	guild:SetNormalTexture( 	"Interface\\Addons\\yoFrame\\Media\\Guild-UI-SquareButton-Up")
+	guild:SetPushedTexture( 	"Interface\\Addons\\yoFrame\\Media\\Guild-UI-SquareButton-Down")
 	guild:SetHighlightTexture( 	"Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	guild:SetScript("OnMouseDown", function(self, button) N.InfoGuild:ShowGuild( button) end)
 	guild:SetScript("OnEnter", self.tooltipShow)
@@ -279,11 +343,11 @@ local function CreateWIM( self)
 	self.buttons.guild = guild
 
 	local friends = CreateFrame("Button", nil, self)
-	friends:SetSize( 22, 22)
-	friends:SetPoint("TOP", guild, "BOTTOM", 0, 3)
-	friends.text = "Friends list"
-	friends:SetNormalTexture( 	"Interface\\FriendsFrame\\UI-FriendsList-Small-Up")
-	friends:SetPushedTexture( 	"Interface\\FriendsFrame\\UI-FriendsList-Small-Down")
+	friends:SetSize( 24, 24)
+	friends:SetPoint("TOP", guild, "BOTTOM", 0, 6)
+	friends.text = FRIENDS_LIST
+	friends:SetNormalTexture( 	"Interface\\Addons\\yoFrame\\Media\\Friedns-UI-SquareButton-Up")
+	friends:SetPushedTexture( 	"Interface\\Addons\\yoFrame\\Media\\Friedns-UI-SquareButton-Down")
 	friends:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	friends:SetScript("OnMouseDown", function(self, button) N.InfoFriend:ShowFiends( button) end)
 	friends:SetScript("OnEnter", self.tooltipShow)
@@ -291,9 +355,9 @@ local function CreateWIM( self)
 	self.buttons.friends = friends
 
 	local invite = CreateFrame("Button", nil, self)
-	invite:SetSize( 22, 22)
-	invite:SetPoint("TOP", friends, "BOTTOM", 0, 3)
-	invite.text = "Invite"
+	invite:SetSize( 24, 24)
+	invite:SetPoint("TOP", friends, "BOTTOM", 0, -1)
+	invite.text = INVITE
 	invite:SetNormalTexture( 	"Interface\\CHATFRAME\\UI-ChatRosterIcon-Up")
 	invite:SetPushedTexture( 	"Interface\\CHATFRAME\\UI-ChatRosterIcon-Down")
 	invite:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
@@ -303,9 +367,9 @@ local function CreateWIM( self)
 	self.buttons.invite = invite
 
 	local info = CreateFrame("Button", nil, self)
-	info:SetSize( 22, 22)
-	info:SetPoint("TOP", invite, "BOTTOM", 0, 3)
-	info.text = "Info about this"
+	info:SetSize( 24, 24)
+	info:SetPoint("TOP", invite, "BOTTOM", 0, 6)
+	info.text = CHARACTER_INFO
 	info.text2 = "don`t work"
 	info:SetNormalTexture( 		"Interface\\CHATFRAME\\UI-ChatIcon-Chat-Up")
 	info:SetPushedTexture( 		"Interface\\CHATFRAME\\UI-ChatIcon-Chat-Down")
@@ -315,12 +379,37 @@ local function CreateWIM( self)
 	info:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.info = info
 
-	local ignore = CreateFrame("Button", nil, self)
-	ignore:SetSize( 21, 21)
-	ignore:SetPoint("TOP", info, "BOTTOM", 0, 2)
-	ignore.text = "Ignore this"
+	local copier = CreateFrame("Button", nil, self)
+	copier:SetSize( 24, 24)
+	copier:SetPoint("TOP", info, "BOTTOM", 0, 6)
+	copier.text = COPY_FILTER .. " " .. string.lower( LOCALE_TEXT_LABEL)
+	copier:SetNormalTexture( 		"Interface\\CHATFRAME\\UI-ChatIcon-Maximize-Up")
+	copier:SetPushedTexture( 		"Interface\\CHATFRAME\\UI-ChatIcon-Maximize-Down")
+	copier:SetHighlightTexture( 	"Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+	copier:SetScript("OnClick", self.CopyTextBox)
+	copier:SetScript("OnEnter", self.tooltipShow)
+	copier:SetScript("OnLeave", self.tooltipHide)
+	self.buttons.copier = copier
+
+	local shower = false
+	local history = CreateFrame("Button", nil, self)
+	history:SetSize( 24, 24)
+	history:SetPoint("TOP", copier, "BOTTOM", 0, 6)
+	history.text = HISTORY
+	history:SetNormalTexture( 		"Interface\\FriendsFrame\\UI-FriendsList-Large-Up") 	--"Interface\\TIMEMANAGER\\PauseButton")
+	history:SetPushedTexture( 		"Interface\\FriendsFrame\\UI-FriendsList-Large-Down") 	--"Interface\\Buttons\\UI-SquareButton-Down")
+	history:SetHighlightTexture( 	"Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+	history:SetScript("OnClick", function() self.wimHistory:SetShown( not self.wimHistory:IsShown()) end)
+	history:SetScript("OnEnter", self.tooltipShow)
+	history:SetScript("OnLeave", self.tooltipHide)
+	self.buttons.history = history
+
+	local ignore = CreateFrame("CheckButton", nil, self)
+	ignore:SetSize( 23, 23)
+	ignore:SetPoint("TOP", history, "BOTTOM", 0, 1)
+	ignore.text = IGNORE_QUEST
 	ignore:SetNormalTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeUnhealthy")
-	ignore:SetPushedTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeTired")
+	ignore:SetCheckedTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeTired")
 	ignore:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	ignore:SetScript("OnClick", self.ignoreOnClick)
 	ignore:SetScript("OnEnter", self.ignoreOnEnter)
@@ -334,58 +423,61 @@ local function CreateWIM( self)
 	grabber:SetHighlightTexture( 	"Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
 	grabber:SetPushedTexture( 		"Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
 	grabber:RegisterForDrag("LeftButton")
-	grabber:SetScript("OnDragStart", function() self:StartSizing() self.resize = true end)
-	grabber:SetScript("OnDragStop", function() self:StopMovingOrSizing() self.resize = false end)
+	grabber:SetScript("OnDragStart", function() self:StartSizing() end)
+	grabber:SetScript("OnDragStop", function()
+		self:StopMovingOrSizing()
+		Setlers( "Chat#wimWidth", self:GetWidth())
+		Setlers( "Chat#winHeight", self:GetHeight())
+	end)
 	self.buttons.grabber = grabber
 
-	--local editBox = CreateFrame('EditBox', nil, self);
-	--editBox:SetFrameLevel( editBox:GetFrameLevel() + 2);
-	--editBox:SetHeight( 16)
-	--editBox:SetText("")
-	--editBox:SetAutoFocus(false)
-	--editBox:SetHistoryLines(32);
-	----editBox:SetAltArrowKeyMode(true)
-	--editBox:SetFont( font, fontsize)
-	--editBox:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', 6, 6);
-	--editBox:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', -20, 6);
-	--editBox:SetScript("OnLeave", function() self:SetAlpha( minAlpha) editBox:ClearFocus() end)
-	--editBox:SetScript("OnEnter", function() self:SetAlpha(1) end)
-	--editBox:SetScript("OnEscapePressed", function() editBox:ClearFocus() self:Hide() end)
-	--editBox:SetScript("OnEditFocusLost", function(self) self:ClearFocus() end)
-	--editBox:SetScript("OnEditFocusGained", editBox.HighlightText)
-	--editBox:SetScript("OnEnterPressed", self.editBoxOnterPressed)
-	--self.editBox = editBox
-
 	self.tabber = CreateFrame("Frame", nil, self)
-	self.tabber:SetHeight( 20)
-	--self.tabber:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -4)
-	--self.tabber:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -4)
-	self.tabber:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -1, 3)
-	self.tabber:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 1, 3)
-	self.tabber:SetScript("OnSizeChanged", function() UpdateTabs( self.tabber) end)
+	self.tabber:SetHeight( 22)
+	self.tabber:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4) --3
+	self.tabber:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 4)
+	self.tabber:SetScript("OnSizeChanged", self.ResizeTabs)
 
 	self.tabber.tabs = {}
 	self.tabber.checked = 1
 	self.tabber.tabCount = 0
 	self.tabber.lastTab = 0
 	self.tabber.tabUpdate = true
+	self.tabber.ResizeTabs = self.ResizeTabs
 
-	--CreateStyleSmall( editBox, 1, nil, 0.9, 0.7)
 	CreateStyle( self, 2, nil, 0.5)
+end
+
+local function SaveLines( self, msg, event, tabID, target, bnet, colorLine)
+	--print(self, target, bnet)
+	target = bnet and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( target, "none"))
+
+	if not yo_WIMSTER then yo_WIMSTER = {} end
+	if not yo_WIMSTER[myRealm] then yo_WIMSTER[myRealm] = {} end
+	if not yo_WIMSTER[myRealm][myName] then yo_WIMSTER[myRealm][myName] = {} end
+	if not yo_WIMSTER[myRealm][myName][target] then yo_WIMSTER[myRealm][myName][target] = {} end
+	local logArray = yo_WIMSTER[myRealm][myName][target]
+	--print( strfind( msg, "|K%a+%d+|k"), self.tabber.tabs[tabID].name)
+
+	local array = { msg = msg, time = time(), event = event}
+
+	--CheckLine( yo_ChatHistory)
+	logArray.colorLine = colorLine
+	tinsert( logArray, array)
 end
 
 local function OutString(self, event, text, unit, guid, btag)
 	local colStr 	= " |r["
 	local ender 	= "] "
 	local time 		= date("%H:%M", time())
-	unit = 	Ambiguate( unit, "none")
-
-	local tabID = CheckTabForUnit( self, unit, guid, btag)
-	local tab 	= self.tabber.tabs[tabID]
+	local tabID 	= CheckTabForUnit( self, unit, guid, btag)
+	local tab 		= self.tabber.tabs[tabID]
+	local target 	= unit
+	local colorLine
 
 	if tab.class then
 		local r, g, b = unpack( oUF.colors.class[tab.class])
-		colStr 	= colStr .. hex( r, g, b)
+		colorLine = hex( r, g, b)
+		colStr 	= colStr .. colorLine
 		ender 	= "|r] "
 	end
 
@@ -393,8 +485,18 @@ local function OutString(self, event, text, unit, guid, btag)
 		colStr 	= " |r[" .. myColorStr
 		unit 	= myName
 		ender 	= "|r] "
+	elseif btag then
+		unit = unit:gsub( "|K%a+%d+|k", strsplit( "#", self.tabber.tabs[tabID].fullTag))
+	else
+		unit = Ambiguate( unit, "short")
 	end
-	tab.textBox:AddMessage( "|cffffcc00" .. time .. colStr .. unit .. ender .. text, cols[event].r, cols[event].g, cols[event].b, 1)
+
+	if btag then colorLine = hex( self.cols[event].r, self.cols[event].g, self.cols[event].b) end
+
+	local msg = colStr .. unit .. ender .. text
+
+	SaveLines( self, msg, event, tabID, target, btag, colorLine)
+	tab.textBox:AddMessage( "|cffffcc00" .. time .. msg, self.cols[event].r, self.cols[event].g, self.cols[event].b, 1)
 end
 
 -----------------------------------------------------------------------------------
@@ -402,8 +504,24 @@ end
 -----------------------------------------------------------------------------------
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
-		CreateWIM( self)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		if not yo.Chat.wim then return end
+
+		self:RegisterEvent("CHAT_MSG_WHISPER")
+		self:RegisterEvent("CHAT_MSG_BN_WHISPER")
+		self:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
+		self:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
+		self:RegisterEvent("PLAYER_REGEN_ENABLED")
+		self:RegisterEvent("PLAYER_REGEN_DISABLED")
+
+		CreateWIM( self)
+		hooksecurefunc("ChatEdit_ExtractTellTarget", CF_ExtractTellTarget);
+		hooksecurefunc("ChatFrame_SendBNetTell", ChatFrame_SendBNet)
+
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", myChatFilter)
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", myChatFilter)
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", myChatFilter)
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", myChatFilter)
 
 	elseif event == "CHAT_MSG_WHISPER" or event == "CHAT_MSG_WHISPER_INFORM" then
 		local text, fullName, _, _, unit, _, _, _, _, _, _, guid = ...
@@ -414,7 +532,8 @@ local function OnEvent( self, event, ...)
 		OutString( self, event, text, unit, nil, btag)
 
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		if self:IsShown() and not self.editBox:HasFocus() then
+		if not yo.Chat.wimFigter then return end
+		if self:IsShown() and not self.tabber.focused then
 			self.needShow = true
 			self:Hide()
 		else
@@ -422,6 +541,7 @@ local function OnEvent( self, event, ...)
 		end
 
 	elseif event == "PLAYER_REGEN_ENABLED" then
+		if not yo.Chat.wimFigter then return end
 		if self.needShow then
 			self:Show()
 			self.needShow = false
@@ -431,19 +551,81 @@ end
 
 local wim = CreateFrame("Frame", "yo_WIM", UIParent)
 wim:RegisterEvent("PLAYER_ENTERING_WORLD")
-wim:RegisterEvent("CHAT_MSG_WHISPER")
-wim:RegisterEvent("CHAT_MSG_BN_WHISPER")
-wim:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-wim:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
-wim:RegisterEvent("PLAYER_REGEN_ENABLED")
-wim:RegisterEvent("PLAYER_REGEN_DISABLED")
 wim:SetScript("OnEvent", OnEvent)
 
 -----------------------------------------------------------------------------------
 --		local functions
 -----------------------------------------------------------------------------------
+
+wim.cols = {
+	["CHAT_MSG_WHISPER"]			= {	r = 0.560, g = 0.031, b = 0.760, d = " > "},
+	["CHAT_MSG_WHISPER_INFORM"]		= {	r = 1.000, g = 0.078, b = 0.988, d = " < "},
+	["CHAT_MSG_BN_WHISPER"]			= { r = 0.000, g = 0.486, b = 0.654, d = " > "},
+	["CHAT_MSG_BN_WHISPER_INFORM"]	= {	r = 0.172, g = 0.635, b = 1.000, d = " < "},
+}
+
+wim.ResizeTabs = function( self)
+	if not self.lastTab then return end
+
+	for ind = self.minTab or 1, self.lastTab do
+		local tab = self.tabs[ind]
+		if tab then
+			tab:SetWidth((( self:GetWidth() +0) - 4 * ( self.tabCount -1)) / ( self.tabCount ))
+		end
+	end
+end
+
+local ChatEdit_GetActiveWindow_orig = ChatEdit_GetActiveWindow;
+function ChatEdit_GetActiveWindow()
+	local edID, editBox = wim.tabber.focused
+	if edID then
+		editBox = wim.tabber.tabs[edID].editBox
+	end
+    return editBox or ChatEdit_GetActiveWindow_orig()
+end
+
+local splitMessage, splitMessageLinks = {}, {};
+function SendSplitMessage( theMsg, to, btag)
+	-- parse out links as to not split them incorrectly.
+	theMsg, results = string.gsub(theMsg, "(|H[^|]+|h[^|]+|h)", function(theLink)
+		table.insert(splitMessageLinks, theLink);
+		return "\001\002"..paddString(#splitMessageLinks, "0", string.len(theLink)-4).."\003\004";
+	end)
+
+	-- split up each word.
+	SplitToTable(theMsg, "%s", splitMessage);
+
+	--reconstruct message into chunks of no more than 255 characters.
+	local chunk = "";
+	for i=1, #splitMessage + 1 do
+		if(splitMessage[i] and string.len(chunk) + string.len(splitMessage[i]) <= 254) then
+			chunk = chunk..splitMessage[i].." ";
+		else
+			-- reinsert links of necessary
+			chunk = string.gsub(chunk, "\001\002%d+\003\004", function(link)
+				local index = tonumber(string.match(link, "(%d+)"));
+				return splitMessageLinks[index] or link;
+			end);
+
+			if btag then
+				BNSendWhisper( btag, chunk)
+			else
+				SendChatMessage( chunk, "WHISPER", "Common", to);
+            end
+			chunk = (splitMessage[i] or "").." ";
+		end
+	end
+
+	-- clean up
+	for k, _ in pairs(splitMessage) do
+		splitMessage[k] = nil;
+	end
+	for k, _ in pairs(splitMessageLinks) do
+		splitMessageLinks[k] = nil;
+	end
+end
+
 function wim:editBoxOnterPressed()
-	print(self)
 	local text 	= self:GetText()
 	if #text < 1 then self:ClearFocus() return end
 
@@ -460,11 +642,9 @@ function wim:editBoxOnterPressed()
 
 	if tab and tab.name then
 		if tab.btag then
-			local btag = tab.btag
-			BNSendWhisper( btag, text)
+           	SendSplitMessage( text, nil, tab.btag)
 		else
-			local unit = tab.name
-			SendChatMessage(text, "WHISPER", "Common", unit);
+           	SendSplitMessage( text, tab.fullName)
 		end
 	end
 	self:AddHistoryLine(text)
@@ -478,7 +658,7 @@ function wim:ignoreOnEnter()
 		local name 	= wim.tabber.tabs[tabID].fullName
 		self.text2 = name
 	else
-		self.text2 = "i cant do this"
+		self.text2 = nil -- "i cant do this"
 	end
 	wim.tooltipShow( self)
 end
@@ -501,22 +681,54 @@ function wim:inviteOnClick()
 	if tabID and wim.tabber.tabs[tabID] and not wim.tabber.tabs[tabID].btag then
 		local name 	= wim.tabber.tabs[tabID].fullName
 		InviteUnit( name)
+	else
+		if wim.tabber.tabs[tabID] and wim.tabber.tabs[tabID].btag then
+			local btag = wim.tabber.tabs[tabID].btag
+			local toonID, client = select( 6, BNGetFriendInfoByID( btag))
+			if client == "WoW" then
+				BNInviteFriend( toonID)
+			end
+		end
 	end
 end
+--		bnetIDAccount, accountName, battleTag, _, characterName, bnetIDGameAccount, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
+--		hasFocus, charName, gclient , realmName, realmID, faction, race, class, guild, zoneName, level, gameText, broadcastText, broadcastTime, canSoR, toonID, bnetIDAccount, isGameAFK, isGameBusy = BNGetGameAccountInfo(bnetIDGameAccount or bnetIDAccount);
+--		presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, broadcastTime, canSoR = BNGetFriendInfoByID( 15)
 
 function wim:inviteOnEnter()
 	local tabID = wim.tabber.checked
 	if tabID and wim.tabber.tabs[tabID] and not wim.tabber.tabs[tabID].btag then
-		local name 	= wim.tabber.tabs[tabID].fullName
+		local name 	= Ambiguate( wim.tabber.tabs[tabID].fullName, "none")
 		self.text2 = name
 	else
-		self.text2 = "i cant do this"
+		if wim.tabber.tabs[tabID] and wim.tabber.tabs[tabID].btag then
+			local btag = wim.tabber.tabs[tabID].btag
+			local toonID, client = select( 6, BNGetFriendInfoByID( btag))
+			if client == "WoW" then
+				local _, charName, gclient , realmName, realmID, faction, race, class, guild, zoneName, level = BNGetGameAccountInfo( toonID)
+				for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
+				for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if class == v then class = k end end
+				local classCol 	= (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class].colorStr
+				local levelCol 	= hex( GetQuestDifficultyColor( level))
+				self.text2 =  levelCol .. level .. "|r |c" .. classCol .. charName .. " |cff999999(" .. realmName .. ")"
+			else
+				self.text2 = nil  --"i cant do this"
+			end
+		else
+			self.text2 = nil 	--"i cant do this"
+		end
 	end
 	wim.tooltipShow( self)
 end
 
-function wim:tooltipShow()
-	GameTooltip:SetOwner(self);
+function wim:onFigterEnter()
+	self.text = yo.Chat.wimFigter and "Hider" or "Don`t hider"
+	self.text2 = yo.Chat.wimFigter and "Hide the window in combat and show after" or "Do nothing ( like you all your life)"
+	wim.tooltipShow( self)
+end
+
+function wim:tooltipHide()	GameTooltip:Hide() end
+function wim:tooltipShow()	GameTooltip:SetOwner(self);
 	GameTooltip:ClearLines()
 	GameTooltip:AddLine(self.text)
 
@@ -530,14 +742,122 @@ function wim:tooltipShow()
 	end
 	GameTooltip:Show()
 end
-function wim:tooltipHide()	GameTooltip:Hide() end
+
+function wim:startFlash(object, duration, loop)
+	if object.GetNormalTexture then
+		object:GetNormalTexture():SetVertexColor( 0, 1, 0, 1)
+	end
+	if not object.anim then
+		SetUpAnimGroup(object, loop and "FlashLoop" or 'Flash', 1, 0.2)
+	end
+
+	if not object.anim.playing then
+		object.anim.fadein:SetDuration(duration * .2)
+		object.anim.fadeout:SetDuration(duration)
+		object.anim:Play()
+		object.anim.playing = true
+	end
+end
+
+function wim:stopFlash(object)
+	if object.GetNormalTexture then
+		object:GetNormalTexture():SetVertexColor( 1, 1, 1, 1)
+	end
+	if object.anim and object.anim.playing then
+		object.anim:Stop()
+		object.anim.playing = nil;
+	end
+end
+
+function myChatFilter(self, event, msg, author, ...)
+	return wim:IsShown()
+end
 
 -----------------------------------------------------------------------------------
--- 	/tt Hooks
+-- 	copy button
+-----------------------------------------------------------------------------------
+local sizes = {
+	":14:14",
+	":15:15",
+	":16:16",
+	":12:20",
+	":14"
+}
+
+local function CreatCopyFrame()
+	copyFrame = CreateFrame("Frame", nil, UIParent)
+	CreateStyle(copyFrame, 2, nil, 0.7)
+	copyFrame:SetPoint("TOPLEFT", wim, "BOTTOMLEFT", 0, -10)
+	copyFrame:SetPoint("TOPRIGHT", wim, "BOTTOMRIGHT", 0, -10)
+	copyFrame:SetFrameStrata("DIALOG")
+	copyFrame:Hide()
+	wim.copyFrame = copyFrame
+
+	local editBox = CreateFrame("EditBox", nil, copyFrame)
+	editBox:SetMultiLine(true)
+	editBox:SetMaxLetters(199999)
+	editBox:EnableMouse(true)
+	editBox:SetAutoFocus(false)
+	editBox:SetFont( yo.Chat.chatFont, yo.Chat.fontsize)
+	editBox:SetHeight(350)
+	editBox:SetScript("OnEscapePressed", function() copyFrame:Hide() end)
+	editBox:SetScript("OnTextSet", function(self)
+		local text = self:GetText()
+
+		for _, size in pairs(sizes) do
+			if string.find(text, size) and not string.find(text, size.."]") then
+				self:SetText(string.gsub(text, size, ":12:12"))
+			end
+		end
+	end)
+	copyFrame.editBox = editBox
+
+	local scrollArea = CreateFrame("ScrollFrame", nil, copyFrame, "UIPanelScrollFrameTemplate")
+	scrollArea:SetPoint("TOPLEFT", copyFrame, "TOPLEFT", 6, -30)
+	scrollArea:SetPoint("BOTTOMRIGHT", copyFrame, "BOTTOMRIGHT", -30, 6)
+	scrollArea:SetScrollChild(editBox)
+	copyFrame.scrollArea = scrollArea
+
+	copyFrame.close = CreateFrame("Button", nil, copyFrame, "UIPanelCloseButton")
+	copyFrame.close:SetPoint("TOPRIGHT", copyFrame, "TOPRIGHT", 0, 0)
+end
+
+function wim:CopyTextBox()
+	local tabID = wim.tabber.checked
+	if not tabID or not wim.tabber.tabs[tabID] then return end
+
+	if not wim.copyFrame then CreatCopyFrame() end
+
+	local textBox = wim.tabber.tabs[tabID].textBox
+	local editBox = wim.copyFrame.editBox
+
+	editBox:SetText("")
+
+	for i = 1, textBox:GetNumMessages() do
+		--text = text.. textBox:GetMessageInfo(i).."\n"
+		local text = textBox:GetMessageInfo(i).."\n"
+		text = text:gsub("|[Tt]Interface\\TargetingFrame\\UI%-RaidTargetingIcon_(%d):0|[Tt]", "{rt%1}")
+		text = text:gsub("|[Tt][^|]+|[Tt]", "")
+		--text = text:gsub( "|", "")
+		editBox:Insert( text)
+	end
+	--text = text:gsub("|[Tt]Interface\\TargetingFrame\\UI%-RaidTargetingIcon_(%d):0|[Tt]", "{rt%1}")
+	--text = text:gsub("|[Tt][^|]+|[Tt]", "")
+	--print(text)
+
+	wim.copyFrame:SetWidth( wim:GetWidth())
+	wim.copyFrame:SetHeight(wim:GetHeight() * 0.75)
+	wim.copyFrame.editBox:SetWidth( wim:GetWidth() -30)
+	--wim.copyFrame.editBox:SetText( text)
+	wim.copyFrame:Show()
+end
+
+-----------------------------------------------------------------------------------
+-- 	tellTarget Hooks
 -----------------------------------------------------------------------------------
 local tellTargetExtractionAutoComplete = AUTOCOMPLETE_LIST.WHISPER_EXTRACT
-local function CF_ExtractTellTarget(editBox, msg)
-	--_G.DEFAULT_CHAT_FRAME:AddMessage("Raw: ".. "msg") -- debugging
+function CF_ExtractTellTarget(editBox, msg)
+	--DEFAULT_CHAT_FRAME:AddMessage("Raw: ".. "msg") -- debugging
 	local target = string.match(msg, "%s*(.*)");
 
 	if (not target or not string.find(target, "%s") or (string.sub(target, 1, 1) == "|")) then return false; end
@@ -549,24 +869,62 @@ local function CF_ExtractTellTarget(editBox, msg)
     	if ( #GetAutoCompleteResults(target, 1, 0, true, tellTargetExtractionAutoComplete.include, tellTargetExtractionAutoComplete.exclude) > 0 ) then	break; end
   	end
 
+  	--target = Ambiguate( target, "none")
 	ChatEdit_OnEscapePressed(editBox);
 	wim:Show()
-	if wim.tabber.tabs[wim.tabber.checked] then
-		wim.tabber.tabs[wim.tabber.checked].editBox:SetFocus()
-	end
-	CheckTabForUnit( wim, target)
+	CheckTabForUnit( wim, target, nil, nil, true)
 end
-hooksecurefunc("ChatEdit_ExtractTellTarget", CF_ExtractTellTarget);
 
-local function ChatFrame_SendBNet( token)
+function ChatFrame_SendBNet( token)
 	local editBox 	= ChatEdit_ChooseBoxForSend();
 	local btag		= GetAutoCompletePresenceID( token)
 
 	ChatEdit_OnEscapePressed( editBox);
 	wim:Show()
-	if wim.tabber.tabs[wim.tabber.checked] then
-		wim.tabber.tabs[wim.tabber.checked].editBox:SetFocus()
-	end
-	CheckTabForUnit( wim, token, nil, btag)
+	CheckTabForUnit( wim, token, nil, btag, true)
 end
-hooksecurefunc("ChatFrame_SendBNetTell", ChatFrame_SendBNet)
+
+-----------------------------------------------------------------------------
+--		/tt /ee
+-----------------------------------------------------------------------------
+for i=1, NUM_CHAT_WINDOWS do
+	local editBox = _G["ChatFrame"..i.."EditBox"]
+	editBox:HookScript("OnTextChanged", function(self)
+		local text = self:GetText()
+		if text:len() < 7 then
+			if text:sub(1, 4) == "/tt " or text:sub(1, 6) == "/ее " then
+				local unitname, realm = UnitName("target")
+				if unitname then
+					if unitname then unitname = gsub(unitname, " ", "") end
+					if unitname and not UnitIsSameServer("player", "target") then
+						unitname = unitname .. "-" .. gsub(realm, " ", "")
+					end
+
+					ChatFrame_SendTell((unitname), ChatFrame1)
+				end
+			end
+		end
+	end)
+end
+
+SLASH_TELLTARGET1 = "/tt"
+SLASH_TELLTARGET2 = "/ее"
+SlashCmdList.TELLTARGET = function(msg)
+	SendChatMessage(msg, "WHISPER")
+end
+
+--wim.insertLink = function( link)
+--	if link then
+--		local edID = wim.tabber.focused
+--		if edID then
+--			local text = wim.tabber.tabs[edID].editBox:GetText() .. link .. " "
+--			wim.tabber.tabs[edID].editBox:SetText( text)
+--		end
+--	end
+--	return orig_ChatEdit_InsertLink( link)
+--end
+--orig_ChatEdit_InsertLink = ChatEdit_InsertLink;
+--ChatEdit_InsertLink = self.insertLink
+
+--hooksecurefunc("SetItemRef", tester)
+--RegisterWidgetTrigger("chat_display", "whisper,chat,w2w", "OnHyperlinkClick", function(self, link, text, button) SetItemRef(link, text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""), button, self); end);

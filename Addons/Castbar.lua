@@ -1,5 +1,8 @@
 local L, yo, N = unpack( select( 2, ...))
 
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
 local cfg = {}
 
 local function DisableBlizzardFrame( f)
@@ -291,11 +294,11 @@ function CreateCastBar( frame, cfg)
 	--bar.castBar.shield:SetSize( 70, 100)
 
 	bar.castBar.nameText =  bar.castBar:CreateFontString(nil ,"OVERLAY")
-	bar.castBar.nameText:SetFont( font, fontsize, "OUTLINE")
+	bar.castBar.nameText:SetFont( font, max( 10, height * 0.65), "OUTLINE")
 	bar.castBar.nameText:SetPoint("LEFT", bar.castBar, "LEFT", 2, 0)
 
 	bar.castBar.timeText =  bar.castBar:CreateFontString(nil ,"OVERLAY")
-	bar.castBar.timeText:SetFont( font, fontsize, "OUTLINE")
+	bar.castBar.timeText:SetFont( font, max( 10, height * 0.65), "OUTLINE")
 	bar.castBar.timeText:SetPoint("RIGHT", bar.castBar, "RIGHT", -2, 0)
 
 	bar.castBar.spark = bar.castBar:CreateTexture(nil, "OVERLAY")
@@ -327,7 +330,7 @@ function CreateCastBar( frame, cfg)
 		bar.castBar.icon =  bar.castBar.ibg:CreateTexture(nil, "BORDER")
 		bar.castBar.icon:SetAllPoints( bar.castBar.ibg)
 		bar.castBar.icon:SetTexCoord(unpack( yo.tCoord))
-		CreateStyle( bar.castBar.ibg, 5)
+		CreateStyle( bar.castBar.ibg, 3)
 	end
 
 	if cfgname == "BCB" then
@@ -408,7 +411,7 @@ function CreateCastBar( frame, cfg)
 	elseif unit == "pet" then
 		DisableBlizzardFrame(PetCastingBarFrame)
 	end
-	CreateStyle( bar.castBar, 5)
+	CreateStyle( bar.castBar, 3)
 	GetColors( bar.castBar)
 
 	bar.castBar.unit 		= unit

@@ -3,7 +3,7 @@
 ## Title: |cff00ffffyoFrame|r
 ## Author: NoiseX
 ## Notes: Foo frames... Based on Qulight, ShestakUI code and design ideas. Thanks.
-## SavedVariables: yo_AllData, yo_AllConfig, yo_BB yo_BBCount
+## SavedVariables: yo_AllData, yo_AllConfig, yo_BB yo_BBCount, yo_WIMSTER
 ## SavedVariablesPerCharacter: yo_Position, yo_PersonalConfig, yo_ChatHistory
 
 Func.lua
@@ -106,7 +106,8 @@ Addons\Scripts.lua
 Addons\TalkingHead.lua
 Addons\ToolTip.lua
 Addons\IDTooltip.lua
-#Addons\wim.lua
+Addons\WIM.lua
+Addons\WimHistory.lua
 
 Infotext\System.lua
 Infotext\Durability.lua

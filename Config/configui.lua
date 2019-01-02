@@ -32,6 +32,12 @@ LSM:Register("sound", "Murloc", 	"Interface\\Addons\\yoFrame\\Media\\BabyMurlocA
 LSM:Register("font", "yoMagistral", "Interface\\Addons\\yoFrame\\Media\\qFont.ttf", 130)
 LSM:Register("font", "yoSansNarrow","Interface\\Addons\\yoFrame\\Media\\qSans.ttf", 130)
 
+--LSM:Register("font", "yoOswald-ExtraLight",	"Interface\\Addons\\yoFrame\\Media\\Oswald-ExtraLight.ttf", 130)
+--LSM:Register("font", "yoOswald-Light",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Light.ttf", 130)
+--LSM:Register("font", "yoOswald-Regular",	"Interface\\Addons\\yoFrame\\Media\\Oswald-Regular.ttf", 130)
+--LSM:Register("font", "yoOswald-Medium",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Medium.ttf", 130)
+--LSM:Register("font", "yoOswald-Bold",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Bold.ttf", 130)
+
 local function UpdateShadowEdge( scale)
 	for k, shadow in pairs( N.shadows) do
 
@@ -560,6 +566,8 @@ function InitOptions()
 							end	end,
 						set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end,
 					},
+
+					wim 		= {	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
 					--chatBubble		= {	order = 40, type = "select", 	name = "Чат-бабл:",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},

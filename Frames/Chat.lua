@@ -316,12 +316,13 @@ local function SetupChatPosAndFont(self)
 	local wimButton = CreateFrame("Button", nil, LeftDataPanel)
 	wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
 	wimButton:SetSize( 1, 1)
-	if yo_WIM then
+	if yo_WIM and yo.Chat.wim then
 		wimButton:SetSize( 28, 28)
 		wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
 		wimButton:SetNormalTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat")
 		wimButton:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-		wimButton:SetScript("OnClick", function() yo_WIM:SetShown( not yo_WIM:IsShown())	end)
+		wimButton:SetScript("OnClick", function() yo_WIM:SetShown( not yo_WIM:IsShown()) yo_WIM:stopFlash( wimButton) end)
+		yo_WIM.wimButton = wimButton
 	end
 
 	if yo.Chat.showVoice then
@@ -629,22 +630,24 @@ local scrollDown = function()
 end
 
 local function Copy(cf)
-	local text = ""
-	for i = 1, cf:GetNumMessages() do
-		text = text..cf:GetMessageInfo(i).."\n"
-	end
-	text = text:gsub("|[Tt]Interface\\TargetingFrame\\UI%-RaidTargetingIcon_(%d):0|[Tt]", "{rt%1}")
-	text = text:gsub("|[Tt][^|]+|[Tt]", "")
 	if not isf then CreatCopyFrame() end
+	editBox:SetText("")
+
+	for i = 1, cf:GetNumMessages() do
+		local text = cf:GetMessageInfo(i) .. "\n"
+		text = text:gsub("|[Tt]Interface\\TargetingFrame\\UI%-RaidTargetingIcon_(%d):0|[Tt]", "{rt%1}")
+		text = text:gsub("|[Tt][^|]+|[Tt]", "")
+		editBox:Insert( text)
+	end
+
 	if frame:IsShown() then frame:Hide() return end
 	frame:Show()
-	editBox:SetText(text)
 end
 
 for i = 1, NUM_CHAT_WINDOWS do
 	local cf = _G[format("ChatFrame%d", i)]
 	local button = CreateFrame("Button", format("ButtonCF%d", i), cf)
-	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -21, -21)
+	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -21, -27)
 	button:SetSize( 30, 30)
 	button:SetAlpha(0.1)
 	CreateStyle(button, 2)
@@ -732,31 +735,6 @@ ChatFrame_OnHyperlinkShow = function(self, link, ...)
 		return
 	end
 	ChatFrame_OnHyperlinkShow_Original(self, link, ...)
-end
-
-for i=1, NUM_CHAT_WINDOWS do
-	local editbox = _G["ChatFrame"..i.."EditBox"]
-	editbox:HookScript("OnTextChanged", function(self)
-		local text = self:GetText()
-		if text:len() < 5 then
-			if text:sub(1, 4) == "/tt " then
-				local unitname, realm = UnitName("target")
-				if unitname then
-					if unitname then unitname = gsub(unitname, " ", "") end
-					if unitname and not UnitIsSameServer("player", "target") then
-						unitname = unitname .. "-" .. gsub(realm, " ", "")
-					end
-
-					ChatFrame_SendTell((unitname), ChatFrame1)
-				end
-			end
-		end
-	end)
-end
-
-SLASH_TELLTARGET1 = "/tt"
-SlashCmdList.TELLTARGET = function(msg)
-	SendChatMessage(msg, "WHISPER")
 end
 
 ----------------------------------------------------------------------------------------

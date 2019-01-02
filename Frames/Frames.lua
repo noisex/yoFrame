@@ -1,5 +1,17 @@
 local L, yo, N = unpack( select( 2, ...))
 
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local UnitFactionGroup, UnitIsPVPFreeForAll, UnitIsPVP, UnitIsMercenary, UnitIsGroupAssistant, UnitIsGroupLeader, IsInRaid, GetNumGroupMembers, GetRaidRosterInfo
+	= UnitFactionGroup, UnitIsPVPFreeForAll, UnitIsPVP, UnitIsMercenary, UnitIsGroupAssistant, UnitIsGroupLeader, IsInRaid, GetNumGroupMembers, GetRaidRosterInfo
+
+local UnitLevel, UnitName, UnitIsAFK, UnitGetTotalAbsorbs, UnitHealthMax, UnitHealth, UnitIsConnected, UnitIsDead, UnitIsGhost, GetRaidTargetIndex
+	= UnitLevel, UnitName, UnitIsAFK, UnitGetTotalAbsorbs, UnitHealthMax, UnitHealth, UnitIsConnected, UnitIsDead, UnitIsGhost, GetRaidTargetIndex
+
+local UnitPowerType, GetSpellPowerCost, UnitPower, UnitPowerMax, UnitClass, UnitIsDeadOrGhost, UnitIsTapDenied, UnitReaction, UnitIsUnit, UnitExists
+	= UnitPowerType, GetSpellPowerCost, UnitPower, UnitPowerMax, UnitClass, UnitIsDeadOrGhost, UnitIsTapDenied, UnitReaction, UnitIsUnit, UnitExists
+
 local errorTicker
 
 function unitPVP( f, unit)
@@ -73,7 +85,7 @@ local function enableRC( f, unit, name)
 	end
 end
 
-function flag_update( f, unit)
+function flagUpdate( f, unit)
 	if UnitIsGroupAssistant( unit) == true then
 		f.rAssist:Show()
 		enableRC( f.rAssist)
@@ -122,7 +134,7 @@ function flag_update( f, unit)
 	end
 end
 
-function nm_update( f, unit, levelUP)
+function nameUpdate( f, unit, levelUP)
 
 	local level = ""
 	if unit == "player" and (( levelUP and levelUP ~= MAX_PLAYER_LEVEL) or UnitLevel( "player") ~= MAX_PLAYER_LEVEL) then
@@ -130,7 +142,7 @@ function nm_update( f, unit, levelUP)
 		level = level .. " "
 	end
 
-	local lenght = math.floor( f:GetWidth() / 7)
+	local lenght = floor( f:GetWidth() / 7)
 	local name = utf8sub( UnitName( unit), lenght, false)
 	if name then
 		f.nameText:SetText( format( "%s%s", level, name))
@@ -142,7 +154,7 @@ function nm_update( f, unit, levelUP)
 	--print(level, unit, name)
 end
 
-function hp_update( f, unit)
+function healthUpdate( f, unit)
 	local thText
 	local absorb = UnitGetTotalAbsorbs( unit) or 0
 	local absorbText = absorb > 0 and "|cffffff00 " .. nums( absorb).. "|r" or ""
@@ -164,7 +176,7 @@ function hp_update( f, unit)
 			if healthCur == healthMax then
 				thText = nums( healthCur)
 			else
-				thText = nums( healthCur) .. absorbText .. " | " .. math.ceil( healthCur / healthMax * 100) .. "%"
+				thText = nums( healthCur) .. absorbText .. " | " .. ceil( healthCur / healthMax * 100) .. "%"
 			end
 		end
     end
@@ -182,7 +194,7 @@ function hp_update( f, unit)
 	end
 end
 
-function rmark_update( f, unit)
+function rmarkUpdate( f, unit)
 		local index = GetRaidTargetIndex( f.unit)
 		if( index) then
 			SetRaidTargetIconTexture( f.rMark, index)
@@ -192,7 +204,52 @@ function rmark_update( f, unit)
 		end
 end
 
-function pw_update( f, unit)
+local function updateFlash( self)
+	local timeElapsed = GetTime() - self.startTime
+
+	if ( timeElapsed > self.tick ) then
+		self:SetValue( 0)
+		self:SetScript("OnUpdate", nil)
+	else
+		local predPlus 	= timeElapsed / self.tick
+		local predMinus = 1 - predPlus
+		local pmin 		= UnitPower( "player")
+		local cost 		= self.predictedPowerCost - self.predictedPowerCost * predPlus
+		self:SetStatusBarColor( self.r * predMinus, self.g * predMinus, self.b * predMinus, 1)-- - predPlus)
+		self:SetValue( min( cost, self.powerMax - pmin))
+	end
+end
+
+local function powerManaCost(self, spellID)
+	if myClass == "WARLOCK" and mySpec == 3 then return end
+
+	local cost 		= 0;
+	local powerType = UnitPowerType("player")
+	local costTable = GetSpellPowerCost( spellID)
+	for _, costInfo in pairs( costTable) do
+		if (costInfo.type == powerType) then
+			cost = costInfo.cost;
+			break;
+		end
+	end
+
+	if cost > 0 then
+		self.powerFlashBar:SetMinMaxValues( self.powerBar:GetMinMaxValues())
+		--self.powerFlashBar:SetValue( cost)
+		self.powerFlashBar.tick 	=  0.5
+		self.powerFlashBar.powerMax = self.powerMax
+		self.powerFlashBar.startTime= GetTime()
+		self.powerFlashBar.predictedPowerCost = cost;
+		self.powerFlashBar:SetScript("OnUpdate", updateFlash)
+	else
+		self.powerFlashBar:SetMinMaxValues( 0 ,0)
+		self.powerFlashBar:SetValue( 0)
+		self.powerFlashBar:SetScript("OnUpdate", nil)
+	end
+
+end
+
+function powerUpdate( f, unit)
 	local uPP, uPText
 	local pmin, pmax
 
@@ -228,6 +285,7 @@ function pw_update( f, unit)
 	f.powerBar.powerText:SetText( uPText)
 	f.powerBar:SetMinMaxValues( 0, pmax)
 	f.powerBar:SetValue( pmin)
+	f.powerMax = pmax
 end
 
 function initFrame( f)
@@ -276,13 +334,19 @@ function initFrame( f)
 	f.powerBar:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
 	f.powerBar.powerText:SetTextColor( f.colr, f.colg, f.colb, 1)
 
-	nm_update( f, unit)
-	hp_update( f, unit)
-	pw_update( f, unit)
-	flag_update( f, unit)
-	rmark_update( f, unit)
+	f.powerFlashBar.r, f.powerFlashBar.g, f.powerFlashBar.b = f.colr, f.colg, f.colb
+
+	nameUpdate( f, unit)
+	healthUpdate( f, unit)
+	powerUpdate( f, unit)
+	flagUpdate( f, unit)
+	rmarkUpdate( f, unit)
 	unitPVP( f, unit)
 end
+
+hooksecurefunc( PlayerFrameManaBar.FeedbackFrame, "StartFeedbackAnim", function(self, ...)
+	print(...)
+end)
 
 ----------------------------------------------------------------------------------
 --		EVENTS
@@ -295,22 +359,22 @@ local function OnEvent(f, event, ...)
 			initFrame( f)
 			f.alive = false
 		else
-			hp_update( f, unit)
+			healthUpdate( f, unit)
 		end
-	elseif event == "UNIT_POWER" or event == "UNIT_POWER_FREQUENT" then
+	elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" then
 		if UnitIsUnit( select( 1, ...), unit) then
-			pw_update( f, unit)
+			powerUpdate( f, unit)
 		end
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		--print( "GROUP_ROSTER_UPDATE")
 		--resetRaid()
-		flag_update( f, unit)
+		flagUpdate( f, unit)
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		if UnitExists( unit) then
 			initFrame(f)
 		end
 	elseif event == "RAID_TARGET_UPDATE" then
-		rmark_update( f, unit)
+		rmarkUpdate( f, unit)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		f.rCombat:Hide()
 		--errorTicker = C_Timer.NewTimer( 2, function()
@@ -335,7 +399,7 @@ local function OnEvent(f, event, ...)
 			f.rCombat:Hide()
 		end
 	elseif event == "PLAYER_FLAGS_CHANGED" then
-		nm_update( f, unit)
+		nameUpdate( f, unit)
 	elseif event == "PLAYER_DEAD" or event == "PLAYER_ALIVE" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" or event == "PLAYER_UNGHOST" or event == "UNIT_PET" or event == "PLAYER_FOCUS_CHANGED" or event == "UNIT_NAME_UPDATE" then
 		initFrame( f)
 	elseif event == "INCOMING_RESURRECT_CHANGED" then
@@ -352,7 +416,12 @@ local function OnEvent(f, event, ...)
 		unitPVP( f, unit)
 	elseif event == "PLAYER_LEVEL_UP" then
 		local level = ...
-		nm_update( f, unit, level)
+		nameUpdate( f, unit, level)
+	elseif --event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or
+		event == "UNIT_SPELLCAST_SUCCEEDED" then
+		local _, _, spellID = ...
+		powerManaCost( f, spellID);
+
 	else
 		print( "UnknownEvent: |cffff0000" .. event .. "|r from: " .. f:GetName())
 	end
@@ -464,8 +533,19 @@ function CreateUFrame( f, unit)
 	f.powerBar:SetStatusBarTexture( texture)
 	f.powerBar:SetHeight( 4)
 	f.powerBar:SetWidth( f:GetWidth() - 10)
-	f.powerBar:SetFrameLevel( 4)
+	f.powerBar:SetFrameLevel( 5)
 	table.insert( N.statusBars, f.powerBar)
+
+	f.powerFlashBar = CreateFrame("StatusBar" , nil, f)
+	f.powerFlashBar:SetPoint("TOPLEFT", f.powerBar:GetStatusBarTexture(),"TOPRIGHT", 0, 0);
+	f.powerFlashBar:SetPoint("BOTTOMLEFT", f.powerBar:GetStatusBarTexture(),"BOTTOMRIGHT", 0, 0);
+	f.powerFlashBar:SetStatusBarTexture( texture)
+	f.powerFlashBar:SetHeight( 4)
+	f.powerFlashBar:SetWidth( f.powerBar:GetWidth())
+	f.powerFlashBar:SetFrameLevel( 4)
+	f.powerFlashBar:SetMinMaxValues(0, 0)
+	f.powerFlashBar:SetValue( 0)
+	table.insert( N.statusBars, f.powerFlashBar)
 
 	f.nameText =  f.absorbBar:CreateFontString(nil ,"OVERLAY")
 	f.nameText:SetFont( font, fontsize, "OUTLINE")
@@ -556,6 +636,11 @@ function CreateUFrame( f, unit)
 		f:RegisterEvent("PLAYER_ALIVE")
 		f:RegisterEvent("PLAYER_UNGHOST")
 
+		f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit)
+		--f:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);
+		--f:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);
+		--f:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+
 		--f:RegisterEvent("PLAYER_TOTEM_UPDATE")
 		--f:RegisterEvent("UNIT_MAXHEALTH")
 		--UNIT_THREAT_LIST_UPDATE
@@ -642,7 +727,6 @@ function CreateUFrame( f, unit)
 	RegisterUnitWatch( f)--, true)
 
 	--f.rLoot:Hide()
-
 	f.rAssist:Hide()
 	f.rLeader:Hide()
 	f:SetAlpha(1)

@@ -61,7 +61,7 @@ end
 		table.insert( N.statusBars, self[i])
 
 		if i == 1 then
-			self[i]:SetPoint('LEFT', self, 'LEFT', 0, 0)
+			self[i]:SetPoint('LEFT', self, 'LEFT', 1, 0)
 		else
 			self[i]:SetPoint('LEFT', self[i-1], 'RIGHT', 1, 0)
 		end
@@ -70,7 +70,7 @@ end
 		SetUpAnimGroup( self[i], "Fadeout", 0.2, 0.8, 0.7, true)
 	end
 
-	self:SetWidth( self:GetWidth() + self.idx - 1)
+	self:SetWidth( self:GetWidth() + self.idx + 1)
 	self.shadow:Show()
 
 	self:SetShown( isDruid( self))
@@ -135,7 +135,7 @@ local function CreateShardsBar( f)
 	holyShards:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 	holyShards:SetScript("OnEvent", OnEvent)
-	CreateStyle( holyShards, 3, 5)
+	CreateStyle( holyShards, 2, 5)
 
 	holyShards.colr, holyShards.colg, holyShards.colb = f.colr, f.colg, f.colb
 	holyShards.powerID 	= yo.pType[myClass].powerID

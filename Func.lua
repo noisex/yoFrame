@@ -43,15 +43,16 @@ function SetUpAnimGroup(object, type, ...)
 		object.anim.fadeout:SetToAlpha(0)
 		object.anim.fadeout:SetOrder(1)
 	elseif type == 'FlashLoop' then
+		local maxAlpha, minAlpha = ...
 		object.anim = object:CreateAnimationGroup("Flash")
 		object.anim.fadein = object.anim:CreateAnimation("ALPHA", "FadeIn")
-		object.anim.fadein:SetFromAlpha(0)
-		object.anim.fadein:SetToAlpha(1)
+		object.anim.fadein:SetFromAlpha( minAlpha or 0)
+		object.anim.fadein:SetToAlpha( maxAlpha or 1)
 		object.anim.fadein:SetOrder(2)
 
 		object.anim.fadeout = object.anim:CreateAnimation("ALPHA", "FadeOut")
-		object.anim.fadeout:SetFromAlpha(1)
-		object.anim.fadeout:SetToAlpha(0)
+		object.anim.fadeout:SetFromAlpha( maxAlpha or 1)
+		object.anim.fadeout:SetToAlpha( minAlpha or 0)
 		object.anim.fadeout:SetOrder(1)
 
 		object.anim:SetScript("OnFinished", function(_, requested)
@@ -298,6 +299,37 @@ function ShortValue( value)
 	else
 		return value
 	end
+end
+
+function paddString(str, paddingChar, minLength, paddRight)
+    str = tostring(str or "");
+    paddingChar = tostring(paddingChar or " ");
+    minLength = tonumber(minLength or 0);
+    while(string.len(str) < minLength) do
+        if(paddRight) then
+            str = str..paddingChar;
+        else
+            str = paddingChar..str;
+        end
+    end
+    return str;
+end
+
+function SplitToTable(str, inSplitPattern, outResults )
+  if not outResults then
+    return;
+  end
+  local theStart = 1
+  local theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+  while theSplitStart do
+    table.insert( outResults, string.sub( str, theStart, theSplitStart-1 ) )
+    theStart = theSplitEnd + 1
+    theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+  end
+  table.insert( outResults, string.sub( str, theStart ) )
+  --if(#outResults > 0) then
+  --  table.remove(outResults, 1);
+  --end
 end
 
 function utf8sub(string, i, dots)
@@ -564,13 +596,13 @@ end
 function CreateStyleSmall(f, size, level, alpha, alphaborder)
     if f.shadow then return end
 
-    local size = size or 3
+    local size = size or 1
 	local style = {
 	--bgFile = "Interface/Tooltips/UI-Tooltip-Background",
 	bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
 	--edgeFile = "Interface\\TUTORIALFRAME\\UI-TutorialFrame-CalloutGlow.blp",
 	edgeFile = "Interface\\Buttons\\WHITE8x8",
-	edgeSize = 1,
+	edgeSize = size,
 	insets = { left = size, right = size, top = size, bottom = size}};
 
     local shadow = CreateFrame("Frame", nil, f)

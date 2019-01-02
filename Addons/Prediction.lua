@@ -1,11 +1,11 @@
 local L, yo = unpack( select( 2, ...))
 
 local function OnEvent( f)
-	local uhpm = UnitHealthMax( "player") 
+	local uhpm = UnitHealthMax( "player")
 	local hpbWidt = f:GetParent():GetWidth()
 	local curXLeft = ( hpbWidt * UnitHealth( "player")) / uhpm
 	local predic = ( hpbWidt * UnitGetIncomingHeals("player") / uhpm)
-	
+
 	if predic + curXLeft >= hpbWidt then
 		predic = hpbWidt - curXLeft
 	end
@@ -18,7 +18,7 @@ local function OnEvent( f)
 		f.bg:Show()
 	end
 end
- 
+
  local function CreatePred( f)
 	local predic = CreateFrame( "Frame", nil, f)
 	predic:SetPoint('LEFT', f, 'LEFT', 0, 0)
@@ -33,7 +33,7 @@ end
 	predic:RegisterUnitEvent("UNIT_HEAL_PREDICTION", "player")
 	predic:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "player")
 	predic:SetScript("OnEvent", OnEvent)
-	
+
 	f.prediction = predic
 	f.prediction.bg:Hide()
  end
@@ -42,8 +42,8 @@ local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
-	if not yo["Addons"].Prediction then return end
-	
+	if not yo.Addons.Prediction then return end
+
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.PredictionHealth then return end
 	CreatePred( plFrame)

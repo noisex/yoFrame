@@ -816,7 +816,7 @@ logan:SetScript("OnEvent", function(self, event)
 		if yo.Raid.showMT then --and not yo.Raid.simpeRaid then
 			local heightMT = yo.Raid.heightMT
 			local widthMT = yo.Raid.widthMT
-			local offsetMT = 6
+			local offsetMT = 6 --+ heightMT * 2
 
 			local heightMTT, offsetMTT, widthMTT
 			local fullMTT = 0
