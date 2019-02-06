@@ -379,7 +379,7 @@ function InitOptions()
 			},
 
 			Bags = {
-				order = 35,	name = L["Bags"] ..L["NEW"], type = "group",
+				order = 35,	name = L["Bags"], type = "group",
 				get = function(info) return yo["Bags"][info[#info]] end,
 				set = function(info,val) Setlers( "Bags#" .. info[#info], val) end,
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
@@ -393,9 +393,9 @@ function InitOptions()
 					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full",},
 					ladyMod			= {	order = 32, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
-					showAltBags		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full",},
-					countAltBags	= {	order = 42, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
-					showGuilBank	= {	order = 44, type = "toggle",name = function(info) return tr( info[#info]) ..L["NEW"] end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
+					showAltBags		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					countAltBags	= {	order = 42, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
+					showGuilBank	= {	order = 44, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
 					ResetConfig 	= {	order = 99, type = "execute", confirm  = true, width = 1,	name = L["ResetBB"], desc = L["RESET_BB_DESC"], func = function() yo_BB = nil yo_BBCount = nil ReloadUI() end, },
 				},
 			},
@@ -460,7 +460,7 @@ function InitOptions()
 			},
 
 			NamePlates = {
-				order = 70,		name = L["NamePlates"]  .. L["NEW"], type = "group",
+				order = 70,		name = L["NamePlates"], type = "group",
 				get = function(info) return yo[info[1]][info[#info]] end,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
@@ -484,7 +484,7 @@ function InitOptions()
 					showCastName 	= { width = "full",	order = 52, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showCastTarget 	= { width = "full",	order = 55, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showPercTreat 	= { width = 1.5,	order = 60, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],},},
-					showResourses	= { width = "full",	order = 63, type = "toggle",	name = function(info) return tr( info[#info]) .. L["NEW"] end, },
+					showResourses	= { width = "full",	order = 63, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showArrows 		= { width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					blueDebuff 		= { width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					tankMode		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
@@ -567,7 +567,7 @@ function InitOptions()
 						set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end,
 					},
 
-					wim 		= {	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
+					wim 	= {	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
 					--chatBubble		= {	order = 40, type = "select", 	name = "Чат-бабл:",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},

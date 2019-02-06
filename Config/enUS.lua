@@ -274,7 +274,7 @@ L["fadingTimer"]	= "...in seconds:"
 L["wisperSound"]	= "PM sound"
 L["wisperInCombat"]	= "PM sound in combat"
 L["chatFont"]		= "Chat font"
-
+L["wim"]			= "WoW Instant Messages"
 ---------------------------------------------
 -----		CTA
 ---------------------------------------------

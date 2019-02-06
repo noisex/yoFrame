@@ -15,41 +15,16 @@ local yo_OldKey, yo_OldKey2 = nil, nil
 
 local mythicRewards = {
 --	{"Level","End","Weekly","Azer Weekly"},
-	{2,345,350,340},
-	{3,345,355,340},
-	{4,350,360,355},
-	{5,355,360,355},
-	{6,355,365,355},
-	{7,360,370,370},
-	{8,365,370,370},
-	{9,365,375,370},
-	{10,370,380,385},
+	{ 2,	375,	380},
+	{ 3,	375,	385},
+	{ 4,	380,	390},
+	{ 5,	385,	390},
+	{ 6,	385,	395},
+	{ 7,	390,	400},
+	{ 8,	395,	400},
+	{ 9,	395,	405},
+	{10,	400,	410},
 }
-
---Сундук в подземелье
-
---Ключ	Награда
---2	375
---3	375
---4	380
---5	385
---6	385
---7	390
---8	395
---9	395
---10+	400
---       	Еженедельный ларь
-
---Ключ	Награда
---2	385
---3	385
---4	390
---5	390
---6	395
---7	400
---8	400
---9	405
---10+	410
 
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 
@@ -329,9 +304,9 @@ local function Blizzard_ChallengesUI( self)
 	line4:SetAtlas("ChallengeMode-RankLineDivider", false)
 	line4:SetPoint("TOP", title2, "BOTTOM", 0, 0)
 
-	local outReward = "|cffffc300Level  Reward   Week Azer|r\n"
+	local outReward = "|cffffc300Level  Reward   Week Chest|r\n"
 	for i, v in ipairs( mythicRewards ) do
-		outReward = outReward .. format("|cffff0000%5d|r|cff00ffff%10d%10d/|cffff9900%d\n", v[1], v[2], v[3], v[4])
+		outReward = outReward .. format("|cffff0000%5d|r|cff00ffff%12d|cffff9900%15d\n", v[1], v[2], v[3])
 	end
 
 	local rewards = frame:CreateFontString(nil, "ARTWORK") --, "GameFontNormalMed1")

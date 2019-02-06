@@ -1,12 +1,12 @@
 local L, yo = unpack( select( 2, ...))
 
 local function styleIcon( region)
-	
+
 	if not region.border then
 		if region.bar then
 			local a1, p, a2, x, y = region.icon:GetPoint()
 			if a1 then
-				local sizeH = region.icon:GetHeight() 
+				local sizeH = region.icon:GetHeight()
 				local sizeW = region.icon:GetWidth()
 
 				region.border = CreateFrame( "Button", nil, region)
@@ -24,7 +24,7 @@ local function styleIcon( region)
 				region:EnableMouse(false)
 				region.icon:ClearAllPoints()
 				region.icon:SetAllPoints(region.border)
-			end	
+			end
 		else
 			region:SetHeight( region:GetHeight() * 0.83)
 			region:SetWidth( region:GetWidth() * 0.83)
@@ -47,7 +47,7 @@ local function styleIcon( region)
         			region.__WAGlowFrame:SetSize(region.width + 2, region.height + 2);
       			end
       			region.border.glow:SetVertexColor( 1, 1, 0.5, 0.5)
-      			WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);      			
+      			WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);
     		else
       			if (region.__WAGlowFrame) then
       				WeakAuras.HideOverlayGlow(region.__WAGlowFrame);
@@ -57,7 +57,7 @@ local function styleIcon( region)
     	end
 	end
 
-	
+
 	region.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)	--(0.1, 0.9, 0.1, 0.9) --(unpack( yo.tCoord))
 	region.icon.SetTexCoord = dummy
 
@@ -83,7 +83,7 @@ end
 local function checkDynamic( self)
 	for k, children in pairs( self.controlledRegions) do
 		local chiFrame = children.region
-					
+
 		if chiFrame.icon then
 			chiFrame:SetScript("OnShow", function(self, ...)
 				--print("Dynamic show: ", k)
@@ -102,7 +102,7 @@ local function registermacro( self)
 
 	if WeakAuras then
 		for k, regions in pairs( WeakAuras.regions) do
-			
+
 			local regFrame = regions.region
 
 			if regFrame.text then
@@ -132,13 +132,13 @@ local function registermacro( self)
 					regFrame.stacks:SetFont( font, t1, t2)
 				end
 			end
-			
+
 			if regFrame.icon then
 				--regFrame:HookScript("On", function( self, ...)  -- PositionChildren DoControlChildren ResetPosition
 				--	print("set SetPoint: ", k)
 				--end)
 
-				--hooksecurefunc( regFrame, "Show", function( self, ...) 
+				--hooksecurefunc( regFrame, "Show", function( self, ...)
 				--	print("set SetPoint: ", k)
 				--end)
 

@@ -306,12 +306,14 @@ yo["Chat"] = {
 	["wisperSound"]		= "Wisper",
 	["wisperInCombat"]	= true,
 	["chatFont"]		= "Interface\\Addons\\yoFrame\\Media\\qFont.ttf",
-	["wim"]				= false,
+	["wim"]				= true,
 	["winHeight"]		= 250,
 	["wimWidth"]		= 350,
 	["wimHHeight"]		= 300,
 	["wimHWidth"]		= 450,
 	["wimFigter"]		= true,
+	["wimMaxHistory"]	= 200,
+	["wimPrehistoric"]	= 15,
 }
 
 yo["healBotka"] = {

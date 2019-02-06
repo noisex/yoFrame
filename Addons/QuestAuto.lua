@@ -64,9 +64,9 @@ local autoGossipNPC = {
 }
 
 local autoGossipInstance = {
-	["party"]	= true,
-	["raid"]	= true,
-	["scenario"]= true,
+	["party"]	= false,
+	["raid"]	= false,
+	["scenario"]= false,
 }
 
 local TimerMovie

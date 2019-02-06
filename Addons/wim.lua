@@ -3,7 +3,6 @@ local L, yo, N = unpack( ns)
 local oUF = ns.oUF
 
 local minAlpha 	= 1
-local maxLine, showLine	= 200, 15
 
 CreateAnchor("yo_MoveWIM", 	"Move PM Chat", 350, 250, 0, 0, "LEFT", "LEFT")
 
@@ -231,7 +230,7 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 
 			if longArray > 0 then
 				local oldDate
-				local fromArray = longArray > showLine and longArray - showLine  + 1 or 1
+				local fromArray = longArray > self.wimPrehistoric and longArray - self.wimPrehistoric  + 1 or 1
 				for ind = fromArray, longArray do
 				--for ind, info in ipairs( logArray) do
 					local info 		= logArray[ind]
@@ -252,8 +251,8 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 				self.tabber.tabs[tabID].preHistoric = false
 			end
 
-			if longArray > maxLine then
-				for i = 1, longArray - maxLine do
+			if longArray > self.wimMaxHistory then
+				for i = 1, longArray - self.wimMaxHistory do
 					tremove( logArray, 1)
 				end
 			end
@@ -374,7 +373,6 @@ local function CreateWIM( self)
 	info:SetNormalTexture( 		"Interface\\CHATFRAME\\UI-ChatIcon-Chat-Up")
 	info:SetPushedTexture( 		"Interface\\CHATFRAME\\UI-ChatIcon-Chat-Down")
 	info:SetHighlightTexture( 	"Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-	--info:SetScript("OnClick", function() self:Hide() end)
 	info:SetScript("OnEnter", self.tooltipShow)
 	info:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.info = info
@@ -404,17 +402,17 @@ local function CreateWIM( self)
 	history:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.history = history
 
-	local ignore = CreateFrame("CheckButton", nil, self)
-	ignore:SetSize( 23, 23)
-	ignore:SetPoint("TOP", history, "BOTTOM", 0, 1)
-	ignore.text = IGNORE_QUEST
-	ignore:SetNormalTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeUnhealthy")
-	ignore:SetCheckedTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeTired")
-	ignore:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-	ignore:SetScript("OnClick", self.ignoreOnClick)
-	ignore:SetScript("OnEnter", self.ignoreOnEnter)
-	ignore:SetScript("OnLeave", self.tooltipHide)
-	self.buttons.ignore = ignore
+	--local ignore = CreateFrame("CheckButton", nil, self)
+	--ignore:SetSize( 23, 23)
+	--ignore:SetPoint("TOP", history, "BOTTOM", 0, 1)
+	--ignore.text = IGNORE_QUEST
+	--ignore:SetNormalTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeUnhealthy")
+	--ignore:SetCheckedTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeTired")
+	--ignore:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+	--ignore:SetScript("OnClick", self.ignoreOnClick)
+	--ignore:SetScript("OnEnter", self.ignoreOnEnter)
+	--ignore:SetScript("OnLeave", self.tooltipHide)
+	--self.buttons.ignore = ignore
 
 	local grabber = CreateFrame("Button", nil, self)
 	grabber:SetSize( 14, 14)
@@ -513,6 +511,9 @@ local function OnEvent( self, event, ...)
 		self:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
+
+		self.wimHMaxistory	= yo.Chat.wimMaxHistory
+		self.wimPrehistoric	= yo.Chat.wimPrehistoric
 
 		CreateWIM( self)
 		hooksecurefunc("ChatEdit_ExtractTellTarget", CF_ExtractTellTarget);
