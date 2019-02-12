@@ -6,7 +6,7 @@ local L, yo = unpack( select( 2, ...))
 ----------------------------------------------------------------------------------------
 local _, ns = ...
 local oUF = ns.oUF or oUF
- 
+
 if not oUF then return end
 
 local blank = "Interface\\AddOns\\yoFrame\\Media\\blank"
@@ -72,12 +72,12 @@ local backdrop = {
 
 local style = {
 	bgFile =  texture,
-	edgeFile = glow, 
+	edgeFile = glow,
 	edgeSize = 4,
 	insets = { left = 3, right = 3, top = 3, bottom = 3 }
 }
 
-function CreateStyleTT(f, size, level, alpha, alphaborder) 
+function CreateStyleTT(f, size, level, alpha, alphaborder)
 	if f.shadow then return end
 	local shadow = CreateFrame("Frame", nil, f)
 	shadow:SetFrameLevel(level or 0)
@@ -101,10 +101,10 @@ for _, tt in pairs(tooltips) do
 		bg:SetPoint("TOPLEFT")
 		bg:SetPoint("BOTTOMRIGHT")
 		bg:SetFrameLevel(tt:GetFrameLevel() - 1)
-		
+
 		CreateStyleTT(bg, 1)
-		
-		
+
+
 		tt.GetBackdrop = function() return backdrop end
 		tt.GetBackdropColor = function() return 0, 0, 0, 0.7 end
 		tt.GetBackdropBorderColor = function() return 0.37, 0.3, 0.3, 1 end
@@ -112,7 +112,7 @@ for _, tt in pairs(tooltips) do
 end
 
 
- 
+
 -- Hide PVP text
 PVP_ENABLED = ""
 
@@ -983,9 +983,9 @@ end
 local function UnitGear(unit)
 	if (not unit) or (UnitGUID(unit) ~= currentGUID) then return end
 
-	local class = select(2, UnitClass(unit))
+	--local class = select(2, UnitClass(unit))
 
-	local ilvl, boa, pvp = 0, 0, 0
+	local ilvl, boa, pvp, wear = 0, 0, 0, 0
 	local total, delay = 0, nil
 	local wlvl, wslot = 0, 0
 
@@ -999,91 +999,45 @@ local function UnitGear(unit)
 				if not itemLink then
 					delay = true
 				else
-					local _, _, quality, level, _, _, _, _, slot = GetItemInfo(itemLink)
+					local _, _, quality = GetItemInfo(itemLink)
 
-					if (not quality) or (not level) then
+					if (not quality) then
 						delay = true
 					else
-						if (quality == 6) and (i == 16 or i == 17) then
-							local relics = {select(4, strsplit(":", itemLink))}
-							for i = 1, 3 do
-								local relicID = relics[i] ~= "" and relics[i]
-								local relicLink = select(2, GetItemGem(itemLink, i))
-								if relicID and not relicLink then
-									delay = true
-									break
-								end
-							end
-							level = _getRealItemLevel(i, unit, itemLink, true) or level
-							if level >= 900 and ScannedGUID ~= UnitGUID('player') then
-								level = level + 15
-							end	
-						elseif quality == 7 then
-							level = _getRealItemLevel(i, unit, itemLink) or level
-							boa = boa + 1
-						else
-							level = _getRealItemLevel(i, unit, itemLink) or level
-							if IsPVPItem(itemLink) then
-								pvp = pvp + 1
-							end
-						end
+						if quality == 7 then boa = boa + 1 end
 
-						if i == 16 then
-							if (SpecDB[currentGUID] == furySpec) or (quality == 6) then
-								wlvl = level
-								wslot = slot
-							end
-							if (slot == "INVTYPE_2HWEAPON") or (slot == "INVTYPE_RANGED") or ((slot == "INVTYPE_RANGEDRIGHT") and (class == "HUNTER")) then
-								level = level * 2
-							end
-						end
+						local itemLocation = ItemLocation:CreateFromEquipmentSlot( i)
+						local item = Item:CreateFromItemLocation( itemLocation)
+						level = item:GetCurrentItemLevel() or 0
 
-						if i == 17 then
-							if SpecDB[currentGUID] == furySpec then
-								if (wslot ~= "INVTYPE_2HWEAPON") and (slot == "INVTYPE_2HWEAPON") then
-									if (level > wlvl) then
-										level = level * 2 - wlvl
-									end
-								elseif (wslot == "INVTYPE_2HWEAPON") then
-									if (level > wlvl) then
-										if (slot == "INVTYPE_2HWEAPON") then
-											level = level * 2 - wlvl * 2
-										else
-											level = level - wlvl
-										end
-									else
-										level = 0
-									end
-								end
-							elseif quality == 6 and wlvl then
-								if level > wlvl then
-									level = level * 2 - wlvl
-								else
-									level = wlvl
-								end
-							end
-						end
-
+						wear = wear + 1
 						total = total + level
+
+						if i == 16 then wlvl = level end
+
+						--print( i .. " total: " .. total, " level: " .. level)
 					end
 				end
+			elseif i == 17 and id == nil then
+				wear = wear + 1
+				total = total + wlvl
 			end
 		end
 	end
 
 	if not delay then
-		if unit == "player" and GetAverageItemLevel() > 0 then
+		if unit == "!!!!player" and GetAverageItemLevel() > 0 then
 			_, ilvl = GetAverageItemLevel()
 		else
-			ilvl = total / 16
+			ilvl = total / wear
 		end
 
 		if ilvl > 0 then ilvl = string.format("%.1f", ilvl) end
 		if boa > 0 then ilvl = ilvl.."  |cffe6cc80"..boa.." "..HEIRLOOMS end
-		if pvp > 0 then ilvl = ilvl.."  |cffa335ee"..pvp.." "..PVP end
 	else
 		ilvl = nil
 	end
+	--print( ilvl, total / wear)
 
 	return ilvl
 end
@@ -1381,15 +1335,15 @@ ShoppingTooltip2:HookScript("OnTooltipSetItem", UpdateTooltip)
 ----------------------------------------------------------------------------------------
 --local UIItemTooltipCount
 --local gender = { 'Female', 'Male' }
-----GameTooltip:HookScript("OnTooltipCleared", function(self) 
-----	UIItemTooltipCount = nil 
+----GameTooltip:HookScript("OnTooltipCleared", function(self)
+----	UIItemTooltipCount = nil
 ----	--print("WE EHEREEEEEE")
 ----end)
 
 --local function attachItemTooltip( self)
 --	local _, link = self:GetItem()
 --	if true then --link ~= UIItemTooltipCount then
---		local numTotal = GetItemCount(link, true)		
+--		local numTotal = GetItemCount(link, true)
 
 --		local oneDate
 --		if yo.Bags.showAltBags and yo.Bags.countAltBags then
@@ -1407,7 +1361,7 @@ ShoppingTooltip2:HookScript("OnTooltipSetItem", UpdateTooltip)
 --		end
 
 --		if numTotal > 1 then
---			local item_count, itemBank = "", ""		
+--			local item_count, itemBank = "", ""
 --			local numBag = GetItemCount(link, false)
 --			local numBank = numTotal - numBag
 --			local cY, cW = "|cffffff00", "|cffffffff"
@@ -1415,20 +1369,20 @@ ShoppingTooltip2:HookScript("OnTooltipSetItem", UpdateTooltip)
 --			if numBank and numBank > 0 then
 --				itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
 --			end
-			
+
 --			--item_count = cY .. myName ..": ".. cW ..numTotal .. itemBank
 --			if not oneDate then
 --				self:AddLine(" ")
 --				oneDate = true
 --			end
 --			self:AddDoubleLine( myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
---		end			
+--		end
 --		self:AddLine(" ")
 --		--UIItemTooltipCount = link
---	end	
+--	end
 --end
 
---GameTooltip:HookScript("OnTooltipSetItem", function(self)	
+--GameTooltip:HookScript("OnTooltipSetItem", function(self)
 
 --end)
 
