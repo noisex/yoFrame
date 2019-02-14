@@ -528,7 +528,7 @@ local Shared = function(self, unit)
 
    	if enableBorder then
 		table.insert(self.__elements, OnChangeTarget)
-		self:RegisterEvent('PLAYER_TARGET_CHANGED', OnChangeTarget)
+		self:RegisterEvent('PLAYER_TARGET_CHANGED', OnChangeTarget, true)
 		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", OnChangeTarget)
 		self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", OnChangeTarget)
 	end
