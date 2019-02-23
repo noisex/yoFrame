@@ -9,13 +9,32 @@ local L, yo, N = unpack( ns)
 --L_GUI_CHAT_SKIN_BUBBLE = "Стилизация облачков чата"
 
 --L_GUI_MAP_EXPLORE = "Отслеживать на карте 'Первооткрыватель' и 'Хранитель мудрости'"
-	ClassNameplateManaBar = dummy
-	NamePlateDriverMixin = dummy
 	--PixelUtil.SetWidth = dummy
 	--PixelUtil.SetHeight = dummy
 	PixelUtil.GetNearestPixelSize = function(...)
-		--print(...)
-		return 1
+		local uiUnitSize, layoutScale, minPixels  = ...
+		--print( type( uiUnitSize), type( layoutScale), type( minPixels), uiUnitSize, layoutScale, minPixels)
+
+		local uiUnitFactor = PixelUtil.GetPixelToUIUnitFactor();
+		local numPixels = tonumber( Round((uiUnitSize * layoutScale) / uiUnitFactor))
+
+		--print( type( uiUnitSize), type( layoutScale), numPixels, uiUnitFactor)
+
+		local rawNumPixels = numPixels;
+		if minPixels then
+			if uiUnitSize < 0.0 then
+				if numPixels > -minPixels then
+					numPixels = -minPixels;
+				end
+			else
+				if numPixels < minPixels then
+					numPixels = minPixels;
+				end
+			end
+		end
+
+		return numPixels * uiUnitFactor / layoutScale;
+		--return 1
 	end
 
 myClass 	= select( 2, UnitClass( "player"))

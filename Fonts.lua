@@ -12,8 +12,9 @@ function ChangeSystemFonts( fontsSize)
 				local ft, fs, fd = var:GetFont()
 				if ft and fs then
 					--ind = ind +1
-					--if ind > 690 and ind < 695 then
-						--print( fontsSize, sysfontsize, fs, font)
+					--if ind > 88 and ind < 92 then
+						if fs > 120 then fs = 12 end
+						--print( i, ft, fs, fd)
 						var:SetFont( font, max(( fontsSize or sysfontsize), fs-2) , fd)
 					--end
 				end
@@ -21,6 +22,7 @@ function ChangeSystemFonts( fontsSize)
 		end
 	end
 	--print(ind, rind)
+
 	_G["ChatBubbleFont"]:SetFont( font, 12, "OUTLINE")
 
 	_G["ChatFontNormal"]:SetFont( font, fontsize)

@@ -51,53 +51,11 @@ local function loginEvent(self, ...)
 	else
 		SetCVar("scriptErrors", 0)
 	end
-	--Рекомендуем поставить значение чуть выше чем Ваш пинг, например, если пинг 60 — поставьте /console SpellQueueWindow 100
-	SetCVar("nameplateOccludedAlphaMult",1)
-	SetCVar("nameplateMinScale",1)
-    --SetCVar("nameplateMaxScale",1)
-	SetCVar("nameplateShowFriendlyNPCs", 0)
-
-	SetCVar("nameplateOverlapH",  0.8) 	--default is 0.8
-	SetCVar("nameplateOverlapV",  2) 	--default is 1.5
-	SetCVar("nameplateTargetRadialPosition", 1)
-	SetCVar("nameplateMotion", 1)
-
-	SetCVar("nameplateMaxAlpha", 0.7)
-	SetCVar("nameplateMinAlpha", 0.2)
-	SetCVar("nameplateMaxAlphaDistance", 100)
-	SetCVar("nameplateMinAlphaDistance", -30)
-
-	SetCVar("nameplateSelectedAlpha", 1)
-	SetCVar("nameplateSelectedScale", 1.15)
-
-
-	SetCVar( "nameplateOtherTopInset", 0.1)
-	SetCVar( "nameplateOtherBottomInset", -1)
-
-	SetCVar( "nameplateLargeTopInset", 0.1)
-	SetCVar( "nameplateLargeBottomInset", -1)
-
-	SetCVar( "nameplateSelfTopInset", 0.1)
-	SetCVar( "nameplateSelfBottomInset", -1)
-
-	--["nameplateMaxDistance"] = { prettyName = "Nameplate Distance", description = "The max distance to show nameplates.", type = "number" },
-	--["nameplateTargetBehindMaxDistance"] = { prettyName = "Nameplate Target Behind Distance", description = "The max distance to show the target nameplate when the target is behind the camera.", type = "number" },
-
-	--["nameplateMinAlphaDistance"] = { prettyName = "Nameplate Min Alpha Distance", description = "The distance from the max distance that nameplates will reach their minimum alpha.", type = "number" },
-	--["nameplateMaxAlphaDistance"] = { prettyName = "Nameplate Max Alpha Distance", description = "The distance from the camera that nameplates will reach their maximum alpha.", type = "number" },
-
-	--["nameplateOtherBottomInset"] = { prettyName = "Nameplate Other Bottom Inset", description = "The inset from the bottom (in screen percent) that the non-self nameplates are clamped to.", type = "number" },
-	--["nameplateOtherTopInset"] = { prettyName = "Nameplate Other Top Inset", description = "The inset from the top (in screen percent) that the non-self nameplates are clamped to.", type = "number" },
-	--["nameplateLargeBottomInset"] = { prettyName = "Nameplate Large Bottom Inset", description = "The inset from the bottom (in screen percent) that large nameplates are clamped to.", type = "number" },
-	--["nameplateLargeTopInset"] = { prettyName = "Nameplate Large Top Inset", description = "The inset from the top (in screen percent) that large nameplates are clamped to.", type = "number" },
-
-	--["nameplateTargetRadialPosition"] = { prettyName = nil, description = "When target is off screen, position its nameplate radially around sides and bottom", type = "number"},
 
 	SetCVar("alwaysShowActionBars", 1)
 
 	SetCVar("floatingCombatTextCombatHealing", 0)
 	SetCVar("floatingCombatTextCombatDamage", 0)
-	SetCVar("ShowClassColorInNameplate", 1)
 	SetCVar("buffDurations",1)
 
 	SetCVar("screenshotQuality", 10)
@@ -111,17 +69,6 @@ local function loginEvent(self, ...)
 	SetCVar("TargetPriorityCombatLockContextualRelaxation", 0)
 	SetCVar("countdownForCooldowns", 0)
 	SetCVar("showTargetOfTarget", 1)
-
-	local hiddenOptions = {
-		["showTargetOfTarget"] = 				{ description = OPTION_TOOLTIP_SHOW_TARGET_OF_TARGET, type = "boolean" },
-		["TargetNearestUseNew"] = 				{ description = "Use 7.2 'nearest target' functionality", type = "boolean" },
-		--["TargetPriorityAllowAnyOnScreen"] = 	{ description = "If set, and no 100% correct target is available, allow selecting any valid in-range target (2 = also out-of-range)", type = "boolean" },
-		["TargetPriorityCombatLock"] = 			{ description = "1=Lock to in-combat targets when starting from an in-combat target. 2=Further restrict to in-combat with player.", type = "boolean" },
-		["TargetPriorityCombatLockHighlight"] = { description = "1=Lock to in-combat targets when starting from an in-combat target. 2=Further restrict to in-combat with player. (while doing hold-to-target)", type = "boolean" },
-		--["TargetPriorityHoldHighlightDelay"] = 	{ description = "Delay in Milliseconds before priority target highlight starts when holding the button", type = "number" },
-		--["TargetPriorityIncludeBehind"] = 		{ description = "If set, include target's behind the player in priority target selection", type = "boolean" },
-		["TargetPriorityCombatLockContextualRelaxation"] = { description = "1=Enables relaxation of combat lock based on context (eg. no in-combat target infront)", type = "number" },
-	}
 end
 
 local function enterEvent( self)

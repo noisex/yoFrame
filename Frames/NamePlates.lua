@@ -1270,6 +1270,38 @@ local function NamePlates_OnEvent(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if yo.NamePlates.enable then
 
+			ClassNameplateManaBar = dummy
+			NamePlateDriverMixin = dummy
+
+			SetCVar("nameplateOccludedAlphaMult",1)
+			SetCVar("nameplateMinScale",1)
+    		--SetCVar("nameplateMaxScale",1)
+			SetCVar("nameplateShowFriendlyNPCs", 0)
+
+			SetCVar("nameplateOverlapH",  0.8) 	--default is 0.8
+			SetCVar("nameplateOverlapV",  2) 	--default is 1.5
+			SetCVar("nameplateTargetRadialPosition", 1)
+			SetCVar("nameplateMotion", 1)
+
+			SetCVar("nameplateMaxAlpha", 0.7)
+			SetCVar("nameplateMinAlpha", 0.2)
+			SetCVar("nameplateMaxAlphaDistance", 100)
+			SetCVar("nameplateMinAlphaDistance", -30)
+
+			SetCVar("nameplateSelectedAlpha", 1)
+			SetCVar("nameplateSelectedScale", 1.15)
+
+			SetCVar( "nameplateOtherTopInset", 0.1)
+			SetCVar( "nameplateOtherBottomInset", -1)
+
+			SetCVar( "nameplateLargeTopInset", 0.1)
+			SetCVar( "nameplateLargeBottomInset", -1)
+
+			SetCVar( "nameplateSelfTopInset", 0.1)
+			SetCVar( "nameplateSelfBottomInset", -1)
+
+			SetCVar("ShowClassColorInNameplate", 1)
+
 			treatColor = {
 				[0]			={	strsplit(",", yo.NamePlates.c0)},
 				[1]			={	strsplit(",", yo.NamePlates.c1)},
