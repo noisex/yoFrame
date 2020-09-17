@@ -1,6 +1,6 @@
 local L, yo, N = unpack( select( 2, ...))
 
-local logon = CreateFrame("Button", "Butsu", UIParent)
+local logon = CreateFrame("Button", "Butsu", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 local title = logon:CreateFontString(nil, "OVERLAY")
 
 local iconSize = 30
@@ -72,6 +72,9 @@ media = {
 dummy = function() end
 
 CreateBD = function(f, a)
+	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+	if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end
+
 	f:SetBackdrop({
 		bgFile = media.backdrop,
 		edgeFile = media.glow,
@@ -176,7 +179,8 @@ CreateStyle(logon, 2)
 
 logon:SetWidth(200)
 logon:SetHeight(60)
-logon:SetBackdropColor(.05,.05,.05,0)
+--logon:SetBackdropColor(.05,.05,.05,0)
+--logon:Hide()
 
 --logon:SetClampedToScreen(true)
 --logon:SetClampRectInsets(0, 0, 14, 0)
@@ -286,7 +290,7 @@ logon.LOOT_OPENED = function(self, event, autoloot)
 end
 
 logon.LOOT_SLOT_CLEARED = function(self, event, slot)
-	if(not self:IsShown()) then return end
+	if(not self:IsShown()) and logon.slots[slot] then return end
 
 	logon.slots[slot]:Hide()
 	anchorSlots(self)
@@ -334,7 +338,6 @@ logon:RegisterEvent"OPEN_MASTER_LOOT_LIST"
 logon:RegisterEvent"UPDATE_MASTER_LOOT_LIST"
 logon:RegisterEvent"ADDON_LOADED"
 logon:Hide()
-
 -- Fuzz
 LootFrame:UnregisterAllEvents()
 --table.insert(UISpecialFrames, "Butsu")

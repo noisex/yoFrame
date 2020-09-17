@@ -10,25 +10,25 @@ local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 LeftInfoPanel.systemText = Text
 
 local colorme = string.format("%02x%02x%02x", 1*255, 1*255, 1*255)
-	
+
 local function formatMem(memory, color)
 	if color then
 		statColor = { "|cff"..colorme, "|r" }
 	else
 		statColor = { "", "" }
 	end
-		
+
 	local mult = 10^1
 	if memory > 999 then
 		local mem = floor((memory/1024) * mult + 0.5) / mult
-		if mem % 1 == 0 then
+		if mem  %1 == 0 then
 			return mem..string.format(".0 %sMb%s", unpack(statColor))
 		else
 			return mem..string.format(" %sMb%s", unpack(statColor))
 		end
 	else
 		local mem = floor(memory * mult + 0.5) / mult
-			if mem % 1 == 0 then
+			if mem  %1 == 0 then
 				return mem..string.format(".0 %sKb%s", unpack(statColor))
 			else
 				return mem..string.format(" %sKb%s", unpack(statColor))
@@ -47,7 +47,7 @@ local function RefreshMem(self)
 		Memory[i] = { select(2, GetAddOnInfo(i)), Mem, IsAddOnLoaded(i) }
 		Total = Total + Mem
 	end
-		
+
 	MEMORY_TEXT = formatMem(Total, true)
 	table.sort(Memory, function(a, b)
 		if a and b then
@@ -56,7 +56,7 @@ local function RefreshMem(self)
 	end)
 	self:SetAllPoints(Text)
 end
-	
+
 local int, int2 = 10, 1
 
 local function Update(self, t)
@@ -76,7 +76,7 @@ local function Update(self, t)
 	int2 = int2 - t
 	local fpscolor
 	local latencycolor
-		
+
 	if int < 0 then
 		RefreshMem(self)
 		int = 10
@@ -106,7 +106,7 @@ local Stat = CreateFrame("Frame")
 	Stat:SetFrameLevel(3)
 	Stat:EnableMouse(true)
 	Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
+
 	Stat:SetScript("OnMouseDown", function () collectgarbage("collect") Update(Stat, 20) end)
 	Stat:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
@@ -128,7 +128,7 @@ local Stat = CreateFrame("Frame")
 		end
 		GameTooltip:Show()
 	end)
-	
+
 	Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
 	Stat:SetScript("OnEvent", function(self, ...)
 		Text:SetFont( font, ( fontsize or 10), "OVERLAY")

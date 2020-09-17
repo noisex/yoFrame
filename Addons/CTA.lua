@@ -5,7 +5,7 @@ local yo_CTA = {}
 local tRole, hRole, dRole, timer
 
 local function isRaidFinderDungeonDisplayable(id)
-	
+
 	local _, _, isKilled = GetLFGDungeonEncounterInfo( id, GetLFGDungeonNumEncounters( id))
 	if yo.CTA.hideLast and isKilled then
 		return false
@@ -21,12 +21,12 @@ local function CheckLFGQueueMode( self, id, modeLFG)
 	local modeLFG = modeFLFG or self.mode
 	local cate = GetLFGCategoryForID( id);
 	local mode, subMode = GetLFGMode( cate or modeLFG, id)
-	
+
 	if ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
 		self.name:SetTextColor(0, 1, 0, 1)
 	else
 		self.name:SetTextColor( .7, .7, .7, 1)
-	end	
+	end
 	return mode, ( cate or modeLFG)
 end
 
@@ -73,16 +73,16 @@ local function CreateLFRFrame( self)
 	frame.expand:SetPoint("RIGHT", frame.close, "LEFT", -5, 0)
 	frame.expand:SetFrameLevel(frame:GetFrameLevel() + 10)
 	frame.expand:SetWidth(  10)
-	frame.expand:SetNormalTexture("Interface\\Addons\\yoFrame\\Media\\hot_flat_16_16")	
+	frame.expand:SetNormalTexture("Interface\\Addons\\yoFrame\\Media\\hot_flat_16_16")
 	frame.expand:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
-	if yo.CTA.expand then		
+	if yo.CTA.expand then
 		frame.expand:SetHeight( 10)
 	else
 		frame.expand:SetHeight( 5)
 	end
 	frame.expand:EnableMouse(true)
 
-	frame.expand:SetScript("OnEnter", function(self, ...)		
+	frame.expand:SetScript("OnEnter", function(self, ...)
 		self:GetNormalTexture():SetVertexColor( 1, 1, 0, 1)
 		GameTooltip:ClearLines()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 10)
@@ -90,7 +90,7 @@ local function CreateLFRFrame( self)
 			GameTooltip:SetText( L["Expand"])
 		else
 			GameTooltip:SetText( L["Collapse"])
-		end		
+		end
 		GameTooltip:Show()
 	end)
 
@@ -119,7 +119,7 @@ local function CreateLFRFrame( self)
 		frame.nosound:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
 	else
 		frame.nosound:GetNormalTexture():SetVertexColor( 0, 1, 0, 1)
-	end		
+	end
 	frame.nosound:EnableMouse(true)
 
 	frame.nosound:SetScript("OnClick", function(self, ...)
@@ -128,7 +128,7 @@ local function CreateLFRFrame( self)
 			self:GetNormalTexture():SetVertexColor( .5, .5, .5, 1)
 		else
 			self:GetNormalTexture():SetVertexColor( 0, 1, 0, 1)
-		end		
+		end
 	end)
 
 	frame.nosound:SetScript("OnEnter", function(self, ...)
@@ -171,16 +171,16 @@ local function CreateLFRFrame( self)
 		GameTooltip:Hide()
 	end)
 
-	frame:SetScript("OnDragStart", function(self) 
-		self:StartMoving() 
+	frame:SetScript("OnDragStart", function(self)
+		self:StartMoving()
 	end)
 
-	frame:SetScript("OnDragStop", function(self) 
-		self:StopMovingOrSizing() 
+	frame:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
 		yo_MoveCTA:ClearAllPoints()
 		yo_MoveCTA:SetPoint( self:GetPoint())
 		SetAnchPosition( yo_MoveCTA, self)
-	end) 
+	end)
 	self.LFRFrame = frame
 end
 
@@ -193,8 +193,8 @@ local function CreateLFRStrings( parent, id)
 	button:EnableMouse(true)
 	button:SetBackdrop({
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-        edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1, 
-		insets = {left = 1, right = 1, top = 1, bottom = 1} 
+        edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1,
+		insets = {left = 1, right = 1, top = 1, bottom = 1}
 	})
 	button:SetBackdropBorderColor(.15,.15,.15, 0)
 	button:SetBackdropColor(.15,.15,.15, 0)
@@ -239,10 +239,10 @@ local function CreateLFRStrings( parent, id)
 		else
 			ClearAllLFGDungeons(self.mode)
 			if not yo.CTA.setN then
-				SetLFGRoles( false, yo.CTA.setT, yo.CTA.setH, yo.CTA.setD)	
+				SetLFGRoles( false, yo.CTA.setT, yo.CTA.setH, yo.CTA.setD)
 			end
 			SetLFGDungeon( self.mode, self.id)
-			JoinLFG(self.mode)	
+			JoinLFG(self.mode)
 			self.name:SetTextColor(0, 1, 0, 1)
 		end
 	end)
@@ -253,10 +253,10 @@ local function CreateLFRStrings( parent, id)
 		GameTooltip:SetText( GetLFGDungeonInfo(self.id))
 		for index = 1,  GetLFGDungeonNumEncounters( self.id) do
 				local bossName, _, isKilled = GetLFGDungeonEncounterInfo( self.id, index)
-				GameTooltip:AddDoubleLine( " ", (isKilled and "|cffff0000" or "|cff00991a") .. bossName)			
+				GameTooltip:AddDoubleLine( " ", (isKilled and "|cffff0000" or "|cff00991a") .. bossName)
 		end
 		local _, tRealRole, hRealRole, dRealRole = GetLFGRoles()
-		local realRoles = ( tRealRole and INLINE_TANK_ICON or "") .. ( hRealRole and INLINE_HEALER_ICON or "") .. ( dRealRole and INLINE_DAMAGER_ICON or "") 
+		local realRoles = ( tRealRole and INLINE_TANK_ICON or "") .. ( hRealRole and INLINE_HEALER_ICON or "") .. ( dRealRole and INLINE_DAMAGER_ICON or "")
 		GameTooltip:AddLine( " ")
 		GameTooltip:AddDoubleLine( YOUR_ROLE, realRoles)
 
@@ -272,13 +272,13 @@ local function CreateLFRStrings( parent, id)
 					dpsNeeds 	= dpsNeeds > 0 and 		( " |cffff1100" .. INLINE_DAMAGER_ICON .. ": " .. dpsNeeds) or ""
 
 					GameTooltip:AddDoubleLine( FRIENDS_FRIENDS_WAITING, tankNeeds .. healerNeeds .. dpsNeeds)
-					
+
 					local timeWaite =  SecondsToClock( GetTime() - queuedTime)
 					GameTooltip:AddLine( " ")
 					GameTooltip:AddDoubleLine( QUEUED_STATUS_QUEUED, timeWaite)
-					GameTooltip:AddDoubleLine( VOICE_CHAT_AWAITING_MEMBER_NAME,  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")					
+					GameTooltip:AddDoubleLine( VOICE_CHAT_AWAITING_MEMBER_NAME,  SecondsToClock( myWait) .. " ( " ..  SecondsToClock( averageWait) .. ")")
 				end
-			end		
+			end
 		end
 
 		GameTooltip:Show()
@@ -291,7 +291,7 @@ local function CreateLFRStrings( parent, id)
 
 		CheckLFGQueueMode( self)
 		GameTooltip:Hide()
-	end)	
+	end)
 
 	return button
 end
@@ -323,11 +323,11 @@ function UpdateStrings(self)
 	else
 		self.LFRFrame:SetHeight( 14)
 		for index = 1, #self.LFRFrame do self.LFRFrame[index]:Hide() end
-	end	
+	end
 end
 
 local function CheckLFR( self, ...)
-	RequestLFDPlayerLockInfo();		
+	RequestLFDPlayerLockInfo();
 
 	local _, tRealRole, hRealRole, dRealRole = GetLFGRoles()
 	if yo.CTA.nRole then
@@ -339,17 +339,17 @@ local function CheckLFR( self, ...)
 		hRole	= yo.CTA.hRole
 		dRole	= yo.CTA.dRole
 	end
-	
+
 	self.LFRFrame.tank:SetShown( tRole )
 	self.LFRFrame.heal:SetShown( hRole)
-	self.LFRFrame.dd:SetShown( dRole)	
+	self.LFRFrame.dd:SetShown( dRole)
 
    	local newDate, update = false, false
    	local index = 0
    	local id = 1671
 
-   	if yo.CTA.heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then		
-		local checkTank, checkHeal, checkDD	
+   	if yo.CTA.heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then
+		local checkTank, checkHeal, checkDD
 		if not yo_CTA[id] then yo_CTA[id] = {} end
 		yo_CTA[id]["name"] = CALENDAR_TYPE_HEROIC_DUNGEON
 		yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFD
@@ -359,21 +359,21 @@ local function CheckLFR( self, ...)
 			local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, shortageIndex)
 			if eligible and itemCount > 0 then
 
-				if tRole and forTank then 
+				if tRole and forTank then
 					checkTank = true
-					index = index + 1					
+					index = index + 1
 				end
 
-				if hRole and forHealer then 
+				if hRole and forHealer then
 					checkHeal = true
-					index = index + 1 
+					index = index + 1
 				end
 
-				if dRole and forDamage then 
+				if dRole and forDamage then
 					checkDD = true
-					index = index + 1 			
-				end	
-			end	
+					index = index + 1
+				end
+			end
 		end
 
 		if checkTank and checkTank ~= yo_CTA[id]["tank"] then newDate = true end
@@ -386,39 +386,39 @@ local function CheckLFR( self, ...)
 		for i = 1, GetNumRFDungeons() do
 			local id, name,  _, _, level = GetRFDungeonInfo(i)
 			if isRaidFinderDungeonDisplayable(id) then
-				local checkTank, checkHeal, checkDD	
+				local checkTank, checkHeal, checkDD
 				if not yo_CTA[id] then yo_CTA[id] = {} end
-				yo_CTA[id]["icon"] = select( 11, GetLFGDungeonInfo(id)) 
+				yo_CTA[id]["icon"] = select( 11, GetLFGDungeonInfo(id))
 				yo_CTA[id]["name"] = name
 				yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFR
 
 				--for shortageIndex = 1, 1 do --LFG_ROLE_NUM_SHORTAGE_TYPES do
 				local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, 1)
 				if eligible and itemCount > 0 then
-					if tRole and forTank then 
+					if tRole and forTank then
 						checkTank = true
-						index = index + 1					
+						index = index + 1
 					end
 
-					if hRole and forHealer then 
+					if hRole and forHealer then
 						checkHeal = true
-						index = index + 1 
+						index = index + 1
 					end
 
-					if dRole and forDamage then 
+					if dRole and forDamage then
 						checkDD = true
-						index = index + 1 			
-					end	
-				end      		
-				--end	
+						index = index + 1
+					end
+				end
+				--end
 
 				if checkTank and checkTank ~= yo_CTA[id]["tank"] then newDate = true end
 				if checkHeal and checkHeal ~= yo_CTA[id]["heal"] then newDate = true end
 				if checkDD   and checkDD   ~= yo_CTA[id]["dd"]   then newDate = true end
-				yo_CTA[id]["tank"] = true and checkTank or false 
-				yo_CTA[id]["heal"] = true and checkHeal or false 
-				yo_CTA[id]["dd"]   = true and checkDD or false 
-			end	
+				yo_CTA[id]["tank"] = true and checkTank or false
+				yo_CTA[id]["heal"] = true and checkHeal or false
+				yo_CTA[id]["dd"]   = true and checkDD or false
+			end
 		end
 	end
 
@@ -432,7 +432,7 @@ local function CheckLFR( self, ...)
 		PlaySoundFile( LSM:Fetch( "sound", yo.CTA.sound))
    end
 
-	--if update then 
+	--if update then
 	UpdateStrings( self)
 	--end
 

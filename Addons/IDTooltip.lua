@@ -23,14 +23,14 @@ local types = {
 
 local function addLine(tooltip, id, type)
 	if not yo.Addons.IDInToolTip then return end
-	
+
 	local found = false
 
 	-- Check if we already added to this tooltip. Happens on the talent frame
 	for i = 1, 15 do
 		local frame = _G[tooltip:GetName() .. "TextLeft" .. i]
 		local text
-		
+
 		if frame then text = frame:GetText() end
 		if text and text == type then found = true break end
 	end
@@ -162,7 +162,7 @@ local function attachItemTooltip(self)
     ----------------------------------------------------------------
     ---   ITEM COUNT
     ----------------------------------------------------------------
-    local numTotal = GetItemCount(id, true) 
+    local numTotal = GetItemCount(id, true)
     local oneDate
 
     if yo.Bags.showAltBags and yo.Bags.countAltBags then
@@ -179,22 +179,22 @@ local function attachItemTooltip(self)
     end
 
     if numTotal > 1 then
-      local item_count, itemBank = "", ""   
+      local item_count, itemBank = "", ""
       local numBag = GetItemCount(id, false)
-      local numBank = numTotal - numBag      
+      local numBank = numTotal - numBag
 
       if numBank and numBank > 0 then
         itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
       end
-      
+
       if not oneDate then
         self:AddLine(" ")
         oneDate = true
       end
       self:AddDoubleLine( myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
-    end     
+    end
     self:AddLine(" ")
-    
+
     ----------------------------------------------------------------
     ---   ITEM COUNT ( END)
     ----------------------------------------------------------------
@@ -289,7 +289,7 @@ end)
 
 -- Currencies
 hooksecurefunc(GameTooltip, "SetCurrencyToken", function(self, index)
-  local id = tonumber(string.match(GetCurrencyListLink(index),"currency:(%d+)"))
+  local id = tonumber(string.match( C_CurrencyInfo.GetCurrencyListLink(index),"currency:(%d+)"))
   if id then addLine(self, id, types.currency) end
 end)
 
@@ -318,5 +318,5 @@ do
 end
 
 hooksecurefunc("TaskPOI_OnEnter", function(self)
-  if self and self.questID then addLine(WorldMapTooltip, self.questID, types.quest) end
+  if self and self.questID then addLine(GameTooltip, self.questID, types.quest) end
 end)

@@ -12,7 +12,7 @@ WatchFrameLevelFormat = "[%d%s%s] %s"
 --	[62] = "r",			--Raid
 --	[81] = "d",			--Dungeon
 --	[83] = "L", 		--Legendary
---	[85] = "h",			--Heroic 
+--	[85] = "h",			--Heroic
 --	[98] = "s", 		--Scenario QUEST_TYPE_SCENARIO
 --	[102] = "a", 		-- Account
 --}
@@ -22,7 +22,7 @@ local function ShowQuestLevelInLog()
 	for button in QuestMapFrame.QuestsFrame.titleFramePool:EnumerateActive() do
 		if (button and button.questLogIndex) then
 			local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID,
-				  startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle(button.questLogIndex)
+				  startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = C_QuestLog.GetTitleForLogIndex( button.questLogIndex) --GetQuestLogTitle(button.questLogIndex)
 			local text = button.Text:GetText()
 			if title and text and (not string.find(text, "^%[.*%].*")) then
 				local prevHeight = button:GetHeight() - button.Text:GetHeight()
@@ -38,48 +38,49 @@ end
 
 local function ShowQuestLevelInWatchFrame()
 	local tracker = ObjectiveTrackerFrame
-	if ( not tracker.initialized )then
-		return
-	end
+	if ( not tracker.initialized )then 	return end
 
 	for i = 1, #tracker.MODULES do
-		for id,block in pairs( tracker.MODULES[i].Header.module.usedBlocks) do
-			if block.id and block.HeaderText and block.HeaderText:GetText() and (not string.find(block.HeaderText:GetText(), "^%[.*%].*")) then
-				local questLogIndex = GetQuestLogIndexByID(block.id)
-				local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID,
-					  startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle(questLogIndex)
-				-- update calls are async and data could not be (yet or already) exist in log
-				if ( questLogIndex ~= 0 and title and title ~= "" ) then 	  
-					local questTypeIndex = GetQuestLogQuestType(questLogIndex)
-					local tagString = QuestTypesIndex[questTypeIndex] or ""
-					local dailyMod = (frequency == LE_QUEST_FREQUENCY_DAILY or frequency == LE_QUEST_FREQUENCY_WEEKLY) and "|cff0080ff\*!*|r" or ""
+		local xxx = tracker.MODULES[i].usedBlocks.ObjectiveTrackerBlockTemplate
+		if xxx then
+			for i, block in pairs(xxx) do
+				if block.id and block.HeaderText and block.HeaderText:GetText() and (not string.find(block.HeaderText:GetText(), "^%[.*%].*")) then
+					--print( i, block, block.id, block.HeaderText, block.HeaderText:GetText())
+					local questLogIndex = C_QuestLog.GetLogIndexForQuestID( block.id)
+					local questInfo = C_QuestLog.GetInfo( questLogIndex)
 
-					--resizing the block if new line requires more spaces.
-					local h = block.height - block.HeaderText:GetHeight()
-					block.HeaderText:SetText( WatchFrameLevelFormat:format(level, tagString, dailyMod, title))
-					block.height = h + block.HeaderText:GetHeight()
-					block:SetHeight(block.height)
+					if ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then
+						local questTypeIndex = GetQuestLogQuestType(questLogIndex)
+						local tagString = QuestTypesIndex[questTypeIndex] or ""
+						local dailyMod = ( questInfo.frequency == 1 or questInfo.frequency == 2) and "|cff0080ff*!*|r" or ""
 
-					-- Icon Quest Item resize
-					if block.itemButton then
-						block.itemButton:SetSize( 30, 30)
-						if block.itemButton.SetPushedTexture and not block.itemButton.pushed then
-							local pushed = block.itemButton:CreateTexture("frame", nil, self)
-							pushed:SetTexture( texture)
-							pushed:SetVertexColor( 0, 1, 1, 1)
-							pushed:SetPoint("TOPLEFT", 2, -2)
-							pushed:SetPoint("BOTTOMRIGHT", -2, 2)
-							pushed:SetAlpha( 0.7)
-							block.itemButton.pushed = pushed
-							block.itemButton:SetPushedTexture(pushed)
+						--resizing the block if new line requires more spaces.
+						local h = block.height - block.HeaderText:GetHeight()
+						block.HeaderText:SetText( WatchFrameLevelFormat:format( questInfo.level, tagString, dailyMod, questInfo.title))
+						block.height = h + block.HeaderText:GetHeight()
+						block:SetHeight(block.height)
+
+						-- Icon Quest Item resize
+						if block.itemButton then
+							block.itemButton:SetSize( 30, 30)
+							if block.itemButton.SetPushedTexture and not block.itemButton.pushed then
+								local pushed = block.itemButton:CreateTexture("frame", nil, self)
+								pushed:SetTexture( texture)
+								pushed:SetVertexColor( 0, 1, 1, 1)
+								pushed:SetPoint("TOPLEFT", 2, -2)
+								pushed:SetPoint("BOTTOMRIGHT", -2, 2)
+								pushed:SetAlpha( 0.7)
+								block.itemButton.pushed = pushed
+								block.itemButton:SetPushedTexture(pushed)
+							end
+
+							block.itemButton.NormalTexture = nil
+							block.itemButton:SetNormalTexture( nil)
+							block.itemButton.icon:SetTexCoord(unpack( yo.tCoord))
+							CreateStyle( block.itemButton, 4, 0, 0)
+			--				--block.itemButton.shadow:SetBackdropColor( 0, 0, 0, 0)
+							block.itemButton.shadow:SetBackdropBorderColor( 1, 0.7, 0, 1)
 						end
-
-						block.itemButton.NormalTexture = nil
-						block.itemButton:SetNormalTexture( nil)
-						block.itemButton.icon:SetTexCoord(unpack( yo.tCoord))
-						CreateStyle( block.itemButton, 4, 0, 0)
-						--block.itemButton.shadow:SetBackdropColor( 0, 0, 0, 0)
-						block.itemButton.shadow:SetBackdropBorderColor( 1, 0.7, 0, 1)
 					end
 				end
 			end
@@ -132,21 +133,15 @@ hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
 	info.arg1 = questID
 	info.notCheckable = true
 	UIDropDownMenu_AddButton(info, UIDROPDOWN_MENU_LEVEL)
-	
-	info2 = UIDropDownMenu_CreateInfo()
-	info2.text = ABANDON_QUEST
-	info2.func = function(id)
-		for i=1, GetNumQuestLogEntries() do 
-			local qID = select( 8, GetQuestLogTitle(i))
-			if qID == questID then 
-				SelectQuestLogEntry(i)
-				SetAbandonQuest();
-				AbandonQuest();
-				PlaySound( SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST)
-				--SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST = 846
 
-			end
-		end		
+	info2 = UIDropDownMenu_CreateInfo()
+	info2.text = ABANDON_QUEST .. questID
+	info2.func = function(id)
+		C_QuestLog.SetSelectedQuest( questID)
+		C_QuestLog.SetAbandonQuest()
+		C_QuestLog.AbandonQuest()
+		PlaySound( SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST)
+		--SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST = 846
 	end
 	info2.arg1 = questID
 	info2.notCheckable = true
@@ -207,7 +202,7 @@ ObjectiveTrackerFrame.SetPoint = dummy
 
 --hooksecurefunc(ObjectiveTrackerFrame, "SetPoint", function(_, _, parent)
 --	--if parent ~= frame then
---		ObjectiveTrackerFrame:ClearAllPoints()		
+--		ObjectiveTrackerFrame:ClearAllPoints()
 --		ObjectiveTrackerFrame:SetPoint("TOPRIGHT", yo_MoveQuestFrame, "TOPRIGHT", -2, 2)
 --		--ObjectiveTrackerFrame:SetSize( yo_WatchFrameAnchor:GetSize())
 --	--end
@@ -235,9 +230,9 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD") ------------------------ COLLAPSE
 frame:SetScript("OnEvent", function(self, event)
 	if UIWidgetTopCenterContainerFrame then
 		UIWidgetTopCenterContainerFrame:ClearAllPoints()
-		UIWidgetTopCenterContainerFrame:SetPoint("TOP", UIParent, "TOP", 0, -40)	
+		UIWidgetTopCenterContainerFrame:SetPoint("TOP", UIParent, "TOP", 0, -40)
 	end
-	
+
 	local instanceType = select( 2, GetInstanceInfo())
 	if IsInInstance() and instanceType ~= "scenario" and yo.Addons.hideObjective then
 		ObjectiveTracker_Collapse()

@@ -34,6 +34,8 @@ local bankas = {
 local bagBro = CreateFrame("Frame", "yo_BBFrame", UIParent)
 
 function bagBro:tableCopy(t)
+	if not t then return end
+
   	local u = { }
   	for k, v in pairs(t) do
   		--u[k] = strsplit( ":", v)
@@ -72,7 +74,13 @@ end
 local function OnEnter( self)
 	if self.link then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-		GameTooltip:SetHyperlink( self.link)
+
+		if self.link:match("battlepet") then
+			local _, speciesID, level, breedQuality, maxHealth, power, speed = strsplit(":", self.link)
+			BattlePetToolTip_Show(tonumber(speciesID), tonumber(level), tonumber(breedQuality), tonumber(maxHealth), tonumber(power), tonumber(speed))
+		else
+			GameTooltip:SetHyperlink( self.link)
+		end
 		GameTooltip:Show()
 	elseif self.text then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -139,7 +147,7 @@ function bagBro:RestoreLinkData(partial)
 			local name, icon = C_PetJournal.GetPetInfoBySpeciesID(id)
 			local color = select(4, GetItemQualityColor(quality))
 
-			return PET_LINK:format(color, partial, name), id, quality, icon
+			return PET_LINK:format(color, partial, name), tonumber( id), tonumber( quality), icon
 		elseif partial:find('*') then
 			--partial = string.sub( partial, 2)
 			partial = "|Hitem:138019::::::::110:105:4587520:::1456:69::::|h"
@@ -388,7 +396,7 @@ local function CreateBag( self, name, bank, gtab)
 						local itemLevel = item:GetCurrentItemLevel()
 
 						local r, g, b = unpack( borderCols)				--0.12, 0.12, 0.12 -- !!! DEFAULT COLOR
-						if itemRarity > 1 then 	r, g, b = GetItemQualityColor(itemRarity) end
+						if itemRarity > 1 then r, g, b = GetItemQualityColor(itemRarity)	end
 						if itemClass == 12 then r, g, b = 1.0, 0.3, 0.3	end 					-- Quest item color
 
 						--if (equipLoc ~= nil and equipLoc ~= 0 and equipLoc ~= 18 and equipLoc ~= "" and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_QUIVER" and equipLoc ~= "INVTYPE_TABARD") and itemRarity > 1 and itemLevel > 1 then
@@ -611,14 +619,16 @@ local function OnEvent( self, event, change)
 			self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
 		end
 
-		yo_BagsFrame.bagFrame:HookScript("OnShow", function()
-			self.tempBags = {}
-			for i, bag in pairs( bankas["bags"]) do
-				self.tempBags[bag] = self:tableCopy( self.Player[bag])
-			end
-		end)
+		if yo_BagsFrame.bagFrame then
+			yo_BagsFrame.bagFrame:HookScript("OnShow", function()
+				self.tempBags = {}
+				for i, bag in pairs( bankas["bags"]) do
+					self.tempBags[bag] = self:tableCopy( self.Player[bag])
+				end
+			end)
 
-		yo_BagsFrame.bagFrame:HookScript("OnHide", function() bagBro:CheckForClean( self) end)
+			yo_BagsFrame.bagFrame:HookScript("OnHide", function() bagBro:CheckForClean( self) end)
+		end
 
 		if firstRun then
 			for i, bag in pairs( bankas["bags"]) do

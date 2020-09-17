@@ -108,6 +108,7 @@ local tullaRange = timer_Create(CreateFrame('Frame', 'tullaRange'), UPDATE_DELAY
 function tullaRange:Load()
 	self:SetScript('OnEvent', self.OnEvent)
 	self:RegisterEvent('PLAYER_LOGIN')
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent('PLAYER_LOGOUT')
 end
 
@@ -115,6 +116,7 @@ end
 --[[ Frame Events ]]--
 
 function tullaRange:OnEvent(event, ...)
+	--print( event)
 	local action = self[event]
 	if action then
 		action(self, event, ...)
@@ -133,14 +135,18 @@ function tullaRange:PLAYER_LOGIN()
 	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
 	f:SetScript('OnShow', function(self)
 		self:SetScript('OnShow', nil)
-		LoadAddOn('tullaRange_Config')
+		LoaпапаdOn('tullaRange_Config')
 	end)
 
 	self.buttonsToUpdate = {}
 
-	hooksecurefunc('ActionButton_OnUpdate', self.RegisterButton)
-	hooksecurefunc('ActionButton_UpdateUsable', self.OnUpdateButtonUsable)
-	hooksecurefunc('ActionButton_Update', self.OnButtonUpdate)
+	--hooksecurefunc( ActionBarActionButtonMixin, "OnUpdate", 	self.RegisterButton)
+	--hooksecurefunc( ActionBarActionButtonMixin, "UpdateUsable", self.OnUpdateButtonUsable)
+	--hooksecurefunc( ActionBarActionButtonMixin, "Update", 		self.OnButtonUpdate)
+	--print("...")
+	--hooksecurefunc('ActionButton_OnUpdate', self.RegisterButton)
+	--hooksecurefunc('ActionButton_UpdateUsable', self.OnUpdateButtonUsable)
+	--hooksecurefunc('ActionButton_Update', self.OnButtonUpdate)
 end
 
 function tullaRange:PLAYER_LOGOUT()
@@ -186,7 +192,7 @@ function tullaRange:UpdateButton(button, elapsed)
 end
 
 function tullaRange:UpdateButtonStatus(button)
-	local action = ActionButton_GetPagedID(button)
+	local action = button.action --ActionButton_GetPagedID(button)
 	if button:IsVisible() and action and HasAction(action) and ActionHasRange(action) then
 		self.buttonsToUpdate[button] = true
 	else
@@ -200,6 +206,7 @@ end
 --[[ Button Hooking ]]--
 
 function tullaRange.RegisterButton(button)
+	print("WEA KJAHS KAJSH ", self)
 	button:HookScript('OnShow', tullaRange.OnButtonShow)
 	button:HookScript('OnHide', tullaRange.OnButtonHide)
 	button:SetScript('OnUpdate', nil)
@@ -228,8 +235,9 @@ end
 --[[ Range Coloring ]]--
 
 function tullaRange.UpdateButtonUsable(button)
-	local action = ActionButton_GetPagedID(button)
-	local isUsable, notEnoughMana = IsUsableAction(action)
+	local action = button.action
+	local isUsable, notEnoughMana = IsUsableAction( action)
+	print(button:GetName(), action, IsActionInRange( action))
 
 	-- Usable
 	if isUsable then

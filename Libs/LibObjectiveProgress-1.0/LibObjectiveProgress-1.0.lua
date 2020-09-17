@@ -4,7 +4,7 @@ Developed by: Simca@Malfurion (MMOSimca)
 ]]--
 
 -- Set major/minor version
-local MAJOR, MINOR = "LibObjectiveProgress-1.0", 36
+local MAJOR, MINOR = "LibObjectiveProgress-1.0", 40
 assert(LibStub, MAJOR .. " requires LibStub")
 
 -- Initialize library
@@ -48,7 +48,7 @@ end
 function LOP:GetNPCWeightByCurrentQuests(npcID)
     -- Table variable declared here
     local questTable = nil
-    
+
     -- Get NPC weight for all quests in log
     local numEntries = GetNumQuestLogEntries()
     for questLogIndex = 1, numEntries do
@@ -63,7 +63,7 @@ function LOP:GetNPCWeightByCurrentQuests(npcID)
             end
         end
     end
-    
+
     -- Return completed table (or nil if no quests reference the NPC in question)
     return questTable
 end

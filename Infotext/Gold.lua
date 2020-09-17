@@ -32,7 +32,7 @@ local category = {}
 		864, -- VOLDUN
 		863, -- NAZMIR
 		862, -- ZULDAZAR
-		14   -- ARATHI_HIGHLANDS 
+		14   -- ARATHI_HIGHLANDS
 	}
 	category.bosses = {
 		GetBoss(2210, 52196), -- Dunegorger Kraulok
@@ -43,15 +43,15 @@ local category = {}
 		GetBoss(2197, 52157), -- Hailstone Construct
 		GetBoss(2213, 52847, resetIntervals.unknown, 'Alliance'), -- Doom's Howl (Alliance)
 		GetBoss(2212, 52848, resetIntervals.unknown, 'Horde')  -- The Lion's Roar (Horde)
-	}	
+	}
 
 --	BOSS_DATA[#BOSS_DATA +1] = category
 local function FlagActiveBosses()
 	--local bossData = BOSS_DATA
 	local worldQuests = {}
 	local ret = ""
-   
-	--for _, category in pairs(bossData) do	
+
+	--for _, category in pairs(bossData) do
 		local zones = category.maps or {}
 
 		for zoneIndex = 1, #zones do
@@ -60,12 +60,12 @@ local function FlagActiveBosses()
 			   for taskIndex = 1, #taskInfo do
 			   		--tprint( taskInfo)
 			   		--print(taskInfo[taskIndex].mapID, taskInfo[taskIndex].questId)
-					
-					worldQuests[taskInfo[taskIndex].questId] = time()                      
+
+					worldQuests[taskInfo[taskIndex].questId] = time()
 			   end
 			end
 		end
-		
+
 		for _, boss in pairs(category.bosses) do
 			if boss.questId then
 				if worldQuests[boss.questId] or IsQuestFlaggedCompleted(boss.questId) then
@@ -98,7 +98,7 @@ local function newConfigData( personalConfig)
 	if yo_AllData == nil then
 		yo_AllData = {}
 	end
-	
+
 	if yo_AllData[myRealm] == nil then
 		yo_AllData[myRealm] = {}
 	end
@@ -135,7 +135,7 @@ local function OnEvent(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		Text:SetFont( font, fontsize, "OVERLAY")
 		Text:SetHeight(RightInfoPanel:GetHeight())
-		Text:SetPoint("LEFT", RightInfoPanel, "LEFT", 10, 0)	
+		Text:SetPoint("LEFT", RightInfoPanel, "LEFT", 10, 0)
 		RightInfoPanel.goldText = Text
 		OldMoney = GetMoney()
 
@@ -148,18 +148,18 @@ local function OnEvent(self, event, ...)
 		yo_AllData[myRealm][myName]["Played"] = playedtotal
 		yo_AllData[myRealm][myName]["PlayedLvl"] = playedlevel
 	end
-		
+
 	local NewMoney	= GetMoney()
 	local Change = NewMoney-OldMoney -- Positive if we gain money
-		
+
 	if OldMoney>NewMoney then		-- Lost Money
 		Spent = Spent - Change
 	else							-- Gained Moeny
 		Profit = Profit + Change
 	end
-		
+
 	Text:SetText( formatMoney(NewMoney))
-	
+
 	newConfigData()
 
 	self:SetAllPoints( Text)
@@ -174,37 +174,37 @@ local function OnEvent(self, event, ...)
 		if Change ~= 0 then
 			GameTooltip:AddLine(L["For the game"])
 			if Profit > 0 then
-				GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)	
+				GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
 			end
-			
+
 			if Spent > 0 then
-				GameTooltip:AddDoubleLine(L["Spent"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)	
+				GameTooltip:AddDoubleLine(L["Spent"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
 			end
-			
+
 			if Profit < Spent then
 				GameTooltip:AddDoubleLine(L["Loss"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
 			elseif (Profit-Spent)>0 then
 				GameTooltip:AddDoubleLine(L["Profit"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
-			end				
-			GameTooltip:AddLine' '	
+			end
+			GameTooltip:AddLine' '
 		end
-				
+
 		GameTooltip:AddLine(L["General information"])
-			
+
 		local oneDate
 		for k, realm in pairs ( yo_AllData) do
-			if type( realm) == "table" then	
+			if type( realm) == "table" then
 
       			local tkeys = {}
-      			for k, v in pairs( realm) do 
-         			table.insert(tkeys, { money = v.Money, name = k}) 
+      			for k, v in pairs( realm) do
+         			table.insert(tkeys, { money = v.Money, name = k})
       			end
-      
+
       			local function tableSortCat (a,b) return a.money < b.money end
        			table.sort( tkeys, tableSortCat)
-      
-				oneDate = false	
-				for _, v in pairs(tkeys) do 
+
+				oneDate = false
+				for _, v in pairs(tkeys) do
 					value = realm[v.name]
 
 					if value.KeyStone and timeLastWeeklyReset() < value.KeyStoneTime then
@@ -214,33 +214,47 @@ local function OnEvent(self, event, ...)
 						if not oneDate then
 							GameTooltip:AddDoubleLine( "  ", k, 0.5, .5, .5, 0, 1, 1)  --- Realmane
 							oneDate = true
-						end	
+						end
 						totalMoney = totalMoney + tonumber( value.Money)
 						local cols = value.Color and value.Color or { 1, 0.75, 0}
 							GameTooltip:AddDoubleLine( v.name, formatMoney( value.Money, true), cols.r, cols.g, cols.b, cols.r, cols.g, cols.b)
 					end
-					
+
 				end
 			end
 		end
-		GameTooltip:AddLine' '	
+		GameTooltip:AddLine' '
 		GameTooltip:AddDoubleLine( L["TOTAL"], formatMoney( totalMoney), 1, 1, 0, 0, 1, 0)
-			
+
 		for i = 1, MAX_WATCHED_TOKENS do
-			local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
-			if name and i == 1 then
-				GameTooltip:AddLine(" ")
-				GameTooltip:AddLine(CURRENCY .. ":")
+			local curTable = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
+			if curTable then
+
+				local curInfo = C_CurrencyInfo.GetCurrencyInfo( curTable.currencyTypesID)
+				local maxQ, maxW = "", ""
+				--tprint( curInfo) print("....")
+				if curTable.name and i == 1 then
+					GameTooltip:AddLine(" ")
+					GameTooltip:AddLine(CURRENCY .. ":")
+				end
+				--print( curTable.name, curTable.quantity, curTable.iconFileID, curTable.currencyTypesID, curInfo )
+				local r, g, b = 1, 1, 0
+				if curTable.currencyTypesID then r, g, b = GetItemQualityColor( curInfo.quality) end
+				if curInfo.maxQuantity > 0 then maxQ = "/" .. commav( curInfo.maxQuantity) .. "" end
+				if curInfo.maxWeeklyQuantity > 0 then
+					maxW = " (" .. curInfo.quantityEarnedThisWeek .. "/" .. curInfo.maxWeeklyQuantity .. " за неделю)"
+				end
+
+				if curTable.name and curTable.quantity then
+					GameTooltip:AddDoubleLine( " |T" .. curTable.iconFileID .. ":16:16:0:0:64:64:4:60:4:60:255:255:255|t " .. curTable.name, commav( curTable.quantity) .. maxQ .. maxW, r, g, b, 1, 1, 1)
+				end
 			end
-			local r, g, b = 1,1,1
-			if itemID then r, g, b = GetItemQualityColor(select(3, GetItemInfo(itemID))) end
-			if name and count then GameTooltip:AddDoubleLine(name, commav( count), r, g, b, 1, 1, 1) end
 		end
-		GameTooltip:Show()		
+		GameTooltip:Show()
 	end)
 
 	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
-		
+
 	OldMoney = NewMoney
 end
 
@@ -252,7 +266,7 @@ Stat:RegisterEvent("TRADE_MONEY_CHANGED")
 Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
 Stat:RegisterEvent("TIME_PLAYED_MSG")
 
-Stat:SetScript("OnMouseDown", function( self) 
+Stat:SetScript("OnMouseDown", function( self)
 	isOpen = not isOpen
 	if IsShiftKeyDown() then
 		local myPersonalConfig
@@ -264,10 +278,10 @@ Stat:SetScript("OnMouseDown", function( self)
 		print("|cffff0000All data reset.|r")
 	else
 		if isOpen then
-			OpenAllBags()		
+			OpenAllBags()
 		else
 			CloseAllBags()
-		end 
+		end
 	end
 end)
 

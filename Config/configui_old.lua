@@ -7,16 +7,16 @@ local function makeConfig()
 	MyAddon.panel.name = "yoFrame";
 --	MyAddon.panel.okay = function (self) ReloadUI(); end;
 	InterfaceOptions_AddCategory(MyAddon.panel);
-	
+
 ----MAIN PANEL-----------------------------------------------------------------------------------------------------------------------------------------
 	local GeneralMessageHeader =  MyAddon.panel:CreateFontString(nil, "ARTWORK","GameFontNormalLarge");
 	GeneralMessageHeader:SetPoint("TOPLEFT", 10, -10);
 	GeneralMessageHeader:SetText("Учимся лепить конфиг...");
-	
+
 	local NeedReboot =  MyAddon.panel:CreateFontString(nil, "ARTWORK","ChatFontNormal");
 	NeedReboot:SetPoint("TOPLEFT", 10, -550);
 	NeedReboot:SetText("(*) Требуется перезагрузка интрефйса");
-	
+
 	--local checkboxes_order = { "silverGoldTimer", "deathTracker", "autoGossip", "progressTooltip", "completionMessage", "hideTalkingHead", "resetPopup" }
 
 	local function CheckBox_OnClick(self)
@@ -41,13 +41,13 @@ local function makeConfig()
 			end
 			idx = idx + 1
 		end
-	
+
 	local function CharConfigCheckBox_OnClick( self, ...)
 		--print( ..., self:GetChecked())
 		yo["Addons"].Potatos = self:GetChecked()
 	end
 
-	
+
 ----CASTBAR PANEL--------------------------------------------------------------------------------------------------------------------------------------
 	MyAddon.childpanel = CreateFrame( "Frame", "yo_CastBarPanel", MyAddon.panel);
 	MyAddon.childpanel.name = "Castbar";
@@ -57,7 +57,7 @@ local function makeConfig()
 	local IntroMessageHeader =  MyAddon.childpanel:CreateFontString(nil, "ARTWORK","GameFontNormalLarge");
 	IntroMessageHeader:SetPoint("TOPLEFT", 10, -10);
 	IntroMessageHeader:SetText("Еще больше корявого кода ( временно не арбайтн");
-	
+
 	local EnabledButton = CreateFrame("CheckButton", "yo_CastBarEnabledIcon", MyAddon.childpanel, "OptionsCheckButtonTemplate");
 	EnabledButton:SetPoint("TOPLEFT", 10, -35)
 	EnabledButton:SetChecked( yo["CasrBarPlayer"].icon)
@@ -65,7 +65,7 @@ local function makeConfig()
 	EnabledButton:SetScript("OnClick", function(self)
 		yo["CasrBarPlayer"].icon = self:GetChecked()
 	end)
-	
+
 	local editbox = CreateFrame("EditBox", nil, MyAddon.childpanel)
 	editbox:SetAutoFocus(false)
 	editbox:SetMultiLine(false)
@@ -74,7 +74,7 @@ local function makeConfig()
 	editbox:SetMaxLetters(255)
 	editbox:SetTextInsets(3,0,0,0)
 	editbox:SetBackdrop({
-		bgFile = "Interface\\Buttons\\WHITE8x8", 
+		bgFile = "Interface\\Buttons\\WHITE8x8",
 		tiled = false,
 	})
 	editbox:SetBackdropColor( 1,0,0,1)
@@ -82,7 +82,7 @@ local function makeConfig()
 	editbox:SetFontObject(GameFontHighlight)
 	editbox:SetPoint("TOPLEFT", 100, -100)
 	editbox:SetText(1234)
-	
+
 	local CastBarIcoSize = CreateFrame("EditBox", "yo_CastBarIconSize", MyAddon.childpanel, "InputBoxTemplate")  --InputBoxTemplate
 		CastBarIcoSize:SetPoint("TOPLEFT", 20, -70)
 		CastBarIcoSize:SetJustifyH("LEFT")
@@ -94,17 +94,17 @@ local function makeConfig()
 		CastBarIcoSize:SetAutoFocus(false)
 		CastBarIcoSize:SetTextInsets(10, 10, 10, 10)
 		CastBarIcoSize:SetText( yo["CasrBarPlayer"].iconSize)
-		
-		CastBarIcoSize:SetScript("OnEnterPressed", function(self) 
+
+		CastBarIcoSize:SetScript("OnEnterPressed", function(self)
 			yo["CasrBarPlayer"].iconSize = CastBarIcoSize:GetText()
 			print( CastBarIcoSize:GetText(), yo["CasrBarPlayer"].iconSize)
-			self:ClearFocus() 
+			self:ClearFocus()
 			end)
-		
+
 	local CastBarIcoSizeText =  CastBarIcoSize:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 		CastBarIcoSizeText:SetPoint("LEFT", CastBarIcoSize, "RIGHT", 10, 0);
 		CastBarIcoSizeText:SetText("Размер иконки");
-		
+
 end
 
 	-- When the player clicks okay, run this function.

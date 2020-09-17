@@ -407,7 +407,7 @@ local function SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 end
 
 local function SetInside(obj, anchor, xOffset, yOffset, anchor2)
-	xOffset = xOffset or 0
+	xOffset = xOffset or 0				--											!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	yOffset = yOffset or 0
 	anchor = anchor or obj:GetParent()
 
@@ -536,7 +536,6 @@ local slotEquipType = {
 local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)  --- C_NewItems_IsNewItem(bagID, slotID))
 	local ret = false
 	local slotIndexes = slotEquipType[itemEquipLoc]
-	--print( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)
 	if slotIndexes and iLvl then
 
 		for i, locSlotID in ipairs( slotIndexes ) do
@@ -544,42 +543,67 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 			local item = Item:CreateFromItemLocation( itemLocation)
 			local locLvl = item:GetCurrentItemLevel()
 			--tprint( item)
+			--print( locSlotID, clink, item:GetItemLink(), item:IsItemEmpty())
+
+			if item:IsItemEmpty() and locSlotID < 16 and C_NewItems.IsNewItem(bagID, slotID) == true then
+
+				if locSlotID >= 11 and locSlotID <= 15 then
+					EquipItemByName( clink)
+				else
+					local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
+					tt:SetOwner( UIParent, "ANCHOR_NONE")
+					tt:SetBagItem(bagID, slotID)
+					tt:Show()
+
+					for x = 1, tt:NumLines() do
+						local lineR = _G['yoFrame_ItemTooltipTextRight'..x]
+						local lineTextR = lineR:GetText()
+						if lineTextR then
+							local lr, lg, lb = lineR:GetTextColor()
+							if lg > 0.5 then
+								--print( L["weared"] .. clink)
+								EquipItemByName( clink)
+							end
+						end
+					end
+					tt:Hide()
+				end
+			end
 
 			if locLvl and iLvl > locLvl then
 				local locLink = item:GetItemLink()
 				local locItemSutType = select( 7, GetItemInfo( locLink))
 				--local unitLvl = UnitLevel( "player") < GetMaxPlayerLevel()
-
-				if ( C_NewItems.IsNewItem(bagID, slotID) == true) and ( locItemSutType == itemSubType) then
-					local locitemRarity = select( 3, GetItemInfo( locLink))
-					local loclhexColor = "|c" .. select( 4, GetItemQualityColor(locitemRarity))
-
-					local itemRarity = select( 3, GetItemInfo( clink))
-					local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
-					local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. L["instead"].. locLink
-
-					if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and locitemRarity ~= 7 then
-
-						if InCombatLockdown() then
-							print( L["put on"] .. text)
-						else
-							print( L["weared"] .. text)
-							EquipItemByName( clink)
-						end
-						C_NewItems.RemoveNewItem(bagID, slotID)
-
-					else
-						print( L["can change"] .. text)
-						C_NewItems.RemoveNewItem(bagID, slotID)
-						ret = true
-					end
-				else
+				if locItemSutType == itemSubType then
 					ret = true
+					if ( C_NewItems.IsNewItem(bagID, slotID) == true) then -- and ( locItemSutType == itemSubType)
+						local locitemRarity = select( 3, GetItemInfo( locLink))
+						local loclhexColor = "|c" .. select( 4, GetItemQualityColor(locitemRarity))
+
+						local itemRarity = select( 3, GetItemInfo( clink))
+						local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
+						local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. L["instead"].. locLink
+
+						if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and locitemRarity ~= 7 then
+
+							if InCombatLockdown() then
+								print( L["put on"] .. text)
+							else
+								print( L["weared"] .. text)
+								EquipItemByName( clink)
+							end
+							C_NewItems.RemoveNewItem(bagID, slotID)
+							--print( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)
+						else
+							print( L["can change"] .. text)
+							C_NewItems.RemoveNewItem(bagID, slotID)
+						end
+					end
 				end
 			end
 		end
 	end
-
+	--if ret then print( bagID, slotID, slot, itemEquipLoc, itemSubType, locItemSutType, iLvl, clink) end
 	slot.UpgradeIcon:SetShown( ret);
 end
 
@@ -991,7 +1015,7 @@ function addon:CreateLayout( isBank)
 			if not f.ContainerHolder[i] then
 				--print( 'PutOUT - 1')
 				if(isBank) then
-					f.ContainerHolder[i] = CreateFrame("CheckButton", "ElvUIBankBag" .. (bagID-4), f.ContainerHolder, "BankItemButtonBagTemplate")
+					f.ContainerHolder[i] = CreateFrame("ItemButton", "ElvUIBankBag" .. (bagID-4), f.ContainerHolder, "BankItemButtonBagTemplate")
 					f.ContainerHolder[i]:RegisterForClicks("AnyUp");
 					f.ContainerHolder[i]:SetScript('OnClick', function( holder, button)
 						if button == "RightButton" and holder.id then
@@ -1003,7 +1027,7 @@ function addon:CreateLayout( isBank)
 						end
 					end)
 				else
-					f.ContainerHolder[i] = CreateFrame("CheckButton", "ElvUIMainBag" .. bagID .. "Slot", f.ContainerHolder, "BagSlotButtonTemplate")
+					f.ContainerHolder[i] = CreateFrame("ItemButton", "ElvUIMainBag" .. bagID .. "Slot", f.ContainerHolder, "BagSlotButtonTemplate")   --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 					f.ContainerHolder[i]:RegisterForClicks("AnyUp");
 					f.ContainerHolder[i]:SetScript('OnClick', function(holder, button)
 						if button == "RightButton" and holder.id then
@@ -1022,9 +1046,9 @@ function addon:CreateLayout( isBank)
 					StyleButton( f.ContainerHolder[i])
 				end
 
-				f.ContainerHolder[i].IconBorder:SetAlpha(0)
+				--f.ContainerHolder[i].IconBorder:SetAlpha(0)			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				f.ContainerHolder[i]:SetNormalTexture("")
-				f.ContainerHolder[i]:SetCheckedTexture(nil)
+				--f.ContainerHolder[i]:SetCheckedTexture(nil)
 				f.ContainerHolder[i]:SetPushedTexture("")
 
 				f.ContainerHolder[i].id = isBank and bagID or bagID + 1
@@ -1079,7 +1103,7 @@ function addon:CreateLayout( isBank)
 			f.Bags[bagID].type = select(2, GetContainerNumFreeSlots(bagID));
 
 			--Hide unused slots
-			for i = 1, MAX_CONTAINER_ITEMS do
+			for i = 1, 20 do
 				if f.Bags[bagID][i] then
 					f.Bags[bagID][i]:Hide();
 				end
@@ -1088,7 +1112,7 @@ function addon:CreateLayout( isBank)
 			for slotID = 1, numSlots do
 				f.totalSlots = f.totalSlots + 1;
 				if not f.Bags[bagID][slotID] then
-					f.Bags[bagID][slotID] = CreateFrame('CheckButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BankItemButtonGenericTemplate' or 'ContainerFrameItemButtonTemplate');
+					f.Bags[bagID][slotID] = CreateFrame('ItemButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BankItemButtonGenericTemplate' or 'ContainerFrameItemButtonTemplate');
 
 					if not f.Bags[bagID][slotID].shadow then
 						CreateStyle( f.Bags[bagID][slotID], 2)
@@ -1098,7 +1122,7 @@ function addon:CreateLayout( isBank)
 					end
 
 					f.Bags[bagID][slotID]:SetNormalTexture(nil);
-					f.Bags[bagID][slotID]:SetCheckedTexture(nil);
+					--f.Bags[bagID][slotID]:SetCheckedTexture(nil);	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 					if(_G[f.Bags[bagID][slotID]:GetName()..'NewItemTexture']) then
 						_G[f.Bags[bagID][slotID]:GetName()..'NewItemTexture']:Hide()
@@ -1191,7 +1215,7 @@ function addon:CreateLayout( isBank)
 				end
 
 				if lastButton then
-					if (f.totalSlots - 1) % numContainerColumns == 0 then
+					if (f.totalSlots - 1)  %numContainerColumns == 0 then
 						f.Bags[bagID][slotID]:SetPoint('TOP', lastRowButton, 'BOTTOM', 0, -buttonSpacing);
 						lastRowButton = f.Bags[bagID][slotID];
 						numContainerRows = numContainerRows + 1;
@@ -1208,7 +1232,7 @@ function addon:CreateLayout( isBank)
 			end
 		else
 			--Hide unused slots
-			for i = 1, MAX_CONTAINER_ITEMS do
+			for i = 1, 20 do
 				if f.Bags[bagID] and f.Bags[bagID][i] then
 					f.Bags[bagID][i]:Hide();
 				end
@@ -1244,7 +1268,7 @@ function addon:CreateLayout( isBank)
 			totalSlots = totalSlots + 1;
 
 			if(not f.reagentFrame.slots[i]) then
-				f.reagentFrame.slots[i] = CreateFrame("Button", "ReagentBankFrameItem"..i, f.reagentFrame, "ReagentBankItemButtonGenericTemplate");
+				f.reagentFrame.slots[i] = CreateFrame("ItemButton", "ReagentBankFrameItem"..i, f.reagentFrame, "ReagentBankItemButtonGenericTemplate");
 				f.reagentFrame.slots[i]:SetID(i)
 
 				StyleButton( f.reagentFrame.slots[i])
@@ -1277,7 +1301,7 @@ function addon:CreateLayout( isBank)
 			f.reagentFrame.slots[i]:ClearAllPoints()
 			f.reagentFrame.slots[i]:SetSize( buttonSize, buttonSize)
 			if(f.reagentFrame.slots[i-1]) then
-				if(totalSlots - 1) % numContainerColumns == 0 then
+				if(totalSlots - 1)  %numContainerColumns == 0 then
 					f.reagentFrame.slots[i]:SetPoint('TOP', lastRowButton, 'BOTTOM', 0, -buttonSpacing);
 					lastRowButton = f.reagentFrame.slots[i];
 					numContainerRows = numContainerRows + 1;

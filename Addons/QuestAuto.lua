@@ -78,28 +78,24 @@ end
 local function GetActiveOptions(...)
 	local _, instance, _, _, _, _, _, mapID = GetInstanceInfo()
 	if ( autoGossipInstance[instance] or autoGossipNPC[GetNPCID()]) and GetNumGossipOptions() == 1 then
-		SelectGossipOption(1, "", true)
+		C_GossipInfo.SelectOption(1, "", true)
 	end
 end
 
-local function GetAvailableQuests( ... )
-	--print(...)
-	for i=1, select("#", ...), 7 do
-
-		local titleText, level, isTrivial, isDaily, isRepeatable, isLegendary, isIgnored = select(i, ...);
-		if isTrivial ~= true then
-			SelectGossipAvailableQuest( math.floor( i/7) + 1)
+local function GetAvailableQuests1( quests)
+	for titleIndex, questInfo in ipairs( quests) do
+		if questInfo.isTrivial == false then
+			C_GossipInfo.SelectAvailableQuest( titleIndex) -- SelectGossipAvailableQuest
 		else
 			print("|cffff0000SKIPED: |r" .. titleText)
 		end
 	end
 end
 
-local function GetActiveQuests( ... )
-	for i=1, select("#", ...), 6 do
-		local isComplete = select( i+3, ...)
-		if ( isComplete ) then
-			SelectGossipActiveQuest( math.floor( i/6) + 1)
+local function GetActiveQuests1( quests )
+	for titleIndex, questInfo in ipairs( quests) do
+		if questInfo.isComplete then
+			C_GossipInfo.SelectActiveQuest( titleIndex)
 		end
 	end
 end
@@ -166,9 +162,9 @@ local function OnEvent( self, event, ...)
 			elseif money > 1 then
 				print("|cffff0000"..L["Pay"]..": |cff00ff00" .. formatMoney( money) .. "|cffffff00"..L["this huckster"].."|r" .. L["DONT_SHIFT"])
 				CloseQuest()
-			elseif iname then
-				print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. '|T'.. itexture ..':14|t |c' .. select( 4, GetItemQualityColor( iquality)).. iname .. L["DONT_SHIFT"])
-				CloseQuest()
+			--elseif iname then
+			--	print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. '|T'.. itexture ..':14|t |c' .. select( 4, GetItemQualityColor( iquality)).. iname .. L["DONT_SHIFT"])
+			--	CloseQuest()
 			else
 				CompleteQuest()
 			end
@@ -253,9 +249,9 @@ local function OnEvent( self, event, ...)
 		if IsShiftKeyDown() == true then return end
 		if not yo.Addons.AutoQuest then return end
 
-		GetAvailableQuests( GetGossipAvailableQuests())
-		GetActiveQuests( GetGossipActiveQuests())
-		GetActiveOptions( GetGossipOptions())
+		GetAvailableQuests1( C_GossipInfo.GetAvailableQuests()) 	--GetGossipAvailableQuests())
+		GetActiveQuests1( C_GossipInfo.GetActiveQuests())		--GetGossipActiveQuests())
+		--GetActiveOptions( GetGossipOptions())
 
 	elseif	event == "QUEST_GREETING" then
 		if IsShiftKeyDown() == true then return end
@@ -284,34 +280,50 @@ local function OnEvent( self, event, ...)
 
 	elseif event == "QUEST_ACCEPTED" then
 
-		local index, questID = select( 1, ...)
-		if QuestUtils_IsQuestWorldQuest(questID) then return end
+		local index, questID = 1, select( 1, ...)
 
-		SelectQuestLogEntry(index)
+		C_QuestLog.SetSelectedQuest(questID);
 
-		local questTitle, level, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, questID = GetQuestLogTitle( index);
+		local _, questObjectives = GetQuestLogQuestText();
+
+		local questTitle = C_QuestLog.GetTitleForQuestID( questID)
 
 		if questTitle == nil then return end
 
-		local questDescription, questObjectives = GetQuestLogQuestText( index)
-		local questTypeIndex = GetQuestLogQuestType( index)
-		local tagString = QuestTypesIndex[questTypeIndex] or ""
+		--local questObjectives = C_QuestLog.GetQuestObjectives( questID)
 
-		if ( isDaily == LE_QUEST_FREQUENCY_DAILY or isDaily == LE_QUEST_FREQUENCY_WEEKLY ) then
-			cHeader = "|cff0070de"
-		else
-			cHeader = hex( GetQuestDifficultyColor( UnitLevel("player")))
-		end
+		--print( questID, questObjectives) --, questObjectives[1].text) --.title, questInfo.frequency)
+
+		--local questTypeIndex = GetQuestLogQuestType( questID)
+		--local tagString = QuestTypesIndex[questTypeIndex] or ""
+
+		--[Virag's DT]:   return: 4 - (1) FontString <QuestInfoObjectivesText> 'Победите королеву Азшару в Вечном дворце.' table: 000001E09090E1F0
+
+		--if ( isDaily == 2 or isDaily == 3 ) then
+		--	cHeader = "|cff0070de"
+		--else
+		--	cHeader = hex( GetQuestDifficultyColor( UnitLevel("player")))
+		--end
 
 		local qString = ""
 
 
-		if #questObjectives > 1 then
+		if questObjectives then
 			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives)
+
+			local questObjNum = C_QuestLog.GetNumQuestObjectives(questID)
+
+			if questObjNum and questObjNum >= 1 then
+				print( "|cffffff00"..TARGET..":|r")
+				for i = 1, questObjNum do
+					local objectiveText, objectiveType, finished, numFulfilled, numRequired = GetQuestObjectiveInfo( questID, i, false);
+					print( "|cff00ffff" .. objectiveText)
+				end
+			end
 		end
 
-		if GetNumQuestLogChoices() > 0 then
-			for i = 1, GetNumQuestLogChoices() do
+		if GetNumQuestLogChoices( questID) > 0 then
+			for i = 1, GetNumQuestLogChoices( questID) do
 				local bestString = ""
 				local slvl
 				local itemLink = GetQuestLogItemLink("choice", i)
@@ -344,10 +356,10 @@ local function OnEvent( self, event, ...)
 
 		if GetNumRewardCurrencies() then
 			for i = 1, GetNumRewardCurrencies() do
-				local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(i)
+				local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(i, questID)
 
 				if currencyID then
-					local link = GetCurrencyLink( currencyID, numItems or 10)
+					local link = C_CurrencyInfo.GetCurrencyLink( currencyID, numItems or 10)
 					print( "|cffffff00"..CURRENCY..": |r" .. numItems .. " x " .. ( link or name).. "|r")
 				end
 			end
@@ -379,13 +391,15 @@ quest:RegisterEvent("PLAYER_ENTERING_WORLD")
 quest:SetScript("OnEvent", OnEvent)
 
 -- autoclose AutoQuestPopupTracker
-hooksecurefunc( AUTO_QUEST_POPUP_TRACKER_MODULE, "Update", function(self, ...)
+--hooksecurefunc( AUTO_QUEST_POPUP_TRACKER_MODULE, "Update", function(self, ...)
 
-	for i = 1, GetNumAutoQuestPopUps() do
-		local questID, popUpType = GetAutoQuestPopUp(i);
-		if questID and popUpType then --== "COMPLETE"
-			ShowQuestComplete(GetQuestLogIndexByID(questID));
-			--AutoQuestPopupTracker_RemovePopUp(questID)
-		end
-	end
-end)
+--	for i = 1, GetNumAutoQuestPopUps() do
+--		local questID, popUpType = GetAutoQuestPopUp(i);
+--		print( i, questID, popUpType, self.id, ...)
+--		tprint( ...)
+--		if questID and popUpType then --== "COMPLETE"
+--			ShowQuestComplete(GetQuestLogIndexByID(questID));
+--			--AutoQuestPopupTracker_RemovePopUp(questID)
+--		end
+--	end
+--end)

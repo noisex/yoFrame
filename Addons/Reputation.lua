@@ -18,7 +18,7 @@ local function SetTooltip(self)
 		local currentValue, threshold, _, hasRewardPending = C_Reputation.GetFactionParagonInfo( factionID)
 		if currentValue and threshold then
 			min, max = 0, threshold
-			value = currentValue % threshold
+			value = currentValue  %threshold
 			if hasRewardPending then
 				value = value + threshold
 			end
@@ -52,7 +52,7 @@ local function UpdateExp(self, event, unit)
 		local currentValue, threshold, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID)
 		if currentValue and threshold then
 			min, max = 0, threshold
-			value = currentValue % threshold
+			value = currentValue  %threshold
 			if hasRewardPending then
 				value = value + threshold
 			end

@@ -110,7 +110,7 @@ local function Update(self, event, unit, powerType)
 
 		-- BUG: Destruction is supposed to show partial soulshards, but Affliction and Demonology should only show full ones
 		if(ClassPowerType == 'SOUL_SHARDS' and GetSpecialization() ~= SPEC_WARLOCK_DESTRUCTION) then
-			cur = cur - cur % 1
+			cur = cur - cur  %1
 		end
 
 		local numActive = cur + 0.9

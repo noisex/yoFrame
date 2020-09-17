@@ -251,7 +251,7 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 				self.tabber.tabs[tabID].preHistoric = false
 			end
 
-			if longArray > self.wimMaxHistory then
+			if self.wimMaxHistory and longArray > self.wimMaxHistory then
 				for i = 1, longArray - self.wimMaxHistory do
 					tremove( logArray, 1)
 				end
@@ -524,6 +524,15 @@ local function OnEvent( self, event, ...)
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", myChatFilter)
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", myChatFilter)
 
+		local ChatEdit_GetActiveWindow_orig = ChatEdit_GetActiveWindow;
+		function ChatEdit_GetActiveWindow()
+			local edID, editBox = self.tabber.focused
+			if edID then
+				editBox = self.tabber.tabs[edID].editBox
+			end
+    		return editBox or ChatEdit_GetActiveWindow_orig()
+		end
+
 	elseif event == "CHAT_MSG_WHISPER" or event == "CHAT_MSG_WHISPER_INFORM" then
 		local text, fullName, _, _, unit, _, _, _, _, _, _, guid = ...
 		OutString( self, event, text, unit, guid, nil)
@@ -574,15 +583,6 @@ wim.ResizeTabs = function( self)
 			tab:SetWidth((( self:GetWidth() +0) - 4 * ( self.tabCount -1)) / ( self.tabCount ))
 		end
 	end
-end
-
-local ChatEdit_GetActiveWindow_orig = ChatEdit_GetActiveWindow;
-function ChatEdit_GetActiveWindow()
-	local edID, editBox = wim.tabber.focused
-	if edID then
-		editBox = wim.tabber.tabs[edID].editBox
-	end
-    return editBox or ChatEdit_GetActiveWindow_orig()
 end
 
 local splitMessage, splitMessageLinks = {}, {};

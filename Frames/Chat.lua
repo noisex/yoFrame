@@ -55,6 +55,38 @@ local hyperlinkTypes = {
 }
 local hyperLinkEntered
 
+local hooks = {}
+local abbrev = {
+	GUILD 	= "G",
+	PARTY 	= "P",
+	RAID 	= "R",
+	OFFICER = "O",
+	PARTY_LEADER 	= "PL",
+	RAID_LEADER 	= "RL",
+	INSTANCE_CHAT 	= "I",
+	INSTANCE_CHAT_LEADER = "IL",
+	PET_BATTLE_COMBAT_LOG = "PBC",
+}
+
+local function Abbreviate(channel)
+    -- Replaces channel name from the table above, or uses channel numbers
+    return string.format('|Hchannel:%s|h[%s]|h', channel, abbrev[channel] or channel:gsub('channel:', ''))
+end
+
+local function AddMessage(self, message, ...)
+    message = message:gsub('|Hchannel:(.-)|h%[(.-)%]|h', Abbreviate)
+
+    return hooks[self](self, message, ...)
+end
+
+for index = 1, NUM_CHAT_WINDOWS do
+    if(index ~= 2) then
+        local frame = _G['ChatFrame'..index]
+        hooks[frame] = frame.AddMessage
+        frame.AddMessage = AddMessage
+    end
+end
+
 function OnHyperlinkEnter(frame, refString)
 	if InCombatLockdown() then return; end
 	local linkToken = strmatch(refString, "^([^:]+)")
@@ -188,6 +220,10 @@ local function SetChatStyle(frame)
 	local editbox = _G["ChatFrame"..id.."EditBox"]
 	local left, mid, right = select(6, editbox:GetRegions())
 	Kill(left); Kill(mid); Kill(right)
+
+	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+	if (wowtocversion > 90000) then Mixin( editbox, BackdropTemplateMixin) end
+
 	editbox:ClearAllPoints();
 	editbox:SetPoint("CENTER", LeftInfoPanel)
 	editbox:SetWidth(440)
@@ -646,7 +682,7 @@ end
 
 for i = 1, NUM_CHAT_WINDOWS do
 	local cf = _G[format("ChatFrame%d", i)]
-	local button = CreateFrame("Button", format("ButtonCF%d", i), cf)
+	local button = CreateFrame("Button", format("ButtonCF%d", i), cf, BackdropTemplateMixin and "BackdropTemplate")
 	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -21, -27)
 	button:SetSize( 30, 30)
 	button:SetAlpha(0.1)
@@ -693,8 +729,15 @@ local function PrintURL(url)
 	return url
 end
 
-local FindURL = function(self, event, msg, ...)
-	--print( "find url", event, msg, ...)
+local FindURL = function(self, event, msg, ...) --arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
+	--print( "find url", event, ...)
+	--msg =  HandleShortChannels(msg)
+	--print( arg9, arg4)
+	--arg4 = "" --arg4 .. "rrr"
+	---arg9 = arg9 .. "www"
+
+	--return false, msg,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17
+
 	local newMsg, found = gsub(msg, "(%a+)://(%S+)%s?", PrintURL("%1://%2"))
 	if found > 0 then return false, newMsg, ... end
 
@@ -780,11 +823,25 @@ local function Chat_GetColoredChatName(chatType, chatTarget)
 	end
 end
 
+--local oldChatFrame_MessageEventHandler = ChatFrame_MessageEventHandler
+
+--function ChatFrame_MessageEventHandler(self, event, ...)
+--	if ( strsub(event, 1, 8) == "CHAT_MSG" ) then
+--		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17 = ...;
+--		--arg4 = "QQQQ"
+--		--arg9 = "WWWW"
+--		--print( "qwww here")
+--		oldChatFrame_MessageEventHandler( self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
+--	end
+--end
+
+
 local function OnChatHistory( self, event, ...)
 	if yo_ChatHistory == nil then
 		yo_ChatHistory = {}
 	end
-
+	--print( ...)
+	--local myMsg = ... --HandleShortChannels( ...)
 	if event:match"CHAT_MSG" then
 		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17 = ...
 		local type = strsub(event, 10)
@@ -812,6 +869,9 @@ local function OnChatHistory( self, event, ...)
 
 		--SaveLine( text, chanName, sender, chanColor, senderGUID, englishClass)
 		SaveLine( arg1, chanName, arg2, chanColor, arg12, englishClass, cols)
+
+		--local body = '|Hchannel:channel:'.. arg8 ..'|h['.. "qqq"..']|h '.. arg2 .. arg1 --ChatFrame_ResolvePrefixedChannelName(arg4)
+		--DEFAULT_CHAT_FRAME:AddMessage( body, cols.r, cols.g, cols.b)
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" then

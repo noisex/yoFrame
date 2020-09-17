@@ -57,7 +57,7 @@ function CreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
 	h:SetAllPoints(f)
 	f.dragtexture = h
 
-	local v = CreateFrame("Frame", nil, h)
+	local v = CreateFrame("Frame", nil, h, BackdropTemplateMixin and "BackdropTemplate")
 	v:SetPoint("TOPLEFT",0,0)
 	v:SetPoint("BOTTOMRIGHT",0,0)
 	framemove(v)

@@ -354,7 +354,7 @@ end)
 local function OnEvent(f, event, ...)
 	--print( "Event :", f:GetName(), event, ...)
 	local unit = f.unit
-	if event == "UNIT_HEALTH" or event == "UNIT_HEALTH_FREQUENT" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
+	if event == "UNIT_HEALTH" or event == "UNIT_ABSORB_AMOUNT_CHANGED" then
 		if f.alive == true then
 			initFrame( f)
 			f.alive = false
@@ -461,41 +461,41 @@ local function OnUpdate(f, elapse)
 	end
 end
 
-local function makeInspect( uf, unit, name)
-	if not uf[name] then
-		local f = CreateFrame("Button", nil, uf)
-		f:SetAlpha( 1)
-		f:SetSize( 15,15)
-		f:SetFrameLevel( 4)
-		f:SetPoint("CENTER", uf, "TOPRIGHT", 0, 0)
-		f:SetBackdrop({ bgFile="Interface\\HELPFRAME\\HelpIcon-Bug", })
+--local function makeInspect( uf, unit, name)
+--	if not uf[name] then
+--		local f = CreateFrame("Button", nil, uf, BackdropTemplateMixin and "BackdropTemplate")
+--		f:SetAlpha( 1)
+--		f:SetSize( 15,15)
+--		f:SetFrameLevel( 4)
+--		f:SetPoint("CENTER", uf, "TOPRIGHT", 0, 0)
+--		f:SetBackdrop({ bgFile="Interface\\HELPFRAME\\HelpIcon-Bug", })
 
-		f:SetScript("OnMouseUp", function( this, a1)
-			if not UnitIsVisible("target") then return end
-			if a1 == "LeftButton" then
-				InspectUnit("target")
-			elseif a1 == "RightButton" then
-				if not DressUpFrame:IsShown() then
-					ShowUIPanel(DressUpFrame)
-				end
-				DressUpModel:SetUnit("target")
-				SetPortraitTexture(DressUpFramePortrait, "target")
-			end
-		end)
+--		f:SetScript("OnMouseUp", function( this, a1)
+--			if not UnitIsVisible("target") then return end
+--			if a1 == "LeftButton" then
+--				InspectUnit("target")
+--			elseif a1 == "RightButton" then
+--				if not DressUpFrame:IsShown() then
+--					ShowUIPanel(DressUpFrame)
+--				end
+--				DressUpModel:SetUnit("target")
+--				SetPortraitTexture(DressUpFramePortrait, "target")
+--			end
+--		end)
 
-		f:SetScript("OnEnter", function(this)
-			GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
-			--GameTooltip:SetText("Info Button", 1, 1, 1)
-			GameTooltip:AddLine(" <Left-click> " ..INSPECT .." \n<Right-click> " .. DRESSUP_FRAME, 0, 1, 0)
-			GameTooltip:Show()
-		end)
+--		f:SetScript("OnEnter", function(this)
+--			GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
+--			--GameTooltip:SetText("Info Button", 1, 1, 1)
+--			GameTooltip:AddLine(" <Left-click> " ..INSPECT .." \n<Right-click> " .. DRESSUP_FRAME, 0, 1, 0)
+--			GameTooltip:Show()
+--		end)
 
-		f:SetScript("OnLeave", GameTooltipOnLeave)
-		uf[name] = f
-	else
-		f:Show()
-	end
-end
+--		f:SetScript("OnLeave", GameTooltipOnLeave)
+--		uf[name] = f
+--	else
+--		f:Show()
+--	end
+--end
 
 menu = function(self)
     local unit = self.unit:sub(1, -2)
@@ -512,8 +512,8 @@ function CreateUFrame( f, unit)
 	f.healthBar:SetAllPoints()
 	f.healthBar:SetFrameLevel(1)
 	f.healthBar:SetStatusBarTexture( texture)
-	--f.healthBar:SetStatusBarColor( 0.09, 0.09, 0.09, 1)
-	f.healthBar:SetStatusBarColor( 0.15, 0.15, 0.15, 1)
+	f.healthBar:SetStatusBarColor( 0.09, 0.09, 0.09, 1)
+	--f.healthBar:SetStatusBarColor( 0.15, 0.15, 0.15, 1)
 	f.healthBar:GetStatusBarTexture():SetHorizTile(false)
 	table.insert( N.statusBars, f.healthBar)
 
@@ -589,13 +589,13 @@ function CreateUFrame( f, unit)
 	f.rText:SetFont( yo.Media.fontpx, fontsize, "OUTLINE")
 	f.rText:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 2, 0)
 
-	f.rLeader = CreateFrame("Button", nil, f)
+	f.rLeader = CreateFrame("Button", nil, f, BackdropTemplateMixin and "BackdropTemplate")
     f.rLeader:SetPoint("CENTER", f, "TOPLEFT", 15, 4)
 	f.rLeader:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-LeaderIcon", })
     f.rLeader:SetSize(10, 10)
 	enableRC( f.rLeader)
 
-	f.rAssist = CreateFrame("Button", nil, f)
+	f.rAssist = CreateFrame("Button", nil, f, BackdropTemplateMixin and "BackdropTemplate")
     f.rAssist:SetPoint("CENTER", f.rLeader, "CENTER", 0, 0)
 	f.rAssist:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-AssistantIcon"})
     f.rAssist:SetSize(10, 10)
@@ -621,7 +621,7 @@ function CreateUFrame( f, unit)
 		f:RegisterEvent("PLAYER_REGEN_DISABLED")
 		f:RegisterEvent("GROUP_ROSTER_UPDATE")
 		f:RegisterUnitEvent("INCOMING_RESURRECT_CHANGED", unit)
-		f:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit)
+		f:RegisterUnitEvent("UNIT_HEALTH", unit)
 		f:RegisterUnitEvent("UNIT_POWER_FREQUENT", unit)
 		f:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit)
 		f:RegisterEvent('PLAYER_LEVEL_UP')
@@ -674,7 +674,7 @@ function CreateUFrame( f, unit)
 		f:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit)
 		f:RegisterUnitEvent("INCOMING_RESURRECT_CHANGED", unit)
 
-		makeInspect( f, unit, "inspect")
+		--makeInspect( f, unit, "inspect")
 	elseif unit == "pet" then
 		f:RegisterEvent("UNIT_PET")
 		f:RegisterUnitEvent("UNIT_NAME_UPDATE", unit)

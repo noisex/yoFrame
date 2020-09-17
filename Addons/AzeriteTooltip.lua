@@ -243,7 +243,7 @@ function AzeriteTooltip_BuildTooltip(self)
 
 				if tierLevel <= currentLevel then
 					if j > 1 then
-						--addText = format("%s \n \n|c%s %s %s |r\n" , addText, "FFffcc00", "Level", tierLevel)
+						--addText = format("%s \n|c%s %s %s |r\n" , addText, "FFffcc00", "Level", tierLevel)
 						addText = addText.."\n \n|cFFffcc00 Level "..tierLevel.."|r\n"
 					else
 						addText = addText.."\n|cFFffcc00 Level "..tierLevel.."|r\n"

@@ -17,7 +17,9 @@ local function DisbandRaidGroup()
 			end
 		end
 	end
-	LeaveParty()
+	if UnitInParty( "player") or UnitInRaid( "player") then
+		C_PartyInfo.LeaveParty()
+	end
 end
 --local PopupDialogs = {};
 
@@ -28,12 +30,12 @@ end
 	-- OnAccept = function() DisbandRaidGroup() end,
 	-- timeout = 0,
 	-- whileDead = 1,
--- }	
+-- }
 
 local function doRUP()
 	local iWidth = 110
 
-	local RUPanel = CreateFrame("Frame", nil, UIParent)
+	local RUPanel = CreateFrame("Frame", "yo_RaidUtil", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 	CreatePanel(RUPanel, 226, 126, "TOP", yo_MoveRUP, "TOP", 0, 0)
 	RUPanel:SetBackdropColor(.05,.05,.05, 0.9)
 	RUPanel:SetFrameLevel(0)
@@ -42,36 +44,45 @@ local function doRUP()
 	RUPanel:SetPoint( "TOP", yo_MoveRUP, "TOP", 3, 3)
 	RUPanel:Hide()
 
- 	--Change border when mouse is inside the button
 	local function ButtonEnter(self)
-		local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
-		self:SetBackdropBorderColor(color.r, color.g, color.b)
+		self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b)
 	end
- 
-	--Change border back to normal when mouse leaves button
+
 	local function ButtonLeave(self)
 		self:SetBackdropBorderColor(.15,.15,.15, 0)
 	end
 	-------------------------------------------------------------------------------------------------------------
- 
+
 	local function BEnter(self)
-		local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
-		self:SetBackdropBorderColor(color.r, color.g, color.b)
+		if self.shadow then
+			local r, g, b = myColor.r, myColor.g, myColor.b
+    		self.shadow:SetBackdropColor(.07,.07,.07, .9)
+			self.shadow:SetBackdropBorderColor( r, g, b, 1)
+		else
+			self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b)
+		end
 	end
- 
+
 	local function BLeave(self)
-		self:SetBackdropBorderColor(.15,.15,.15, 0)
+		if self.shadow then
+    		self.shadow:SetBackdropColor(.07,.07,.07, .9)
+			self.shadow:SetBackdropBorderColor( .07, .07, .07, 1)
+		else
+			self:SetBackdropBorderColor(.15,.15,.15, 0)
+		end
 	end
 
 	local sB = CreateFrame("Frame", nil, RUPanel)
+	RUPanel.buttons = sB
+
 	for i = 1, 9 do
-		sB[i] = CreateFrame("Button", nil, RUPanel, "SecureHandlerClickTemplate") -- "yo_Mark"..i
+		sB[i] = CreateFrame("Button", nil, RUPanel, BackdropTemplateMixin and "BackdropTemplate") -- "SecureHandlerClickTemplate",
 		sB[i]:SetWidth( 24)
 		sB[i]:SetHeight(24)
 		sB[i]:SetBackdrop({
 			bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-			edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1, 
-			insets = {left = 1, right = 1, top = 1, bottom = 1} 
+			edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1,
+			insets = {left = 1, right = 1, top = 1, bottom = 1}
 		})
 		sB[i]:SetBackdropBorderColor(.15,.15,.15, 0)
 		sB[i]:SetScript("OnEnter", BEnter)
@@ -79,7 +90,7 @@ local function doRUP()
 		sB[i]:RegisterForClicks("AnyUp")
 		sB[i]:SetBackdropColor(.05,.05,.05, 0.9)
 		sB[i]:SetNormalTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
-	
+
 		if i == 1 then -- Skull
 			sB[i]:SetPoint("TOPLEFT", RUPanel, "TOPLEFT", 3 , -2)
 			sB[i]:SetScript("OnMouseUp", function() SetRaidTarget("target", 8) end)
@@ -119,76 +130,87 @@ local function doRUP()
 			sB[i]:SetNormalTexture( nil)
 			sB[i]:SetWidth( 56)
 			sB[i]:SetHeight(18)
-			
+
 			local txt = sB[i]:CreateFontString(nil,"OVERLAY", nil)
 			txt:SetFont( font,fontsize,"OUTLINE")
 			txt:SetText("Clear")
 			txt:SetPoint("CENTER")
 			txt:SetJustifyH("CENTER")
-	
+
 		end
 	end
 
 	for i = 11, 19 do
-		sB[i] = CreateFrame("Button", nil, RUPanel, "SecureActionButtonTemplate")  -- name
+		sB[i] = CreateFrame("Button", nil, RUPanel,  "SecureActionButtonTemplate",  "BackdropTemplate") --BackdropTemplateMixin and  SecureHandlerClickTemplate
 		sB[i]:SetWidth(24)
 		sB[i]:SetHeight(24)
-		sB[i]:SetBackdrop({
-			bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-			edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1, 
-			insets = {left = 1, right = 1, top = 1, bottom = 1} 
-		})
-		sB[i]:SetBackdropColor( 0, 0, 1)
-		sB[i]:SetBackdropBorderColor(.15,.15,.15, 0)
+		--sB[i]:SetBackdrop({
+		--	bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
+		--	edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1,
+		--	insets = {left = 1, right = 1, top = 1, bottom = 1}
+		--})
+		--sB[i]:SetBackdropColor( 0, 0, 1)
+		--sB[i]:SetBackdropBorderColor(.15,.15,.15, 0)
 		sB[i]:SetScript("OnEnter", BEnter)
 		sB[i]:SetScript("OnLeave", BLeave)
+		CreateStyleSmall( sB[i], 1)
 		sB[i]:SetAttribute("type", "macro")
 
 		if i == 11 then
-			sB[i]:SetBackdropColor( 0, 0.76 ,1, 1)
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 0, 0.76 ,1, 1)
 			sB[i]:SetPoint("TOPRIGHT", RUPanel, "TOPRIGHT", -3, -3)
 			sB[i]:SetAttribute("macrotext", [[/cwm 1
 /wm 1]])
+
 		elseif i == 12 then
-			sB[i]:SetBackdropColor( 0.58, 0.86, 0.49,1)
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 0.58, 0.86, 0.49,1)
 			sB[i]:SetPoint( "RIGHT", sB[11], "LEFT", -2, 0)
 			sB[i]:SetAttribute("macrotext", [[/cwm 2
 /wm 2]])
 		elseif i == 13 then
-			sB[i]:SetBackdropColor( 0.6, 0.47, 0.85,1) 
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 0.6, 0.47, 0.85,1)
 			sB[i]:SetPoint( "TOP", sB[11], "BOTTOM", 0, -2)
 			sB[i]:SetAttribute("macrotext", [[/cwm 3
 /wm 3]])
 		elseif i == 14 then
-			sB[i]:SetBackdropColor( 0.77, 0.12 , 0.23, 1)  
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 0.77, 0.12 , 0.23, 1)
 			sB[i]:SetPoint( "TOP", sB[12], "BOTTOM", 0, -2)
 			sB[i]:SetAttribute("macrotext", [[/cwm 4
 /wm 4]])
 		elseif i == 15 then
-			sB[i]:SetPoint( "TOP", sB[13], "BOTTOM", 0, -2) 
-			sB[i]:SetBackdropColor( 1, 0.91, 0.2, 1)
+			sB[i]:SetPoint( "TOP", sB[13], "BOTTOM", 0, -2)
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 1, 0.91, 0.2, 1)
 			sB[i]:SetAttribute("macrotext", [[/cwm 5
 /wm 5]])
 		elseif i == 16 then
-			sB[i]:SetPoint( "TOP", sB[14], "BOTTOM", 0, -2) 
-			sB[i]:SetBackdropColor(  1, 0.49, 0.04, 1)
+			sB[i]:SetPoint( "TOP", sB[14], "BOTTOM", 0, -2)
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor(  1, 0.49, 0.04, 1)
 			sB[i]:SetAttribute("macrotext", [[/cwm 6
 /wm 6]])
 		elseif i == 17 then
-			sB[i]:SetPoint( "TOP", sB[15], "BOTTOM", 0, -2) 
-			sB[i]:SetBackdropColor( 0.8, 0.87, 0.9, 1)
+			sB[i]:SetPoint( "TOP", sB[15], "BOTTOM", 0, -2)
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 0.8, 0.87, 0.9, 1)
 			sB[i]:SetAttribute("macrotext", [[/cwm 7
 /wm 7]])
 		elseif i == 18 then
 			sB[i]:SetPoint( "TOP", sB[16], "BOTTOM", 0, -2)
-			sB[i]:SetBackdropColor( 0.29, 0.29, 0.29, 1) 
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 0.29, 0.29, 0.29, 1)
 			sB[i]:SetAttribute("macrotext", [[/cwm 8
 /wm 8]])
 		elseif i == 19 then
 			sB[i]:SetPoint( "TOPRIGHT", sB[17], "BOTTOMRIGHT", 0, -2)
 			sB[i]:SetWidth( 50)
 			sB[i]:SetHeight(18)
-			sB[i]:SetBackdropColor( 0, 0, 0, 0.9)
+			sB[i]:SetNormalTexture(texture)
+			sB[i]:GetNormalTexture(texture):SetVertexColor( 0, 0, 0, 0.9)
 			sB[i]:SetAttribute("macrotext", [[
 /cwm 1
 /cwm 2
@@ -199,19 +221,23 @@ local function doRUP()
 /cwm 7
 /cwm 8
 ]])
+
+	--ClearRaidMarker(marker);
+	--PlaceRaidMarker(marker);
+
 			local txt = sB[i]:CreateFontString(nil,"OVERLAY", nil)
 			txt:SetFont( font,fontsize,"OUTLINE")
 			txt:SetText("Clear")
 			txt:SetPoint("CENTER")
 			txt:SetJustifyH("CENTER")
-	
+
 			-- local txt = sB[i]:CreateTexture(nil,"OVERLAY",nil)
 			-- txt:SetSize( 18, 18)
 			-- txt:SetTexture("Interface\\CHATFRAME\\UI-ChatIcon-Overwatch")  --Interface\\CHATFRAME\\UI-ChatIcon-D3  --Interface\\ARCHEOLOGY\\Arch-Icon-Marker")   --Interface\\RAIDFRAME\\ReadyCheck-NotReady")
 			-- txt:SetPoint("CENTER", sB[i], "CENTER", 0, 0)
 		end
 	end
- 
+
 	--Create button for when frame is hidden ----------------------------------------------------------------------
 	local CloseButton = CreateFrame("Button", nil, UIParent, "SecureHandlerClickTemplate")
 	CloseButton:SetHeight(16)
@@ -228,15 +254,15 @@ local function doRUP()
 	CloseButton:SetAttribute("_onclick", [=[
 		self:GetFrameRef('RUPanel'):Show()
 		self:GetFrameRef('CloseButton'):Hide()
-	]=]); 
+	]=]);
 
 	local CloseButtonText = CloseButton:CreateFontString(nil,"OVERLAY",CloseButton)
 	CloseButtonText:SetFont( font,fontsize,"OUTLINE")
 	CloseButtonText:SetText("Raid Utility")
 	CloseButtonText:SetPoint("CENTER")
 	CloseButtonText:SetJustifyH("CENTER")
- 
- 
+
+
 	--Create button for when frame is shown
 	local ShownButton = CreateFrame("Button", nil, RUPanel, "SecureHandlerClickTemplate")
 	ShownButton:SetHeight(16)
@@ -252,7 +278,7 @@ local function doRUP()
 	ShownButton:SetAttribute("_onclick", [=[
 		self:GetFrameRef('RUPanel'):Hide()
 		self:GetFrameRef('CloseButton'):Show()
-	]=]); 
+	]=]);
 
 	local ShownButtonText = ShownButton:CreateFontString(nil,"OVERLAY",ShownButton)
 	ShownButtonText:SetFont( font,fontsize,"OUTLINE")
@@ -261,28 +287,29 @@ local function doRUP()
 	ShownButtonText:SetJustifyH("CENTER")
 
 	--Cancel Pill Button
-	local CancelButton = CreateFrame("Button", nil, RUPanel, "SecureActionButtonTemplate")
+	local CancelButton = CreateFrame("Button", nil, RUPanel, "SecureActionButtonTemplate") -- C_PartyInfo.DoCountdown(num1); C_PartyInfo.DoCountdown(num1); C_PartyInfo.DoCountdown(num1); C_PartyInfo.DoCountdown(num1);
 	CancelButton:SetHeight(16)
 	CancelButton:SetWidth(iWidth)
 	frame1px(CancelButton)
 	CancelButton:SetPoint("TOP", RUPanel, "TOP", 0, 0)
 	CancelButton:SetScript("OnEnter", ButtonEnter)
 	CancelButton:SetScript("OnLeave", ButtonLeave)
-	CancelButton:SetAttribute("type1","macro")
-	CancelButton:SetAttribute("macrotext1", "/ert pull 0")
+	--CancelButton:SetAttribute("type1","macro")
+	--CancelButton:SetAttribute("macrotext1", "/ert pull 0")
 	CancelButton:RegisterForClicks("AnyDown")
 
 	CancelButton:SetScript("OnMouseUp", function(self)
+		C_PartyInfo.DoCountdown( -2)
 		RUPanel:Hide()
 		CloseButton:Show()
 	end)
- 
+
 	local CancelButtonText = CancelButton:CreateFontString(nil,"OVERLAY",CancelButton)
 	CancelButtonText:SetFont( font,fontsize,"OUTLINE")
 	CancelButtonText:SetText("Cancel Pull")
 	CancelButtonText:SetPoint("CENTER")
 	CancelButtonText:SetJustifyH("CENTER")
- 
+
 	--PULL 5 button
 	local Pull5Button = CreateFrame("Button", nil, RUPanel, "SecureActionButtonTemplate")
 	Pull5Button:SetHeight(16)
@@ -293,23 +320,24 @@ local function doRUP()
 	Pull5Button:SetScript("OnLeave", ButtonLeave)
 	Pull5Button:RegisterForClicks("AnyDown")
 
-	Pull5Button:SetAttribute("type1","macro")
-	Pull5Button:SetAttribute("macrotext1", "/ert pull 5")
+	--Pull5Button:SetAttribute("type1","macro")
+	--Pull5Button:SetAttribute("macrotext1", "/ert pull 5")
 
 	Pull5Button:SetScript("OnMouseUp", function(self)
 --		SendAddonMessage("BigWigs", "P^Pull^5")
 --		local _,_,_,_,_,_,_,mapID = GetInstanceInfo()
---		SendAddonMessage("D4", ("PT\t%d\t%d"):format( 5,mapID or -1))	
+--		SendAddonMessage("D4", ("PT\t%d\t%d"):format( 5,mapID or -1))
+		C_PartyInfo.DoCountdown( 3)
 		RUPanel:Hide()
 		CloseButton:Show()
 	end)
- 
+
 	local Pull5ButtonText = Pull5Button:CreateFontString(nil,"OVERLAY",Pull5Button)
 	Pull5ButtonText:SetFont( font,fontsize,"OUTLINE")
 	Pull5ButtonText:SetText("Pull 5")
 	Pull5ButtonText:SetPoint("CENTER")
 	Pull5ButtonText:SetJustifyH("CENTER")
- 
+
 	--PULL 10 button
 	local Pull10Button = CreateFrame("Button", nil, RUPanel, "SecureActionButtonTemplate")
 	Pull10Button:SetHeight(16)
@@ -318,21 +346,22 @@ local function doRUP()
 	Pull10Button:SetPoint("TOP", Pull5Button, "BOTTOM", 0, -5)
 	Pull10Button:SetScript("OnEnter", ButtonEnter)
 	Pull10Button:SetScript("OnLeave", ButtonLeave)
-	Pull10Button:SetAttribute("type1","macro")
-	Pull10Button:SetAttribute("macrotext1", "/ert pull 10")
+	--Pull10Button:SetAttribute("type1","macro")
+	--Pull10Button:SetAttribute("macrotext1", "/ert pull 10")
 	Pull10Button:RegisterForClicks("AnyDown")
 
 	Pull10Button:SetScript("OnMouseUp", function(self)
+		C_PartyInfo.DoCountdown( 8)
 		RUPanel:Hide()
 		CloseButton:Show()
 	end)
- 
+
 	local Pull10ButtonText = Pull10Button:CreateFontString(nil,"OVERLAY",Pull10Button)
 	Pull10ButtonText:SetFont( font,fontsize,"OUTLINE")
 	Pull10ButtonText:SetText("Pull 10")
 	Pull10ButtonText:SetPoint("CENTER")
 	Pull10ButtonText:SetJustifyH("CENTER")
- 
+
 	--Ready Check button
 	local ReadyCheckButton = CreateFrame("Button", nil, RUPanel)
 	ReadyCheckButton:SetHeight(16)
@@ -346,7 +375,7 @@ local function doRUP()
 		RUPanel:Hide()
 		CloseButton:Show()
 	end)
- 
+
 	local ReadyCheckButtonText = ReadyCheckButton:CreateFontString(nil,"OVERLAY",ReadyCheckButton)
 	ReadyCheckButtonText:SetFont( font,fontsize,"OUTLINE")
 	ReadyCheckButtonText:SetText(READY_CHECK)
@@ -354,7 +383,7 @@ local function doRUP()
 	ReadyCheckButtonText:SetJustifyH("CENTER")
 
 		--Leave group button
-	local LeaveButton = CreateFrame("Button", nil, RUPanel)
+	local LeaveButton = CreateFrame("Button", nil, RUPanel, "SecureActionButtonTemplate")
 	LeaveButton:SetHeight(16)
 	LeaveButton:SetWidth(iWidth)
 	frame1px( LeaveButton)
@@ -362,17 +391,19 @@ local function doRUP()
 	LeaveButton:SetScript("OnEnter", ButtonEnter)
 	LeaveButton:SetScript("OnLeave", ButtonLeave)
 	LeaveButton:SetScript("OnMouseUp", function(self)
-		LeaveParty()
+		if UnitInParty( "player") or UnitInRaid( "player") then
+			C_PartyInfo.LeaveParty()
+		end
 		RUPanel:Hide()
 		CloseButton:Show()
 	end)
- 
+
 	local LeaveButtonText = LeaveButton:CreateFontString(nil,"OVERLAY",LeaveButton)
 	LeaveButtonText:SetFont( font,fontsize,"OUTLINE")
 	LeaveButtonText:SetText( PARTY_LEAVE)
 	LeaveButtonText:SetPoint("CENTER")
 	LeaveButtonText:SetJustifyH("CENTER")
-	
+
 	--DISBAND button
 	local DisbandButton = CreateFrame("Button", nil, RUPanel)
 	DisbandButton:SetHeight(16)
@@ -385,20 +416,20 @@ local function doRUP()
 		--if CheckRaidStatus() then
 			--StaticPopup_Show("DISBAND_RAID")
 			DisbandRaidGroup()
-			
+
 			--PopupDialogs("DISBAND_RAID")
 		--end
 		RUPanel:Hide()
 		CloseButton:Show()
 	end)
- 
+
 	local DisbandButtonText = DisbandButton:CreateFontString(nil,"OVERLAY",DisbandButton)
 	DisbandButtonText:SetFont( font,fontsize,"OUTLINE")
 	DisbandButtonText:SetText( TEAM_DISBAND)
 	DisbandButtonText:SetTextColor( 1, 0.5, 0)
 	DisbandButtonText:SetPoint("CENTER")
 	DisbandButtonText:SetJustifyH("CENTER")
-	
+
 	--World Marker button
 	-- local WorldMarkerButton = CreateFrame("Button", nil, RUPanel)
 	-- WorldMarkerButton:SetHeight(20)
@@ -428,7 +459,7 @@ local function doRUP()
 	-- CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePoll:ClearAllPoints()
 	-- CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePoll:SetPoint("BOTTOMLEFT", CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheck, "TOPLEFT", 0, 1)
 	-- CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePoll:SetPoint("BOTTOMRIGHT", CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheck, "TOPRIGHT", 0, 1)
- 
+
 	-- local WorldMarkerButtonTexture = WorldMarkerButton:CreateTexture(nil,"OVERLAY",nil)
 	-- WorldMarkerButtonTexture:SetSize( 20, 20)
 	-- WorldMarkerButtonTexture:SetTexture("Interface\\RaidFrame\\Raid-WorldPing")

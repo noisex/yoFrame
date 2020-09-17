@@ -81,7 +81,7 @@ local function Timer_OnSizeChanged(self, width, height)
 		self.text:SetFont(FONT_FACE, fontScale * FONT_SIZE, 'OUTLINE')
 		self.text:SetShadowColor(0, 0, 0, 0.5)
 		self.text:SetShadowOffset(2, -2)
-		
+
 		if self.enabled then
 			Timer_ForceUpdate(self)
 		end
@@ -113,7 +113,7 @@ local function Timer_Create(self)
 	local scaler = CreateFrame('Frame', nil, self)
 	scaler:SetAllPoints(self)
 
-	local timer = CreateFrame('Frame', nil, scaler); 
+	local timer = CreateFrame('Frame', nil, scaler);
 	timer:Hide()
 	timer:SetAllPoints(scaler)
 	timer:SetScript('OnUpdate', Timer_OnUpdate)
@@ -202,4 +202,5 @@ if _G["ActionBarButtonEventsFrame"].frames then
 	end
 end
 
-hooksecurefunc("ActionBarButtonEventsFrame_RegisterFrame", actionButton_Register)
+--hooksecurefunc("ActionBarButtonEventsFrame_RegisterFrame", actionButton_Register)
+hooksecurefunc( ActionBarButtonEventsFrameMixin, "RegisterFrame", actionButton_Register)

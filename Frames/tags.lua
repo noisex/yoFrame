@@ -6,9 +6,9 @@ local L, yo = ns[1], ns[2]
 
 
 local foo = {""}
-local spellcache = setmetatable({}, 
-{__index=function(t,id) 
-	local a = {GetSpellInfo(id)} 
+local spellcache = setmetatable({},
+{__index=function(t,id)
+	local a = {GetSpellInfo(id)}
 
 	if GetSpellInfo(id) then
 	    t[id] = a
@@ -74,7 +74,7 @@ oUF.Tags.Events["PetNameColor"] = "UNIT_POWER"
 oUF.Tags.Methods['GetNameColor'] = function(u, r)
 	local _, class = UnitClass(u)
 	local reaction = UnitReaction(u, "player")
-	
+
 	--if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
 	--	return "|cffA0A0A0"
 	if (UnitIsPlayer(u)) then
@@ -174,12 +174,12 @@ oUF.Tags.Methods['namelong'] = function(unit)
 	return utf8sub(name, 35, true)
 end
 
-oUF.Tags.Methods['hp']  = function(u) 
+oUF.Tags.Methods['hp']  = function(u)
 	if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
 		return oUF.Tags.Methods['DDG'](u)
 	else
 		local per = oUF.Tags.Methods['perhp'](u) or 0
-		if per < 100 or per < 1 then 	
+		if per < 100 or per < 1 then
 			local min = UnitHealth(u)
 			return ShortValue( min) .. " | " .. per .. "%"
 		--else
@@ -190,12 +190,12 @@ oUF.Tags.Methods['hp']  = function(u)
 end
 oUF.Tags.Events['hp'] = 'UNIT_HEALTH'
 
-oUF.Tags.Methods['per']  = function(u) 
+oUF.Tags.Methods['per']  = function(u)
 	if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
 		return oUF.Tags.Methods['DDG'](u)
 	else
 		local per = oUF.Tags.Methods['perhp'](u) or 0
-		if per < 100 or per < 1 then 
+		if per < 100 or per < 1 then
 			return per .. "%"
 		end
 	end
@@ -203,11 +203,11 @@ end
 
 oUF.Tags.Events['per'] = 'UNIT_HEALTH'
 
-oUF.Tags.Methods['power']  = function(u) 
+oUF.Tags.Methods['power']  = function(u)
 	local min, max = UnitPower(u), UnitPowerMax(u)
-	if min~=max then 
+	if min~=max then
 		return SVal(min)
-	else 
+	else
 		return SVal(max)
 	end
 end
@@ -218,7 +218,7 @@ oUF.Tags.Events['power'] = 'UNIT_POWER'
 oUF.Tags.Methods['color'] = function(u, r)
 	local _, class = UnitClass(u)
 	local reaction = UnitReaction(u, "player")
-	
+
 	if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
 		return "|cffA0A0A0"
 	elseif (UnitIsPlayer(u)) then
@@ -231,8 +231,8 @@ oUF.Tags.Methods['color'] = function(u, r)
 end
 oUF.Tags.Events['color'] = 'UNIT_HEALTH'
 
-oUF.Tags.Methods["afk"] = function(unit) 
-	
+oUF.Tags.Methods["afk"] = function(unit)
+
 	return UnitIsAFK(unit) and "|cffCFCFCF afk|r" or ""
 end
 oUF.Tags.Events["afk"] = "PLAYER_FLAGS_CHANGED"
@@ -272,15 +272,15 @@ end
 oUF.Tags.Events['LFD'] = 'PLAYER_ROLES_ASSIGNED'
 -- Level
 oUF.Tags.Methods["level"] = function(unit)
-	
+
 	local c = UnitClassification(unit)
 	local l = UnitLevel(unit)
 	local d = GetQuestDifficultyColor(l)
-	
+
 	local str = l
-		
+
 	if l <= 0 then l = "??" end
-	
+
 	if c == "worldboss" then
 		str = string.format("|cff%02x%02x%02xBoss|r",250,20,0)
 	elseif c == "eliterare" then
@@ -300,9 +300,9 @@ oUF.Tags.Methods["level"] = function(unit)
 			else
 				str = string.format("|cff%02x%02x%02x%s",d.r*255,d.g*255,d.b*255,l)
 			end
-		end		
+		end
 	end
-	
+
 	return str
 end
 oUF.Tags.Events["level"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
@@ -326,7 +326,7 @@ oUF.Tags.Methods["NameplateHealth"] = function(unit)
 		return ("%s - %d%%"):format( ShortValue(hp), hp / maxhp * 100 + 0.5)
 	end
 end
-oUF.Tags.Events["NameplateHealth"] = "UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH NAME_PLATE_UNIT_ADDED"
+oUF.Tags.Events["NameplateHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH NAME_PLATE_UNIT_ADDED"
 
 oUF.Tags.Methods["NameplateLevel"] = function(unit)
 	local level = UnitLevel(unit)

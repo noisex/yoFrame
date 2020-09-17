@@ -569,8 +569,8 @@ end
 --------------------------------------------------------------------------------------
 
 local function IsFriend( name)
-	for i = 1, GetNumFriends() do
-		if( GetFriendInfo( i) == name) then
+	for i = 1, C_FriendList.GetNumFriends() do
+		if( C_FriendList.GetFriendInfoByIndex( i).name == name) then
 			return true
 		end
 	end
@@ -788,7 +788,7 @@ f:RegisterEvent("PLAYER_LOGIN")
 --VehicleAnchor:SetPoint(unpack(C.position.vehicle))
 --VehicleAnchor:SetSize(130, 130)
 
-hooksecurefunc(VehicleSeatIndicator, "SetPoint", function(_, _, parent)
+hooksecurefunc(VehicleSeatIndicator, "SetPoint", function(_, _, parent) --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if parent == "MinimapCluster" or parent == _G["MinimapCluster"] then
 		VehicleSeatIndicator:ClearAllPoints()
 		VehicleSeatIndicator:SetPoint("TOPRIGHT", Minimap, "BOTTOMLEFT", -110, -15)
@@ -817,7 +817,7 @@ autoinvite:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 		if (not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and not QueueStatusMinimapButton:IsShown() and inviteOK[arg1:lower()] then
 			--for match in string.gmatch( " инв inv byd штм 123 ", " " .. arg1:lower() .. " ") do
 			if event == "CHAT_MSG_WHISPER" then
-				InviteUnit(arg2)
+				C_PartyInfo.InviteUnit(arg2)
 			elseif event == "CHAT_MSG_BN_WHISPER" then
 				local bnetIDAccount = select(11, ...)
 				local bnetIDGameAccount = select(6, BNGetFriendInfoByID(bnetIDAccount))
@@ -829,7 +829,7 @@ autoinvite:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 	if yo.Addons.AutoLeader then
 		if ( UnitIsGroupLeader("player") or UnitIsGroupAssistant("player"))
 			and ( UnitInParty( strsplit( "-", arg2)) or UnitInRaid( strsplit( "-", arg2)))
-			and ( arg1:lower():match( "!leader") or arg1:lower():match( "!лидер"))
+			and ( arg1:lower():match( "!leader") or arg1:lower():match( "!лидер") or arg1:lower():match( "!lider"))
 			and UnitIsInMyGuild( strsplit( "-", arg2))
 				then
 
@@ -848,21 +848,24 @@ end)
 ----------------------------------------------------------------------------------------
 --	Undress button
 ----------------------------------------------------------------------------------------
-local strip = CreateFrame("Button", "DressUpFrameUndressButton", DressUpFrame, "UIPanelButtonTemplate")
-strip:SetText( "DRESS OFF")
-strip:SetHeight(22)
-strip:SetWidth(strip:GetTextWidth() + 40)
-strip:SetPoint("RIGHT", DressUpFrameResetButton, "LEFT", -40, 0)
-strip:RegisterForClicks("AnyUp")
-strip:SetScript("OnClick", function(self, button)
-	if button == "RightButton" then
-		self.model:UndressSlot(19)
-	else
-		self.model:Undress()
-	end
-end)
-strip.model = DressUpModel
+--local strip = CreateFrame("Button", "DressUpFrameUndressButton", DressUpFrame, "UIPanelButtonTemplate")
+--strip:SetText( "DRESS OFF")
+--strip:SetHeight(22)
+--strip:SetWidth(strip:GetTextWidth() + 40)
+--strip:SetPoint("RIGHT", DressUpFrameResetButton, "LEFT", -40, 0)
+--strip:RegisterForClicks("AnyUp")
+--strip:SetScript("OnClick", function(self, button)
+--	if button == "RightButton" then
+--		local actor = DressUpFrame.ModelScene:GetPlayerActor();
+--		--self.model:UndressSlot(19)
+--	else
+--		local actor = DressUpFrame.ModelScene:GetPlayerActor();
+--		actor:Undress();
+--		--self.model:Undress()
+--	end
+--end)
+--strip.model = DressUpModel
 
-function GameTooltipOnLeave()
-	GameTooltip:Hide()
-end
+--function GameTooltipOnLeave()
+--	GameTooltip:Hide()
+--end

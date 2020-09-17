@@ -46,7 +46,7 @@ local function update()
 		end
 	end
 	lastupdate = 0
-	
+
 	if nextupdate < 0 then addon:Hide() end
 end
 
@@ -60,11 +60,11 @@ local function start(id, starttime, duration, class, rduration)
 		["duration"] = rduration
 	}
 	addon:Show()
-	
+
 	for _, func in next, lib.startcalls do
 		func(id, duration, class, watched)
 	end
-	
+
 	update()
 end
 
@@ -72,20 +72,23 @@ local numTabs, totalspellnum
 
 local function parsespellbook(spellbook)
 	spells = {}
-	local _, _, _, max1 = GetSpellTabInfo(1) 
-	local _, _, _, max2 = GetSpellTabInfo(2)
-	local max = max1 + max2 + 3
 
-	for i = 1, max do
-   		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
-   		--print(i, spellName, spellID)
-   		local isPassive = IsPassiveSpell( i, "spell");
-   		--local cd = GetSpellBaseCooldown( spellID)
+	local numTabs = GetNumSpellTabs();
 
-   		if spellID and not isPassive and spellID ~= 125439 and spellID ~= 83958 then
-   			spells[spellID] = true
-   	    	--print( i, spellName, spellID)
-   		end  
+	for tabIndex = 1, 3 do
+   		local _, _, offset, numSlots = GetSpellTabInfo(tabIndex);
+   		for i = offset + 1, offset + numSlots do
+      --      print( offset, numSlots)
+      		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
+      		--print(i, spellName, spellID)
+      		local isPassive = IsPassiveSpell( i, "spell");
+   			--local cd = GetSpellBaseCooldown( spellID)
+
+   			if spellID and not isPassive and spellID ~= 125439 and spellID ~= 83958 then
+   				spells[spellID] = true
+   	    		--print( i, spellName, spellID)
+   			end
+   		end
 	end
 end
 
@@ -104,18 +107,18 @@ function addon:SPELL_UPDATE_COOLDOWN()
 	for id in next, spells do
 		local enabled = 1
 		local charge, maxCharge, starttime, duration = GetSpellCharges( id)
-		
+
 		if not charge or charge > 0 then -- or charge == maxCharge then --  then
 			starttime, duration, enabled = GetSpellCooldown(id)
 		end
-		
+
 		if starttime == nil then
 			watched[id] = nil
 		elseif starttime == 0 and watched[id] then
 			stop(id, "spell")
 		elseif starttime ~= 0 then
 			local timeleft = starttime + duration - now
-		
+
 			if enabled == 1 and timeleft > 1.51 then --> 1.51 then
 				if not watched[id] or watched[id].start ~= starttime then
 					start(id, starttime, timeleft, "spell", duration)
@@ -145,14 +148,14 @@ function addon:PLAYER_ENTERING_WORLD()
 	addon:RegisterEvent("LEARNED_SPELL_IN_TAB")
 	addon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	addon:RegisterEvent("PLAYER_TALENT_UPDATE")
-	
+
 	addon:LEARNED_SPELL_IN_TAB()
 	addon:SPELL_UPDATE_COOLDOWN()
 
 	if yo.fliger.checkBags then
-		addon:RegisterEvent("BAG_UPDATE_COOLDOWN")		
+		addon:RegisterEvent("BAG_UPDATE_COOLDOWN")
 		addon:BAG_UPDATE_COOLDOWN()
-	end	
+	end
 end
 
 hooksecurefunc("UseInventoryItem", function(slot)
@@ -193,7 +196,7 @@ local function onupdate(self, elapsed)
 	nextupdate = nextupdate - elapsed
 	lastupdate = lastupdate + elapsed
 	if nextupdate > 0 then return end
-	
+
 	update(self)
 end
 

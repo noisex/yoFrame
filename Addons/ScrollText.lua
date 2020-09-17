@@ -50,6 +50,8 @@ local function ClearSpam( spellID)
 			["amount"] 	= 0,
 			["tick"] 	= 0,
 			["school"]	= 0,
+			--['id']		= 0,
+			--['name']	= '',
 		}
 	end
 end
@@ -144,7 +146,7 @@ local function CombatLogEvent( self, ...)
 		local subEvent = select( 2, ...)
 
 		if subEvent == "SPELL_DAMAGE"
-			--or subEvent == "SPELL_PERIODIC_DAMAGE"
+			or subEvent == "SPELL_PERIODIC_DAMAGE"
 			then
 
 			local spellID = gsub( select( 13, ...), "%s%b()", "")
@@ -158,11 +160,12 @@ local function CombatLogEvent( self, ...)
 				["school"]	= select( 14, ...),
 				["type"]	= 1,
 				["id"]		= select( 12, ...),
+				--['name']	= name = GetSpellInfo(spellID),
 			}
 			--print( spellID, spam[spellID].amount, shortName, select( 24, ...))
 
 		elseif subEvent == "SPELL_HEAL"
-			--or subEvent == "SPELL_PERIODIC_HEAL"
+			or subEvent == "SPELL_PERIODIC_HEAL"
 			then
 
 			local spellID = select( 12, ...)
@@ -175,6 +178,7 @@ local function CombatLogEvent( self, ...)
 				["school"]	= select( 14, ...),
 				["type"]	= 2,
 				["id"]		= select( 12, ...),
+				--['name']	= name = GetSpellInfo(spellID),
 			}
 		end
 	end

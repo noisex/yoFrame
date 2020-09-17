@@ -8,8 +8,8 @@ local function TMenu( self)
 	local menu = {
 		{ text = "Комплекты", isTitle = true},
 	}
-	
-	for i = 1, C_EquipmentSet.GetNumEquipmentSets() do	
+
+	for i = 1, C_EquipmentSet.GetNumEquipmentSets() do
 		name[i], icon, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo( i)
 
 		if name then
@@ -21,11 +21,11 @@ local function TMenu( self)
 	EasyMenu(menu, menuFrame, self, 0 , 0, "MENU");
 end
 
-local function TSet( self, btn) 
+local function TSet( self, btn)
 	local total = C_EquipmentSet.GetNumEquipmentSets()
 	local wear = self.id + btn
 
-	if wear > total then wear = 1 
+	if wear > total then wear = 1
 	elseif wear < 1 then wear = total end
 
 	C_EquipmentSet.UseEquipmentSet( C_EquipmentSet.GetEquipmentSetInfo( wear))
@@ -38,7 +38,7 @@ local function OnEvent(self, event, ...)
 		LeftInfoPanel.equipText = nil
 		return
 	end
-	
+
 	if event == "PLAYER_ENTERING_WORLD" then
 		self.wear = true
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -48,11 +48,11 @@ local function OnEvent(self, event, ...)
 		eText:SetHeight(LeftInfoPanel:GetHeight())
 		eText:SetPoint("LEFT", LeftInfoPanel, "RIGHT", -120, 0)
 		LeftInfoPanel.equipText = eText
-		
+
 	elseif event == "EQUIPMENT_SWAP_FINISHED" then
 		wear, set = ...
 		self.wear = wear
-	end		
+	end
 
 	if self.wear == true then
 		--print( C_EquipmentSet.GetNumEquipmentSets())

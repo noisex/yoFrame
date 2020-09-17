@@ -24,8 +24,9 @@ local function UpdateAura( self, unit)
 
 		if yo.fliger.tDebuffEnable then
 			if unit == self.tDebuff.unit and caster == "player"	and N.DebuffPlayerTargetList then -- N.DebuffWhiteList[name] then
-				if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = CreateAuraIcon( self.tDebuff, fligerTD, true, "BOTTOM")end
-				UpdateAuraIcon( self.tDebuff[fligerTD], filter, icon, count, nil, duration, expirationTime, spellID, index)
+				--if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = CreateAuraIcon( self.tDebuff, fligerTD) end
+
+				UpdateAuraIcon( CreateAuraIcon( self.tDebuff, fligerTD), filter, icon, count, nil, duration, expirationTime, spellID, index)
 				fligerTD = fligerTD + 1
 			end
 		end
@@ -33,8 +34,8 @@ local function UpdateAura( self, unit)
 		if yo.fliger.pDebuffEnable then
 			if unit == self.pDebuff.unit and not blackSpells[spellID] then
 			--if unit == self.pDebuff.unit and RaidDebuffList[spellID] then
-				if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM")end
-				UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
+				--if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD) end
+				UpdateAuraIcon( CreateAuraIcon( self.pDebuff, fligerPD), filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
 				fligerPD = fligerPD + 1
 			end
 		end
@@ -51,24 +52,24 @@ local function UpdateAura( self, unit)
 
 		if yo.fliger.tDebuffEnable then
 			if unit == self.tDebuff.unit and caster == "player" and N.BuffWhiteList[name] then
-				if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = CreateAuraIcon( self.tDebuff, fligerTD, true, "BOTTOM")end
-				UpdateAuraIcon( self.tDebuff[fligerTD], filter, icon, count, nil, duration, expirationTime, spellID, index)
+				--if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = CreateAuraIcon( self.tDebuff, fligerTD) end
+				UpdateAuraIcon( CreateAuraIcon( self.tDebuff, fligerTD), filter, icon, count, nil, duration, expirationTime, spellID, index)
 				fligerTD = fligerTD + 1
 			end
 		end
 
 		if yo.fliger.pBuffEnable then
 			if unit == self.pBuff.unit and N.PlayerBuffWhiteList[name] then
-				if not self.pBuff[fligerPB] then self.pBuff[fligerPB] = CreateAuraIcon( self.pBuff, fligerPB, false, "BOTTOM")end
-				UpdateAuraIcon( self.pBuff[fligerPB], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
+				--if not self.pBuff[fligerPB] then self.pBuff[fligerPB] = CreateAuraIcon( self.pBuff, fligerPB) end
+				UpdateAuraIcon( CreateAuraIcon( self.pBuff, fligerPB), filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
 				fligerPB = fligerPB + 1
 			end
 		end
 
 		if yo.fliger.pProcEnable then
 			if unit == self.pProc.unit and PlayerProcWhiteList[name] then
-				if not self.pProc[fligerProc] then self.pProc[fligerProc] = CreateAuraIcon( self.pProc, fligerProc, true, "BOTTOM")end
-				UpdateAuraIcon( self.pProc[fligerProc], filter, icon, count, nil, duration, expirationTime, spellID, index)
+				--if not self.pProc[fligerProc] then self.pProc[fligerProc] = CreateAuraIcon( self.pProc, fligerProc) end
+				UpdateAuraIcon( CreateAuraIcon( self.pProc, fligerProc), filter, icon, count, nil, duration, expirationTime, spellID, index)
 				fligerProc = fligerProc + 1
 			end
 		end
@@ -106,8 +107,8 @@ local function UpdatePCD( watched)
 		end
 		if starttime ~= 0 and duration  >= yo.fliger.pCDTimer then
 			--print(id, val.start, val.duration)
-			if not frame.pCD[fligerPCD] then frame.pCD[fligerPCD] = CreateAuraIcon( frame.pCD, fligerPCD, true, "BOTTOM")end
-			UpdateAuraIcon( frame.pCD[fligerPCD], "HELPFUL", icon, 0, nil, duration, expirationTime, id, fligerPCD)
+			--if not frame.pCD[fligerPCD] then frame.pCD[fligerPCD] = CreateAuraIcon( frame.pCD, fligerPCD)end
+			UpdateAuraIcon( CreateAuraIcon( frame.pCD, fligerPCD), "HELPFUL", icon, 0, nil, duration, expirationTime, id, fligerPCD)
 			fligerPCD = fligerPCD + 1
 		end
 	end
@@ -164,6 +165,7 @@ local function MakeFligerFrame( self)
 		pBuff:SetWidth( pbuffSize)
 		pBuff:SetHeight( pbuffSize)
 		pBuff.direction = yo.fliger.pBuffDirect
+		pBuff.hideTooltip	= true
 		pBuff.unit 		= "player"
 		self.pBuff 		= pBuff
 	end
@@ -184,12 +186,15 @@ local function MakeFligerFrame( self)
 		pCD:SetWidth( cdSize)
 		pCD:SetHeight( cdSize)
 		pCD.direction 	= yo.fliger.pCDDirect
+		pCD.hideTooltip = true
 		pCD.unit 		= "player"
 		self.pCD 		= pCD
 	end
 end
 
 local function CheckClassTemplates( myClass, mySpec)
+
+	if mySpec == 5 then return 	end
 
 	for i,v in pairs( N.templates.class[myClass][mySpec][1]["args"]) do
 		local spellId = GetSpellInfo( v.spell)
@@ -213,7 +218,10 @@ local function CheckClassTemplates( myClass, mySpec)
 
 	N.DebuffPlayerTargetList = {}
 	for i,v in pairs( N.templates.class[myClass][mySpec][2]["args"]) do
-		N.DebuffPlayerTargetList[GetSpellInfo( v.spell)] = true
+		if GetSpellInfo( v.spell) then
+			--print( v.spell, myClass, mySpec, GetSpellInfo( v.spell))
+			N.DebuffPlayerTargetList[GetSpellInfo( v.spell)] = true
+		end
 	end
 end
 
@@ -284,6 +292,8 @@ local function OnEvent( self, event, ...)
 end
 
 local Fliger = CreateFrame("Frame", "yo_Fliger", UIParent)
+--fliger:SetFrameStrata("BACKGROUND")
+Fliger:SetFrameLevel( 0)
 Fliger:RegisterEvent("PLAYER_ENTERING_WORLD")
 Fliger:SetScript("OnEvent", OnEvent)
 

@@ -86,17 +86,17 @@ function DisableBlizzard(unit)
 			end
 		end
 	elseif(unit:match'(arena)%d?$' == 'arena') then
-		local id = unit:match'arena(%d)'
-		if(id) then
-			HandleFrame('ArenaEnemyFrame' .. id)
-		else
-			for i=1, 4 do
-				HandleFrame(('ArenaEnemyFrame%d'):format(i))
-			end
-		end
+		--local id = unit:match'arena(%d)'
+		--if(id) then
+		--	HandleFrame('ArenaEnemyFrame' .. id)
+		--else
+		--	for i=1, 4 do
+		--		HandleFrame(('ArenaEnemyFrame%d'):format(i))
+		--	end
+		--end
 
-		-- Blizzard_ArenaUI should not be loaded
-		Arena_LoadUI = function() end
-		SetCVar('showArenaEnemyFrames', '0', 'SHOW_ARENA_ENEMY_FRAMES_TEXT')
+		---- Blizzard_ArenaUI should not be loaded
+		--Arena_LoadUI = function() end
+		--SetCVar('showArenaEnemyFrames', '0', 'SHOW_ARENA_ENEMY_FRAMES_TEXT')
 	end
 end

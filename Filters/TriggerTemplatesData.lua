@@ -135,7 +135,7 @@ generalAzeriteTraits = {
   { spell = 271559, type = "buff", unit = "player"}, --Shimmering Haven
   { spell = 269085, type = "buff", unit = "player"}, --Woundbinder
   { spell = 273685, type = "buff", unit = "player"}, --Meticulous Scheming
-  { spell = 273714, type = "buff", unit = "player"}, --Seize the Moment!
+  { spell = 273714, type = "buff", unit = "player"}, --Seize the мамаent!
   { spell = 273870, type = "buff", unit = "player"}, --Sandstorm
   { spell = 280204, type = "buff", unit = "player"}, --Wandering Soul
   { spell = 280409, type = "buff", unit = "player"}, --Blood Rite
@@ -251,7 +251,7 @@ templates.class.WARRIOR = {
       title = "Specific Azerite Traits",
       args = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-        { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
+        { spell = 280210, type = "buff", unit = "group"}, --мамаent of Glory
         { spell = 278826, type = "buff", unit = "player"}, --Crushing Assault
         { spell = 272870, type = "debuff", unit = "target"}, --Executioner's Precision
         { spell = 273415, type = "buff", unit = "player"}, --Gathering Storm
@@ -341,7 +341,7 @@ templates.class.WARRIOR = {
       title = L["Specific Azerite Traits"],
       args = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-        { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
+        { spell = 280210, type = "buff", unit = "group"}, --мамаent of Glory
         { spell = 288091, type = "buff", unit = "player"}, --Cold Steel, Hot Blood
         { spell = 278134, type = "buff", unit = "player"}, --Infinite Fury
         { spell = 275672, type = "buff", unit = "player"}, --Pulverizing Blows
@@ -438,7 +438,7 @@ templates.class.WARRIOR = {
       title = L["Specific Azerite Traits"],
       args = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-        { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
+        { spell = 280210, type = "buff", unit = "group"}, --мамаent of Glory
         { spell = 279194, type = "buff", unit = "player"}, --Bloodsport
         { spell = 278124, type = "buff", unit = "player"}, --Brace for Impact
         { spell = 278999, type = "buff", unit = "player"}, --Callous Reprisal
@@ -3086,7 +3086,7 @@ templates.class.DRUID = {
         { spell = 106830, type = "debuff", unit = "target"}, -- Thrash
         { spell = 339, type = "debuff", unit = "multi"}, -- Entangling Roots
         { spell = 274838, type = "debuff", unit = "target", talent = 21 }, -- Feral Frenzy
-        { spell = 58180, type = "debuff", unit = "target"}, -- Infected Wounds
+        --{ spell = 58180, type = "debuff", unit = "target"}, -- Infected Wounds
         { spell = 1079, type = "debuff", unit = "target"}, -- Rip
         { spell = 164815, type = "debuff", unit = "target", talent = 7 }, -- Sunfire
         { spell = 61391, type = "debuff", unit = "target", talent = 12 }, -- Typhoon
@@ -3418,7 +3418,7 @@ templates.class.DEMONHUNTER = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 208628, type = "buff", unit = "player", talent = 20 }, -- Momentum
+        { spell = 208628, type = "buff", unit = "player", talent = 20 }, -- мамаentum
         { spell = 162264, type = "buff", unit = "player"}, -- Metamorphosis
         { spell = 203650, type = "buff", unit = "player", talent = 20 }, -- Prepared
         { spell = 188499, type = "buff", unit = "player"}, -- Blade Dance

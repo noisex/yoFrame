@@ -31,7 +31,7 @@ end
 	predic.bg:SetTexture( texture)
 
 	predic:RegisterUnitEvent("UNIT_HEAL_PREDICTION", "player")
-	predic:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "player")
+	predic:RegisterUnitEvent("UNIT_HEALTH", "player")
 	predic:SetScript("OnEvent", OnEvent)
 
 	f.prediction = predic

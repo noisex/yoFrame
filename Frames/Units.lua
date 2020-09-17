@@ -1,6 +1,6 @@
 local _, ns = ...
 local _, playerClass = UnitClass("player")
-local oUF = ns.oUF or oUF 
+local oUF = ns.oUF or oUF
 local colors = oUF.colors
 local config
 local L, yo = ns[1], ns[2]

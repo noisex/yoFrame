@@ -10,6 +10,7 @@ yoFrame = ns
 N["statusBars"] = {}
 N["strings"]	= {}
 N["shadows"]	= {}
+N.ScanTooltip = CreateFrame('GameTooltip', 'yo_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
@@ -365,11 +366,11 @@ end
 function formatTime( s)
 	local day, hour, minute = 86400, 3600, 60
 	if s >= day then
-		return format("%dd", floor(s/day + 0.5))	--, s % day
+		return format("%dd", floor(s/day + 0.5))	--, s  %day
 	elseif s >= hour then
-		return format("%dh", floor(s/hour + 0.5))	--, s % hour
+		return format("%dh", floor(s/hour + 0.5))	--, s  %hour
 	elseif s >= minute then
-		return format("%dm", floor(s/minute + 0.5))	--, s % minute
+		return format("%dm", floor(s/minute + 0.5))	--, s  %minute
 	elseif s >= minute / 12 then
 		return floor(s + 0.5) --, (s * 100 - floor(s * 100))/100
 	end
@@ -381,11 +382,11 @@ function formatTimeSec( s)
 	if s == -1 then
 		return LESS_THAN_ONE_MINUTE, s
 	elseif s >= day then
-		return format("%dd", floor(s/day + 0.5)), s % day
+		return format("%dd", floor(s/day + 0.5)), s  %day
 	elseif s >= hour then
-		return format("%dh", floor(s/hour + 0.5)), s % hour
+		return format("%dh", floor(s/hour + 0.5)), s  %hour
 	elseif s >= minute then
-		return format("%dm", floor(s/minute + 0.5)), s % minute
+		return format("%dm", floor(s/minute + 0.5)), s  %minute
 	--elseif s >= minute / 12 then
 	--	return floor(s + 0.5), (s * 100 - floor(s * 100))/100
 	end
@@ -575,7 +576,7 @@ function CreateStyle(f, size, level, alpha, alphaborder)
 		insets = { left = size, right = size, top = size, bottom = size }
 	}
 
-    local shadow = CreateFrame("Frame", nil, f)
+    local shadow = CreateFrame("Frame", nil, f, BackdropTemplateMixin and "BackdropTemplate")
     shadow:SetFrameLevel(level or 0)
     shadow:SetFrameStrata(f:GetFrameStrata())
     shadow:SetPoint("TOPLEFT", -size, size)
@@ -593,6 +594,12 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     return shadow
 end
 
+
+---------------------------------- testing WoW version
+--local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+--if (wowtocversion > 90000) then Mixin( frame, BackdropTemplateMixin) end
+---------------------------------- same code for 8.x and 9.x
+
 function CreateStyleSmall(f, size, level, alpha, alphaborder)
     if f.shadow then return end
 
@@ -605,7 +612,7 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
 	edgeSize = size,
 	insets = { left = size, right = size, top = size, bottom = size}};
 
-    local shadow = CreateFrame("Frame", nil, f)
+    local shadow = CreateFrame("Frame", nil, f, BackdropTemplateMixin and "BackdropTemplate")
     shadow:SetFrameLevel(level or 0)
     shadow:SetFrameStrata(f:GetFrameStrata())
     shadow:SetPoint("TOPLEFT", -size, size)
@@ -641,6 +648,12 @@ function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 end
 
 function frame1px(f)
+
+	---------------------------------- testing WoW version
+	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+	if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end
+	---------------------------------- same code for 8.x and 9.x
+
 	f:SetBackdrop({
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
         edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1,

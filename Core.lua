@@ -2,7 +2,7 @@ local L, yo = unpack( select( 2, ...))
 
 local function loginEvent(self, ...)
 	resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution")
-	getscreenwidth, getscreenheight = DecodeResolution(resolution)
+	getscreenwidth, getscreenheight = GetPhysicalScreenSize() --DecodeResolution(resolution)
 
 
 	if yo.Media.AutoScale == "manual" then
@@ -126,7 +126,7 @@ local function enterEvent( self)
 			local bFrame = "boss"..i.."Frame"
 			bFrame = CreateFrame("Button", "yo_Boss" .. i, UIParent, "SecureUnitButtonTemplate")
 			bFrame.unit = "boss"..i
-			bFrame:SetPoint( "CENTER", yo_MoveBoss, "CENTER", 0 , -( i -1) * 62)
+			bFrame:SetPoint( "CENTER", yo_MoveBoss, "CENTER", 0 , -( i -1) * 65)
 			bFrame:SetSize( yo_MoveBoss:GetSize())
 			CreateUFrame(  bFrame, bFrame.unit)
 		end
@@ -186,10 +186,10 @@ csf:SetScript("OnEvent", OnEvent)
 --print("|cFF00A2FF/kb |r - Command to ActionBar KeyBinding.")
 --print("|cFF00A2FF/cfg |r - Ingame UI config.")
 
-LeftInfoPanel = CreateFrame("Frame", nil, UIParent)
-LeftDataPanel = CreateFrame("Frame", nil, UIParent)
-RightDataPanel = CreateFrame("Frame", nil, UIParent)
-RightInfoPanel = CreateFrame("Frame", nil, UIParent)
+LeftInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+LeftDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
 SlashCmdList["YOMOVE"] = ySlashCmd;
 SLASH_YOMOVE1 = "/yo";

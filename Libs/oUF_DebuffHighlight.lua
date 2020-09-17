@@ -53,30 +53,30 @@ function CheckForKnownTalent(spellid)
 end
 
 local function CheckSpec(self, event, levels)
-	-- Not interested in gained points from leveling	
+	-- Not interested in gained points from leveling
 	if event == "CHARACTER_POINTS_CHANGED" and levels > 0 then return end
-	
+
 	--Check for certain talents to see if we can dispel magic or not
 	if playerClass == "PALADIN" then
 		--Check to see if we have the 'Sacred Cleansing' talent.
 		if CheckForKnownTalent(53551) then
 			dispellist.Magic = true
 		else
-			dispellist.Magic = false	
+			dispellist.Magic = false
 		end
 	elseif playerClass == "SHAMAN" then
 		--Check to see if we have the 'Improved Cleanse Spirit' talent.
 		if CheckForKnownTalent(77130) then
 			dispellist.Magic = true
 		else
-			dispellist.Magic = false	
+			dispellist.Magic = false
 		end
 	elseif playerClass == "DRUID" then
 		--Check to see if we have the 'Nature's Cure' talent.
 		if CheckForKnownTalent(88423) then
 			dispellist.Magic = true
 		else
-			dispellist.Magic = false	
+			dispellist.Magic = false
 		end
 	end
 end
@@ -85,11 +85,11 @@ end
 local function Update(object, event, unit)
 	if object.unit ~= unit  then return end
 	local debuffType, texture  = GetDebuffType(unit, object.DebuffHighlightMyFilter)
-	
+
 	--print(debuffType, texture)
 
 	if debuffType then
-		local color = DebuffTypeColor[debuffType] 
+		local color = DebuffTypeColor[debuffType]
 		if object.DebuffHighlightMyBackdrop or object.DebuffHighlightMyBackdropBorder then
 			if object.DebuffHighlightMyBackdrop then
 				object:SetBackdropColor(color.r, color.g, color.b, object.DebuffHighlightMyAlpha or 1)
@@ -119,7 +119,7 @@ local function Update(object, event, unit)
 			local color = origColors[object]
 			object.DebuffHighlightMy:SetVertexColor(color.r, color.g, color.b, color.a)
 		end
-	end	
+	end
 end
 
 local function Enable(object)

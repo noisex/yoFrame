@@ -15,7 +15,7 @@ local GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDiffi
 local UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation
 	= UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation
 
-local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badTypes, showToolTip
+local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badClassTypes, showToolTip
 local treatColor = {}
 local auraFilter = { "HARMFUL", "HELPFUL"}
 
@@ -30,16 +30,6 @@ local castStop = aGlow.AutoCastGlow_Stop
 
 local buttonStart = aGlow.ButtonGlow_Start
 local buttonStop = aGlow.ButtonGlow_Stop
-
-yo.pType = {
-	MAGE 		= { powerID = 16,	powerType = 'ARCANE_CHARGES', 	spec = 1},
-	WARLOCK 	= { powerID = 7, 	powerType = 'SOUL_SHARDS'		},
-	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER', 		spec = 3},
-	ROGUE 		= { powerID = 4, 	powerType = 'COMBO_POINTS'		},
-	DRUID 		= { powerID = 4, 	powerType = 'COMBO_POINTS', 	},	--spec = 2},
-	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},
-	MONK 		= { powerID = 12, 	powerType = 'CHI', 				spec = 3},
-}
 
 --DebuffTypeColor.none = { r = 0.09, g = 0.09, b = 0.09}
 
@@ -130,148 +120,16 @@ local eTeam = {
 
 }
 
------------------------------------------------------------------------------------------------
---	AURAS
------------------------------------------------------------------------------------------------
+--local function ShowGuune( unitFrame, showGuune)
+--	--https://ru.wowhead.com/npc=136461  Порождение Г'ууна
 
-local function BuffOnEnter( f)
-	if showToolTip == "cursor" then
-		GameTooltip:SetOwner( f, "ANCHOR_BOTTOMRIGHT", 8, -16)
-	else
-		GameTooltip:SetOwner( f, "ANCHOR_NONE", 0, 0)
-		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-	end
-	GameTooltip:SetUnitAura( f.unit, f.id, f.filter)
-	GameTooltip:Show()
-end
-
-local function BuffOnLeave( f)
-	GameTooltip:Hide()
-end
-
-function CreateAuraIcon(parent, index, noToolTip, timerPosition)
-	local size = parent:GetHeight()
-	local sh = ceil( size / 8)
-
-	local button = CreateFrame("Frame", nil, parent)
-	button:SetWidth( size)
-	button:SetHeight( size)
-
-	button.icon = button:CreateTexture(nil, "OVERLAY")
-	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
-	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
-	button.icon:SetTexCoord( unpack( yo.tCoord))
-
-	--button.cd = CreateFrame("Cooldown", nil, button)
-	--button.cd:SetAllPoints(button)
-	--button.cd:SetReverse(true)
-
-	button.count = button:CreateFontString(nil, "OVERLAY")
-	button.count:SetFont( fontpx, max( 10, size / 1.5), "THINOUTLINE")
-	button.count:SetShadowOffset(1, -1)
-	button.count:SetTextColor( 0, 1, 0)
-	table.insert( N.strings, button.count)
-
-	if timerPosition == "BOTTOM" then
-		button.count:SetPoint("TOPRIGHT", button, "TOPRIGHT", 6, 6)
-	else
-		button.count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 4, -2)
-	end
-
-	button.timer = button:CreateFontString(nil, "OVERLAY")
-	button.timer:SetFont( fontpx, max( 10, size / 1.5), "THINOUTLINE")
-	button.timer:SetShadowOffset(1, -1)
-	table.insert( N.strings, button.timer)
-
-	if timerPosition == "BOTTOM" then
-		button.timer:SetPoint("CENTER", button, "BOTTOM", 0, 0)
-	else
-		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
-	end
-
-
-	CreateStyle( button, max( 2, sh - 1))
-
-	local p1, p2, shX, shY = "LEFT", "RIGHT", sh, 0
-
-	if parent.direction == "LEFT" then
-		p1, p2, shX, shY = "RIGHT", "LEFT", -sh, 0
-	elseif parent.direction == "UP" then
-		p1, p2, shX, shY = "BOTTOM", "TOP", 0, sh
-	end
-
-	if index == 1 then
-		button:SetPoint( p1, parent, p1)
-	else
-		button:SetPoint( p1, parent[index-1], p2, shX, shY)
-	end
-
-	if not noToolTip and showToolTip ~= "none" then
-		button:EnableMouse(true)
-		button:SetScript("OnEnter", BuffOnEnter)
-		button:SetScript("OnLeave", BuffOnLeave)
-	end
-
-	return button
-end
-
-
-function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
-	button.icon:SetTexture(icon)
-	button.expirationTime = expirationTime
-	button.duration = duration
-	button.spellID = spellID
-	button.filter = filter
-	button.unit = unit
-	button.id = index
-	button.tick = 1
-
-	local color = DebuffTypeColor[debuffType] or DebuffTypeColor.none
-	button.shadow:SetBackdropBorderColor(color.r, color.g, color.b)
-
-	if count and count > 1 then
-		button.count:SetText(count)
-	else
-		button.count:SetText( "")
-	end
-
-	button:SetScript("OnUpdate", function(self, el)
-		button.tick = button.tick + el
-		if button.tick <= 0.1 then return end
-		button.tick = 0
-
-		local est = expirationTime - GetTime()
-
-		if est <= 2 then
-			button.timer:SetTextColor( 1, 0, 0)
-		elseif est <= 0 then
-			self:SetScript("OnUpdate", nil)
-			return
-		else
-			button.timer:SetTextColor( 1, 1, 0)
-		end
-
-		if ( duration and duration > 0) and est > 0.1 then
-			--print( formatTime( est), expirationTime, est)
-			button.timer:SetText( formatTime( est))
-		else
-			button.timer:SetText( "")
-		end
-	end)
-
-	button:Show()
-end
-
-local function ShowGuune( unitFrame, showGuune)
-	--https://ru.wowhead.com/npc=136461  Порождение Г'ууна
-
-	if showGuune then
-		unitFrame.guune.icon:SetTexture( 2032223)
-		unitFrame.guune:Show()
-	else
-		unitFrame.guune:Hide()
-	end
-end
+--	if showGuune then
+--		unitFrame.guune.icon:SetTexture( 2032223)
+--		unitFrame.guune:Show()
+--	else
+--		unitFrame.guune:Hide()
+--	end
+--end
 
 local function UpdateBuffs(unitFrame)
 	if not unitFrame.displayedUnit then return end
@@ -288,16 +146,15 @@ local function UpdateBuffs(unitFrame)
 			if not name then break end
 			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
 
-			if ( caster == "player" and N.DebuffWhiteList[name]) or namepmateshowall then --or isStealable then
+			if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( N.DebuffWhiteList[name] )) or namepmateshowall then --or isStealable then or nameplateShowPersonal
 
 				debuffType = blueDebuff and debuffType or nil
 
-				if not unitFrame.debuffIcons[idebuff] then	unitFrame.debuffIcons[idebuff] = CreateAuraIcon(unitFrame.debuffIcons, idebuff)	end
-
-				UpdateAuraIcon(unitFrame.debuffIcons[idebuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
+				local aIcon = CreateAuraIcon( unitFrame.debuffIcons, idebuff)
+				UpdateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 				idebuff = idebuff + 1
 
-			elseif spellID == 277242 then showGuune = true
+			--elseif spellID == 277242 then showGuune = true
 
 			elseif ( filter == "HELPFUL" and not isPlayer and not blackSpells[spellID]) then
 
@@ -305,9 +162,8 @@ local function UpdateBuffs(unitFrame)
 					if ( dissIcons == "dispell" and badClassTypes[myClass][debuffType])
 						or ( dissIcons == "all" and debuffType) then
 
-						if not unitFrame.disIcons[iDisp] then unitFrame.disIcons[iDisp] = CreateAuraIcon(unitFrame.disIcons, iDisp)end
-
-						UpdateAuraIcon(unitFrame.disIcons[iDisp], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
+						local aIcon = CreateAuraIcon( unitFrame.disIcons, iDisp)
+						UpdateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 						iDisp = iDisp + 1
 					end
 				end
@@ -317,9 +173,8 @@ local function UpdateBuffs(unitFrame)
 						or ( buffIcons == "dispell" and badTypes[debuffType])
 						or ( buffIcons == "buff" and not badTypes[debuffType]) then
 
-						if not unitFrame.buffIcons[ibuff] then unitFrame.buffIcons[ibuff] = CreateAuraIcon(unitFrame.buffIcons, ibuff) end
-
-						UpdateAuraIcon(unitFrame.buffIcons[ibuff], filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
+						local aIcon = CreateAuraIcon( unitFrame.buffIcons, ibuff)
+						UpdateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
 						ibuff = ibuff + 1
 					end
 				end
@@ -333,7 +188,7 @@ local function UpdateBuffs(unitFrame)
 	for index = ibuff,   #unitFrame.buffIcons   do unitFrame.buffIcons[index]:Hide()   end
 	for index = iDisp,   #unitFrame.disIcons    do unitFrame.disIcons[index]:Hide()   end
 
-	ShowGuune( unitFrame, showGuune)
+	--ShowGuune( unitFrame, showGuune)
 end
 
 -----------------------------------------------------------------------------------------------
@@ -672,10 +527,14 @@ local function UpdateName( unitFrame)
 			UnitIsPlayer( unitFrame.displayedUnit) or eTeam[mobID] 	then
 
 			if unitFrame.Class then
-				local _, class = UnitClass( unitFrame.displayedUnit)
-				local texcoord = CLASS_ICON_TCOORDS[class]
-				unitFrame.Class.Icon:SetTexCoord(texcoord[1] + 0.015, texcoord[2] - 0.02, texcoord[3] + 0.018, texcoord[4] - 0.02)
-				unitFrame.Class:Show()
+				--local _, class = UnitClass( unitFrame.displayedUnit)
+				--local texcoord = CLASS_ICON_TCOORDS[class]
+				--unitFrame.Class.Icon:SetTexCoord(texcoord[1] + 0.015, texcoord[2] - 0.02, texcoord[3] + 0.018, texcoord[4] - 0.02)
+				local specID = GetInspectSpecialization( unitFrame.displayedUnit)
+				--GetSpecializationInfoByID(specID, sex);
+				local id, name, description, icon, background, role = GetSpecializationInfo(specID)
+				print( unitFrame.displayedUnit, specID, id, name, description, icon)
+				--unitFrame.Class:Show()
 			end
 			if eTeam[mobID] and not GetRaidTargetIndex( unitFrame.displayedUnit) then
 				SetRaidTarget( unitFrame.displayedUnit, eTeam[mobID]);
@@ -715,7 +574,7 @@ local function UpdateAll(unitFrame)
 		UpdateHealthColor(unitFrame, 1)
 		UpdateHealth(unitFrame)
 		UpdateCastBar( unitFrame.castBar)
-		UpdateBuffs(unitFrame)
+		--UpdateBuffs(unitFrame)
 		UpdateRaidTarget(unitFrame)
 		--UpdateTheatSit( unitFrame)
 
@@ -1045,26 +904,27 @@ local function OnNamePlateCreated( frame)
 	f.disIcons:SetFrameLevel(f:GetFrameLevel() + 20)
 	f.disIcons.direction = "UP"
 
-	f.Class = CreateFrame("Frame", nil, f)
-	f.Class:SetPoint("BOTTOMRIGHT", f.healthBar, "BOTTOMLEFT", -8, 0)
-	f.Class:SetSize( 30, 30)
-	f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")
-	f.Class.Icon:SetAllPoints()
-	f.Class.Icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-	f.Class.Icon:SetTexCoord(0, 0, 0, 0)
+	--f.Class = CreateFrame("Frame", nil, f)
+	--f.Class:SetPoint("BOTTOMRIGHT", f.healthBar, "BOTTOMLEFT", -8, 0)
+	--f.Class:SetSize( 30, 30)
+	--f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")
+	--f.Class.Icon:SetAllPoints()
+	--f.Class.Icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
+	--f.Class.Icon:SetTexCoord(0, 0, 0, 0)
+
 	--CreateStyle(f.Class, 3)
 
 	--f.Shine = CreateFrame("Frame", "$parentShine", f.healthBar, "AutoCastShineTemplate")
 	--f.Shine:SetPoint("CENTER", f.healthBar, "CENTER", 0, 0)
 	--f.Shine:SetSize( nameplatewidth, nameplateheight)
 
-	f.guune = CreateFrame("Frame", nil, f)
-	f.guune:SetSize( 30, 30)
-	f.guune:SetPoint("LEFT", f.disIcons, "RIGHT", 3, 0)
-	f.guune.icon = f.guune:CreateTexture(nil, "OVERLAY")
-	f.guune.icon:SetAllPoints()
-	f.guune.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	CreateStyle(f.guune, 3)
+	--f.guune = CreateFrame("Frame", nil, f)
+	--f.guune:SetSize( 30, 30)
+	--f.guune:SetPoint("LEFT", f.disIcons, "RIGHT", 3, 0)
+	--f.guune.icon = f.guune:CreateTexture(nil, "OVERLAY")
+	--f.guune.icon:SetAllPoints()
+	--f.guune.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	--CreateStyle(f.guune, 3)
 
 	CastingBarFrame_OnLoad(f.castBar, nil, false, true)
 
@@ -1118,18 +978,20 @@ end
 
 
 local function HideBlizzard()
+	NamePlateDriverFrame:UnregisterAllEvents()
 	--NamePlateDriverFrame:HookScript('OnEvent', function(_, event, unit)
 	--	if(event == 'NAME_PLATE_UNIT_ADDED' and unit) then
-	--		self:DisableBlizzard(unit)
+	--		print(event, unit)
+	--		ouF:DisableBlizzard(unit)
 	--	end
 	--end)
 
-	NamePlateDriverFrame:UnregisterAllEvents()
 	--ClassNameplateManaBar:
 	ClassNameplateManaBarFrame:Hide()
 	ClassNameplateManaBarFrame:UnregisterAllEvents()
 	ClassNameplateManaBar = dummy
-	 NamePlateDriverMixin = dummy
+	NamePlateDriverMixin = dummy
+
 	--- TODO
 	--hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
 	--	NamePlateTargetResourceFrame:Hide()
@@ -1175,7 +1037,7 @@ local function NamePlate_OnEvent(self, event, ...)
 		self:SetScript("OnUpdate", UpdateHealthColor)
 
 	elseif arg1 == self.unit or arg1 == self.displayedUnit then
-		if event == "UNIT_HEALTH_FREQUENT" then
+		if event == "UNIT_HEALTH" then
 			UpdateHealth(self)
 		elseif event == "UNIT_AURA" then
 			UpdateBuffs(self)
@@ -1206,7 +1068,7 @@ local function UpdateNamePlateEvents(unitFrame)
 	unitFrame.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit)
 	unitFrame.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit)
 
-	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit)
+	unitFrame:RegisterUnitEvent("UNIT_HEALTH", unit)
 	unitFrame:RegisterUnitEvent("UNIT_AURA", unit)
 	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unit)
 end
@@ -1407,113 +1269,3 @@ local NamePlatesFrame = CreateFrame("Frame", "yo_NamePlatesFrame", UIParent)
 	NamePlatesFrame:RegisterEvent("RAID_TARGET_UPDATE")
 	NamePlatesFrame:RegisterEvent("UNIT_FACTION")
 	NamePlatesFrame:SetScript("OnEvent", NamePlates_OnEvent)
-
-
-	--NamePlatesFrame:SetScript("OnUpdate", AutoCastShine_OnUpdate)
---local function ActionButton_ShowOverlayGlow(self)
---	if ( self.overlay ) then
---		if ( self.overlay.animOut:IsPlaying() ) then
---			self.overlay.animOut:Stop();
---			self.overlay.animIn:Play();
---		end
---	else
---		self.overlay = ActionButton_GetOverlayGlow();
---		local frameWidth, frameHeight = self:GetSize();
---		self.overlay:SetParent(self);
---		self.overlay:ClearAllPoints();
---		--Make the height/width available before the next frame:
---		self.overlay:SetSize( frameWidth, frameHeight);
---		--self.overlay:SetPoint("CENTER", self, "CENTER", 0, 0)
---		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .20, frameHeight * .45)
---		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .20, -frameHeight * .45);
---		self.overlay:SetAlpha(0.2);
---		self.overlay.animIn:Play();
---	end
---end
-
---local AUTOCAST_SHINE_R = .95;
---local AUTOCAST_SHINE_G = .95;
---local AUTOCAST_SHINE_B = .32;
-
---local AUTOCAST_SHINE_SPEEDS = { 2, 4, 6, 8 };
---local AUTOCAST_SHINE_TIMERS = { 0, 0, 0, 0 };
---local AUTOCAST_SHINES = {};
-
---local function AutoCastShine_AutoCastStart(button, r, g, b)
---	local button = _G[ button:GetName() .. "Shine"]
-
---	if ( AUTOCAST_SHINES[button] ) then
---		return;
---	end
-
---	AUTOCAST_SHINES[button] = true;
-
---	if ( not r ) then
---		r, g, b = AUTOCAST_SHINE_R, AUTOCAST_SHINE_G, AUTOCAST_SHINE_B;
---	end
-
---	for _, sparkle in next, button.sparkles do
---		sparkle:Show();
---		sparkle:SetVertexColor(r, g, b);
---	end
---end
-
---local function AutoCastShine_AutoCastStop(button)
---	local button = _G[ button:GetName() .. "Shine"]
-
---	AUTOCAST_SHINES[button] = nil;
-
---	for _, sparkle in next, button.sparkles do
---		sparkle:Hide();
---	end
---end
-
---local function AutoCastShine_OnUpdate(self, elapsed)
---	for i in next, AUTOCAST_SHINE_TIMERS do
---		AUTOCAST_SHINE_TIMERS[i] = AUTOCAST_SHINE_TIMERS[i] + elapsed;
---		if ( AUTOCAST_SHINE_TIMERS[i] > AUTOCAST_SHINE_SPEEDS[i]*4 ) then
---			AUTOCAST_SHINE_TIMERS[i] = 0;
---		end
---	end
-
---	for button in next, AUTOCAST_SHINES do
---		self = button;
---		--self = _G[self:GetName() .. "Shine"]
---		local parent, distance, heightce = self, self:GetWidth(), self:GetHeight();
-
---		-- This is local to this function to save a lookup. If you need to use it elsewhere, might wanna make it global and use a local reference.
---		local AUTOCAST_SHINE_SPACING = 6;
-
---		for i = 1, 4 do
---			local timer = AUTOCAST_SHINE_TIMERS[i];
---			local speed = AUTOCAST_SHINE_SPEEDS[i];
-
---			if ( timer <= speed ) then
---				local basePosition = timer/speed*distance;
---				self.sparkles[0+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
---				self.sparkles[4+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
---				self.sparkles[8+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
---				self.sparkles[12+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
---			elseif ( timer <= speed*2 ) then
---				local basePosition = (timer-speed)/speed*distance;
---				self.sparkles[0+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
---				self.sparkles[4+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
---				self.sparkles[8+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
---				self.sparkles[12+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
---			elseif ( timer <= speed*3 ) then
---				local basePosition = (timer-speed*2)/speed*distance;
---				self.sparkles[0+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
---				self.sparkles[4+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
---				self.sparkles[8+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
---				self.sparkles[12+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
---			else
---				local basePosition = (timer-speed*3)/speed*distance;
---				self.sparkles[0+i]:SetPoint("CENTER", parent, "BOTTOMLEFT", 0, heightce);
---				self.sparkles[4+i]:SetPoint("CENTER", parent, "TOPRIGHT", 0, -heightce);
---				self.sparkles[8+i]:SetPoint("CENTER", parent, "TOPLEFT", basePosition, 0);
---				self.sparkles[12+i]:SetPoint("CENTER", parent, "BOTTOMRIGHT", -basePosition, 0);
---			end
---		end
---	end
---end
-

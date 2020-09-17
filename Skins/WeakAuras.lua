@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+local aGlow = LibStub("LibCustomGlow-1.0", true)
+
 local function styleIcon( region)
 
 	if not region.border then
@@ -40,19 +42,28 @@ local function styleIcon( region)
 			if not region.border then return end
 
 			if (showGlow) then
-      			if (not region.__WAGlowFrame) then
-        			region.__WAGlowFrame = CreateFrame("Frame", nil, region);
-        			--region.__WAGlowFrame:SetAllPoints();
-					region.__WAGlowFrame:SetPoint( "CENTER")
-        			region.__WAGlowFrame:SetSize(region.width + 2, region.height + 2);
-      			end
-      			region.border.glow:SetVertexColor( 1, 1, 0.5, 0.5)
-      			WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);
+				--aGlow.PixelGlow_Start( region, {0.95, 0.95, 0.32, 1}, 8, 0.25, 20, 2, 3, 3, false, 1 )
+				aGlow.AutoCastGlow_Start( region, {0.95, 0.95, 0.32, 1}, 20, 0.1, 1.3, 3, 3, 1)
+				--aGlow.ButtonGlow_Start( region, {0.95, 0.95, 0.32, 1}, 0.25)
+
+
+  --    			if (not region.__WAGlowFrame) then
+  --      			region.__WAGlowFrame = CreateFrame("Frame", nil, region);
+  --      			--region.__WAGlowFrame:SetAllPoints();
+		--			region.__WAGlowFrame:SetPoint( "CENTER")
+  --      			region.__WAGlowFrame:SetSize(region.width + 2, region.height + 2);
+  --    			end
+      			--region.border.glow:SetVertexColor( 0.95, 0.95, 0.32, 1)
+  --    			WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);
     		else
-      			if (region.__WAGlowFrame) then
-      				WeakAuras.HideOverlayGlow(region.__WAGlowFrame);
-      				region.border.glow:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
-      			end
+    			--aGlow.PixelGlow_Stop( region, 1)
+    			aGlow.AutoCastGlow_Stop( region, 1)
+    			--aGlow.ButtonGlow_Stop( region)
+
+  --    			if (region.__WAGlowFrame) then
+  --    				WeakAuras.HideOverlayGlow(region.__WAGlowFrame);
+      			--	region.border.glow:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
+  --    			end
     		end
     	end
 	end
@@ -151,12 +162,16 @@ local function registermacro( self)
 
 			if regions.regionType == "dynamicgroup" then
 				regFrame:SetScript("OnSizeChanged", function(self, ...)
-					checkDynamic( self)
+					if self.controlledRegions then
+						checkDynamic( self)
+					end
 				end)
 
 				regFrame:SetScript("OnShow", function(self, ...)
 					--print("Show: ", self, regFrame)
-					checkDynamic( self)
+					if self.controlledRegions then
+						checkDynamic( self)
+					end
 				end)
 			end
 		end

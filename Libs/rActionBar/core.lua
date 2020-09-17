@@ -20,7 +20,7 @@ L.addonShortcut   = "rab"
 
 rActionBar = {}
 rActionBar.addonName = A
-dummy = function() return end 
+dummy = function() return end
 
 -----------------------------
 -- Functions
@@ -41,7 +41,7 @@ end
 --2. p2, rb-1, p3, bm1, bm2
 --3. p4, b-1, p5, bm3, bm4
 local function SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, numCols, p1, fp1, fp2, p2, p3, bm1, bm2, p4, p5, bm3, bm4, pa3NumButtons)
-	
+
 	for index, button in next, buttonList do
     	if not frame.__blizzardBar then
       		button:SetParent(frame)
@@ -56,17 +56,17 @@ local function SetupButtonPoints(frame, buttonList, buttonWidth, buttonHeight, n
     	else
       		button:SetPoint(p4, buttonList[index-1], p5, bm3, bm4)
     	end
-    	
+
     	---------------------------------------------------------------------------------------------------------
     	---				DESIGN
     	---------------------------------------------------------------------------------------------------------
-        
+
         if pa3NumButtons and index > pa3NumButtons then
             --print( index, pa3NumButtons)
-            Kill( button)    
+            Kill( button)
         else
             ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
-        end		  
+        end
 	end
 end
 

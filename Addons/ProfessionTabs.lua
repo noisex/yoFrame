@@ -226,8 +226,8 @@ function handler:CURRENT_SPELL_CAST_CHANGED(event)
 	if numShown == 0 then self:UnregisterEvent(event) end
 end
 
-handler:SetScript("OnEvent", function(self, event) 
-	self[event](self, event) 
+handler:SetScript("OnEvent", function(self, event)
+	self[event](self, event)
 end)
 handler:RegisterEvent("TRADE_SKILL_SHOW")
 handler:RegisterEvent("TRADE_SKILL_CLOSE")

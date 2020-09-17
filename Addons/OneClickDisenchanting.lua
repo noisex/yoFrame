@@ -1,4 +1,4 @@
-﻿local L, yo = unpack( select( 2, ...))
+local L, yo = unpack( select( 2, ...))
 --if C.misc.disenchanting ~= true then return end
 
 ----------------------------------------------------------------------------------------

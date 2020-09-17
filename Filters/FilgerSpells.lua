@@ -36,7 +36,7 @@ C = {}
 T = {}
 T.class = select(2, UnitClass("player"))
 
-T["color"] = { 
+T["color"] = {
 	["r"] = 1,
  	["g"] = 0,
  	["b"] = 0,
@@ -46,7 +46,7 @@ C["actionbar"] = {
 	["button_size"] = 20,
 }
 
-C["media"] = { 
+C["media"] = {
 	["texture"] = texture,
 }
 
@@ -429,7 +429,7 @@ C["filger_spells"] = {
 			{spellID = 203981, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Painbringer (Vengeance Artifact)
 			{spellID = 212988, unitID = "player", caster = "player", filter = "BUFF"},
-			-- Momentum
+			-- мамаentum
 			{spellID = 208628, unitID = "player", caster = "player", filter = "BUFF"},
 
 			-- Trinkets
@@ -725,7 +725,7 @@ C["filger_spells"] = {
 
 			-- Buffs
 			-- Starlord
-			{spellID = 279709, unitID = "player", caster = "player", filter = "BUFF"},			
+			{spellID = 279709, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Bloodtalons
 			{spellID = 145152, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Clearcasting
@@ -1082,9 +1082,9 @@ C["filger_spells"] = {
 			-- Lethal Shots
 			{spellID = 260395, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Precise Shots
-			{spellID = 260242, unitID = "player", caster = "player", filter = "BUFF"},			
+			{spellID = 260242, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Frenzy
-			{spellID = 272790, unitID = "pet", caster = "player", filter = "BUFF"},			
+			{spellID = 272790, unitID = "pet", caster = "player", filter = "BUFF"},
 			-- Steady Focus
 			{spellID = 193533, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Lock and Load
@@ -1176,7 +1176,7 @@ C["filger_spells"] = {
 			-- A Murder of Crows
 			{spellID = 131894, unitID = "target", caster = "player", filter = "DEBUFF"},
 			-- Hunter's Mark
-			{spellID = 257284, unitID = "target", caster = "player", filter = "DEBUFF"},			
+			{spellID = 257284, unitID = "target", caster = "player", filter = "DEBUFF"},
 			-- Vulnerable
 			--BETA {spellID = 187131, unitID = "target", caster = "player", filter = "DEBUFF"},
 			-- Hunter's Mark
@@ -1794,7 +1794,7 @@ C["filger_spells"] = {
 			Position = {"LEFT", T_DEBUFF_ICON_Anchor},
 
 			-- Touch of Death
-			{spellID = 115080, unitID = "target", caster = "player", filter = "DEBUFF"},			
+			{spellID = 115080, unitID = "target", caster = "player", filter = "DEBUFF"},
 			-- Heavy Stagger
 			{spellID = 124273, unitID = "player", caster = "player", filter = "DEBUFF"},
 			-- Keg Smash
@@ -1941,7 +1941,7 @@ C["filger_spells"] = {
 			Position = {"LEFT", P_BUFF_ICON_Anchor},
 
 			-- Inquisition
-			{spellID = 84963, unitID = "player", caster = "player", filter = "BUFF"},			
+			{spellID = 84963, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Shield of Vengeance
 			{spellID = 184662, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Eye for an Eye
@@ -1982,7 +1982,7 @@ C["filger_spells"] = {
 
 			-- Buffs
 			-- Righteous Verdict
-			{spellID = 267611, unitID = "player", caster = "player", filter = "BUFF"},			
+			{spellID = 267611, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Infusion of Light
 			{spellID = 54149, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Selfless Healer
@@ -2096,7 +2096,7 @@ C["filger_spells"] = {
 			Position = {"LEFT", T_DEBUFF_ICON_Anchor},
 
 			-- Execution Sentence
-			{spellID = 267799, unitID = "target", caster = "player", filter = "DEBUFF"},			
+			{spellID = 267799, unitID = "target", caster = "player", filter = "DEBUFF"},
 			-- Eye of Tyr
 			{spellID = 209202, unitID = "target", caster = "player", filter = "DEBUFF"},
 			-- Forbearance
@@ -2331,8 +2331,8 @@ C["filger_spells"] = {
 			Position = {"LEFT", T_DEBUFF_ICON_Anchor},
 
 			-- Schism
-			{spellID = 214621, unitID = "target", caster = "player", filter = "DEBUFF"},			
-			
+			{spellID = 214621, unitID = "target", caster = "player", filter = "DEBUFF"},
+
 			-- Trinket Effects
 			-- Mark of Doom [Prophecy of Fear]
 			{spellID = 184073, unitID = "target", caster = "player", filter = "DEBUFF"},
@@ -2579,7 +2579,7 @@ C["filger_spells"] = {
 
 			-- Buffs
 			-- Shuriken Combo
-			{spellID = 245640, unitID = "player", caster = "player", filter = "BUFF"},			
+			{spellID = 245640, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Jolly Roger
 			{spellID = 199603, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Grand Melee
@@ -3096,7 +3096,7 @@ C["filger_spells"] = {
 			Position = {"LEFT", P_BUFF_ICON_Anchor},
 
 			-- Dark Soul: Misery
-			{spellID = 113860, unitID = "player", caster = "player", filter = "BUFF"},			
+			{spellID = 113860, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Dark Soul: Instability
 			{spellID = 113858, unitID = "player", caster = "player", filter = "BUFF"},
 			-- Deadwind Harvester
@@ -3949,7 +3949,7 @@ C["filger_spells"] = {
 
 			-- Slows
 			-- Infected Wounds
-			{spellID = 58180, unitID = "player", caster = "all", filter = "DEBUFF"},
+			--{spellID = 58180, unitID = "player", caster = "all", filter = "DEBUFF"},
 			-- Typhoon
 			{spellID = 61391, unitID = "player", caster = "all", filter = "DEBUFF"},
 			-- Concussive Shot
@@ -4019,8 +4019,8 @@ C["filger_spells"] = {
 			-- Smoke Bomb
 			{spellID = 76577, unitID = "player", caster = "all", filter = "DEBUFF"},
 			-- Rocket Fuel Leak
-			{spellID = 94794, unitID = "player", caster = "player", filter = "DEBUFF"},	
-	
+			{spellID = 94794, unitID = "player", caster = "player", filter = "DEBUFF"},
+
 		},
 		{
 			Name = "T_BUFF",

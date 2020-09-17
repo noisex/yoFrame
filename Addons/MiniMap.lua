@@ -51,6 +51,7 @@ end
 local function MiniInit()
 	if not yo.Addons.MiniMap then return end
 
+
 	--CreateStyle( DurabilityFrame, 3, 0)
 	DurabilityFrame:ClearAllPoints()
 	DurabilityFrame:SetPoint("BOTTOM", plFrame, "TOP", 0, 20)
@@ -151,7 +152,7 @@ local function MiniInit()
 	MinimapNorthTag:SetPoint("TOP",Minimap,0,-3)
 	MinimapNorthTag:SetAlpha(0)
 
-	--Blizzard_TimeManager
+	----Blizzard_TimeManager
 	LoadAddOn("Blizzard_TimeManager")
 	TimeManagerClockButton:GetRegions():Hide()
 	TimeManagerClockButton:ClearAllPoints()
@@ -266,7 +267,6 @@ end
 
 local calevent = CreateFrame("Frame", nil, Minimap)
 --calevent:RegisterEvent("CALENDAR_NEW_EVENT")
-
 --calevent:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 --calevent:RegisterEvent("CALENDAR_OPEN_EVENT")
 --calevent:RegisterEvent("CALENDAR_UPDATE_EVENT_LIST")
@@ -359,7 +359,7 @@ WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
 			coords.PlayerText:SetText(UnitName("player")..": "..x..","..y)
 		else
 			coords.PlayerText:SetText(UnitName("player")..": ".."|cffff0000"..L["MAP_BOUNDS"].."|r")
-			--coords.PlayerText:SetText("")
+			-----coords.PlayerText:SetText("")
 		end
 
 		local scale = WorldMapFrame.ScrollContainer:GetEffectiveScale()
@@ -375,7 +375,7 @@ WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
 			adjustedY = math.floor(100 * adjustedY)
 			coords.MouseText:SetText( L["MAP_CURSOR"]..adjustedX..","..adjustedY)
 		else
-			--coords.MouseText:SetText( L_MAP_CURSOR.."|cffff0000"..L["MAP_BOUNDS"].."|r")
+			-----coords.MouseText:SetText( L_MAP_CURSOR.."|cffff0000"..L["MAP_BOUNDS"].."|r")
 			coords.MouseText:SetText( "")
 		end
 		int = 0

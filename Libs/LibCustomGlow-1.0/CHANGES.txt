@@ -1,18 +1,12 @@
-commit f9e4feaa9c3ca2420b3d1213eb339dc468347f6d
+tag 648b01168be33c5ee2cebb19f893c13ed149f4d3 1.0.3
+Author:	Benjamin Staneck <staneck@gmail.com>
+Date:	Sat Aug 10 23:00:24 2019 +0200
+
+Tag as 1.0.3
+
+commit 6efc82df449dea8a78f7ab647c252afafc45c381
 Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Thu Oct 25 00:08:36 2018 +0200
+Date:   Sat Aug 10 23:00:12 2019 +0200
 
-    add back LibStub to toc
-
-commit 2a428bcdffbbeb8ee4a7f050892518c2566f32aa
-Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Thu Oct 25 00:05:20 2018 +0200
-
-    Fixed Masque interaction
-
-commit 7cfb1e05a5cceaae0e1a239e47efc7d7353eb86c
-Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Sun Oct 21 20:29:36 2018 +0200
-
-    initial commit
+    bump minor version
 

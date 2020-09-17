@@ -78,7 +78,7 @@ end
 end
 
 local function OnEvent( self, event, unit, pToken, ...)
-	--print( event, " ptoken: ", pToken, " Type: ", pType[myClass].powerID)
+	--print( event, " ptoken: ", pToken, " Type: ", yo.pType[myClass].powerID)
 
 	if event == "RUNE_POWER_UPDATE" then
 
@@ -143,7 +143,6 @@ local function CreateShardsBar( f)
 	holyShards.spec 	= yo.pType[myClass].spec
 	holyShards.minAlpha = 0.2
 	holyShards.maxAlpha = 0.9
-
 	holyShards.TurnOff 	= ClassPowerBar.TurnOff
 	holyShards.TurnOn 	= ClassPowerBar.TurnOn
 
@@ -157,7 +156,6 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.unitFrames then return end
-
 	if yo.pType[myClass] and yo.pType[myClass].powerID then
 		CreateShardsBar( plFrame)
 	end

@@ -47,7 +47,7 @@ local body = ""
 local function macroBody(class)
 	body = "" --/stopcasting\n"
 	--body = body .. "/say 123\n"
-	
+
 	-- BFA
 	if class == "GUNTER" then
 		local combatSpell1 = classList[class].combat1
@@ -60,15 +60,15 @@ local function macroBody(class)
 		local combatSpell = classList[class].combat
 		local oneresSpell = classList[class].oneres
 		local allresSpell = classList[class].allres
-		
+
 		if allresSpell then
 			body = body.."/cast [nocombat] "..allresSpell.."\n"
 		end
-		
+
 		if oneresSpell then
 			body = body.."/cast [nocombat,@mouseover,help,dead][nocombat,help,dead] "..oneresSpell.."\n"
 		end
-		
+
 		if combatSpell then
 			body = body.."/cast [combat,@mouseover,help,dead][combat,help,dead] "..combatSpell.."\n"
 		end
@@ -85,22 +85,22 @@ end
 
 local function setupAttribute(self)
 	if InCombatLockdown() then return end
-	local MyClass = select( 2, UnitClass( "player"))
+	--local MyClass = select( 2, UnitClass( "player"))
 	--print( MyClass)
-	
-	if classList[MyClass] and not IsAddOnLoaded("Clique") then
+
+	if classList[myClass] and not IsAddOnLoaded("Clique") then
 		self:SetAttribute("*type3", "macro")
-		self:SetAttribute("macrotext3", macroBody(MyClass))
-		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+		self:SetAttribute("macrotext3", macroBody(myClass))
+		self:UnregisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
 	end
 end
 
 local Enable = function(self)
 	--if not NDuiDB["UFs"]["AutoRes"] then return end
 	--print( yo["Addons"]["CastWatchSound"])
-	
+
 	if InCombatLockdown() then
-		self:RegisterEvent("PLAYER_REGEN_ENABLED", setupAttribute)
+		self:RegisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
 	else
 		setupAttribute(self)
 	end
@@ -108,9 +108,9 @@ end
 
 local Disable = function(self)
 	--if yo["Addons"]["Potatos"] then return end
-		
+
 	self:SetAttribute("*type3", nil)
-	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	self:UnregisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
 end
 
 oUF:AddElement("AutoResurrect", nil, Enable, Disable)

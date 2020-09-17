@@ -22,7 +22,7 @@ RaidCDAnchor:SetSize(186 + 32, 20)
 
 local FormatTime = function(time)
 	if time >= 60 then
-		return sformat("%.2d:%.2d", floor(time / 60), time % 60)
+		return sformat("%.2d:%.2d", floor(time / 60), time  %60)
 	else
 		return sformat("%.2d", time)
 	end

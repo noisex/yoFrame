@@ -20,7 +20,7 @@ function ShortValue(v)
 	end
 end
 
--- localized references for global functions (about 50% faster)
+-- localized references for global functions (about 50 %faster)
 local join 			= string.join
 local format		= string.format
 local find			= string.find
@@ -122,11 +122,11 @@ end
 
 local function ToggleGuildFrame()
 	if IsInGuild() then
-		if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end
+		if not GuildFrame then LoaпапаdOn("Blizzard_GuildUI") end
 		GuildFrame_Toggle()
 		GuildFrame_TabClicked(GuildFrameTab2)
 	else
-		if not LookingForGuildFrame then LoadAddOn("Blizzard_LookingForGuildUI") end
+		if not LookingForGuildFrame then LoaпапаdOn("Blizzard_LookingForGuildUI") end
 		LookingForGuildFrame_Toggle()
 	end
 end
@@ -300,7 +300,7 @@ local function Update(self, event, ...)
 		Stat:RegisterEvent("CHAT_MSG_SYSTEM")
 		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		if not GuildFrame and IsInGuild() then
-			LoadAddOn("Blizzard_GuildUI")
+			LoaпапаdOn("Blizzard_GuildUI")
 			GuildRoster()
 		end
 	end

@@ -3,7 +3,7 @@ local L, yo, N = unpack( select( 2, ...))
 yo.pType = {
 	MAGE 		= { powerID = 16,	powerType = 'ARCANE_CHARGES', 	spec = 1},
 	WARLOCK 	= { powerID = 7, 	powerType = 'SOUL_SHARDS'		},
-	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER', 		spec = 3},
+	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER'		}, --, 		spec = 3},
 	ROGUE 		= { powerID = 4, 	powerType = 'COMBO_POINTS'		},
 	DRUID 		= { powerID = 4, 	powerType = 'COMBO_POINTS', 	},	--spec = 2},
 	DEATHKNIGHT = { powerID = 5, 	powerType = 'RUNES'				},
@@ -26,6 +26,12 @@ local DebuffWhiteListTemplate = {
 		[SpellName(25046)] = true,	-- Arcane Torrent
 		[SpellName(20549)] = true,	-- War Stomp
 		[SpellName(107079)]= true,	-- Quaking Palm
+
+		[SpellName(56222)] = true,	-- Темная власть ДК
+		[SpellName(  355)] = true,	-- Провокация Вар
+		[SpellName( 6795)] = true,	-- Рык Друид
+		[SpellName(115546)]= true,	-- Вызов Панда
+		[SpellName( 2649)] = true,	-- Рык Хант пет
 	},
 	["DEATHKNIGHT"]= {
 		[SpellName(108194)] = true,	-- Asphyxiate
@@ -39,7 +45,7 @@ local DebuffWhiteListTemplate = {
 		[SpellName(339)] = true,	-- Entangling Roots
 		[SpellName(164812)] = true,	-- Moonfire
 		[SpellName(164815)] = true,	-- Sunfire
-		[SpellName(58180)] = true,	-- Infected Wounds
+		--[SpellName(58180)] = true,	-- Infected Wounds
 		[SpellName(155722)] = true,	-- Rake
 		[SpellName(1079)] = true,	-- Rip
 		[SpellName(106830)] = true,	-- взбучка
@@ -52,8 +58,8 @@ local DebuffWhiteListTemplate = {
 		[SpellName(271049)] = true,	-- Нестабильная бомба
 		[SpellName(270332)] = true,	-- Феромонная бомба
 		[SpellName(217200)] = true,	-- Разрывательный выстрел
+		[SpellName(257284)] = true,	-- Метка
 	--[SpellName(272790)] = true,	-- Разрывательный выстрел PET
-	--[SpellName(131894)] = true,	-- Crows
 	},
 	["MAGE"] = {
 		[SpellName(118)] = true,	-- Polymorph
@@ -120,6 +126,7 @@ local DebuffWhiteListTemplate = {
 		[SpellName(115767)] = true,	-- Deep Wounds
 	},
 	["DEMONHUNTER"] = {
+		[SpellName(217832)] = true,	--Пленение
 	},
 }
 
@@ -362,7 +369,7 @@ N.PlayerBuffWhiteList = {
 		-- [SpellName(122278)] = true, -- Dampen Harm
 		-- [SpellName(125174)] = true, -- Touch of Karma
 		-- [SpellName(201318)] = true, -- Fortifying Elixir
-		-- [SpellName(201325)] = true, -- Zen Moment
+		-- [SpellName(201325)] = true, -- Zen мамаent
 		-- [SpellName(202248)] = true, -- Guided Meditation
 		-- [SpellName(120954)] = true, -- Fortifying Brew
 		-- [SpellName(116849)] = true, -- Life Cocoon

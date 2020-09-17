@@ -161,13 +161,13 @@ local function registerStyle()
 		bars.defaultDB.barStyle = "yoFrame"
 		bars:SetBarStyle("yoFrame", "yoFrame")
 	end
-	
+
 	bars.defaultDB.barStyle = "yoFrame"
 	if BigWigsLoader and bars.defaultDB.barStyle == "yoFrame" then
 		BigWigsLoader.RegisterMessage("BigWigs_Plugins", "BigWigs_FrameCreated", function()
 			--BigWigsProximityAnchor:SetTemplate("Transparent")
 		end)
-	end	
+	end
 end
 
 local f = CreateFrame("Frame")
@@ -199,7 +199,7 @@ f:SetScript("OnEvent", function(self, event, addon)
 			--print("we mess")
 			mess.db.profile.font = font
 			mess.db.profile.fontSize = 20
-		end		
+		end
 		local prox = BigWigs:GetPlugin("Super Emphasize")
 		if prox then
 			--print("we prox")

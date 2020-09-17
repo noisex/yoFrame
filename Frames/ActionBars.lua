@@ -15,12 +15,121 @@ local A, L = ...
 --	local frame = L:CreateButtonFrame(cfg,buttonList)
 --end
 
+--function RangeUpdate( self)
+--	local Icon = self.icon
+--	local NormalTexture = self.NormalTexture
+--	local ID = self.action
+
+--	if not ID then return end
+
+--	local IsUsable, NotEnoughMana = IsUsableAction(ID)
+--	local HasRange = ActionHasRange(ID)
+--	local InRange = IsActionInRange(ID)
+
+--	if IsUsable then -- Usable
+--		if (HasRange and InRange == false) then -- Out of range
+--			Icon:SetVertexColor(0.8, 0.1, 0.1)
+--			NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
+--		else -- In range
+--			Icon:SetVertexColor(1.0, 1.0, 1.0)
+--			NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
+--		end
+--	elseif NotEnoughMana then -- Not enough power
+--		Icon:SetVertexColor(0.1, 0.3, 1.0)
+--		NormalTexture:SetVertexColor(0.1, 0.3, 1.0)
+--	else -- Not usable
+--		Icon:SetVertexColor(0.3, 0.3, 0.3)
+--		NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
+--	end
+
+--	print( "UsableUpdate", self:GetName(), IsUsable, HasRange, InRange, NotEnoughMana )
+--end
+
+--function RangeOnUpdate(elapsed, self)
+--	print( "RangeUpdate", self:GetName(), IsUsable, HasRange, InRange, NotEnoughMana )
+--	if (not self.rangeTimer) then
+--		return
+--	end
+
+--	if ( self.rangeTimer == TOOLTIP_UPDATE_TIME ) then
+--		RangeUpdate(self)
+--	end
+--end
+
+function ActionButton_UpdateRangeIndicator(self, checksRange, InRange)
+	--print( self:GetName(), checksRange, inRange)
+	local Icon = self.icon
+	local NormalTexture = self.NormalTexture
+	local ID = self.action
+
+	if not ID then return end
+
+	local IsUsable, NotEnoughMana = IsUsableAction(ID)
+	local HasRange = ActionHasRange(ID)
+	local InRange = IsActionInRange(ID)
+
+	if IsUsable then -- Usable
+		if (HasRange and InRange == false) then -- Out of range
+			Icon:SetVertexColor(0.8, 0.1, 0.1)
+			NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
+		else -- In range
+			Icon:SetVertexColor(1.0, 1.0, 1.0)
+			NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
+		end
+	elseif NotEnoughMana then -- Not enough power
+		Icon:SetVertexColor(0.1, 0.3, 1.0)
+		NormalTexture:SetVertexColor(0.1, 0.3, 1.0)
+	else -- Not usable
+		Icon:SetVertexColor(0.3, 0.3, 0.3)
+		NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
+	end
+end
+
+local function ButtonHooks( button )
+
+	--hooksecurefunc( button, "Update", function( self )
+	--	print( "RangeUpdate 1111")
+	--	RangeUpdate( self)
+ -- 		--tullaRange.OnButtonUpdate( self)
+ -- 		--print ( button:GetName(), "qqqq")
+ --  	end)
+
+	--hooksecurefunc( button,"UpdateUsable", function( self )
+	--	print( "RangeUpdate 2222")
+	--	RangeUpdate( self)
+	--	--local action = ActionButton_GetPagedID( self)
+	--	--local isUsable, notEnoughMana = IsUsableAction( button.action)
+
+	--	--	tullaRange.OnUpdateButtonUsable(self)
+	--	--print(self:GetName(), "wwwww", isUsable, notEnoughMana)
+	--end)
+
+	--hooksecurefunc( button, "OnUpdate", function( self, elapsed)
+
+	--	print( self, button, self.action, elapsed)
+	--    --tullaRange.RegisterButton( self) -- button
+	--    --RangeOnUpdate( elapsed, self)
+	--end)
+
+	--hooksecurefunc( "ActionButton_UpdateRangeIndicator", function(  self, checksRange, inRange)
+		--print( "RangeUpdate 3333", self:GetName(), checksRange, inRange)
+	--end)
+end
+
 function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 	local name = button:GetName()
 
-		if 		name:match("MultiCast") then return
-		elseif 	name:match("VehicleExitBar") then return
+		if 	name:match("MultiCast") then return
+
+
+		elseif name:match("VehicleExitButton") then
+			local Icon = _G[name.."Icon"]
+
+			button:SetNormalTexture("")
+			button:SetSize( buttonWidth, buttonWidth)
+			Icon:SetTexCoord(unpack( yo.tCoord))
+			CreateStyle( button, 2)
 
 --------------------------------------------------------------------------------------------
 --		MicroMenu
@@ -80,24 +189,31 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			button:SetScale( 0.75)
 			button:SetNormalTexture("")
 
-			local oldicon = _G[name.."Icon"]
-			oldicon:Hide()
+			button.oldicon = _G[name.."Icon"]
+			button.oldicon:Hide()
 
-			local panel = CreateFrame("Frame", name.."Panel", button)
+			local panel = CreateFrame("Frame", name.."Panel", button, BackdropTemplateMixin and "BackdropTemplate")
 			CreatePanel(panel, buttonWidth +10, buttonWidth +10, "CENTER", button, "CENTER", 0, 0)
-			--panel:SetFrameStrata(button:GetFrameStrata())
-			--panel:SetFrameLevel(button:GetFrameLevel() - 1)
+			--CreateStyle(panel, 4)
+			--panel.shadow:SetBackdropColor(1, 1, 0)
+			button:GetHighlightTexture():ClearAllPoints()
+			button:GetHighlightTexture():SetPoint("TOPLEFT", panel, -4, 4)
+			button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", panel, 4, -4)
+
+			button:GetCheckedTexture():ClearAllPoints()
+			button:GetCheckedTexture():SetPoint("TOPLEFT", panel, -4, 4)
+			button:GetCheckedTexture():SetPoint("BOTTOMRIGHT", panel, 4, -4)
+			panel:SetBackdropColor( 1, 1, 0, 0.5)
 
 			panel.icon = panel:CreateTexture(nil, "BORDER")
 			panel.icon:SetTexCoord(unpack( yo.tCoord))
-			panel.icon:SetAllPoints( panel)
-			panel.icon:SetPoint("TOPLEFT", panel, 0, -0)
-			panel.icon:SetPoint("BOTTOMRIGHT", panel, -0, 0)
-			panel.icon:SetTexture( oldicon:GetTexture())
+			panel.icon:SetPoint("TOPLEFT", panel, 1, -1)
+			panel.icon:SetPoint("BOTTOMRIGHT", panel, -1, 1)
+			panel.icon:SetTexture( button.oldicon:GetTexture())
 
-			CreateStyle(panel, 2)
 			button:HookScript('OnShow',  function(self, ...)
 				local name = self:GetName()
+				self.style:Hide()
 				local oldicon = _G[name.."Icon"]
 				oldicon:Hide()
 
@@ -108,7 +224,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 --------------------------------------------------------------------------------------------
 --		Pet Menu
 --------------------------------------------------------------------------------------------
-		elseif name:match("PetAction") then
+		elseif name:match("PetAction") or name:match("StanceButton") then
 
 			local Flash	 	= _G[name.."Flash"]
 			local icon	 	= _G[name.."Icon"]
@@ -121,7 +237,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 				button:SetWidth(buttonWidth)
 				button:SetHeight(buttonWidth)
 
-				local panel = CreateFrame("Frame", name.."Panel", button)
+				local panel = CreateFrame("Frame", name.."Panel", button, BackdropTemplateMixin and "BackdropTemplate")
 				CreatePanel(panel, buttonWidth, buttonWidth, "CENTER", button, "CENTER", 0, 0)
 				panel:SetFrameStrata(button:GetFrameStrata())
 				panel:SetFrameLevel(button:GetFrameLevel() - 1)
@@ -191,7 +307,8 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 --------------------------------------------------------------------------------------------
 --		Actions Bars
 --------------------------------------------------------------------------------------------
-		else
+		elseif name:match("MultiBar") or name:match( "ActionButton") then
+
 			local shift, alpfa 	= -2, .3
 			local action 	= button.action
 			local Button 	= button
@@ -289,7 +406,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 					button:SetSize( buttonWidth, buttonHeight)
 				end
 
-				local panel = CreateFrame("Frame", name.."Panel", button)
+				local panel = CreateFrame("Frame", name.."Panel", button, BackdropTemplateMixin and "BackdropTemplate")
 				CreatePanel(panel, buttonWidth, buttonWidth, "CENTER", button, "CENTER", 0, 0)
 				CreateStyle(panel, 2)
 				--panel:SetFrameStrata(button:GetFrameStrata())
@@ -328,6 +445,8 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			--ActionButton_ShowGrid(button)
 
 			if BtnBG then BtnBG:Hide() end
+
+			ButtonHooks( button )
 		end
 
 --------------------------------------------------------------------------------------------
@@ -480,23 +599,28 @@ bars:SetScript("OnEvent", function(self, event)
 		for i = 1, 12 do
 			local button = _G[format("ActionButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarRightButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarBottomRightButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarLeftButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarBottomLeftButton%d", i)]
 			button:SetAttribute("showgrid", 1)
-			ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 		end
 	end
 

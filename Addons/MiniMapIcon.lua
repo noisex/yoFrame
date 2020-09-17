@@ -1,14 +1,14 @@
 local L, yo = unpack( select( 2, ...))
 
-local ignoreButtons = { 
-	["MiniMapTracking"]= true, 
-	["MiniMapWorldMapButton"]= true, 
-	["QueueStatusMinimapButton"]= true, 
-	["MinimapZoomIn"]= true, 
-	["MinimapZoomOut"]= true, 
-	["MiniMapMailFrame"]= true, 
-	["MiniMapBattlefieldFrame"]= true, 
-	["GameTimeFrame"]= true, 
+local ignoreButtons = {
+	["MiniMapTracking"]= true,
+	["MiniMapWorldMapButton"]= true,
+	["QueueStatusMinimapButton"]= true,
+	["MinimapZoomIn"]= true,
+	["MinimapZoomOut"]= true,
+	["MiniMapMailFrame"]= true,
+	["MiniMapBattlefieldFrame"]= true,
+	["GameTimeFrame"]= true,
 	["FeedbackUIButton"]= true,
 	["TimeManagerClockButton"] = true,
 	["GarrisonLandingPageMinimapButton"] = true,
@@ -28,7 +28,7 @@ local function ButtonEnter(self)
 	self:SetBackdropBorderColor(color.r, color.g, color.b)
 	self:SetAlpha( 0.9)
 end
- 
+
 local function ButtonLeave(self)
 	self:SetBackdropBorderColor(.15,.15,.15, 0)
 end
@@ -46,7 +46,7 @@ end
 local function Hide()
   	if yo_MiniMapIcon:IsMouseOver() then return end
   	if time() == lasttime then return end
-	
+
 	yo_MiniMapIcon:Hide()
 	yo_MiniMapIcon.Text:SetText("<\n<")
 	--toggleFrame()
@@ -60,7 +60,7 @@ end
 local function ScanButtons( frame)
 	for i, iFrame in ipairs( {frame:GetChildren()}) do
 		local nameFrame = iFrame:GetName()
-		
+
 		if nameFrame and not ignoreButtons[nameFrame] then
 			tinsert(buttonList, iFrame)
 		end
@@ -124,10 +124,10 @@ local function CreateMiniMapFrame(self)
 		self.Text = Text
 
 		MoveButtons( self, numRow)
-	end	
+	end
 end
 
-local logan = CreateFrame("Frame", "yo_MiniMapIcon", UIParent)
+local logan = CreateFrame("Frame", "yo_MiniMapIcon", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
@@ -135,6 +135,6 @@ logan:SetScript("OnEvent", function(self, event)
 	if not yo["Addons"].MMColectIcons then return end
 
 	ScanButtons( Minimap)
-	ScanButtons( MinimapBackdrop)	
+	ScanButtons( MinimapBackdrop)
 	CreateMiniMapFrame( self)
 end)

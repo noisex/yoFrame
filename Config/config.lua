@@ -177,8 +177,8 @@ yo["CastBar"] = {
 	},
 	["BCB"] = {
 		["enable"]		= true,
-		["width"]		= 370,
-		["height"]		= 20,
+		["width"]		= 450,
+		["height"]		= 27,
 		["offsetX"]		= 0,
 		["offsetY"]		= -100,
 		["unit"]		= "target",
@@ -275,7 +275,7 @@ yo["Media"] = {
 	["ScaleRate"] 	= 0.71,
 	["fontScala"]	= 0,
 	["shadowColor"]	= "0.09,0.09,0.09",
-	["edgeSize"]	= 4,
+	["edgeSize"]	= 2,
 	["classBorder"]	= false,
 }
 
@@ -307,7 +307,7 @@ yo["Raid"] = {
 	["showMTT"]			= true,
 	["heightMT"]		= 32,
 	["widthMT"]			= 120,
-	["simpeRaid"]		= true,
+	["simpeRaid"]		= false,
 }
 yo["Chat"] = {
 	["EnableChat"] 		= true,
@@ -325,7 +325,7 @@ yo["Chat"] = {
 	["wisperSound"]		= "Wisper",
 	["wisperInCombat"]	= true,
 	["chatFont"]		= "Interface\\Addons\\yoFrame\\Media\\qFont.ttf",
-	["wim"]				= true,
+	["wim"]				= false,
 	["winHeight"]		= 250,
 	["wimWidth"]		= 350,
 	["wimHHeight"]		= 300,
@@ -364,7 +364,7 @@ yo["fliger"] = {
 }
 
 yo["CTA"] = {
-	["enable"]	= true,
+	["enable"]	= false,
 	["tRole"]	= true,
 	["hRole"]	= true,
 	["dRole"]	= true,

@@ -18,7 +18,7 @@ LSM:Register("statusbar", "yo Striped", 	"Interface\\AddOns\\yoFrame\\Media\\str
 LSM:Register("statusbar", "yo Smooth", 		"Interface\\AddOns\\yoFrame\\Media\\flatsmooth")
 LSM:Register("statusbar", "yo Bar 04", 		"Interface\\AddOns\\yoFrame\\Media\\bar4")
 LSM:Register("statusbar", "yo Bar 07", 		"Interface\\AddOns\\yoFrame\\Media\\bar7")
-LSM:Register("statusbar", "yo Bar 08", 		"Interface\\AddOns\\yoFrame\\Media\\bar8")
+--LSM:Register("statusbar", "yo Bar Solid",	"Interface\\AddOns\\yoFrame\\Media\\White8x8")
 LSM:Register("statusbar", "yo Bar 17", 		"Interface\\AddOns\\yoFrame\\Media\\bar17")
 LSM:Register("statusbar", "yo Neal", 		"Interface\\AddOns\\yoFrame\\Media\\Neal")
 

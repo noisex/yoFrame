@@ -214,7 +214,7 @@ local Shared = function(self, unit)
 		enableAuras 	= false
 		CreateStyleSmall(self, 1)
 	else
-		CreateStyle(self, 2)
+		CreateStyleSmall(self, 1)
 	end
 
 	if unit == "raid" then
@@ -225,6 +225,7 @@ local Shared = function(self, unit)
 		initialAnchor 	= "RIGHT"
 		growthX 		= 'LEFT'
 		CustomFilter	= funcBlackList
+
 	elseif unit == "tank" then
 		posInfo			= {"LEFT", self, "LEFT", 2, 2}
 		enableDeHight 	= false
@@ -284,13 +285,26 @@ local Shared = function(self, unit)
 
 	else
 		self.Health.colorHealth = true
-		self.colors.health = { 0.2, 0.2, 0.2 }
-		self.Health.hbg:SetVertexColor( 0.7, 0.7, 0.7, 0.9)
+		self.colors.health = { 0.15, 0.15, 0.15 }
+		self.Health.hbg:SetVertexColor( 0.7, 0.7, 0.7, 1)
 	end
 
 	if yo.Raid.simpeRaid and yo.Raid.classcolor ~= 3 then
 		self.Health.bg = self.Health.hbg
 		self.Health.bg.multiplier = .5
+	end
+
+	self.Range.PostUpdate = function(object, inRange, checkedRange, connected)
+		if connected then
+			--print( inRange, checkedRange)
+			if checkedRange then
+			--	self.Health.hbg:SetAlpha(0)
+			else
+			--	self.Health.hbg:SetAlpha(0)
+			end
+		else
+			--self.Health.hbg:SetAlpha(1)
+		end
 	end
 
 	------------------------------------------------------------------------------------------------------
@@ -335,7 +349,7 @@ local Shared = function(self, unit)
 		self.Power.bg:SetAlpha(1)
 		self.Power.bg.multiplier = 0.2
 
-		CreateStyle( self.Power, 2)
+		CreateStyle( self.Power, 1)
 	end
 
 --	    -- Position and size
@@ -417,7 +431,7 @@ local Shared = function(self, unit)
 	local AssistantIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
    	AssistantIndicator:SetSize(10, 10)
    	AssistantIndicator:SetPoint('LEFT', self.rText, 'RIGHT', 0, 0)
-   	AssistantIndicator.PostUpdate = function(self)
+   	AssistantIndicator.PostUpdate = function(self)											-- BACK COLORING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if yo.Raid.classBackground == true and yo.Raid.classcolor == 3 then
 			local parent = self:GetParent():GetParent()
 			local t = self.__owner.colors.class[select( 2, UnitClass( parent.unit))]
@@ -599,7 +613,7 @@ local function CreateTempStyle(f, size, level, alpha, alphaborder)
 		edgeSize = 4,
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	}
-    local shadowMove = CreateFrame("Frame", nil, f)
+    local shadowMove = CreateFrame("Frame", nil, f, BackdropTemplateMixin and "BackdropTemplate")
     shadowMove:SetFrameLevel(level or 0)
     shadowMove:SetFrameStrata(f:GetFrameStrata())
     shadowMove:SetPoint("TOPLEFT", -size, size)
@@ -838,6 +852,7 @@ logan:SetScript("OnEvent", function(self, event)
     			'yOffset', -offsetMT,
     			'widthMT', fullMTT + offsetMT,
     			'point', "TOP",
+    			--'template', "oUF_MainTankTT" or "oUF_MainTank",
     			'oUF-initialConfigFunction', ([[
             		self:SetWidth(%d)
             		self:SetHeight(%d)

@@ -7,6 +7,18 @@ local slots = {
 	"LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"
 }
 
+local slotsRight = {
+	["SecondaryHandSlot"] = 1,
+	["HandsSlot"] = 1,
+	["WaistSlot"] = 1,
+	["LegsSlot"] = 1,
+	["FeetSlot"] = 1,
+	["Finger0Slot"] = 1,
+	["Finger1Slot"] = 1,
+	["Trinket0Slot"] = 1,
+	["Trinket1Slot"] = 1,
+}
+
 local classDefaultArmorType = {
 	["WARRIOR"] 	= 4,
 	["PALADIN"] 	= 4,
@@ -58,31 +70,70 @@ local slotEquipType = {
 	--["INVTYPE_RANGEDRIGHT"]={16},
 }
 
-local tooltip = CreateFrame("GameTooltip", "QulightUI_ItemScanningTooltip", UIParent, "GameTooltipTemplate")
-tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+local MATCH_ENCHANT = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')
+--Trinket1Slot бесцветное гнездо
 
 local function CreateButtonsText(frame)
+	local p1, p2, x, y
 	for _, slot in pairs(slots) do
 		local button = _G[frame..slot]
-		button.t = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
-		button.t:SetPoint("TOP", button, "TOP", 0, -2)
-		button.t:SetText("")
+		button.textLVL = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
+		button.textLVL:SetPoint("TOP", button, "TOP", 0, -2)
+		button.textLVL:SetText("")
+
+		if slotsRight[slot] then p1, p2, x, y = "RIGHT", "LEFT", -10, 0 else  p1, p2, x, y = "LEFT", "RIGHT", 10, 0 end
+		button.textEnch = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
+		button.textEnch:SetPoint( p1, button, p2, x, y)
+		button.textEnch:SetText("")
 	end
 end
 
 local function UpdateButtonsText(frame)
-	if frame == "Inspect" and not InspectFrame:IsShown() then return end
+	local unit = "player"
+
+	if frame == "Inspect" and InspectFrame:IsShown() == false then return end
+	if frame == "Inspect" then unit = InspectFrame.unit end
 
 	for _, slot in pairs(slots) do
 		local id = GetInventorySlotInfo(slot)
-		local text = _G[frame..slot].t
+		--print(id, slot, slotsRight[slot])
+
+		local tt = CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate")
+		tt:SetOwner( UIParent, "ANCHOR_NONE")
+		tt:SetInventoryItem( unit, id)
+		tt:Show()
+
+		for x = 1, tt:NumLines() do
+			local line = _G['yoFrame_ItemScanningTooltipTextLeft'..x]
+
+			if line then
+				local text = _G[frame..slot].textEnch
+				local lineText = line:GetText()
+				--print(slot, lineText)
+				if x == 1 and lineText == RETRIEVING_ITEM_INFO then
+					return 'tooSoon'
+				else
+					local enchant = strmatch(lineText, MATCH_ENCHANT)
+					if enchant then
+						--print( enchant)
+						local lr, lg, lb = line:GetTextColor()
+						text:SetText( enchant, 1, 200)
+						text:SetTextColor(lr, lg, lb)
+					end
+				end
+			end
+		end
+
+		local text = _G[frame..slot].textLVL
 		local level
 
 		if frame == "Inspect" then
-			local itemLink = GetInventoryItemLink("target", id)
+			local itemLink = GetInventoryItemLink( unit, id)
 			if itemLink then
-				level = _getRealItemLevel( id, "target", itemLink, true)
-			end			
+				level = GetDetailedItemLevelInfo( itemLink)
+				--print(itemLink, level)
+				--level = _getRealItemLevel( id, "target", itemLink, true)
+			end
 		else
 			local item = Item:CreateFromEquipmentSlot( id)
 			level = item:GetCurrentItemLevel()
@@ -90,7 +141,7 @@ local function UpdateButtonsText(frame)
 
 		if slot == "ShirtSlot" or slot == "TabardSlot" then
 			text:SetText("")
-		
+
 		elseif level then
 			--local itemLocation = ItemLocation:CreateFromEquipmentSlot( id)
 			--local item = Item:CreateFromItemLocation( itemLocation)
@@ -101,12 +152,14 @@ local function UpdateButtonsText(frame)
 			--if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLocation) then
 				--tprint( item)
 			--end
-			--wearBySlot[id] = ilvl		 
-		
+			--wearBySlot[id] = ilvl
+
 			text:SetText("|cFFFFFF00"..level)
 		else
-			text:SetText("")	
+			text:SetText("")
 		end
+		tt:Hide()
+		tt:ClearLines()
 	end
 end
 
@@ -141,19 +194,19 @@ local function CheckSlotLocationUpgrade( self, slotID, itemLocation, bags)
 	local levelLoc = itemLoc:GetCurrentItemLevel()
 
 	if bags and ( not levelSlot or levelSlot < levelLoc) then
-		
+
 		local linkLoc = itemLoc:GetItemLink()
 		local subTypeLoc = select( 13, GetItemInfo( linkLoc))	-- 6
 		local locTypeLoc = select( 9, GetItemInfo( linkLoc))
-		
+
 		if slotArmorTypeCheck[locTypeLoc] then
 			if classDefaultArmorType[myClass] == subTypeLoc then
 				upgrade = true
 			end
 		else
 			upgrade = true
-		end		
-	end	
+		end
+	end
 
 	return upgrade
 end
@@ -169,16 +222,16 @@ function MultiCheckLockation( self, itemLocation, itemEquipLoc, BagID, SlotID)
 
 			if slotID == 16 or slotID == 17 then
 				local availableItems = {}
-				
+
 				GetInventoryItemsForSlot( slotID, availableItems);
-				
+
 				for packedLocation, itemID in pairs(availableItems) do
 					local player, bank, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(packedLocation);
 					--print( bags, slot, bag)
-					
+
 					if BagID == bag and SlotID == slot then
 						--print(itemEquipLoc, slotID, SlotID, BagID)
-						needUp = CheckSlotLocationUpgrade( self, slotID, itemLocation, true)	
+						needUp = CheckSlotLocationUpgrade( self, slotID, itemLocation, true)
 					else
 
 					end
@@ -186,14 +239,14 @@ function MultiCheckLockation( self, itemLocation, itemEquipLoc, BagID, SlotID)
 			else
 				needUp = needUp or	CheckSlotLocationUpgrade( self, slotID, itemLocation, true)
 			end
-		end	
+		end
 	end
 	self.UpgradeIcon:SetShown( needUp)
 end
 
 local function UpdateFlyoutText(self)
 	CreateFlyoutText( self)
-	
+
 	if self then
 		local location = self.location
 		local slotID = self.id
@@ -209,7 +262,7 @@ local function UpdateFlyoutText(self)
 			if item then
 				local level = item:GetCurrentItemLevel() or ""
 				if level then
-					self.text:SetText( "|cFFFFFF00" .. level)					
+					self.text:SetText( "|cFFFFFF00" .. level)
 				end
 			end
 		end
@@ -226,8 +279,8 @@ OnEvent:SetScript("OnEvent", function(self, event)
 		CreateButtonsText("Character")
 		UpdateButtonsText("Character")
 		self:UnregisterEvent("PLAYER_LOGIN")
-		CharacterFrame:HookScript("OnShow", function(self) UpdateButtonsText("Character") end)		
-		--tick = 1			
+		CharacterFrame:HookScript("OnShow", function(self) UpdateButtonsText("Character") end)
+		--tick = 1
 		--EquipmentFlyoutFrame:HookScript("OnUpdate", UpdateFlyoutText)
 
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
