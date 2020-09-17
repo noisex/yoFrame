@@ -135,7 +135,7 @@ function tullaRange:PLAYER_LOGIN()
 	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
 	f:SetScript('OnShow', function(self)
 		self:SetScript('OnShow', nil)
-		LoaпапаdOn('tullaRange_Config')
+		LoadAddOn('tullaRange_Config')
 	end)
 
 	self.buttonsToUpdate = {}

@@ -574,7 +574,7 @@ local function UpdateAll(unitFrame)
 		UpdateHealthColor(unitFrame, 1)
 		UpdateHealth(unitFrame)
 		UpdateCastBar( unitFrame.castBar)
-		--UpdateBuffs(unitFrame)
+		UpdateBuffs(unitFrame)
 		UpdateRaidTarget(unitFrame)
 		--UpdateTheatSit( unitFrame)
 
@@ -1113,6 +1113,7 @@ local function OnNamePlateAdded(unit)
 	local unitFrame = namePlate.UnitFrame
 	SetUnit(unitFrame, unit)
 	UpdateAll(unitFrame)
+	--UpdateBuffs(unitFrame)
 	unitFrame.tick = 1
 	unitFrame:SetScript("OnUpdate", UpdateHealthColor)
 

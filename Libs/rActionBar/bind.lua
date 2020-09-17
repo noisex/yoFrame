@@ -280,7 +280,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 		end
 
 		if not IsAddOnLoaded("Blizzard_MacroUI") then
-			hooksecurefunc("LoaпапаdOn", function(addon)
+			hooksecurefunc("LoadAddOn", function(addon)
 				if addon=="Blizzard_MacroUI" then
 					registermacro()
 				end

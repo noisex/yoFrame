@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Version: 0.82
 ## Title: |cff00ffffyoFrame|r
 ## Author: NoiseX
@@ -45,7 +45,7 @@ Filters\RaidAuras.lua
 Filters\RaidSpels.lua
 Filters\TriggerTemplatesData.lua
 
-
+Fonts.lua
 Move.lua
 Core.lua
 Blizzard.lua
@@ -64,16 +64,16 @@ Libs\rActionBar\core.lua
 Libs\rActionBar\blizzard.lua
 Libs\rActionBar\bars.lua
 #-Libs\rActionBar\range.lua
-Libs\rActionBar\bind.lua
+#Libs\rActionBar\bind.lua
 
 Addons\Aura.lua
 #Addons\AzeritPower.lua
-Addons\AuraMarker.lua
 #-Addons\AzeriteTooltip.lua
 Addons\CastBar.lua
 #-Addons\CastWatcher.lua
 Addons\Challenges.lua
 Addons\ChallengeFrame.lua
+Addons\ChallengeProc.lua
 Addons\ChatBar.lua
 #-Addons\CheloBuff.lua
 Addons\Cooldown.lua
@@ -129,5 +129,3 @@ Libs\oUF\elements\AutoResurrect.lua
 Skins\shBigWigs.lua
 Skins\WeakAuras.lua
 Skins\shDBM.lua
-
-Fonts.lua

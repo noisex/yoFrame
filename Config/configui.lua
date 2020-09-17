@@ -665,7 +665,7 @@ function InitOptions()
            		func = function() AnchorsReset() end,},
 
 			KeyBind = {
-           		order = 30,	type = "execute", width = 0.7, name = "Key Binding",
+           		order = 30,	type = "execute", width = 0.7, name = "Key Binding", disabled = true,
            		func = function() 	SlashCmdList.MOUSEOVERBIND() end,},
 
 			ReloadConfig = {

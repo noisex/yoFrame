@@ -62,7 +62,11 @@ local function ShowQuestLevelInWatchFrame()
 
 						-- Icon Quest Item resize
 						if block.itemButton then
+							local _, f1 = block.itemButton:GetPoint()
+							block.itemButton:ClearAllPoints()
+							block.itemButton:SetPoint("TOPRIGHT", f1, "TOPLEFT", -35, 5)
 							block.itemButton:SetSize( 30, 30)
+							block.HeaderText:SetTextColor( 1, 1, 0, 1)
 							if block.itemButton.SetPushedTexture and not block.itemButton.pushed then
 								local pushed = block.itemButton:CreateTexture("frame", nil, self)
 								pushed:SetTexture( texture)
@@ -79,7 +83,7 @@ local function ShowQuestLevelInWatchFrame()
 							block.itemButton.icon:SetTexCoord(unpack( yo.tCoord))
 							CreateStyle( block.itemButton, 4, 0, 0)
 			--				--block.itemButton.shadow:SetBackdropColor( 0, 0, 0, 0)
-							block.itemButton.shadow:SetBackdropBorderColor( 1, 0.7, 0, 1)
+							block.itemButton.shadow:SetBackdropBorderColor( 0, 1, 0)--( 1, 0.7, 0, 1)
 						end
 					end
 				end
