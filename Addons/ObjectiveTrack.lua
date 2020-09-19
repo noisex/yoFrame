@@ -16,6 +16,7 @@ WatchFrameLevelFormat = "[%d%s%s] %s"
 --	[98] = "s", 		--Scenario QUEST_TYPE_SCENARIO
 --	[102] = "a", 		-- Account
 --}
+--function QuestObjectiveItem_OnUpdate(self, elapsed)
 
 local function ShowQuestLevelInLog()
 
@@ -93,6 +94,18 @@ local function ShowQuestLevelInWatchFrame()
 end
 hooksecurefunc("ObjectiveTracker_Update", ShowQuestLevelInWatchFrame)
 hooksecurefunc("QuestLogQuests_Update", ShowQuestLevelInLog)
+hooksecurefunc("QuestObjectiveItem_OnUpdate", function(self, elapsed) 		-- Rahge Check ItemButtom
+	local rangeTimer = self.rangeTimer;
+	rangeTimer = rangeTimer - elapsed;
+	if ( rangeTimer <= 0 ) then
+		local valid = IsQuestLogSpecialItemInRange(self:GetID());
+		if valid and valid == 0
+			then self.icon:SetVertexColor( 1, 0, 0, 1)
+		else
+			self.icon:SetVertexColor(1, 1, 1, 1)
+		end
+	end
+end)
 
 ----------------------------------------------------------------------------------------
 --	Add quest/achievement wowhead link and Abandon
@@ -139,7 +152,7 @@ hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
 	UIDropDownMenu_AddButton(info, UIDROPDOWN_MENU_LEVEL)
 
 	info2 = UIDropDownMenu_CreateInfo()
-	info2.text = ABANDON_QUEST .. questID
+	info2.text = ABANDON_QUEST .. ": " .. questID
 	info2.func = function(id)
 		C_QuestLog.SetSelectedQuest( questID)
 		C_QuestLog.SetAbandonQuest()

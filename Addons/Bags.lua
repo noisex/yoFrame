@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
@@ -497,45 +497,51 @@ end
 
 local function IsItemEligibleForItemLevelDisplay(classID, subClassID, equipLoc, rarity)
 	if (equipLoc and _G[equipLoc] and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_TABARD") and (rarity and rarity > 1) then
-
 		return true
 	end
-
 	return false
 end
 
-local slotEquipType = {
-	["INVTYPE_HEAD"]	=	{1},
-	["INVTYPE_NECK"]	=	{2},
-	["INVTYPE_SHOULDER"]=	{3},
-	--["INVTYPE_BODY"]	=	4,
-	["INVTYPE_CHEST"]	=	{5},
-	["INVTYPE_ROBE"]	=	{5},
-	["INVTYPE_WAIST"]	=	{6},
-	["INVTYPE_LEGS"]	=	{7},
-	["INVTYPE_FEET"]	=	{8},
-	["INVTYPE_WRIST"]	=	{9},
-	["INVTYPE_HAND"]	=	{10},
-	["INVTYPE_FINGER"]	= 	{11, 12},
-	["INVTYPE_TRINKET"]	=	{13, 14},
-	["INVTYPE_CLOAK"]	=	{15},
-	["INVTYPE_WEAPON"]	=	{16, 17},
-	["INVTYPE_SHIELD"]	=	{17},
-	["INVTYPE_2HWEAPON"]=	{16},
-	["INVTYPE_WEAPONMAINHAND"]	=	{16},
-	["INVTYPE_WEAPONOFFHAND"]	=	{17},
-	--["INVTYPE_HOLDABLE"]=	{17,},
-	["INVTYPE_RANGED"]	=	{16},
-	--["INVTYPE_THROWN"]	=	{18,},
-	--["INVTYPE_RANGEDRIGHT"]={18,},
-	--["INVTYPE_RELIC"]	=	{18,},
-}
+local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
+	-- body
+	local itemRarity = select( 3, GetItemInfo( clink))
+	local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
+	local loclhexColor
 
+	if locLink then
+		local locitemRarity = select( 3, GetItemInfo( locLink))
+		loclhexColor = "|c" .. select( 4, GetItemQualityColor(locitemRarity))
+	else
+		loclhexColor = "|c" .. select( 4, GetItemQualityColor(0))
+		locLvl = "0"
+		locLink = loclhexColor .. "Empty slot"
+	end
+
+	local text = hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl  .. "] " .. clink .. "|r" .. L["instead"].. locLink
+
+	--print(clink, locLink, itemEquipLoc, iLvl, locLvl, bagID, slotID, text)
+	if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and locitemRarity ~= 7 then
+
+		if InCombatLockdown() then
+			print( L["put on"] .. text)
+		else
+			print( L["weared"] .. text)
+			EquipItemByName( clink)
+		end
+		C_NewItems.RemoveNewItem(bagID, slotID)
+		--print( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)
+	else
+		print( L["can change"] .. text)
+		C_NewItems.RemoveNewItem(bagID, slotID)
+	end
+end
+
+local itemTable = {}
 ---------http://wowprogramming.com/docs/api/IsEquippedItemType.html
+local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)  --- C_NewItems_IsNewItem(bagID, slotID))
+	local ret, canWear = false, false
+	local slotIndexes = N.slotEquipType[itemEquipLoc]
 
-local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)  --- C_NewItems_IsNewItem(bagID, slotID))
-	local ret = false
-	local slotIndexes = slotEquipType[itemEquipLoc]
 	if slotIndexes and iLvl then
 
 		for i, locSlotID in ipairs( slotIndexes ) do
@@ -545,65 +551,45 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 			--tprint( item)
 			--print( locSlotID, clink, item:GetItemLink(), item:IsItemEmpty())
 
-			if item:IsItemEmpty() and locSlotID < 16 and C_NewItems.IsNewItem(bagID, slotID) == true then
-
-				if locSlotID >= 11 and locSlotID <= 15 then
-					EquipItemByName( clink)
-				else
-					local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
-					tt:SetOwner( UIParent, "ANCHOR_NONE")
-					tt:SetBagItem(bagID, slotID)
-					tt:Show()
-
-					for x = 1, tt:NumLines() do
-						local lineR = _G['yoFrame_ItemTooltipTextRight'..x]
-						local lineTextR = lineR:GetText()
-						if lineTextR then
-							local lr, lg, lb = lineR:GetTextColor()
-							if lg > 0.5 then
-								--print( L["weared"] .. clink)
-								EquipItemByName( clink)
-							end
-						end
+			if itemSubClassID == N.classEquipMap[myClass] or itemEquipLoc == "INVTYPE_FINGER" or itemEquipLoc == "INVTYPE_TRINKET" then
+				canWear = true
+			else
+				wipe( itemTable)
+				GetInventoryItemsForSlot( locSlotID, itemTable); --ItemLocation:CreateFromBagAndSlot( bagID, slotID)
+				for location, itemID in next, itemTable do
+					--print( locSlotID, itemID, clink)
+					if clink == itemID then
+						canWear = true
+						--print( locSlotID, itemID, clink) --, "YSDKJSH DKSJH")
 					end
-					tt:Hide()
 				end
 			end
 
-			if locLvl and iLvl > locLvl then
+			if item:IsItemEmpty() and locSlotID < 16 and C_NewItems.IsNewItem(bagID, slotID) == true then
+
+				if locSlotID >= 11 and locSlotID <= 15 then 				-- ring and trinkets slots
+					equipItem( bagID, slotID, clink, iLvl)
+				elseif locSlotID >= 1 and locSlotID <= 10 and canWear then 	-- armor slots
+					equipItem( bagID, slotID, clink, iLvl)
+				else 														-- reserv for weapon slots
+				end
+			end
+
+			if canWear and locLvl and iLvl > locLvl then
 				local locLink = item:GetItemLink()
 				local locItemSutType = select( 7, GetItemInfo( locLink))
-				--local unitLvl = UnitLevel( "player") < GetMaxPlayerLevel()
-				if locItemSutType == itemSubType then
-					ret = true
-					if ( C_NewItems.IsNewItem(bagID, slotID) == true) then -- and ( locItemSutType == itemSubType)
-						local locitemRarity = select( 3, GetItemInfo( locLink))
-						local loclhexColor = "|c" .. select( 4, GetItemQualityColor(locitemRarity))
-
-						local itemRarity = select( 3, GetItemInfo( clink))
-						local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
-						local text = ( _G[itemEquipLoc] or "") .. hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl .. "] " .. clink .. L["instead"].. locLink
-
-						if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and locitemRarity ~= 7 then
-
-							if InCombatLockdown() then
-								print( L["put on"] .. text)
-							else
-								print( L["weared"] .. text)
-								EquipItemByName( clink)
-							end
-							C_NewItems.RemoveNewItem(bagID, slotID)
-							--print( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)
-						else
-							print( L["can change"] .. text)
-							C_NewItems.RemoveNewItem(bagID, slotID)
-						end
+				ret = true
+				if locSlotID <= 16 then
+					if ( C_NewItems.IsNewItem(bagID, slotID) == true) then
+						equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 					end
+				elseif locSlotID >= 16 then
+
 				end
 			end
 		end
 	end
-	--if ret then print( bagID, slotID, slot, itemEquipLoc, itemSubType, locItemSutType, iLvl, clink) end
+	--if ret then print( bagID, slotID, itemEquipLoc, itemSubType, locItemSutType, iLvl, clink) end
 	slot.UpgradeIcon:SetShown( ret);
 end
 
@@ -659,6 +645,7 @@ function UpdateSlot( self, bagID, slotID)
 		--slot.ignoreBorderColors = true
 	elseif (clink) then
 		local iLvl, itemEquipLoc, itemClassID, itemSubClassID
+		--itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subClassID
 		slot.name, _, _, _, _, _, itemSubType, _, itemEquipLoc, _, _, itemClassID, itemSubClassID = GetItemInfo(clink);
 		--iLvl = GetDetailedItemLevelInfo(clink)
 
@@ -686,7 +673,7 @@ function UpdateSlot( self, bagID, slotID)
 			--Check if item is an upgrade and show/hide upgrade icon accordingly
 			--UpdateItemUpgradeIcon(slot)
 			--local itemLocation = ItemLocation:CreateFromBagAndSlot( bagID, slotID)
-			checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)  --- C_NewItems_IsNewItem(bagID, slotID))
+			checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)  --- C_NewItems_IsNewItem(bagID, slotID))
 			--MultiCheckLockation( slot, itemLocation, itemEquipLoc, bagID, slotID)
 		end
 
@@ -841,7 +828,21 @@ end
 local function addonBank_OnShow()
 	--print( "Event addonBANK_ONShow")
 	--OpenBankFrame()
-	ReagentBankHelpBox:Show();
+	--ReagentBankHelpBox:Show();
+	if(not GetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_REAGENT_BANK_UNLOCK)) then
+		local numSlots,full = GetNumBankSlots();
+		if (full and not IsReagentBankUnlocked()) then
+			local helpTipInfo = {
+				text = REAGENT_BANK_HELP,
+				buttonStyle = HelpTip.ButtonStyle.Close,
+				cvarBitfield = "closedInfoFrames",
+				bitfieldFlag = LE_FRAME_TUTORIAL_REAGENT_BANK_UNLOCK,
+				targetPoint = HelpTip.Point.RightEdgeCenter,
+				offsetX = -2,
+			};
+			HelpTip:Show(self, helpTipInfo, BankFrameTab2);
+		end
+	end
 
 	if addon.bankFrame then
 		addon.bankFrame:Show()
@@ -1346,6 +1347,7 @@ function addon:CreateBagFrame( Bag, isBank)
 	f:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
 	f:RegisterEvent("QUEST_ACCEPTED");
 	f:RegisterEvent("QUEST_REMOVED");
+	f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 	f:SetScript("OnEvent", OnEvent)
 
 	f.BagIDs = isBank and {-1, 5, 6, 7, 8, 9, 10, 11} or {0, 1, 2, 3, 4};
@@ -1696,7 +1698,6 @@ end
 function OnEvent( self, event, ...)
 	--print( "Event: ", self:GetName(), event, ...)
 	if event == "BAG_UPDATE" then
-		--print( "BAG_UPDATE: ", self, self.BagIDs, ...)
 		for _, bagID in ipairs( self.BagIDs) do
 			local numSlots = GetContainerNumSlots(bagID)
 			if (not self.Bags[bagID] and numSlots ~= 0) or (self.Bags[bagID] and numSlots ~= self.Bags[bagID].numSlots) then
@@ -1705,6 +1706,7 @@ function OnEvent( self, event, ...)
 			end
 		end
 
+		--print( "BAG_UPDATE: ", self, self.BagIDs, bagID, ...)
 		addon.UpdateBagSlots( self, ...);
 
 		--Refresh search in case we moved items around
@@ -1718,7 +1720,7 @@ function OnEvent( self, event, ...)
 		else
 			self:UpdateSlot(...)
 		end
-	elseif event == "PLAYERBANKSLOTS_CHANGED" then
+	elseif event == "PLAYERBANKSLOTS_CHANGED" or event == "PLAYER_EQUIPMENT_CHANGED" then
 		UpdateAllSlots( self, ...)
 	elseif event == "PLAYERREAGENTBANKSLOTS_CHANGED" then
 		addon.UpdateReagentSlot( self, ...)
@@ -1885,7 +1887,6 @@ function addon:PLAYER_ENTERING_WORLD()
 	--self:RegisterEvent('TRADE_SKILL_CLOSE')
 
 	self:RegisterEvent('MERCHANT_CLOSED')
-
 	---- self:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
 	-- self:RegisterEvent("BAG_CLOSED")
 	---- self:RegisterEvent("BAG_UPDATE_COOLDOWN")
@@ -1927,3 +1928,21 @@ function addon:PLAYER_ENTERING_WORLD()
 	ElvUIAssignBagDropdown:Hide()
 	UIDropDownMenu_Initialize(ElvUIAssignBagDropdown, self.AssignBagFlagMenu, "MENU");
 end
+
+					--local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
+					--tt:SetOwner( UIParent, "ANCHOR_NONE")
+					--tt:SetBagItem(bagID, slotID)
+					--tt:Show()
+
+					--for x = 1, tt:NumLines() do
+					--	local lineR = _G['yoFrame_ItemTooltipTextRight'..x]
+					--	local lineTextR = lineR:GetText()
+					--	if lineTextR then
+					--		local lr, lg, lb = lineR:GetTextColor()
+					--		if lg > 0.5 then
+					--			--print( L["weared"] .. clink)
+					--			equipItem( bagID, slotID, clink, iLvl)
+					--		end
+					--	end
+					--end
+					--tt:Hide()

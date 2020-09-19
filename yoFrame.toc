@@ -81,6 +81,7 @@ Addons\CooldownFlash.lua
 Addons\CTA.lua
 Addons\Bags.lua
 Addons\BagBrothers.lua
+Addons\BagsEquip.lua
 Addons\HolyShards.lua
 Addons\Inspect.lua
 Addons\Fliger.lua

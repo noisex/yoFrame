@@ -11,7 +11,47 @@ N["statusBars"] = {}
 N["strings"]	= {}
 N["shadows"]	= {}
 N.ScanTooltip = CreateFrame('GameTooltip', 'yo_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
+N.classEquipMap = {
+	["WARRIOR"] 	= 4,
+	["PALADIN"] 	= 4,
+	["HUNTER"] 		= 3,
+	["ROGUE"]	 	= 2,
+	["PRIEST"] 		= 1,
+	["DEATHKNIGHT"] = 4,
+	["SHAMAN"] 		= 3,
+	["MAGE"] 		= 1,
+	["WARLOCK"] 	= 1,
+	["MONK"] 		= 2,
+	["DRUID"] 		= 2,
+	["DEMONHUNTER"] = 2,
+};
 
+N.slotEquipType = {
+	["INVTYPE_HEAD"]	=	{1},
+	["INVTYPE_NECK"]	=	{2},
+	["INVTYPE_SHOULDER"]=	{3},
+	--["INVTYPE_BODY"]	=	4,
+	["INVTYPE_CHEST"]	=	{5},
+	["INVTYPE_ROBE"]	=	{5},
+	["INVTYPE_WAIST"]	=	{6},
+	["INVTYPE_LEGS"]	=	{7},
+	["INVTYPE_FEET"]	=	{8},
+	["INVTYPE_WRIST"]	=	{9},
+	["INVTYPE_HAND"]	=	{10},
+	["INVTYPE_FINGER"]	= 	{11, 12},
+	["INVTYPE_TRINKET"]	=	{13, 14},
+	["INVTYPE_CLOAK"]	=	{15},
+	["INVTYPE_WEAPON"]	=	{16, 17},
+	["INVTYPE_SHIELD"]	=	{17},
+	["INVTYPE_2HWEAPON"]=	{16},
+	["INVTYPE_WEAPONMAINHAND"]	=	{16},
+	["INVTYPE_WEAPONOFFHAND"]	=	{17},
+	--["INVTYPE_HOLDABLE"]=	{17,},
+	["INVTYPE_RANGED"]	=	{16},
+	--["INVTYPE_THROWN"]	=	{18,},
+	["INVTYPE_RANGEDRIGHT"]={16,},
+	--["INVTYPE_RELIC"]	=	{18,},
+}
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
 ----------------------------------------------------------------------------------------
