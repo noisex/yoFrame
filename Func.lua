@@ -11,6 +11,7 @@ N["statusBars"] = {}
 N["strings"]	= {}
 N["shadows"]	= {}
 N.ScanTooltip = CreateFrame('GameTooltip', 'yo_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
+
 N.classEquipMap = {
 	["WARRIOR"] 	= 4,
 	["PALADIN"] 	= 4,

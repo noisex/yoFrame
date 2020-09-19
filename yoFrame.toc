@@ -117,7 +117,7 @@ Addons\ItemLvl.lua
 
 Infotext\System.lua
 Infotext\Durability.lua
-#Infotext\Guild.lua
+Infotext\Guild.lua
 Infotext\Friend.lua
 #-Infotext\Equipment.lua
 Infotext\Gold.lua

@@ -502,8 +502,11 @@ local function IsItemEligibleForItemLevelDisplay(classID, subClassID, equipLoc, 
 	return false
 end
 
+local doEquip
 local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 	-- body
+	if doEquip then return	end
+
 	local itemRarity = select( 3, GetItemInfo( clink))
 	local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
 	local loclhexColor
@@ -521,7 +524,7 @@ local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquip
 
 	--print(clink, locLink, itemEquipLoc, iLvl, locLvl, bagID, slotID, text)
 	if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and locitemRarity ~= 7 then
-
+		doEquip = true
 		if InCombatLockdown() then
 			print( L["put on"] .. text)
 		else
@@ -573,19 +576,22 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 					equipItem( bagID, slotID, clink, iLvl)
 				else 														-- reserv for weapon slots
 				end
-			end
 
-			if canWear and locLvl and iLvl > locLvl then
+			elseif canWear and locLvl and iLvl > locLvl then
+
 				local locLink = item:GetItemLink()
-				local locItemSutType = select( 7, GetItemInfo( locLink))
+				--local locItemSutType = select( 7, GetItemInfo( locLink))
+				local locEquipLocation = select( 9, GetItemInfo( locLink))
 				ret = true
-				if locSlotID <= 16 then
+				if locSlotID <= 16 and itemEquipLoc == locEquipLocation then
 					if ( C_NewItems.IsNewItem(bagID, slotID) == true) then
 						equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 					end
 				elseif locSlotID >= 16 then
 
 				end
+			elseif canWear and item:IsItemEmpty() then
+				ret = true
 			end
 		end
 	end
@@ -1722,6 +1728,7 @@ function OnEvent( self, event, ...)
 		end
 	elseif event == "PLAYERBANKSLOTS_CHANGED" or event == "PLAYER_EQUIPMENT_CHANGED" then
 		UpdateAllSlots( self, ...)
+		doEquip = false
 	elseif event == "PLAYERREAGENTBANKSLOTS_CHANGED" then
 		addon.UpdateReagentSlot( self, ...)
 	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED") and self:IsShown() then
