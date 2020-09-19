@@ -333,9 +333,10 @@ function InitOptions()
 						args = {
 							AutoQuest = {		order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["QUACP_DESC"],},
 							AutoQuestComplete ={order = 11, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["QUCOM_DESC"],},
-							AutoQuestComplete2Choice = {order = 12, type = "toggle",	name = function(info) return tr( info[#info]) end,
+							AutoQuestEnhance  ={order = 13, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["QUCOM_ENCH"],},
+							AutoQuestComplete2Choice = {order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end,
 								disabled = function() return not yo["Addons"].AutoQuestComplete; end,		desc = L["QU2CH_DESC"],},
-							AutoQuestSkipScene = {order = 14, type = "toggle",	name = function(info) return tr( info[#info]) end, 	disabled = function() return not yo.Addons.AutoQuestComplete; end,},
+							AutoQuestSkipScene = {order = 20, type = "toggle",	name = function(info) return tr( info[#info]) end, 	disabled = function() return not yo.Addons.AutoQuestComplete; end,},
 						},
 					},
 				},

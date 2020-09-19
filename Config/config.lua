@@ -115,6 +115,7 @@ yo["Addons"] = {
 	["TauntWatcher"] 				= true,
 	["TauntWatchSound"] 			= "Tick 02",
 	["AutoQuest"]					= true,
+	["AutoQuestEnhance"]			= true,
 	["AutoQuestComplete"]			= true,
 	["AutoQuestSkipScene"]			= true,
 	["AutoQuestComplete2Choice"]	= true,

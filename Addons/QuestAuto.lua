@@ -313,7 +313,7 @@ local function OnEvent( self, event, ...)
 
 			local questObjNum = C_QuestLog.GetNumQuestObjectives(questID)
 
-			if questObjNum and questObjNum >= 1 then
+			if questObjNum and questObjNum >= 1 and yo.Addons.AutoQuestEnhance then
 				print( "|cffffff00"..TARGET..":|r")
 				for i = 1, questObjNum do
 					local objectiveText, objectiveType, finished, numFulfilled, numRequired = GetQuestObjectiveInfo( questID, i, false);

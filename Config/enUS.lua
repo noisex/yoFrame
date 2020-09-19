@@ -91,6 +91,7 @@ L["AutoQuestSkipScene"]= "Skip videos"
 L["AutoQuestComplete2Choice"]= "Autochoice best item by iLVL"
 L["AutoInvaitFromFriends"] = "Accept an invitation to the group from friends and co-guilds"
 L["AutoScreenOnLvlUpAndAchiv"] = "Auto-screenshot"
+L["AutoQuestEnhance"]	= "Print more information about quest"
 
 L["QUACP_DESC"] 	= "Automatically accept the quest. \n\nPress |cff00ffffShift|r when contacting NPS to temporarily disable it."
 L["QUCOM_DESC"] 	= "Automatically complete the quest. \n\nPress |cff00ffffShift|r when contacting NPS to temporarily disable it."
