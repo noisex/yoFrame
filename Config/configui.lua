@@ -487,11 +487,13 @@ function InitOptions()
 					showPercTreat 	= { width = 1.5,	order = 60, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],},},
 					showResourses	= { width = "full",	order = 63, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showArrows 		= { width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					moreDebuffIcons = { width = "full",	order = 66, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					blueDebuff 		= { width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					tankMode		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					showTauntDebuff = { width = "full",	order = 70, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					classDispell 	= { width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
-					glowTarget		= { width = "full",	order = 69, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					glowBadType		= {	order = 70, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
+					glowTarget		= { width = "full",	order = 80, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					glowBadType		= {	order = 90, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
 
 					showToolTip 	= {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
 

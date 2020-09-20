@@ -504,7 +504,7 @@ function bagBro:CreateBagIconButton( self, parent)
 			gicon = "|TInterface\\GuildFrame\\GuildLogo-NoLogo:24:24:-5:0|t"
 		end
 
-		if yo.Bags.showGuilBank then
+		if yo.Bags.showGuilBank and IsInGuild() then
 			menuList[index] = { text = gicon .. "|cff00ff00" .. GUILD_BANK, notCheckable=true, func = function() CreateBag( yo_BBFrame, GetGuildInfo('player') .. '*', "gbank", 1) end}
 			index = index + 1
 		end

@@ -8,6 +8,7 @@ RightInfoPanel.specText = Text1
 RightInfoPanel.lootText = Text2
 RightInfoPanel.specIcon = Icon1
 RightInfoPanel.lootIcon = Icon2
+local ICON_FORMAT =  '|T%s:14:14:0:0:64:64:4:60:4:60|t  %s'
 
 local menuFrame = CreateFrame("Frame", "SpecRightClickMenu", UIParent, "UIDropDownMenuTemplate")
 local menuList = {{ text = SELECT_LOOT_SPECIALIZATION, isTitle = true, notCheckable = true },}
@@ -22,7 +23,7 @@ local function specOnClick(self, button)
 		for index = 1, numSpec do
 			local id, name, _, icon = GetSpecializationInfo(index)
 			if id then
-				menuList[index + 2] = { text = format('|T%s:14:14:0:0:64:64:4:60:4:60|t  %s', icon, name), checked = function() return GetLootSpecialization() == id end, func = function() SetLootSpecialization(id) end }
+				menuList[index + 2] = { text = format( ICON_FORMAT, icon, name), checked = function() return GetLootSpecialization() == id end, func = function() SetLootSpecialization(id) end }
 			end
 		end
 
@@ -30,7 +31,7 @@ local function specOnClick(self, button)
 		for index = 1, numSpec do
 			local id, name, _, icon = GetSpecializationInfo(index)
 			if id then
-				menuList[index + numSpec + 3] = { text = format('|T%s:14:14:0:0:64:64:4:60:4:60|t  %s', icon, name), checked = function() return GetSpecialization() == index end, func = function() SetSpecialization(index) end }
+				menuList[index + numSpec + 3] = { text = format( ICON_FORMAT, icon, name), checked = function() return GetSpecialization() == index end, func = function() SetSpecialization(index) end }
 			end
 		end
 
@@ -53,14 +54,14 @@ local function OnEnter( self)
 	GameTooltip:ClearLines()
 
 	GameTooltip:AddLine( _G.SPECIALIZATION)
-	GameTooltip:AddLine( format(' |T%s:14:14:0:0:64:64:4:60:4:60|t  %s', self.specIcon, self.specName ), 1, 1, 1)
+	GameTooltip:AddLine( format( ICON_FORMAT, self.specIcon, self.specName ), 1, 1, 1)
 	GameTooltip:AddLine(" ")
 
 	GameTooltip:AddLine( SELECT_LOOT_SPECIALIZATION)
 
 	local spec = GetLootSpecialization()
 	if spec == 0 then tecSpec = "( Текущая)" end
-	GameTooltip:AddLine( format( "|T%s:14:14:0:0:64:64:4:60:4:60|t  %s %s", self.specLootIcon, self.specLootName or self.specName, tecSpec), 1, 1, 1)
+	GameTooltip:AddLine( format( ICON_FORMAT, self.specLootIcon, ( self.specLootName or self.specName) .. tecSpec), 1, 1, 1)
 	GameTooltip:AddLine(" ")
 
 	GameTooltip:AddLine(TALENTS) --0.69, 0.31, 0.31)
@@ -68,7 +69,7 @@ local function OnEnter( self)
 		for j = 1, 3 do
 			local _, name, icon, selected = GetTalentInfo(i, j, 1)
 			if selected then
-				GameTooltip:AddLine( format(' |T%s:14:14:0:0:64:64:4:60:4:60|t  %s', icon, name), 1, 1, 1)
+				GameTooltip:AddLine( format( ICON_FORMAT, icon, name), 1, 1, 1)
 			end
 		end
 	end
@@ -124,6 +125,7 @@ local function OnEvent(self, event)
 	end
 
 	local id, name, _, icon = GetSpecializationInfo( GetSpecialization())
+	mySpeClass		= myClass .. mySpec
 	self.specID 	= id
 	self.specName 	= name
 	self.specIcon 	= icon

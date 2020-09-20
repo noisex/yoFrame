@@ -277,10 +277,12 @@ function addon:Tooltip_Show()
 	end
 
 	GameTooltip:Show()
+	if self.shadow then self.shadow:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b, 1) end
 end
 
 function addon:Tooltip_Hide()
 	GameTooltip:Hide()
+	if self.shadow then self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09) end
 end
 
 function addon:SetSlotAlphaForBag(f)
@@ -392,34 +394,6 @@ function addon:GetBagAssignedInfo(holder)
 	end
 end
 
-local function SetOutside(obj, anchor, xOffset, yOffset, anchor2)
-	xOffset = xOffset or 1
-	yOffset = yOffset or 1
-	anchor = anchor or obj:GetParent()
-
-	-- assert(anchor)
-	-- if obj:GetPoint() then
-		-- obj:ClearAllPoints()
-	-- end
-
-	-- obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', -xOffset, yOffset)
-	-- obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
-end
-
-local function SetInside(obj, anchor, xOffset, yOffset, anchor2)
-	xOffset = xOffset or 0				--											!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	yOffset = yOffset or 0
-	anchor = anchor or obj:GetParent()
-
-	assert(anchor)
-	if obj:GetPoint() then
-		obj:ClearAllPoints()
-	end
-
-	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', xOffset, -yOffset)
-	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
-end
-
 local function StyleButton(button, noHover, noPushed, noChecked)
 	if button.SetHighlightTexture and not button.hover and not noHover then
 		local hover = button:CreateTexture("frame", nil, self)
@@ -458,7 +432,7 @@ local function StyleButton(button, noHover, noPushed, noChecked)
 	--local cooldown = button:GetName() and _G[button:GetName().."Cooldown"]
 	--if cooldown then
 	--	cooldown:ClearAllPoints()
-	--	SetInside( cooldown)
+	--	--SetInside( cooldown)
 	--	cooldown:SetDrawEdge(false)
 	--	cooldown:SetSwipeColor(0, 0, 0, 1)
 	--end
@@ -467,33 +441,6 @@ end
 -----------------------------------------------------------------------------------------------
 ----													UPDATES
 -----------------------------------------------------------------------------------------------
---local function UpgradeCheck_OnUpdate(self, elapsed)
---	self.timeSinceUpgradeCheck = self.timeSinceUpgradeCheck + elapsed;
-
---	if (self.timeSinceUpgradeCheck >= ITEM_UPGRADE_CHECK_TIME) then
---		UpdateItemUpgradeIcon(self);
---	end
---end
-
---function UpdateItemUpgradeIcon(slot)
---	--if true then
---	--	slot.UpgradeIcon:SetShown(false);
---	--	slot:SetScript("OnUpdate", nil);
---	--	return
---	--end
-
---	slot.timeSinceUpgradeCheck = 0;
-
---	local itemIsUpgrade = IsContainerItemAnUpgrade(slot:GetParent():GetID(), slot:GetID());
---	if itemIsUpgrade == nil then -- nil means not all the data was available to determine if this is an upgrade.
---		slot.UpgradeIcon:SetShown(false);
---		slot:SetScript("OnUpdate", UpgradeCheck_OnUpdate);
---	else
---		slot.UpgradeIcon:SetShown(itemIsUpgrade);
---		slot:SetScript("OnUpdate", nil);
---	end
---	print("check update", itemIsUpgrade)
---end
 
 local function IsItemEligibleForItemLevelDisplay(classID, subClassID, equipLoc, rarity)
 	if (equipLoc and _G[equipLoc] and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_TABARD") and (rarity and rarity > 1) then
@@ -530,6 +477,7 @@ local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquip
 		else
 			print( L["weared"] .. text)
 			EquipItemByName( clink)
+			ConfirmBindOnUse() -- elseif ( event == "USE_BIND_CONFIRM" ) then StaticPopup_Show("USE_BIND");
 		end
 		C_NewItems.RemoveNewItem(bagID, slotID)
 		--print( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)
@@ -1070,7 +1018,6 @@ function addon:CreateLayout( isBank)
 				end
 
 				f.ContainerHolder[i].iconTexture = _G[f.ContainerHolder[i]:GetName()..'IconTexture'];
-				SetInside( f.ContainerHolder[i].iconTexture)
 				f.ContainerHolder[i].iconTexture:SetTexCoord( unpack( f.texCoord))			--( unpack( yo.tCoord))
 			end
 
@@ -1123,7 +1070,6 @@ function addon:CreateLayout( isBank)
 
 					if not f.Bags[bagID][slotID].shadow then
 						CreateStyle( f.Bags[bagID][slotID], 2)
-						--frame1px( f.Bags[bagID][slotID])
 						StyleButton( f.Bags[bagID][slotID])
 						--f.Bags[bagID][slotID].IconBorder:SetAlpha(0)
 					end
@@ -1143,7 +1089,6 @@ function addon:CreateLayout( isBank)
 						f.Bags[bagID][slotID].questIcon = _G[f.Bags[bagID][slotID]:GetName()..'IconQuestTexture'] or _G[f.Bags[bagID][slotID]:GetName()].IconQuestTexture
 						f.Bags[bagID][slotID].questIcon:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagQuestIcon");
 						f.Bags[bagID][slotID].questIcon:SetTexCoord(0,1,0,1);
-						SetInside( f.Bags[bagID][slotID].questIcon)
 						f.Bags[bagID][slotID].questIcon:Show();
 					end
 
@@ -1154,7 +1099,6 @@ function addon:CreateLayout( isBank)
 						f.Bags[bagID][slotID].UpgradeIcon.SetPoint 			= dummy
 						f.Bags[bagID][slotID].UpgradeIcon:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagUpgradeIcon");
 						f.Bags[bagID][slotID].UpgradeIcon:SetTexCoord(0,1,0,1);
-						SetInside( f.Bags[bagID][slotID].UpgradeIcon)
 						f.Bags[bagID][slotID].UpgradeIcon:Hide();
 					end
 
@@ -1179,7 +1123,6 @@ function addon:CreateLayout( isBank)
 					end
 
 					f.Bags[bagID][slotID].iconTexture = _G[f.Bags[bagID][slotID]:GetName()..'IconTexture'];
-					SetInside( f.Bags[bagID][slotID].iconTexture) --, f.Bags[bagID][slotID]);
 					f.Bags[bagID][slotID].iconTexture:SetTexCoord( unpack( f.texCoord))  		--( unpack( yo.tCoord))
 					--f.Bags[bagID][slotID].iconTexture:SetAllPoints( f.Bags[bagID][slotID]);
 
@@ -1200,7 +1143,6 @@ function addon:CreateLayout( isBank)
 
 					if not f.Bags[bagID][slotID].newItemGlow then
 						local newItemGlow = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
-						SetInside( newItemGlow)
 						newItemGlow:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagNewItemGlow")
 						newItemGlow:Hide()
 						f.Bags[bagID][slotID].newItemGlow = newItemGlow
@@ -1279,7 +1221,6 @@ function addon:CreateLayout( isBank)
 				f.reagentFrame.slots[i]:SetID(i)
 
 				StyleButton( f.reagentFrame.slots[i])
-				--frame1px( f.reagentFrame.slots[i])
 				if not f.reagentFrame.slots[i].shadow then
 					CreateStyle( f.reagentFrame.slots[i], 2)
 				end
@@ -1290,15 +1231,12 @@ function addon:CreateLayout( isBank)
 				f.reagentFrame.slots[i].Count:SetFont( font, fontsize -0, "OUTLINE") --, .db.bags.countFontOutline)
 
 				f.reagentFrame.slots[i].iconTexture = _G[f.reagentFrame.slots[i]:GetName()..'IconTexture'];
-				SetInside( f.reagentFrame.slots[i].iconTexture, f.reagentFrame.slots[i])
 				f.reagentFrame.slots[i].iconTexture:SetTexCoord( .08, .92, .08, .92)
 				f.reagentFrame.slots[i].IconBorder:SetAlpha(0)
 
 				if not f.reagentFrame.slots[i].newItemGlow then
 					local newItemGlow = f.reagentFrame.slots[i]:CreateTexture(nil, "OVERLAY")
-					SetInside( newItemGlow)
 					newItemGlow:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagNewItemGlow")
-					--newItemGlow:SetVertexColor(1, 1, 1, 0.1)
 					newItemGlow:Hide()
 					f.reagentFrame.slots[i].newItemGlow = newItemGlow
 					f.reagentFrame.slots[i]:HookScript("OnEnter", hideNewItemGlow)
@@ -1374,7 +1312,6 @@ function addon:CreateBagFrame( Bag, isBank)
 
 	f.ContainerHolder = CreateFrame('Button', Bag..'ContainerHolder', f)
 	f.ContainerHolder:SetPoint('BOTTOMLEFT', f, 'TOPLEFT', -3, 3)
-	--frame1px( f.ContainerHolder)
 	CreateStyle( f.ContainerHolder, 2)
 	f.ContainerHolder:Hide()
 
@@ -1391,15 +1328,12 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags Button
 		f.bagsButton = CreateFrame("Button", "yo_" .. Bag..'BagsButton', f);
 		f.bagsButton:SetSize( 16, 16)
-		--frame1px( f.bagsButton)
 		CreateStyle( f.bagsButton, 2)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", -2, 0)
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsButton:GetNormalTexture())
 		f.bagsButton:SetPushedTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsButton:GetPushedTexture())
 		f.bagsButton.ttText = BAGSLOTTEXT
 		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", BAG_SETTINGS_TOOLTIP)
 		f.bagsButton:SetScript("OnEnter", addon.Tooltip_Show)
@@ -1409,15 +1343,12 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Banks Sort Button
 		f.bagsSortButton = CreateFrame("Button", "yo_" .. Bag..'bagsSortButton', f);
 		f.bagsSortButton:SetSize( 17, 17)
-		--frame1px( f.bagsSortButton)
 		CreateStyle( f.bagsSortButton, 2)
 		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", 0, 0)
 		f.bagsSortButton:SetNormalTexture("Interface\\ICONS\\INV_Pet_Broom")
 		f.bagsSortButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsSortButton:GetNormalTexture())
 		f.bagsSortButton:SetPushedTexture("Interface\\ICONS\\INV_Pet_Broom")
 		f.bagsSortButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsSortButton:GetPushedTexture())
 		f.bagsSortButton:RegisterForClicks('anyUp')
 		f.bagsSortButton.ttText = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. BAG_CLEANUP_BANK
 		--f.bagsSortButton.ttText2 = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. REAGENTBANK_DEPOSIT
@@ -1458,11 +1389,8 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.purchaseBagButton:SetPoint("RIGHT", f.bagsToReagent, "LEFT", -5, 0)
 		f.purchaseBagButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Coin_01")
 		f.purchaseBagButton:GetNormalTexture():SetTexCoord(unpack( f.texCoord))
-		SetInside(f.purchaseBagButton:GetNormalTexture())
 		f.purchaseBagButton:SetPushedTexture("Interface\\ICONS\\INV_Misc_Coin_01")
 		f.purchaseBagButton:GetPushedTexture():SetTexCoord(unpack( f.texCoord))
-		SetInside( f.purchaseBagButton:GetPushedTexture())
-		--f.purchaseBagButton:StyleButton(nil, true)
 		f.purchaseBagButton.ttText = BANK_BAG_PURCHASE
 		f.purchaseBagButton:SetScript("OnEnter", self.Tooltip_Show)
 		f.purchaseBagButton:SetScript("OnLeave", self.Tooltip_Hide)
@@ -1559,15 +1487,12 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags Button
 		f.bagsButton = CreateFrame("Button", "yo_" .. Bag..'BagsButton', f);
 		f.bagsButton:SetSize( 17, 17)
-		--frame1px( f.bagsButton)
-		CreateStyle( f.bagsButton, 2)
+		CreateStyleSmall( f.bagsButton, 2)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", 0, 0)
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsButton:GetNormalTexture())
 		f.bagsButton:SetPushedTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsButton:GetPushedTexture())
 		f.bagsButton.ttText = BAGSLOTTEXT
 		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", BAG_SETTINGS_TOOLTIP)
 		f.bagsButton:SetScript("OnEnter", addon.Tooltip_Show)
@@ -1577,15 +1502,12 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags Sort Button
 		f.bagsSortButton = CreateFrame("Button", "yo_" .. Bag..'bagsSortButton', f);
 		f.bagsSortButton:SetSize( 17, 17)
-		--frame1px( f.bagsSortButton)
-		CreateStyle( f.bagsSortButton, 2)
-		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", 0, 0)
+		CreateStyleSmall( f.bagsSortButton, 2)
+		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -4, 0)
 		f.bagsSortButton:SetNormalTexture("Interface\\ICONS\\INV_Pet_Broom")
 		f.bagsSortButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsSortButton:GetNormalTexture())
 		f.bagsSortButton:SetPushedTexture("Interface\\ICONS\\INV_Pet_Broom")
 		f.bagsSortButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsSortButton:GetPushedTexture())
 		f.bagsSortButton:RegisterForClicks('anyUp')
 		f.bagsSortButton.ttText = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. BAG_CLEANUP_BAGS
 		--f.bagsSortButton.ttText2 = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. REAGENTBANK_DEPOSIT
@@ -1601,7 +1523,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags to Reageng Button
 		f.bagsToReagent = CreateFrame("Button", "yo_" .. Bag..'bagsToReagent', f);
 		f.bagsToReagent:SetSize( 17, 17)
-		CreateStyle( f.bagsToReagent, 2)
+		CreateStyleSmall( f.bagsToReagent, 2)
 		f.bagsToReagent:SetPoint("RIGHT", f.bagsSortButton, "LEFT", -4, 0)
 		f.bagsToReagent:SetNormalTexture("Interface\\ICONS\\INV_Misc_Flower_02")
 		f.bagsToReagent:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1619,11 +1541,10 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Auto to Reageng Button
 		f.bagsAutoReagent = CreateFrame("Button", "yo_" .. Bag..'bagsAutoReagent', f);
 		f.bagsAutoReagent:SetSize( 17, 17)
-		CreateStyle( f.bagsAutoReagent, 2)
+		CreateStyleSmall( f.bagsAutoReagent, 2)
 		f.bagsAutoReagent:SetPoint("RIGHT", f.bagsToReagent, "LEFT", -4, 0)
 		f.bagsAutoReagent:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Check.blp")
 		f.bagsAutoReagent:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
-		SetInside( f.bagsAutoReagent:GetNormalTexture())
 		f.bagsAutoReagent:RegisterForClicks('anyUp')
 		f.bagsAutoReagent.ttText = AUTO_ACTIVATE_ON
 		f.bagsAutoReagent.ttText2 = "|cffffffff" .. REAGENTBANK_DEPOSIT

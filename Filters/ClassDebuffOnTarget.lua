@@ -20,18 +20,34 @@ local function SpellName(id)
 	end
 end
 
-N.DebuffWhiteList = {}
-local DebuffWhiteListTemplate = {
+N.DebuffWhiteList 	= {}
+
+tankSpecIDs			= {
+	["250 "]	= true, 	-- DEATHKNIGHT
+	["104"]		= true,		-- DRUID
+	["268"]		= true,		-- MONK
+	["66"]		= true,		-- PALADIN
+	["73"]		= true,		-- WARRIOR
+	["577"]		= true,		-- DEMONHUNTER
+}
+
+DebuffWhiteListTemplate = {
 	["ALL"] = {
-		[SpellName(25046)] = true,	-- Arcane Torrent
+		--[SpellName(25046)] = true,	-- Arcane Torrent
 		[SpellName(20549)] = true,	-- War Stomp
-		[SpellName(107079)]= true,	-- Quaking Palm
+		--[SpellName(107079)]= true,	-- Quaking Palm
 
 		[SpellName(56222)] = true,	-- Темная власть ДК
 		[SpellName(  355)] = true,	-- Провокация Вар
 		[SpellName( 6795)] = true,	-- Рык Друид
 		[SpellName(115546)]= true,	-- Вызов Панда
 		[SpellName( 2649)] = true,	-- Рык Хант пет
+		[SpellName(49576)] = true,	-- "DK",
+    	[SpellName(62124)] = true,	-- "Pally",
+    	[SpellName(185245)]= true,	-- "VDH",
+    	[SpellName(17735)] = true,	-- "Lock 1",
+    	[SpellName(171014)]= true,	-- "Lock 2",
+    	[SpellName(20736)] = true,	-- "Hunter Distracting Shot"
 	},
 	["DEATHKNIGHT"]= {
 		[SpellName(108194)] = true,	-- Asphyxiate
@@ -202,22 +218,32 @@ local BuffWhiteListTemplate = {	-- ElvUI
 
 local logan = CreateFrame("Frame", nil)
 logan:RegisterEvent("PLAYER_LOGIN")
-logan:SetScript("OnEvent", function(self, ...)
-	N.DebuffWhiteList = DebuffWhiteListTemplate[myClass]
-	N.BuffWhiteList   = BuffWhiteListTemplate[myClass]
+logan:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
-	for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do
-		if k and v then
-			N.DebuffWhiteList[k] = v
+logan:SetScript("OnEvent", function(self, ...)
+	N.DebuffWhiteList 	= DebuffWhiteListTemplate[myClass]
+	N.BuffWhiteList   	= BuffWhiteListTemplate[myClass]
+	N.tauntsSpell		= {}
+	wipe( N.tauntsSpell)
+	--wipe( DebuffWhiteListTemplate)
+	--wipe( BuffWhiteListTemplate)
+
+	local id, name, _, icon = GetSpecializationInfo( GetSpecialization())
+	mySpec = id
+
+	if yo.NamePlates.showTauntDebuff or tankSpecIDs[mySpec] then
+		for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do
+			if k and v then
+				N.tauntsSpell[k] = v
+			end
 		end
 	end
+
 	for k,v in pairs( BuffWhiteListTemplate["ALL"])   do
 		if k and v then
 			N.BuffWhiteList[k]   = v
 		end
 	end
-	wipe( DebuffWhiteListTemplate)
-	wipe( BuffWhiteListTemplate)
 end)
 
 N.PlayerBuffWhiteList = {

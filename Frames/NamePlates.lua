@@ -144,9 +144,12 @@ local function UpdateBuffs(unitFrame)
 		while true do
 			local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, _, _, _, namepmateshowall = UnitAura(unit, index, filter)
 			if not name then break end
-			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
 
-			if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( N.DebuffWhiteList[name] )) or namepmateshowall then --or isStealable then or nameplateShowPersonal
+			--if spellID ==212431 then print(name, count, debuffType, caster, nameplateShowPersonal, spellID, namepmateshowall) end
+			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
+			if not yo.NamePlates.moreDebuffIcons then nameplateShowPersonal = false end
+
+			if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( N.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or N.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
 
 				debuffType = blueDebuff and debuffType or nil
 
@@ -884,21 +887,21 @@ local function OnNamePlateCreated( frame)
 	f.RaidTargetFrame.RaidTargetIcon:Hide()
 
 	f.debuffIcons = CreateFrame("Frame", nil, f)
-	f.debuffIcons:SetPoint("BOTTOMLEFT", f.healthBar, "TOPLEFT",  0, 12)
+	f.debuffIcons:SetPoint("BOTTOMLEFT", f.healthBar, "TOPLEFT",  0, 15)
 	f.debuffIcons:SetWidth( nameplatewidth / 2)
 	f.debuffIcons:SetHeight( auras_size)
 	f.debuffIcons:SetFrameLevel(f:GetFrameLevel() + 20)
 	f.debuffIcons.direction = "RIGHT"
 
 	f.buffIcons = CreateFrame("Frame", nil, f)
-	f.buffIcons:SetPoint("BOTTOMRIGHT", f.healthBar, "TOPRIGHT",  0, 12)
+	f.buffIcons:SetPoint("BOTTOMRIGHT", f.healthBar, "TOPRIGHT",  0, 15)
 	f.buffIcons:SetWidth( nameplatewidth / 2)
 	f.buffIcons:SetHeight( aurasB_size)
 	f.buffIcons:SetFrameLevel(f:GetFrameLevel() + 20)
 	f.buffIcons.direction = "LEFT"
 
 	f.disIcons = CreateFrame("Frame", nil, f)
-	f.disIcons:SetPoint("BOTTOM", f.healthBar, "TOP",  0, 12)
+	f.disIcons:SetPoint("BOTTOM", f.healthBar, "TOP",  0, 15)
 	f.disIcons:SetWidth( iconDiSize)
 	f.disIcons:SetHeight( iconDiSize)
 	f.disIcons:SetFrameLevel(f:GetFrameLevel() + 20)

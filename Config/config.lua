@@ -38,6 +38,8 @@ local L, yo, N = unpack( ns)
 	end
 
 myClass 	= select( 2, UnitClass( "player"))
+mySpec 		= GetSpecialization()
+mySpeClass	= myClass .. mySpec
 myColor 	= RAID_CLASS_COLORS[myClass]
 myColorStr 	= "|c" .. RAID_CLASS_COLORS[myClass].colorStr
 myName		= UnitName( "player")
@@ -123,7 +125,7 @@ yo["Addons"] = {
 	["hideObjective"]				= false,
 	["cheloBuff"]					= false,
 	["equipNewItem"]				= true,
-	["equipNewItemLevel"]			= 350,
+	["equipNewItemLevel"]			= 170,
 	["afk"]							= false,
 	["stbEnable"]					= true,
 	["MoveBlizzFrames"]				= true,
@@ -260,6 +262,8 @@ yo["NamePlates"] = {
 	["maxDispance"]		= 40,
 	["showResourses"]	= true,
 	["tankMode"]		= false,
+	["moreDebuffIcons"]	= false,
+	["showTauntDebuff"] = false,
 }
 
 yo["Media"] = {

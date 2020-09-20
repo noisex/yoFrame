@@ -14,6 +14,7 @@ local function BuffOnEnter( f)
 		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	end
 	GameTooltip:SetUnitAura( f.unit or f:GetParent().unit, f.id, f.filter)
+	--GameTooltip:AddDoubleLine("Caster", f.caster, 1, 1, 0, 1, 1, 1)
 	GameTooltip:Show()
 end
 
