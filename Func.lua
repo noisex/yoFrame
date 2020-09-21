@@ -12,6 +12,12 @@ N["strings"]	= {}
 N["shadows"]	= {}
 N.ScanTooltip = CreateFrame('GameTooltip', 'yo_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
 
+N.slots = {
+	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot",
+	"WristSlot", "MainHandSlot", "SecondaryHandSlot", "HandsSlot", "WaistSlot",
+	"LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"
+}
+
 N.classEquipMap = {
 	["WARRIOR"] 	= 4,
 	["PALADIN"] 	= 4,
@@ -667,6 +673,10 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
 end
 
 function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
+	---------------------------------- testing WoW version
+	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+	if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end
+	--------------------------------------------------------------
 	f:SetFrameLevel( 1)
 	f:SetHeight( h)
 	f:SetWidth( w)

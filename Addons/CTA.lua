@@ -346,7 +346,7 @@ local function CheckLFR( self, ...)
 
    	local newDate, update = false, false
    	local index = 0
-   	local id = 1671
+   	local id = 1671 	-- 	Random Battle For Azeroth Heroic
 
    	if yo.CTA.heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then
 		local checkTank, checkHeal, checkDD

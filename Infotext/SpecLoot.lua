@@ -125,7 +125,6 @@ local function OnEvent(self, event)
 	end
 
 	local id, name, _, icon = GetSpecializationInfo( GetSpecialization())
-	mySpeClass		= myClass .. mySpec
 	self.specID 	= id
 	self.specName 	= name
 	self.specIcon 	= icon

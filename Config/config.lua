@@ -39,7 +39,7 @@ local L, yo, N = unpack( ns)
 
 myClass 	= select( 2, UnitClass( "player"))
 mySpec 		= GetSpecialization()
-mySpeClass	= myClass .. mySpec
+--mySpeClass	= myClass .. mySpec
 myColor 	= RAID_CLASS_COLORS[myClass]
 myColorStr 	= "|c" .. RAID_CLASS_COLORS[myClass].colorStr
 myName		= UnitName( "player")

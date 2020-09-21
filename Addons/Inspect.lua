@@ -1,12 +1,6 @@
 local L, yo, N = unpack( select( 2, ...))
 --wearBySlot = {}
 
-local slots = {
-	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot",
-	"WristSlot", "MainHandSlot", "SecondaryHandSlot", "HandsSlot", "WaistSlot",
-	"LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"
-}
-
 local slotsRight = {
 	["MainHandSlot"] = 1,
 	["HandsSlot"] = 1,
@@ -35,7 +29,7 @@ local MATCH_ENCHANT = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')
 
 local function CreateButtonsText(frame)
 	local p1, p2, x, y
-	for _, slot in pairs(slots) do
+	for _, slot in pairs(N.slots) do
 		local button = _G[frame..slot]
 		button.textLVL = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
 		button.textLVL:SetPoint("TOP", button, "TOP", 0, -2)
@@ -59,7 +53,7 @@ local function UpdateButtonsText(frame)
 	if frame == "Inspect" and InspectFrame:IsShown() == false then return end
 	if frame == "Inspect" then unit = InspectFrame.unit end
 
-	for _, slot in pairs(slots) do
+	for _, slot in pairs(N.slots) do
 		local id = GetInventorySlotInfo(slot)
 		--print(id, slot, slotsRight[slot])
 
