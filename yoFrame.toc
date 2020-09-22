@@ -82,7 +82,7 @@ Addons\CTA.lua
 Addons\Bags.lua
 Addons\BagBrothers.lua
 Addons\BagsEquip.lua
-Addons\BonusRoll.lua
+Addons\DoLoot.lua
 Addons\HolyShards.lua
 Addons\Inspect.lua
 Addons\Fliger.lua
