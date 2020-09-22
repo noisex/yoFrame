@@ -396,7 +396,9 @@ local function OnEvent( self, event, ...)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		CreateDuLoot( self)
 	else
-		checkDungeLoot( self.filterType)
+		if self:IsShown() then
+			checkDungeLoot( self.filterType)
+		end
 	end
 end
 
