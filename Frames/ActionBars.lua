@@ -186,7 +186,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 --------------------------------------------------------------------------------------------
 		elseif 	name:match("ExtraActionButton") then
 
-			button:SetScale( 0.75)
+			button:SetScale( 0.9)
 			button:SetNormalTexture("")
 
 			button.oldicon = _G[name.."Icon"]
@@ -197,19 +197,22 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			--CreateStyle(panel, 4)
 			--panel.shadow:SetBackdropColor(1, 1, 0)
 			button:GetHighlightTexture():ClearAllPoints()
-			button:GetHighlightTexture():SetPoint("TOPLEFT", panel, -4, 4)
-			button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", panel, 4, -4)
+			button:GetHighlightTexture():SetPoint("TOPLEFT", panel, -5, 5)
+			button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", panel, 5, -5)
 
 			button:GetCheckedTexture():ClearAllPoints()
-			button:GetCheckedTexture():SetPoint("TOPLEFT", panel, -4, 4)
-			button:GetCheckedTexture():SetPoint("BOTTOMRIGHT", panel, 4, -4)
+			button:GetCheckedTexture():SetPoint("TOPLEFT", panel, -5, 5)
+			button:GetCheckedTexture():SetPoint("BOTTOMRIGHT", panel, 5, -5)
 			panel:SetBackdropColor( 1, 1, 0, 0.5)
 
 			panel.icon = panel:CreateTexture(nil, "BORDER")
 			panel.icon:SetTexCoord(unpack( yo.tCoord))
-			panel.icon:SetPoint("TOPLEFT", panel, 1, -1)
-			panel.icon:SetPoint("BOTTOMRIGHT", panel, -1, 1)
+			panel.icon:SetPoint("TOPLEFT", panel, 2, -2)
+			panel.icon:SetPoint("BOTTOMRIGHT", panel, -2, 2)
 			panel.icon:SetTexture( button.oldicon:GetTexture())
+
+			button.cooldown:ClearAllPoints()
+			button.cooldown:SetAllPoints( panel.icon)
 
 			button:HookScript('OnShow',  function(self, ...)
 				local name = self:GetName()

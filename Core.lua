@@ -69,6 +69,51 @@ local function loginEvent(self, ...)
 	SetCVar("TargetPriorityCombatLockContextualRelaxation", 0)
 	SetCVar("countdownForCooldowns", 0)
 	SetCVar("showTargetOfTarget", 1)
+
+	SetCVar("nameplateShowSelf", 0)
+	SetCVar("nameplateShowAll", 1)
+	SetCVar("nameplateShowEnemyMinus", 1)
+	SetCVar("nameplateShowEnemyMinions", 1)
+
+	SetCVar("autoLootDefault", 1)
+	SetCVar("doNotFlashLowHealthWarning", 1)
+end
+
+function InterfaceOptions_UpdateMultiActionBars ()
+	SHOW_MULTI_ACTIONBAR_1 = 1
+--	SHOW_MULTI_ACTIONBAR_2 = 1
+	SHOW_MULTI_ACTIONBAR_3 = 1
+--	SHOW_MULTI_ACTIONBAR_4 = 1
+	ALWAYS_SHOW_MULTIBARS  = 1
+
+	if ( SHOW_MULTI_ACTIONBAR_1 == "0" ) then
+		SHOW_MULTI_ACTIONBAR_1 = nil;
+	end
+
+	if ( SHOW_MULTI_ACTIONBAR_2 == "0" ) then
+		SHOW_MULTI_ACTIONBAR_2 = nil;
+	end
+
+	if ( SHOW_MULTI_ACTIONBAR_3 == "0" ) then
+		SHOW_MULTI_ACTIONBAR_3 = nil;
+	end
+
+	if ( SHOW_MULTI_ACTIONBAR_4 == "0" ) then
+		SHOW_MULTI_ACTIONBAR_4 = nil;
+	end
+
+	if ( ALWAYS_SHOW_MULTIBARS == "0" ) then
+		ALWAYS_SHOW_MULTIBARS = nil;
+	end
+
+	if ( LOCK_ACTIONBAR == "0" ) then
+		LOCK_ACTIONBAR = nil;
+	end
+
+	SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
+	MultiActionBar_Update();
+	UIParent_ManageFramePositions();
+	StatusTrackingBarManager:UpdateBarTicks();
 end
 
 local function enterEvent( self)
