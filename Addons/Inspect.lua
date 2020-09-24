@@ -41,7 +41,7 @@ local function CreateButtonsText(frame)
 		button.textEnch = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
 		button.textEnch:SetJustifyH( p2)
 
-		button.textEnch:SetPoint( p1, button, p3, x-100, y)
+		button.textEnch:SetPoint( p1, button, p3, x-120, y)
 		button.textEnch:SetPoint( p2, button, p3, x, y)
 		button.textEnch:SetText("")
 	end

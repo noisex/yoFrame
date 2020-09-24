@@ -48,7 +48,6 @@ local function OnLeave( self)
 	GameTooltip:Hide()
 end
 
-
 local function CreateIcon( index)
 	local frame, size = yo_DuLoot.scrollChild, 40
 
@@ -142,7 +141,7 @@ local function checkDungeLoot( filterType)
 	EJ_SetDifficulty( 23)
 	--EJ_SetDifficulty( 23) -- 1, 2, 23 ( 8	Mythic Keystone	party	isHeroic, isChallengeMode)
 	--statTable = GetItemStatDelta("item1Link", "item2Link" [, returnTable])
-	local indexLo = 1
+	local indexLol = 1
 
 	while instanceID do
 		index = index + 1;
@@ -167,9 +166,9 @@ local function checkDungeLoot( filterType)
 						elseif 	i == "ITEM_MOD_CRIT_RATING_SHORT"  		then foundC = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
 						elseif 	i == "ITEM_MOD_VERSATILITY"  			then foundV = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
 						elseif  i == "ITEM_MOD_STAMINA_SHORT" 			then  				temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
-						elseif 	i == "ITEM_MOD_INTELLECT_SHORT" or
-								i == "ITEM_MOD_AGILITY_SHORT" or
-								i == "ITEM_MOD_STRENGTH_SHORT" then							temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
+						elseif 	i == "ITEM_MOD_INTELLECT_SHORT" 		or
+								i == "ITEM_MOD_AGILITY_SHORT" 			or
+								i == "ITEM_MOD_STRENGTH_SHORT" 			then 				temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
 						else																temptext = temptext .. "|cff00ff00+" .. floor( data) .. " " .. _G[i] .. "\n|r"
 						end
 					end
@@ -182,18 +181,18 @@ local function checkDungeLoot( filterType)
 
 					--print(found, itemInfo.link, frame.seting.haste, frame.seting.master, frame.seting.crit, frame.seting.versa, frame.seting.allstat, foundH, foundM, foundC, foundV )
 					if found or filterType == 13 then
-						local loolButton = CreateIcon( indexLo, itemInfo.link, itemInfo.icon)
-						loolButton.icon:SetTexture( itemInfo.icon)
-						loolButton.nameItem:SetText( link .. " |r" .. itemInfo.link)
-						loolButton.bg.link = itemInfo.link
-						loolButton.stats:SetText(temptext, 1, 1, 1, 0)
-						loolButton.onuse:SetText("")
-						loolButton.onEquip:SetText( "")
-						loolButton.equipSet:SetText( "")
-						loolButton.iconBack:Show()
-						loolButton.bg:Show()
+						local lolButton = CreateIcon( indexLol, itemInfo.link, itemInfo.icon)
+						lolButton.icon:SetTexture( itemInfo.icon)
+						lolButton.nameItem:SetText( link .. " |r" .. itemInfo.link)
+						lolButton.bg.link = itemInfo.link
+						lolButton.stats:SetText(temptext, 1, 1, 1, 0)
+						lolButton.onuse:SetText("")
+						lolButton.onEquip:SetText( "")
+						lolButton.equipSet:SetText( "")
+						lolButton.iconBack:Show()
+						lolButton.bg:Show()
 						--local item = Item:CreateFromItemLink( itemInfo.link)
-						--print( indexLo, link, itemInfo.link)
+						--print( indexLol, link, itemInfo.link)
 
 						local name, spellID = GetItemSpell( itemInfo.link)
 						if name then
@@ -201,7 +200,7 @@ local function checkDungeLoot( filterType)
 							local cooldown = GetSpellBaseCooldown(spellID)
 							local desc = GetSpellDescription(spellID)
 							temptext = "|cff999999" .. ITEM_SPELL_TRIGGER_ONUSE .. " " .. desc .. " Восстановление: " .. SecondsToClock(cooldown/1000)
-							loolButton.onuse:SetText(temptext, 1, 1, 1, 0)
+							lolButton.onuse:SetText(temptext, 1, 1, 1, 0)
 						end
 
 						local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
@@ -215,25 +214,25 @@ local function checkDungeLoot( filterType)
 							if lineText then
 								local lr, lg, lb = line:GetTextColor()
 								if lineText:match( ITEM_SPELL_TRIGGER_ONEQUIP) then
-									loolButton.onEquip:SetText( format( " %s%s ", hex( lr, lg, lb), lineText))
+									lolButton.onEquip:SetText( format( " %s%s ", hex( lr, lg, lb), lineText))
 
 								elseif lineText:match( "Комплект ") then
 									local itemSetID = select( 16, GetItemInfo( itemInfo.link))
-									loolButton.equipSet:SetText( "|cffffff00" .. GetItemSetInfo( itemSetID) .. "\n|cff999999" .. lineText)
+									lolButton.equipSet:SetText( "|cffffff00" .. GetItemSetInfo( itemSetID) .. "\n|cff999999" .. lineText)
 								end
 							end
 						end
 						tt:Hide()
 
-						loolButton:Show()
-						indexLo = indexLo + 1
+						lolButton:Show()
+						indexLol = indexLol + 1
 					end
 				end
 			end
 			yo_DuLoot:Show()
 		end
 	end
-	afterClearIcons( indexLo)
+	afterClearIcons( indexLol)
 end
 
 local function settingDoIt( self)
@@ -294,7 +293,7 @@ local function settingDoIt( self)
 	self.setting:SetShown( not self.setting:IsShown())
 end
 
-local function CreateDuLoot( self)
+local function createDuLoot( self)
 	CreatePanel( self, 460, CharacterFrame:GetHeight(), "TOPLEFT", CharacterFrame, "TOPRIGHT", 10, 0, 0.6, 1)
 	self:EnableMouse(true)
 	self:SetClampedToScreen(true)
@@ -325,7 +324,7 @@ local function CreateDuLoot( self)
 	grabber:SetPushedTexture( 		"Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
 	grabber:RegisterForDrag("LeftButton")
 	grabber:SetScript("OnDragStart", function() self:StartSizing() end)
-	grabber:SetScript("OnDragStop", function() 	self:StopMovingOrSizing() end)
+	grabber:SetScript("OnDragStop",  function() self:StopMovingOrSizing() end)
 
 	local close = CreateFrame("Button", nil, self, "UIPanelCloseButton")
 	close:SetPoint("TOPRIGHT", headerKeeper, "TOPRIGHT", 8, 7)
@@ -339,10 +338,7 @@ local function CreateDuLoot( self)
 	seting:SetSize( 15, 15)
 	seting:SetNormalTexture("Interface\\GossipFrame\\HealerGossipIcon")
 	seting:SetHighlightTexture("Interface\\GossipFrame\\BinderGossipIcon")
-	seting:SetScript("OnEnter", function(self, ...) self.shadow:SetBackdropBorderColor( myColor.r, myColor.g, myColor.b, 0.9)	end)
-	seting:SetScript("OnLeave", function(self, ...) self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.9)	end)
 	seting:SetScript("OnClick", settingDoIt)
-	CreateStyleSmall( seting, 2)
 
 	scrollFrame = CreateFrame("ScrollFrame", nil, self, "UIPanelScrollFrameTemplate")
 	scrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -25)
@@ -394,7 +390,7 @@ local function OnEvent( self, event, ...)
 
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		CreateDuLoot( self)
+		createDuLoot( self)
 	else
 		if self:IsShown() then
 			checkDungeLoot( self.filterType)
