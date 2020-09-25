@@ -1,14 +1,15 @@
 bls = {
- --   [774] = true,     -- "for esting..."   омоложение
-    --[8936] = true,    -- "for esting..." восстановление
+ 	[774] = true,     	-- "for esting..."   омоложение
+    [8936] = true,    	-- "for esting..." восстановление
+
     [80353] = true,     -- "Time Warp",
     [2825] = true,      -- "Bloodlust",
     [32182] = true,     -- "Heroism",
-    [90355] = true,     --  "Ancient Hysteria",
+    [90355] = true,     -- "Ancient Hysteria",
     [160452] = true,    -- "Netherwinds",
     [178207] = true,    -- "Drums of Fury",
-    [35475] = true,     --  "Drums of War",
-    [230935] = true   	--   "Drums of the Mountain"
+    [35475] = true,     -- "Drums of War",
+    [230935] = true   	-- "Drums of the Mountain"
 }
 
 interupt_spells = {
@@ -28,7 +29,7 @@ interupt_spells = {
     [6552]   = 15, --Pummel
     [171140] = 24, --Shadow Lock
 	[171138] = 24, --Shadow Lock if used from pet bar
-	[119910] = 24, -- warloc new pet 
+	[119910] = 24, -- warloc new pet
 }
 
 raid_CD_Spells = {
@@ -52,8 +53,8 @@ raid_CD_Spells = {
     [6552]   = 15, --Pummel
     [171140] = 24, --Shadow Lock
 	[171138] = 24, --Shadow Lock if used from pet bar
-	[119910] = 24, -- warloc new pet 
-	
+	[119910] = 24, -- warloc new pet
+
 	--[46968]  = 40, 	-- shockwave
 	--[30283]	 = 60, 	-- warlocl stun
 	--[50613]  = 90, 	-- волшебный поток

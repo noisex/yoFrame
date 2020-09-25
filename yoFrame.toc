@@ -2,7 +2,7 @@
 ## Version: 0.82
 ## Title: |cff00ffffyoFrame|r
 ## Author: NoiseX
-## Notes: Foo frames... Based on Qulight, ShestakUI code and design ideas. Thanks.
+## Notes: Foo frames... Based on ElvUI, Qulight, ShestakUI and more code and design ideas. Thanks.
 ## SavedVariables: yo_AllData, yo_AllConfig, yo_BB yo_BBCount, yo_WIMSTER
 ## SavedVariablesPerCharacter: yo_Position, yo_PersonalConfig, yo_ChatHistory
 
@@ -98,7 +98,7 @@ Addons\MoveBlizzFrames.lua
 Addons\ObjectiveTrack.lua
 Addons\OneClickDisenchanting.lua
 Addons\OneClickEnchantScroll.lua
-#-Addons\Potatos.lua
+Addons\Potatos.lua
 Addons\Prediction.lua
 Addons\ProfessionTabs.lua
 Addons\QuestAuto.lua
@@ -131,3 +131,4 @@ Libs\oUF\elements\AutoResurrect.lua
 Skins\shBigWigs.lua
 Skins\WeakAuras.lua
 Skins\shDBM.lua
+#Skins\Details.lua

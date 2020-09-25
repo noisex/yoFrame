@@ -285,29 +285,11 @@ local function OnEvent( self, event, ...)
 		C_QuestLog.SetSelectedQuest(questID);
 
 		local _, questObjectives = GetQuestLogQuestText();
-
 		local questTitle = C_QuestLog.GetTitleForQuestID( questID)
 
-		if questTitle == nil then return end
-
-		--local questObjectives = C_QuestLog.GetQuestObjectives( questID)
-
-		--print( questID, questObjectives) --, questObjectives[1].text) --.title, questInfo.frequency)
-
-		--local questTypeIndex = GetQuestLogQuestType( questID)
-		--local tagString = QuestTypesIndex[questTypeIndex] or ""
-
-		--[Virag's DT]:   return: 4 - (1) FontString <QuestInfoObjectivesText> 'Победите королеву Азшару в Вечном дворце.' table: 000001E09090E1F0
-
-		--if ( isDaily == 2 or isDaily == 3 ) then
-		--	cHeader = "|cff0070de"
-		--else
-		--	cHeader = hex( GetQuestDifficultyColor( UnitLevel("player")))
-		--end
+		if questTitle == nil or C_QuestLog.IsWorldQuest(questID) then return end
 
 		local qString = ""
-
-
 		if questObjectives then
 			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives)
 
@@ -391,15 +373,18 @@ quest:RegisterEvent("PLAYER_ENTERING_WORLD")
 quest:SetScript("OnEvent", OnEvent)
 
 -- autoclose AutoQuestPopupTracker
---hooksecurefunc( AUTO_QUEST_POPUP_TRACKER_MODULE, "Update", function(self, ...)
+hooksecurefunc( "AutoQuestPopupTracker_Update", function(self, ...)
 
---	for i = 1, GetNumAutoQuestPopUps() do
---		local questID, popUpType = GetAutoQuestPopUp(i);
---		print( i, questID, popUpType, self.id, ...)
---		tprint( ...)
---		if questID and popUpType then --== "COMPLETE"
---			ShowQuestComplete(GetQuestLogIndexByID(questID));
---			--AutoQuestPopupTracker_RemovePopUp(questID)
---		end
---	end
---end)
+	for i = 1, GetNumAutoQuestPopUps() do
+		local questID, popUpType = GetAutoQuestPopUp(i);
+	--	--print( i, questID, popUpType, self.id, ...)
+		if questID and popUpType then --== "COMPLETE"
+			local block = owningModule:GetBlock(questID, "ScrollFrame", "AutoQuestPopUpBlockTemplate");
+			AutoQuestPopUpTracker_OnMouseDown(block)
+
+			ShowQuestOffer(GetQuestLogIndexByID(questID));
+			ShowQuestComplete(GetQuestLogIndexByID(questID));
+			AutoQuestPopupTracker_RemovePopUp(questID)
+		end
+	end
+end)

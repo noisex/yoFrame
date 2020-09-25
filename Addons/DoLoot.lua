@@ -44,7 +44,7 @@ local function OnEnter( self)
 end
 
 local function OnLeave( self)
-	self.shadow:SetBackdropColor( 0.09, 0.09, 0.09, 0.4)
+	self.shadow:SetBackdropColor( 0.09, 0.09, 0.09, 0.3)
 	GameTooltip:Hide()
 end
 
@@ -68,7 +68,7 @@ local function CreateIcon( index)
 	iconBack:SetPoint("TOPLEFT", button, "TOPLEFT", 0, -5)
 	iconBack:SetWidth( size)
 	iconBack:SetHeight( size)
-	CreateStyle( iconBack, 2)
+	CreateStyle( iconBack, 3)
 
 	local icon = button:CreateTexture(nil, "OVERLAY")
 	icon:SetTexCoord( unpack( yo.tCoord))
@@ -196,7 +196,7 @@ local function checkDungeLoot( filterType)
 
 						local name, spellID = GetItemSpell( itemInfo.link)
 						if name then
-							local name, _, icon = GetSpellInfo(spellID)
+							--local name, _, icon = GetSpellInfo(spellID)
 							local cooldown = GetSpellBaseCooldown(spellID)
 							local desc = GetSpellDescription(spellID)
 							temptext = "|cff999999" .. ITEM_SPELL_TRIGGER_ONUSE .. " " .. desc .. " Восстановление: " .. SecondsToClock(cooldown/1000)
@@ -294,7 +294,7 @@ local function settingDoIt( self)
 end
 
 local function createDuLoot( self)
-	CreatePanel( self, 460, CharacterFrame:GetHeight(), "TOPLEFT", CharacterFrame, "TOPRIGHT", 10, 0, 0.6, 1)
+	CreatePanel( self, 460, CharacterFrame:GetHeight(), "TOPLEFT", CharacterFrame, "TOPRIGHT", 10, 0, 0.3, 1)
 	self:EnableMouse(true)
 	self:SetClampedToScreen(true)
 	self:SetMovable(true)

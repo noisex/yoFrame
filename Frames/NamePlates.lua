@@ -1155,7 +1155,7 @@ local function NamePlates_OnEvent(self, event, ...)
 			SetCVar("nameplateMinAlphaDistance", -30)
 
 			SetCVar("nameplateSelectedAlpha", 1)
-			SetCVar("nameplateSelectedScale", 1.15)
+			SetCVar("nameplateSelectedScale", 1.25)
 
 			SetCVar( "nameplateOtherTopInset", 0.1)
 			SetCVar( "nameplateOtherBottomInset", -1)

@@ -3,6 +3,12 @@ local L, yo = unpack( select( 2, ...))
 local timerEnd, timerEst = GetTime(), 0
 local hpInRaid, hpInParty, hpInSolo, howBig = 30, 50, 50, 20
 
+local SetPosition = function(anch)
+	local ap, _, rp, x, y = anch:GetPoint()
+	local w, h = anch:GetSize()
+	yo_Position["yo_MovePotatos"] = {ap, "UIParent", rp, x, y, w, h}
+end
+
 local function DrawDefault( self)
     local start, itemCD = GetItemCooldown( self.itemID)
 	local usableItem, _ = IsUsableItem( self.item)
@@ -75,7 +81,7 @@ local function initPotatos( self)
 	elseif self.IsBuffed then
 		DrawDefault( self)
 		self.tName:SetText( "жарим-с....")
-		self.icon:SetVertexColor( 0, 1, 0, 0.5)
+		self.icon:SetVertexColor( 0, 1, 0, 0.7)
 		if timerEst == 0 then
 			self.tick = 1
 			timerEnd = self.buffEnd
@@ -138,12 +144,26 @@ function pullUpdate( self, el)
 	end
 end
 
+function blUpdate( self, el)
+	self.bltick = self.bltick + el
+	if self.bltick <= 0.2 then return 	end
+	self.bltick = 0
+	local bltimerEst = self.bltimerEnd - GetTime()
+	self.tBl:SetText(  self.blText .. " ( " .. formatTime( bltimerEst) .. " )")
+
+	if bltimerEst <= 0 then
+		self:SetScript('OnUpdate', nil)
+		self.tBl:SetText( "")
+		self.outerGlow:Hide()
+	end
+end
+
 local function OnEvent( self, event, ...)
 	-----																														CHAT_MSG_ADDON
 	if event == "CHAT_MSG_ADDON" then
-		--print( "Event: " , event, ...)
 
 		local addon, text = ...
+
 		if addon == "BigWigs" and string.find( text, "Pull") then
 			pDur  = tonumber( string.match( text, "%d+"))
 			timerEnd = GetTime() + pDur
@@ -153,36 +173,25 @@ local function OnEvent( self, event, ...)
 
 			self:SetScript('OnUpdate', pullUpdate)
 			initPotatos( self)
-		elseif addon == "D4" and string.find( text, "PT") then
+		--elseif addon == "D4" and string.find( text, "PT") then
 			--pDur = tonumber( string.match( text, "\t(%d+)\t"))
 			--timerEnd = GetTime() + pDur
 		end
 	-----																														BAG_UPDATE
 	elseif event == "BAG_UPDATE" then
-		itemCount = ( GetItemCount( self.itemID) or 0)
+		local itemCount = ( GetItemCount( self.itemID) or 0)
 		self.tCount:SetText( itemCount)
-		if itemCount <= 10 then
-			self.buyPots = true
-		else
-			self.buyPots = false
-		end
+		if itemCount <= 10 then self.buyPots = true else self.buyPots = false 	end
 		initPotatos( self)
 
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		self.bigBoss = nil
 		self.bossFight = nil
-
-		--DrawDefault( self)
 		initPotatos( self)
-		--local start, itemCD = GetItemCooldown( self.itemID)
-		--local usableItem, _ = IsUsableItem( self.item)
-		--print( "REGEN ENA", start, itemCD, GetTime() - 60, usableItem )
 
 	elseif event == "ENCOUNTER_END" then
 		self.bigBoss = nil
 		self.bossFight = nil
-		--print( "EEND")
-		--DrawDefault( self)
 		initPotatos( self)
 
 	elseif event == "ENCOUNTER_START" then
@@ -195,22 +204,12 @@ local function OnEvent( self, event, ...)
 		local unit, real_unit
 
 		if UnitInRaid( "player") then
-			real_unit = ...
-			unit = "boss1"
-			if real_unit == "boss1" then
-				hpChan = hpInRaid
-			else
-				return
-			end
+			real_unit = ... unit = "boss1"
+			if real_unit == "boss1" then hpChan = hpInRaid 	else return end
 
 		elseif UnitInParty( "player") then
-			unit = "boss1"
-			real_unit = ...
-			if real_unit == "boss1" then
-				hpChan = hpInParty
-			else
-				return
-			end
+			unit = "boss1" real_unit = ...
+			if real_unit == "boss1" then hpChan = hpInParty else return end
 
 		else
 			if event == "PLAYER_TARGET_CHANGED" then
@@ -221,13 +220,8 @@ local function OnEvent( self, event, ...)
 				end
 			end
 
-			if self.bossFight then
-				unit = "boss1"
-				real_unit = "boss1"
-			else
-				unit = "target"
-				real_unit = "target"
-			end
+			if self.bossFight then 	unit, real_unit = "boss1", 	"boss1"
+			else 					unit, real_unit = "target", "target" end
 			hpChan = hpInSolo
 		end
 
@@ -235,77 +229,47 @@ local function OnEvent( self, event, ...)
 			uHP = 100 / UnitHealthMax( unit)  * UnitHealth( unit)
 			hpBig = UnitHealthMax( unit) / UnitHealthMax( "player")
 
-			if uHP <= hpChan and hpBig >= howBig then
+			if uHP <= hpChan  then -- and hpBig >= howBig then  потому что ХП много на тестах
 				self.bigBoss = true
-			else
-				self.bigBoss = false
-			end
-		else
-			self.bigBoss = nil
-		end
+			else self.bigBoss = false end
+		else self.bigBoss = nil end
 		initPotatos( self)
 		--print( "Event: " , event, unit, real_unit, hpChan, uHP)
+
+
 	-----																														UNIT_AURA
+
+
 	elseif event == "UNIT_AURA" then
-        self.item   = GetItemInfo( self.itemID)
-
-		local buffName, _, _, _, buffdur, buffend = UnitBuff( "player", self.itemID)
-		--local buffName, _, _, _, _, buffdur, buffend = UnitBuff( "player", "Омоложение")
-
-		if buffName then
-			--print( self.item, buffName, buffdur, buffend)
-			self.IsBuffed = true
-			self.buffEnd = buffend
-			initPotatos( self)
-		else
-			if self.IsBuffed == true then
-				--print( "NO BUFF")
-				timerEnd = GetTime()
-				self.IsBuffed = false
-				initPotatos( self)
-			end
-			self.IsBuffed = false
-		end
+        --self.item   = GetItemInfo( self.itemID)
+        self.IsBL 		= false
+        self.IsBuffed 	= false
 
 		for i = 1, 40, 1 do
 			local name, icon, _, _, duration, expirationTime, unitCaster, _, _, spellID = UnitBuff( "player", i)
 			if not name then break end
 
 			if bls[spellID] == true then
-				self.IsBL = true
-				self.blEnd = expirationTime
-				self.nameBL = name
-				self.iconBL = icon
-				self.casterBL = unitCaster
-				initPotatos( self)
-				return
-			else
-				if self.IsBL then
-					self.IsBL = false
-					self.blframe.bltimerEnd  = 0
-					initPotatos( self)
-				end
-				self.IsBL = false
+				self.IsBL 		= true
+				self.blEnd 		= expirationTime
+				self.nameBL 	= name
+				self.iconBL 	= icon
+				self.casterBL 	= unitCaster
+			end
+
+			if name == self.item 	then
+				self.IsBuffed 	= true
+				self.buffEnd 	= expirationTime
 			end
 		end
+
+		if self.IsBuffed then initPotatos( self) end
+		if self.IsBL     then initPotatos( self) else self.blframe.bltimerEnd  = 0 end
 	end
 end
 
-local SetPosition = function(anch)
-	local ap, _, rp, x, y = anch:GetPoint()
-	local w, h = anch:GetSize()
-	yo_Position["yo_MovePotatos"] = {ap, "UIParent", rp, x, y, w, h}
-end
 
-local OnDragStart = function(self)
-	print("we are here")
-	self:StartMoving()
-end
 
-local OnDragStop = function(self)
-	self:StopMovingOrSizing()
-	SetPosition(self)
-end
 
 local function CreatePotatos( f)
 	f.button = CreateFrame("Button", nil, f, "SecureActionButtonTemplate")
@@ -358,13 +322,12 @@ local function CreatePotatos( f)
 
 	f.blframe.outerGlow = f.blframe:CreateTexture( "OuterGlow", "BORDER")
 	f.blframe.outerGlow:SetPoint("CENTER", f)
-	f.blframe.outerGlow:SetAlpha(1)
+	f.blframe.outerGlow:SetAlpha( .7)
 	f.blframe.outerGlow:SetWidth( f:GetWidth() * 2)
 	f.blframe.outerGlow:SetHeight( f:GetHeight() * 2)
 	f.blframe.outerGlow:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
 	f.blframe.outerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
 	f.blframe.outerGlow:SetVertexColor( 0, 1, 0)
-	f.blframe.outerGlow:SetAlpha( 0.3)
 	f.blframe.outerGlow:Hide()
 	--f.blframe:SetFrameLevel(3)
 
@@ -380,48 +343,23 @@ local function CreatePotatos( f)
 	f:RegisterEvent("ENCOUNTER_END")
 	f:RegisterEvent("ENCOUNTER_START")
 	f:RegisterEvent("PLAYER_REGEN_ENABLED")
-
-
-
-	f:SetMovable(true)
-	f:RegisterForDrag("LeftButton", "RightButton")
-	--f:SetScript("OnClick", function(self) if IsControlKeyDown() then print( "boom") end end)
-	f:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then
-		print("wedsf sf s")
-		self:StartMoving() end end)
-	f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+	f:SetScript('OnEvent', OnEvent)
 
 	f:EnableMouse(true)
-	--f:RegisterForDrag("LeftButton")
-	--f:SetScript("OnDragStart", OnDragStart)
-	--f:SetScript("OnDragStop", OnDragStop)
-
-
-	f:SetScript('OnEvent', OnEvent)
-end
-
-function blUpdate( self, el)
-	self.bltick = self.bltick + el
-	if self.bltick <= 0.2 then return 	end
-	self.bltick = 0
-	local bltimerEst = self.bltimerEnd - GetTime()
-	self.tBl:SetText(  self.blText .. " ( " .. formatTime( bltimerEst) .. " )")
-
-	if bltimerEst <= 0 then
-		self:SetScript('OnUpdate', nil)
-		self.tBl:SetText( "")
-		self.outerGlow:Hide()
-	end
+	f:SetMovable(true)
+	f.button:RegisterForDrag("LeftButton", "RightButton")
+	f.button:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then f:StartMoving() end end)
+	f.button:SetScript("OnDragStop", function(self) f:StopMovingOrSizing() SetPosition( f) end)
 end
 ---------------------------------------------------------------------------------------------------------------------------
 local potatos = CreateFrame("Frame", "yo_Potatos", UIParent)
 	potatos:SetAllPoints( "yo_MovePotatos")
 	potatos:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-	potatos.itemID = 142117
-    potatos.item   = GetItemInfo( potatos.itemID)
-    potatos.iconPot = GetItemIcon( potatos.itemID)
-	potatos.iconPul = 252188
+	potatos.itemID 		= 142117  -- buffID = 229206
+	potatos.iconPul 	= 252188
+    potatos.item   		= GetItemInfo( potatos.itemID)
+    potatos.iconPot 	= GetItemIcon( potatos.itemID)
 
 	potatos:SetScript("OnEvent", function(self, event)
 		if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end

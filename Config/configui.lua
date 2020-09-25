@@ -266,7 +266,7 @@ function InitOptions()
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
 				args = {
 					RaidUtilityPanel= {	order = 1, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["RUP_DESC"],},
-					Potatos 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["POT_DESC"], hidden = true,},
+					Potatos 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["POT_DESC"], hidden = false,},
 					IDInToolTip 	= {	order = 3, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					mythicProcents 	= {	order = 4, type = "toggle", name = function(info) return tr( info[#info]) end,  width = "full",	},
 					InfoPanels	 	= {	order = 5, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},

@@ -11,30 +11,30 @@ RightInfoPanel.lootIcon = Icon2
 local ICON_FORMAT =  '|T%s:14:14:0:0:64:64:4:60:4:60|t  %s'
 
 local menuFrame = CreateFrame("Frame", "SpecRightClickMenu", UIParent, "UIDropDownMenuTemplate")
-local menuList = {{ text = SELECT_LOOT_SPECIALIZATION, isTitle = true, notCheckable = true },}
+local menuList = {{ text = _G.SPECIALIZATION, isTitle = true, notCheckable = true },}
 
 local function specOnClick(self, button)
+	GameTooltip:Hide()
 	if IsShiftKeyDown() then ToggleTalentFrame() return end
 
 	if #menuList == 1 then
-		menuList[2] = { text = format( "Текущий (%s)", self.specName), checked = function() return GetLootSpecialization() == 0 end, func = function() SetLootSpecialization( 0) end  }
 		local numSpec = GetNumSpecializations()
 
 		for index = 1, numSpec do
 			local id, name, _, icon = GetSpecializationInfo(index)
 			if id then
-				menuList[index + 2] = { text = format( ICON_FORMAT, icon, name), checked = function() return GetLootSpecialization() == id end, func = function() SetLootSpecialization(id) end }
+				menuList[index + 1] = { text = format( ICON_FORMAT, icon, name), checked = function() return GetSpecialization() == index end, func = function() SetSpecialization(index) end }
 			end
 		end
 
-		menuList[numSpec + 3] = { text = _G.SPECIALIZATION, isTitle = true, notCheckable = true }
+		menuList[numSpec+2] = { text = SELECT_LOOT_SPECIALIZATION, isTitle = true, notCheckable = true }
+		menuList[numSpec+3] = { text = format( "Текущий (%s)", self.specName), checked = function() return GetLootSpecialization() == 0 end, func = function() SetLootSpecialization( 0) end  }
 		for index = 1, numSpec do
 			local id, name, _, icon = GetSpecializationInfo(index)
 			if id then
-				menuList[index + numSpec + 3] = { text = format( ICON_FORMAT, icon, name), checked = function() return GetSpecialization() == index end, func = function() SetSpecialization(index) end }
+				menuList[index + numSpec + 3] = { text = format( ICON_FORMAT, icon, name), checked = function() return GetLootSpecialization() == id end, func = function() SetLootSpecialization(id) end }
 			end
 		end
-
 	end
 
 	if button == 'LeftButton' then

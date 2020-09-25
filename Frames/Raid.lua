@@ -228,12 +228,12 @@ local Shared = function(self, unit)
 
 	elseif unit == "tank" then
 		posInfo			= {"LEFT", self, "LEFT", 2, 2}
-		enableDeHight 	= false
+		enableDeHight 	= true
 		enableBorder 	= true
 		enableHealPr	= yo.Raid.healPrediction
 		enableAuras 	= true
 		enablePower		= true
-		numAuras		= 3
+		numAuras		= 2
 		spacingAuras	= 3
 		sizeInfoFont	= fontsize
 		initialAnchor 	= "RIGHT"
@@ -837,7 +837,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 			if yo.Raid.showMTT then
 				heightMTT	= min( 25, heightMT * .7)
-				widthMTT	= min( 120, widthMT * .8)
+				widthMTT	= min( 100, widthMT * .8)
 				offsetMTT	= offsetMT + heightMT - heightMTT
 				fullMTT		= offsetMT + widthMTT
 			end
