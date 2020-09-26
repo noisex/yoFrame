@@ -10,6 +10,7 @@ yoFrame = ns
 N["statusBars"] = {}
 N["strings"]	= {}
 N["shadows"]	= {}
+N["spellsBooks"] 	= {}
 N.ScanTooltip = CreateFrame('GameTooltip', 'yo_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
 
 N.slots = {

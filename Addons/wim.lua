@@ -430,7 +430,7 @@ local function CreateWIM( self)
 	self.buttons.grabber = grabber
 
 	self.tabber = CreateFrame("Frame", nil, self)
-	self.tabber:SetHeight( 22)
+	self.tabber:SetHeight( 20)
 	self.tabber:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4) --3
 	self.tabber:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 4)
 	self.tabber:SetScript("OnSizeChanged", self.ResizeTabs)

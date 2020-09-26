@@ -652,6 +652,45 @@ function InitOptions()
 				},
 			},
 
+			healBotka = {
+				name = "Хилботка", type = "group", order = 200,
+				hidden = function() return not yo.healBotka.enable end,
+				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
+				get = function(info) return yo[info[1]][info[#info]] end,
+				args = {
+					set00	= {	order = 08, type = "description", name = "Маус ор клавабатон", width = 1.2,},
+					set01	= {	order = 09, type = "description", name = "Спелл фор биндинг", width = 1,},
+
+					targ01	= {	order = 01, type = "keybinding",	name = "Target", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					menu01	= {	order = 02, type = "keybinding",	name = "Menu",   width = 1.1, desc = "Клац мышкой для смены бинды",},
+
+					key1	= {	order = 10, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key2	= {	order = 14, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell2	= { order = 16, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key3	= {	order = 18, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell3	= { order = 20, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key4	= {	order = 22, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell4	= { order = 24, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key5	= {	order = 26, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell5	= { order = 28, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key6	= {	order = 30, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell6	= { order = 32, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key7	= {	order = 34, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell7	= { order = 36, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key8	= {	order = 38, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell8	= { order = 40, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key9	= {	order = 42, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell9	= { order = 44, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key10	= {	order = 46, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell10	= { order = 48, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key11	= {	order = 50, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell11	= { order = 52, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+					key12	= {	order = 54, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+					spell12	= { order = 56, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+				},
+			},
+
 			ResetConfig = {
            		order = 1, type = "execute", confirm  = true, width = 0.75,	name = L["ResetConfig"],
            		desc = L["RESET_DESC"],
@@ -675,24 +714,6 @@ function InitOptions()
            		order = -1, type = "execute", width = 0.7, name = L["ReloadConfig"], desc = L["RELOAD_DESC"],
            		disabled = function() return not needReload end,
            		func = function() if needReload then ReloadUI() end	 end,},
-
-
-			healBotka = {
-				name = "Хилботка",
-				type = "group",
-				order = 200,
-				hidden = function() return not yo.healBotka.enable end,
-
-				args = {
-					key1	= {	order = 20, type = "keybinding",	name = "Показывать иконки 1",
-						get = function(info) return yo[info[1]][info[#info]] end,
-						set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, },
-
-					key2	= {	order = 22, type = "keybinding",	name = "Показывать иконки 2",
-						get = function(info) return yo[info[1]][info[#info]] end,
-						set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end, },
-				},
-			},
 
 			NextOptions = {
 				name = "Следующие настройки",

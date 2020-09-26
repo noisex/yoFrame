@@ -38,7 +38,8 @@ local function CreateUserListButton( self, ind)
 	button:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight" , "ADD");
 	button:GetHighlightTexture():SetVertexColor(.196, .388, .5);
 
-	button.text = button:CreateFontString(nil, "OVERLAY", "ChatFontNormal");
+	button.text = button:CreateFontString(nil, "OVERLAY") --, "ChatFontNormal");
+	button.text:SetFont( font, fontsize)
 	button.text:SetPoint("TOPLEFT");
 	button.text:SetPoint("BOTTOMRIGHT", -18, 0);
 	button.text:SetJustifyH("LEFT");
@@ -205,7 +206,7 @@ local function CreateHistoryFrame( self)
 	end
 
 	local textBox = CreateFrame("ScrollingMessageFrame", nil, self)
-	textBox:SetFont( yo.Chat.chatFont, yo.Chat.fontsize)
+	textBox:SetFont( yo.Chat.chatFont, yo.Chat.fontsize + 1)
 	textBox:SetPoint("TOPLEFT", userList, "TOPRIGHT", 25, 0)
 	textBox:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -10, 10)
 	textBox:SetInsertMode( "BOTTOM")
@@ -266,7 +267,7 @@ local function CreateHistoryFrame( self)
 	self.grabber = grabber
 
 	local hider = CreateFrame("Button", nil, self, "UIPanelCloseButton")
-	hider:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -3)
+	hider:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, 3)
 	self.hider = hider
 
 	local viewText = CreateFrame("Button", nil, self)

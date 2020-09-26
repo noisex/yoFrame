@@ -10,9 +10,12 @@ function testers(...)
 
 end
 
-local function CreateClique()
+local function CreateClique( self)
 	Clique = CreateFrame("Frame", "yo_Clique", UIParent)
-	local header = CreateFrame( "Frame", "yo_CliqueHeader", UIParent, "SecureHandlerBaseTemplate,SecureHandlerAttributeTemplate")
+	--local header = CreateFrame( "Frame", "yo_CliqueHeader", UIParent, "SecureHandlerAttributeTemplate,SecureHandlerBaseTemplate,SecureHandlerMouseUpDownTemplate")
+	local header = self
+	--"SecureHandlerBaseTemplate,SecureHandlerAttributeTemplate,SecureHandlerMouseUpDownTemplate")
+	--"SecureHandlerAttributeTemplate,SecureHandlerBaseTemplate,SecureUnitButtonTemplate,SecureHandlerEnterLeaveTemplate,SecureHandlerShowHideTemplate,SecureHandlerMouseUpDownTemplate")
 	Clique.header = header
 
 	--local set, clr = nil, nil --self:GetBindingAttributes()
@@ -29,13 +32,21 @@ local function CreateClique()
 	set[#set + 1] = attr
 	clr[#clr + 1] = B_CLR:format( "A")
 
+	attr = B_SET:format( "Z", "buttonZ")
+	set[#set + 1] = attr
+	clr[#clr + 1] = B_CLR:format( "Z")
+
 	attr = B_SET:format( "MOUSEWHEELDOWN", "whell1")
 	set[#set + 1] = attr
 	clr[#clr + 1] = B_CLR:format( "MOUSEWHEELDOWN")
 
+	attr = B_SET:format( "BUTTON4", "1")
+	set[#set + 1] = attr
+	clr[#clr + 1] = B_CLR:format( "BUTTON4")
+
 	set1 = table.concat(set, "\n")
 	clr1 = table.concat(clr, "\n")
-
+--tprint( set)
 	header:SetAttribute("setup_onenter", set1)
 	header:SetAttribute("setup_onleave", clr1)
 
@@ -567,10 +578,13 @@ local Shared = function(self, unit)
 	if yo.healBotka.enable then
 
 		self.menu = nil
---		self:SetScript("OnEnter", nil)
---		self:SetScript("OnLeave", nil)
-		self:EnableMouseWheel( 1)
-		self:EnableKeyboard( true)
+		self:EnableMouse(true)
+		self:EnableKeyboard( false)
+		self:EnableMouseWheel( true)
+		self:RegisterForClicks( "AnyDown")
+
+		self:SetAttribute('*type1', nil)
+		self:SetAttribute('*type2', nil)
 
 		--self:SetAttribute("type-cliquebuttonQ", "spell")
 		--self:SetAttribute("spell-cliquebuttonQ", "Восстановление")
@@ -581,16 +595,22 @@ local Shared = function(self, unit)
 		--self:SetAttribute("type-w1", "spell")
 		--self:SetAttribute("spell-w1", "Буйный рост")
 
+		self:SetAttribute("type-1", "macro")
+		self:SetAttribute("macrotext-1", "/cast [@mouseover] Восстановление")
+
+		self:SetAttribute("type-buttonZ", "macro")
+		self:SetAttribute("macrotext-buttonZ", "/cast [@mouseover] Жизнецвет")
+
 		self:SetAttribute("type-buttonQ", "macro")
 		self:SetAttribute("macrotext-buttonQ", "/cast [@mouseover] Восстановление")
 
 		self:SetAttribute("type-buttonA", "macro")
 		self:SetAttribute("macrotext-buttonA", "/cast [@mouseover] Омоложение")
+		--self:SetAttribute("macrotext-buttonA", "/use [help,nodead,@player][nodead,help,@pet] Омоложение /tar [unithasvehicleui,@pet] /tar [harm,@player]")
 
 		self:SetAttribute("type-whell1", "macro")
 		self:SetAttribute("macrotext-whell1", "/cast [@mouseover] Буйный рост")
 	else
-		--self.menu = SpawnMenu
 		self:SetScript("OnEnter", OnEnter)
 		self:SetScript("OnLeave", OnLeave)
 	end
@@ -701,7 +721,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 	if not yo.Raid.enable then return end
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
-	if yo.healBotka.enable then CreateClique() end
+	--if yo.healBotka.enable then CreateClique() end
 
 	local unit_width = 	yo.Raid.width
 	local unit_height = yo.Raid.height

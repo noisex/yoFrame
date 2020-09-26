@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 local lib = LibStub:NewLibrary("LibCooldown", 1.0)
 if not lib then return end
@@ -20,7 +20,7 @@ end
 local addon = CreateFrame("Frame")
 local band = bit.band
 local mine = COMBATLOG_OBJECT_AFFILIATION_MINE
-local spells = {}
+--local spells = {}
 local items = {}
 local watched = {}
 local nextupdate, lastupdate = 0, 0
@@ -69,27 +69,32 @@ local function start(id, starttime, duration, class, rduration)
 end
 
 local numTabs, totalspellnum
+local spells = {}
+--local function compare(a,b)
+--  return a[1] < b[1]
+--end
 
 local function parsespellbook(spellbook)
-	spells = {}
-
+	N.spellsBooks = {}
 	local numTabs = GetNumSpellTabs();
 
 	for tabIndex = 1, 3 do
    		local _, _, offset, numSlots = GetSpellTabInfo(tabIndex);
    		for i = offset + 1, offset + numSlots do
-      --      print( offset, numSlots)
       		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
-      		--print(i, spellName, spellID)
       		local isPassive = IsPassiveSpell( i, "spell");
-   			--local cd = GetSpellBaseCooldown( spellID)
+   			local cd = GetSpellBaseCooldown( spellID)
 
    			if spellID and not isPassive and spellID ~= 125439 and spellID ~= 83958 then
-   				spells[spellID] = true
-   	    		--print( i, spellName, spellID)
+   				N.spellsBooks[spellID] = spellName
+   				if cd > 5000 then
+   					spells[spellID] = spellName
+   				end
+   	    		--print( i, spellID, spellName, floor( cd / 1000))
    			end
    		end
 	end
+	--table.sort( N.spellsBooks, compare)
 end
 
 -- events --

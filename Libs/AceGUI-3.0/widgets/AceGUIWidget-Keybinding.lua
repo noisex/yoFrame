@@ -50,7 +50,7 @@ local function Keybinding_OnClick(frame, button)
 end
 
 local ignoreKeys = {
-	["BUTTON1"] = true, ["BUTTON2"] = true,
+	--["BUTTON1"] = true, ["BUTTON2"] = true,
 	["UNKNOWN"] = true,
 	["LSHIFT"] = true, ["LCTRL"] = true, ["LALT"] = true,
 	["RSHIFT"] = true, ["RCTRL"] = true, ["RALT"] = true,
@@ -88,8 +88,12 @@ local function Keybinding_OnKeyDown(frame, key)
 end
 
 local function Keybinding_OnMouseDown(frame, button)
-	if button == "LeftButton" or button == "RightButton" then
-		return
+	--if button == "LeftButton" or button == "RightButton" then
+	--	return
+	if button == "LeftButton" then
+		button = "BUTTON1"
+	elseif button == "RightButton" then
+		button = "BUTTON2"
 	elseif button == "MiddleButton" then
 		button = "BUTTON3"
 	elseif button == "Button4" then
@@ -214,7 +218,7 @@ local function Constructor()
 	label:SetJustifyH("CENTER")
 	label:SetHeight(18)
 
-	local msgframe = CreateFrame("Frame", nil, UIParent)
+	local msgframe = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 	msgframe:SetHeight(30)
 	msgframe:SetBackdrop(ControlBackdrop)
 	msgframe:SetBackdropColor(0,0,0)

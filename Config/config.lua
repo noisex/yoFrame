@@ -341,9 +341,9 @@ yo["Chat"] = {
 }
 
 yo["healBotka"] = {
-	["enable"]			= false,
+	["enable"]			= true,
 	["key1"]			= "key",
-	["key2"]			= "key",
+	["spell1"]			= "key",
 }
 
 yo["fliger"] = {
