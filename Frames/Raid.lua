@@ -6,79 +6,6 @@ local L, yo, N = ns[1], ns[2], ns[3]
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-function testers(...)
-
-end
-
-local function CreateClique( self)
-	Clique = CreateFrame("Frame", "yo_Clique", UIParent)
-	--local header = CreateFrame( "Frame", "yo_CliqueHeader", UIParent, "SecureHandlerAttributeTemplate,SecureHandlerBaseTemplate,SecureHandlerMouseUpDownTemplate")
-	local header = self
-	--"SecureHandlerBaseTemplate,SecureHandlerAttributeTemplate,SecureHandlerMouseUpDownTemplate")
-	--"SecureHandlerAttributeTemplate,SecureHandlerBaseTemplate,SecureUnitButtonTemplate,SecureHandlerEnterLeaveTemplate,SecureHandlerShowHideTemplate,SecureHandlerMouseUpDownTemplate")
-	Clique.header = header
-
-	--local set, clr = nil, nil --self:GetBindingAttributes()
-	local set, clr = {}, {}
-
-	local B_SET = [[print( "onEnter", self:GetName());self:SetBindingClick(true, %q, self, %q);]]
-	local B_CLR = [[print( "onLeaver");self:ClearBinding(%q);]]
-
-	local attr = B_SET:format( "Q", "buttonQ")
-	set[#set + 1] = attr
-	clr[#clr + 1] = B_CLR:format( "Q")
-
-	attr = B_SET:format( "A", "buttonA")
-	set[#set + 1] = attr
-	clr[#clr + 1] = B_CLR:format( "A")
-
-	attr = B_SET:format( "Z", "buttonZ")
-	set[#set + 1] = attr
-	clr[#clr + 1] = B_CLR:format( "Z")
-
-	attr = B_SET:format( "MOUSEWHEELDOWN", "whell1")
-	set[#set + 1] = attr
-	clr[#clr + 1] = B_CLR:format( "MOUSEWHEELDOWN")
-
-	attr = B_SET:format( "BUTTON4", "1")
-	set[#set + 1] = attr
-	clr[#clr + 1] = B_CLR:format( "BUTTON4")
-
-	set1 = table.concat(set, "\n")
-	clr1 = table.concat(clr, "\n")
---tprint( set)
-	header:SetAttribute("setup_onenter", set1)
-	header:SetAttribute("setup_onleave", clr1)
-
-	local setup, remove = nil, nil --self:GetClickAttributes()
-
-	header:SetAttribute("setup_clicks", setup)
-	--header:SetAttribute("remove_clicks", remove)
-
-	header:SetAttribute("clickcast_onenter", [===[
-        local header = self:GetParent():GetFrameRef("clickcast_header")
-       	header:RunFor(self, header:GetAttribute("setup_onenter"))
-]===])
-
-	header:SetAttribute("clickcast_onleave", [===[
-        local header = self:GetParent():GetFrameRef("clickcast_header")
-        header:RunFor(self, header:GetAttribute("setup_onleave"))
-]===])
-
-	header:SetAttribute("clickcast_register", [===[
-		local button = self:GetAttribute("clickcast_button")
-
-		-- Export this frame so we can display it in the insecure environment
-		self:SetAttribute("export_register", button)
-
-		button:SetAttribute("clickcast_onenter", self:GetAttribute("clickcast_onenter"))
-		button:SetAttribute("clickcast_onleave", self:GetAttribute("clickcast_onleave"))
-		--ccframes[button] = true
-
-		--self:RunFor(button, self:GetAttribute("setup_clicks"))
-]===])
-end
-
 local UnitSpecific = {
 	player = function(self)
 		-- Player specific layout code.
@@ -88,22 +15,6 @@ local UnitSpecific = {
 		-- Party specific layout code.
     end,
 }
-
---SpawnMenu = function(self)
---	local unit = self.unit:gsub("(.)", string.upper, 1)
---	if unit == "Targettarget" or unit == "focustarget" or unit == "pettarget" then return end
-
---	if _G[unit.."FrameDropDown"] then
---		ToggleDropDownMenu(nil, nil, _G[unit.."FrameDropDown"], "cursor")
---	elseif self.unit:match("party") then
---		ToggleDropDownMenu(nil, nil, _G["PartyMemberFrame"..self.id.."DropDown"], "cursor")
---	else
---		FriendsDropDown.unit = self.unit
---		FriendsDropDown.id = self.id
---		FriendsDropDown.initialize = RaidFrameDropDown_Initialize
---		ToggleDropDownMenu(nil, nil, FriendsDropDown, "cursor")
---	end
---end
 
 function OnChangeTarget( self)
 	--if(unit ~= self.unit) then return end
@@ -278,7 +189,7 @@ local Shared = function(self, unit)
 	self.colors.disconnected = { 0.3, 0.3, 0.3}
 	self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha, }
 
-	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")
+	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( texture)
 	self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
@@ -305,18 +216,18 @@ local Shared = function(self, unit)
 		self.Health.bg.multiplier = .5
 	end
 
-	self.Range.PostUpdate = function(object, inRange, checkedRange, connected)
-		if connected then
-			--print( inRange, checkedRange)
-			if checkedRange then
-			--	self.Health.hbg:SetAlpha(0)
-			else
-			--	self.Health.hbg:SetAlpha(0)
-			end
-		else
-			--self.Health.hbg:SetAlpha(1)
-		end
-	end
+	--self.Range.PostUpdate = function(object, inRange, checkedRange, connected)
+	--	if connected then
+	--		--print( inRange, checkedRange)
+	--		if checkedRange then
+	--		--	self.Health.hbg:SetAlpha(0)
+	--		else
+	--		--	self.Health.hbg:SetAlpha(0)
+	--		end
+	--	else
+	--		--self.Health.hbg:SetAlpha(1)
+	--	end
+	--end
 
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR
@@ -576,40 +487,8 @@ local Shared = function(self, unit)
 	--self:SetAttribute("unit", "player") ------------------!!!!!!!!!!!!!!!!!!
 
 	if yo.healBotka.enable then
+		N.makeQuiButton(self)
 
-		self.menu = nil
-		self:EnableMouse(true)
-		self:EnableKeyboard( false)
-		self:EnableMouseWheel( true)
-		self:RegisterForClicks( "AnyDown")
-
-		self:SetAttribute('*type1', nil)
-		self:SetAttribute('*type2', nil)
-
-		--self:SetAttribute("type-cliquebuttonQ", "spell")
-		--self:SetAttribute("spell-cliquebuttonQ", "Восстановление")
-
-		--self:SetAttribute("type-cliquebuttonA", "spell")
-		--self:SetAttribute("spell-cliquebuttonA", "Омоложение")
-
-		--self:SetAttribute("type-w1", "spell")
-		--self:SetAttribute("spell-w1", "Буйный рост")
-
-		self:SetAttribute("type-1", "macro")
-		self:SetAttribute("macrotext-1", "/cast [@mouseover] Восстановление")
-
-		self:SetAttribute("type-buttonZ", "macro")
-		self:SetAttribute("macrotext-buttonZ", "/cast [@mouseover] Жизнецвет")
-
-		self:SetAttribute("type-buttonQ", "macro")
-		self:SetAttribute("macrotext-buttonQ", "/cast [@mouseover] Восстановление")
-
-		self:SetAttribute("type-buttonA", "macro")
-		self:SetAttribute("macrotext-buttonA", "/cast [@mouseover] Омоложение")
-		--self:SetAttribute("macrotext-buttonA", "/use [help,nodead,@player][nodead,help,@pet] Омоложение /tar [unithasvehicleui,@pet] /tar [harm,@player]")
-
-		self:SetAttribute("type-whell1", "macro")
-		self:SetAttribute("macrotext-whell1", "/cast [@mouseover] Буйный рост")
 	else
 		self:SetScript("OnEnter", OnEnter)
 		self:SetScript("OnLeave", OnLeave)
@@ -721,7 +600,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 	if not yo.Raid.enable then return end
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
-	--if yo.healBotka.enable then CreateClique() end
+	if yo.healBotka.enable then N.CreateClique( self) end
 
 	local unit_width = 	yo.Raid.width
 	local unit_height = yo.Raid.height

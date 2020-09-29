@@ -9,33 +9,29 @@ local L, yo, N = unpack( ns)
 --L_GUI_CHAT_SKIN_BUBBLE = "Стилизация облачков чата"
 
 --L_GUI_MAP_EXPLORE = "Отслеживать на карте 'Первооткрыватель' и 'Хранитель мудрости'"
-	--PixelUtil.SetWidth = dummy
-	--PixelUtil.SetHeight = dummy
-	PixelUtil.GetNearestPixelSize = function(...)
-		local uiUnitSize, layoutScale, minPixels  = ...
-		--print( type( uiUnitSize), type( layoutScale), type( minPixels), uiUnitSize, layoutScale, minPixels)
 
-		local uiUnitFactor = PixelUtil.GetPixelToUIUnitFactor();
-		local numPixels = tonumber( Round((uiUnitSize * layoutScale) / uiUnitFactor))
+function PixelUtil.GetNearestPixelSize(uiUnitSize, layoutScale, minPixels)
+	if uiUnitSize == 0 and (not minPixels or minPixels == 0) then
+		return 0;
+	end
 
-		--print( type( uiUnitSize), type( layoutScale), numPixels, uiUnitFactor)
-
-		local rawNumPixels = numPixels;
-		if minPixels then
-			if uiUnitSize < 0.0 then
-				if numPixels > -minPixels then
-					numPixels = -minPixels;
-				end
-			else
-				if numPixels < minPixels then
-					numPixels = minPixels;
-				end
+	local uiUnitFactor = PixelUtil.GetPixelToUIUnitFactor();
+	--local numPixels = Round((uiUnitSize * layoutScale) / uiUnitFactor)
+	local numPixels = tonumber( Round((uiUnitSize * layoutScale) / uiUnitFactor))
+	if minPixels then
+		if uiUnitSize < 0.0 then
+			if numPixels > -minPixels then
+				numPixels = -minPixels;
+			end
+		else
+			if numPixels < minPixels then
+				numPixels = minPixels;
 			end
 		end
-
-		return numPixels * uiUnitFactor / layoutScale;
-		--return 1
 	end
+
+	return numPixels * uiUnitFactor / layoutScale;
+end
 
 myClass 	= select( 2, UnitClass( "player"))
 mySpec 		= GetSpecialization()
@@ -214,12 +210,12 @@ yo["CastBar"] = {
 		["width"]		= 450,
 		["height"]		= 10,
 		["offsetX"]		= 0,
-		["offsetY"]		= 0,
+		["offsetY"]		= 7,
 		["unit"]		= "boss",
 		["icon"]		= true,
-		["iconSize"]	= 25,
+		["iconSize"]	= 22,
 		["iconoffsetX"]	= 0,
-		["iconoffsetY"]	= -24,
+		["iconoffsetY"]	= -22,
 		["iconincombat"]= true,
 		["classcolor"]	= true,
 		["treatborder"]	= false,
@@ -232,7 +228,7 @@ yo["NamePlates"] = {
 	["iconDSize"]		= 20,
 	["iconBSize"]		= 20,
 	["iconDiSize"]		= 30,
-	["iconCastSize"]	= 20,
+	["iconCastSize"]	= 24,
 	["showCastIcon"]	= true,
 	["showCastName"]	= true,
 	["showCastTarget"]	= true,
@@ -342,8 +338,8 @@ yo["Chat"] = {
 
 yo["healBotka"] = {
 	["enable"]			= true,
-	["key1"]			= "key",
-	["spell1"]			= "key",
+	["key1"]			= "",
+	["spell1"]			= "",
 }
 
 yo["fliger"] = {

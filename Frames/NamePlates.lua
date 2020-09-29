@@ -131,6 +131,34 @@ local eTeam = {
 --	end
 --end
 
+local function scanToQuest( self, ...)
+	local tt, showMe = N.ScanTooltip
+	tt:SetOwner( UIParent, "ANCHOR_NONE")
+	tt:SetUnit( self.unit)
+	tt:Show()
+	for i = 3, min( 8, tt:NumLines()) do
+		local line = _G["yoFrame_ScanTooltipTextLeft"..i]
+		if line then
+			local lineText = line:GetText()
+			local p1, p2 = lineText:match(": (%d+)/(%d+)$")
+
+			if p1 and p2 and not (p1 == p2) then --and not string.match( line, RARITY) then
+				showMe = true
+				--print(p1, p2)
+				break end
+
+			--print(lineText)
+			local p3 = lineText:match ("%. %((%d+%%)%)$")
+			if p3 and not (p3 == "100%") then
+				showMe = true break end
+
+			--print( GetTime(), p1, p2, showMe)
+		end
+	end
+	if showMe then self.Class:Show() else self.Class:Hide() end
+	tt:Hide()
+end
+
 local function UpdateBuffs(unitFrame)
 	if not unitFrame.displayedUnit then return end
 
@@ -548,6 +576,7 @@ local function UpdateName( unitFrame)
 			end
 		end
 	end
+	scanToQuest( unitFrame)
 end
 
 local function UpdateTheatSit( self)
@@ -579,6 +608,7 @@ local function UpdateAll(unitFrame)
 		UpdateCastBar( unitFrame.castBar)
 		UpdateBuffs(unitFrame)
 		UpdateRaidTarget(unitFrame)
+		scanToQuest( unitFrame, displayedUnit)
 		--UpdateTheatSit( unitFrame)
 
 		if UnitIsUnit("player", unitFrame.displayedUnit) then
@@ -836,10 +866,10 @@ local function OnNamePlateCreated( frame)
 
 	if yo.NamePlates.showCastIcon then
 		f.castBar.ibg = CreateFrame("Frame", "BACKGROUND", f.castBar)
-    	f.castBar.ibg:SetPoint("BOTTOM", f.healthBar,"CENTER", 0, -2);
+    	f.castBar.ibg:SetPoint("BOTTOM", f.healthBar,"CENTER", 0, 2);
     	f.castBar.ibg:SetSize( yo.NamePlates.iconCastSize, yo.NamePlates.iconCastSize)
 		f.castBar.ibg:SetFrameLevel( 10)
-		CreateStyle( f.castBar.ibg, 3, 6)
+		CreateStyle( f.castBar.ibg, 2, 6)
 
 		f.castBar.Icon = f.castBar.ibg:CreateTexture(nil, "BORDER")
 		f.castBar.Icon:SetAllPoints( f.castBar.ibg)
@@ -907,15 +937,16 @@ local function OnNamePlateCreated( frame)
 	f.disIcons:SetFrameLevel(f:GetFrameLevel() + 20)
 	f.disIcons.direction = "UP"
 
-	--f.Class = CreateFrame("Frame", nil, f)
-	--f.Class:SetPoint("BOTTOMRIGHT", f.healthBar, "BOTTOMLEFT", -8, 0)
-	--f.Class:SetSize( 30, 30)
-	--f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")
-	--f.Class.Icon:SetAllPoints()
-	--f.Class.Icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-	--f.Class.Icon:SetTexCoord(0, 0, 0, 0)
+	f.Class = CreateFrame("Frame", nil, f)
+	f.Class:SetPoint("RIGHT", f.healthBar, "LEFT", 0, 0)
+	f.Class:SetSize( 18, 18)
+	f.Class:Hide()
+	f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")
+	f.Class.Icon:SetAllPoints()
+	f.Class.Icon:SetTexture( [[Interface\GossipFrame\AvailableQuestIcon]] ) --"Interface\\WorldStateFrame\\Icons-Classes")
 
-	--CreateStyle(f.Class, 3)
+	--f.Class.Icon:SetTexCoord(0, 0, 0, 0)
+	--CreateStyle(f.Class, 1)
 
 	--f.Shine = CreateFrame("Frame", "$parentShine", f.healthBar, "AutoCastShineTemplate")
 	--f.Shine:SetPoint("CENTER", f.healthBar, "CENTER", 0, 0)
@@ -1031,7 +1062,7 @@ local function NamePlate_OnEvent(self, event, ...)
 
 	if event == "PLAYER_TARGET_CHANGED" then
 		UpdateName(self)
-	elseif event == "PLAYER_ENTERING_WORLD" then
+	elseif event == "PLAYER_ENTERING_WORLD"  or event == "UNIT_QUEST_LOG_CHANGED" then
 		UpdateAll(self)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		self:SetScript("OnUpdate", nil)
@@ -1080,6 +1111,7 @@ local function RegisterNamePlateEvents(unitFrame)
 	unitFrame:RegisterEvent("UNIT_NAME_UPDATE")
 	unitFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	unitFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+	unitFrame:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 	unitFrame:RegisterEvent("UNIT_PET")
 	unitFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
 	unitFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
@@ -1123,6 +1155,7 @@ local function OnNamePlateAdded(unit)
 	--if pType[myClass] then
 	--	CreateShardsBar( unitFrame)
 	--end
+	scanToQuest(unitFrame, unit)
 end
 
 local function OnNamePlateRemoved(unit)

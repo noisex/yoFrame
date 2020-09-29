@@ -222,7 +222,7 @@ Stat:SetScript("OnEnter", function(self)
 	if guildMotD ~= "" then GameTooltip:AddLine(format(guildMotDString, GUILD_MOTD, guildMotD), ttsubh.r, ttsubh.g, ttsubh.b, 1) end
 
 	local col = RGBToHex(ttsubh.r, ttsubh.g, ttsubh.b)
-	GameTooltip:AddLine(' ')
+	--GameTooltip:AddLine(' ')
 	if GuildInfo and GuildLevel then
 		if guildXP[0] then
 			local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
@@ -242,7 +242,7 @@ Stat:SetScript("OnEnter", function(self)
 	if online > 1 then
 		local Count = 0
 
-	GameTooltip:AddLine(' ')
+	--GameTooltip:AddLine(' ')
 	for i = 1, #guildTable do
 			if online <= 1 then
 				break

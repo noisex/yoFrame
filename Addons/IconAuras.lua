@@ -6,6 +6,15 @@ local L, yo, N = unpack( ns)
 --	AURAS
 -----------------------------------------------------------------------------------------------
 
+local posz = {
+    [1] =  { [1] = "TOPLEFT",   [2] = 3,    [3] = -3},
+    [2] =  { [1] = "TOP",       [2] = 0,    [3] = -3},
+    [3] =  { [1] = "TOPRIGHT",  [2] = -3,   [3] = -3},
+    [4] =  { [1] ="BOTTOMRIGHT",[2] = -3,   [3] = 3},
+    [5] =  { [1] = "BOTTOM",    [2] = 0,    [3] = 3},
+    [6] =  { [1] = "BOTTOMLEFT",[2] = 3,    [3] = 3},
+}
+
 local function BuffOnEnter( f)
 	if true or showToolTip == "cursor" then
 		GameTooltip:SetOwner( f, "ANCHOR_BOTTOMRIGHT", 8, -16)
@@ -26,7 +35,7 @@ function CreateAuraIcon( parent, index)
 	if parent[index] then return parent[index] end
 
 	local size = parent:GetHeight()
-	local sh = ceil( size / 8)
+	local sh = ceil( size / 6)
 	if not parent.timerPosition then parent.timerPosition = "BOTTOM" end
 
 	local button = CreateFrame("Frame", nil, parent)
@@ -65,22 +74,31 @@ function CreateAuraIcon( parent, index)
 		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
 	end
 
+	if not parent.noShadow then CreateStyle( button, max( 1, sh - 3)) end
+    if parent.timeSecOnly then
+    	button.tFormat = formatTimeSec --formatTimeSec
+    else
+    	button.tFormat = formatTime
+    end
 
-	CreateStyle( button, max( 2, sh - 1))
+    local p1, p2, shX, shY, pc = "LEFT", "RIGHT", sh, 0, parent
 
-	local p1, p2, shX, shY = "LEFT", "RIGHT", sh, 0
-
-	if parent.direction == "LEFT" then
-		p1, p2, shX, shY = "RIGHT", "LEFT", -sh, 0
-	elseif parent.direction == "UP" then
-		p1, p2, shX, shY = "BOTTOM", "TOP", 0, sh
-	end
+    if parent.direction == "LEFT" then
+        p1, p2, shX, shY, pc = "RIGHT", "LEFT", -sh, 0, parent[index-1]
+	elseif parent.direction == "RIGHT" then
+    	p1, p2, shX, shY, pc = "LEFT", "RIGHT", sh, 0, parent[index-1]
+    elseif parent.direction == "UP" then
+        p1, p2, shX, shY, pc = "BOTTOM", "TOP", 0, sh, parent[index-1]
+    elseif parent.direction == "ICONS" then
+        p1, p2, shX, shY, pc = posz[index][1], posz[index][1], posz[index][2], posz[index][3], parent:GetParent()
+    end
 
 	if index == 1 then
-		button:SetPoint( p1, parent, p1)
-	else
-		button:SetPoint( p1, parent[index-1], p2, shX, shY)
-	end
+        button:SetPoint( p1, parent, p1)
+    else
+    	--print( index, p1, p2, shX, shY, pc)
+        button:SetPoint( p1, pc, p2, shX, shY)
+    end
 
 	if not parent.hideTooltip then
 		button:EnableMouse(true)
@@ -104,8 +122,10 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 	button.id = index
 	button.tick = 1
 
-	local color = DebuffTypeColor[debuffType] or DebuffTypeColor.none
-	button.shadow:SetBackdropBorderColor(color.r, color.g, color.b)
+	if button.shadow then
+		local color = DebuffTypeColor[debuffType] or DebuffTypeColor.none
+		button.shadow:SetBackdropBorderColor(color.r, color.g, color.b)
+	end
 
 	if count and count > 1 then
 		button.count:SetText(count)
@@ -131,10 +151,12 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 		end
 
 		if ( duration and duration > 0) and est > 0.1 then
-			--print( formatTime( est), expirationTime, est)
-			button.timer:SetText( formatTime( est))
+			--print( button.tFormat( 12))
+			button.timer:SetText( button.tFormat( est, true)) --formatTime( est))
 		else
 			button.timer:SetText( "")
+			button:Hide()
+			self:SetScript("OnUpdate", nil)
 		end
 	end)
 

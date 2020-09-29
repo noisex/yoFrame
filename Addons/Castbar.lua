@@ -459,7 +459,7 @@ logan:SetScript("OnEvent", function(self, event)
 	CreateCastBar( yo_castBig, cfg)
 
 	cfg 		= yo["CastBar"]["boss"]
-	cfg.width 	= yo_MoveBoss:GetWidth()
+	cfg.width 	= yo_Moveboss:GetWidth()
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = _G["yo_Boss"..i]
 		cfg.point	= { "BOTTOM", bFrame, "TOP", 0, 6}

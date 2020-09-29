@@ -79,11 +79,11 @@ local function loginEvent(self, ...)
 	SetCVar("doNotFlashLowHealthWarning", 1)
 end
 
-function InterfaceOptions_UpdateMultiActionBars ()
+local function InterfaceOptions_UpdateMultiActionBars()
 	SHOW_MULTI_ACTIONBAR_1 = 1
---	SHOW_MULTI_ACTIONBAR_2 = 1
+----	SHOW_MULTI_ACTIONBAR_2 = 1
 	SHOW_MULTI_ACTIONBAR_3 = 1
---	SHOW_MULTI_ACTIONBAR_4 = 1
+----	SHOW_MULTI_ACTIONBAR_4 = 1
 	ALWAYS_SHOW_MULTIBARS  = 1
 
 	if ( SHOW_MULTI_ACTIONBAR_1 == "0" ) then
@@ -129,60 +129,10 @@ local function enterEvent( self)
 	end
 	hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
 
-	plFrame = CreateFrame("Button", "yo_Player", UIParent, "SecureUnitButtonTemplate")
-	tarFrame = CreateFrame("Button", "yo_Target", UIParent, "SecureUnitButtonTemplate")
-	totFrame = CreateFrame("Button", "yo_TarTar", UIParent, "SecureUnitButtonTemplate")
-	fcFrame = CreateFrame("Button", "yo_Focus", UIParent, "SecureUnitButtonTemplate")
-	petFrame = CreateFrame("Button", "yo_Pet", UIParent, "SecureUnitButtonTemplate")
-
-	if yo.Addons.unitFrames then
-
-		--plFrame = CreateFrame("Button", "yo_Player", UIParent, "SecureUnitButtonTemplate")
-		plFrame:SetPoint( "CENTER", yo_MovePlayer, "CENTER", 0 , 0)
-		plFrame:SetSize( yo_MovePlayer:GetSize())
-		plFrame.unit = "player"
-		CreateUFrame( plFrame, plFrame.unit)
-
-		--tarFrame = CreateFrame("Button", "yo_Target", UIParent, "SecureUnitButtonTemplate")
-		tarFrame:SetPoint( "CENTER", yo_MoveTarget, "CENTER", 0 , 0)
-		tarFrame:SetSize( yo_MoveTarget:GetSize())
-		tarFrame.unit = "target"
-		CreateUFrame( tarFrame, tarFrame.unit)
-
-		--totFrame = CreateFrame("Button", "yo_TarTar", UIParent, "SecureUnitButtonTemplate")
-		totFrame:SetPoint( "TOPLEFT", yo_MoveTarget, "TOPRIGHT", 8 , 0)
-		totFrame:SetSize( 100, 25)
-		totFrame.unit = "targettarget"
-		CreateUFrame( totFrame, totFrame.unit)
-
-		--fcFrame = CreateFrame("Button", "yo_Focus", UIParent, "SecureUnitButtonTemplate")
-		fcFrame:SetPoint( "CENTER", yo_MoveFocus, "CENTER", 0 , 0)
-		fcFrame:SetSize( yo_MoveFocus:GetSize())
-		fcFrame.unit = "focus"
-		CreateUFrame( fcFrame, fcFrame.unit)
-
-		--petFrame = CreateFrame("Button", "yo_Pet", UIParent, "SecureUnitButtonTemplate")
-		petFrame:SetPoint( "TOPRIGHT", yo_MovePlayer, "TOPLEFT", -8 , 0)
-		petFrame:SetSize( 100, 25)
-		petFrame.unit = "pet"
-		CreateUFrame( petFrame, petFrame.unit)
-
-		for i = 1, MAX_BOSS_FRAMES do
-			local bFrame = "boss"..i.."Frame"
-			bFrame = CreateFrame("Button", "yo_Boss" .. i, UIParent, "SecureUnitButtonTemplate")
-			bFrame.unit = "boss"..i
-			bFrame:SetPoint( "CENTER", yo_MoveBoss, "CENTER", 0 , -( i -1) * 65)
-			bFrame:SetSize( yo_MoveBoss:GetSize())
-			CreateUFrame(  bFrame, bFrame.unit)
-		end
-	end
-
 	CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
 	CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
 
-	--CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 3, 3, 0.5, 0)
 	CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", yo_MoveLeftPanel, "BOTTOMLEFT", 0, 0, 0.5, 0)
-
 	CreateStyle( LeftDataPanel, 3, 0, 0, 0.7)
 
 	SimpleBackground( RightInfoPanel, 440, 15, "BOTTOM", RightDataPanel, "BOTTOM", 0, 0)
@@ -191,16 +141,10 @@ local function enterEvent( self)
 	SimpleBackground( LeftInfoPanel, 440, 15, "BOTTOM", LeftDataPanel, "BOTTOM", 0, 0)
 	CreateStyle( LeftInfoPanel, 3, 0)
 
-	if not yo.Addons.BlackPanels then
-		RightDataPanel:Hide()
-		LeftDataPanel:Hide()
-	end
-	if not yo.Addons.InfoPanels then
-		RightInfoPanel:Hide()
-		LeftInfoPanel:Hide()
-		--LeftInfoPanel:UnregisterAllEvents()
-		--LeftInfoPanel = nil
-	end
+	if not yo.Addons.BlackPanels then RightDataPanel:Hide() LeftDataPanel:Hide() end
+	if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
+
+	InterfaceOptions_UpdateMultiActionBars ()
 end
 
 local function OnEvent( self, event, ...)
@@ -214,6 +158,11 @@ local function OnEvent( self, event, ...)
 	end
 
 end
+
+LeftInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+LeftDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
 local csf = CreateFrame("Frame")
 csf:RegisterEvent("PLAYER_LOGIN")
@@ -231,14 +180,11 @@ csf:SetScript("OnEvent", OnEvent)
 --print("|cFF00A2FF/kb |r - Command to ActionBar KeyBinding.")
 --print("|cFF00A2FF/cfg |r - Ingame UI config.")
 
-LeftInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-LeftDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-
 SlashCmdList["YOMOVE"] = ySlashCmd;
 SLASH_YOMOVE1 = "/yo";
 SLASH_YOMOVE2 = "/нщ";
+SLASH_YOMOVE3 = "/move";
+SLASH_YOMOVE4 = "/ьщму";
 
 SlashCmdList["RELOADUI"] = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"

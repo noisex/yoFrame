@@ -144,11 +144,18 @@ local tagStrings = {
 	end]],
 
 	['cpoints'] = [[function(u)
-		local cp = UnitPower(u, Enum.PowerType.ComboPoints)
 
-		if(cp > 0) then
-			return cp
+	for i = 1, 5 do
+		local f = _G["yo_Boss"..i]
+		if f and f:IsShown() then
+			if f.unit and UnitIsUnit( f.unit, "target") then
+				if f.shadow then f.shadow:SetBackdropBorderColor( 1, 0, 0, 0.9) end
+			else
+				if f.shadow then f.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.9) end
+			end
 		end
+	end
+
 	end]],
 
 	['creature'] = [[function(u)

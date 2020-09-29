@@ -17,7 +17,7 @@ function isDruid( self)
 end
 
 local function pwUpdate( self, powerID)
-	local unitPower = UnitPower( "player", powerID)	--, true)
+	local unitPower = UnitPower( self.unit, powerID)	--, true)
 
 	for i = 1, min( unitPower, #self) do
 		if not self[i].on then
@@ -31,9 +31,9 @@ local function pwUpdate( self, powerID)
 	end
 
 	if unitPower == self.idx and myClass ~= "DEATHKNIGHT" then
-		self.shadow:SetBackdropBorderColor( self:GetParent().colr, self:GetParent().colg, self:GetParent().colb, 0.7)
+		self.shadow:SetBackdropBorderColor( self:GetParent().colr, self:GetParent().colg, self:GetParent().colb, 0.6)
 	else
-		self.shadow:SetBackdropBorderColor( 0, 0, 0, 0.7)
+		self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.7)
 	end
 end
 
@@ -48,7 +48,7 @@ end
 
 	if not self.powerID or ( self.spec and self.spec ~= GetSpecialization()) then return end
 
-	self.idx = UnitPowerMax( "player", self.powerID)
+	self.idx = UnitPowerMax( self.unit, self.powerID)
 	self:SetWidth( plFrame:GetWidth() / 2)
 
 	for i = 1, self.idx do
@@ -58,6 +58,7 @@ end
 		self[i]:SetHeight( self:GetHeight())
 		self[i]:SetWidth(self:GetWidth() / self.idx)
 		self[i]:SetAlpha( self.minAlpha)
+		self[i]:SetFrameLevel(10)
 		table.insert( N.statusBars, self[i])
 
 		if i == 1 then
@@ -123,19 +124,20 @@ local function OnEvent( self, event, unit, pToken, ...)
 
 local function CreateShardsBar( f)
 	local holyShards = f.holyShards or CreateFrame( "Frame", nil, f)
-	holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 4, -4)
+	holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 7, -5)
 	holyShards:SetWidth( f:GetWidth() / 2)
 	holyShards:SetHeight( 5)
-	holyShards:SetFrameLevel(5)
+	holyShards:SetFrameLevel(9)
 
-	holyShards:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-	holyShards:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
+	holyShards:RegisterUnitEvent("UNIT_POWER_UPDATE", f.unit)
+	holyShards:RegisterUnitEvent("UNIT_DISPLAYPOWER", f.unit)
 	holyShards:RegisterEvent("RUNE_POWER_UPDATE")
-	holyShards:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+	holyShards:RegisterUnitEvent("UNIT_MAXPOWER", f.unit)
+	holyShards:RegisterEvent("PLAYER_TARGET_CHANGED")
 	holyShards:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 	holyShards:SetScript("OnEvent", OnEvent)
-	CreateStyle( holyShards, 2, 5)
+	CreateStyle( holyShards, 1, 5)
 
 	holyShards.colr, holyShards.colg, holyShards.colb = f.colr, f.colg, f.colb
 	holyShards.powerID 	= yo.pType[myClass].powerID
@@ -145,6 +147,7 @@ local function CreateShardsBar( f)
 	holyShards.maxAlpha = 0.9
 	holyShards.TurnOff 	= ClassPowerBar.TurnOff
 	holyShards.TurnOn 	= ClassPowerBar.TurnOn
+	holyShards.unit 	= f.unit
 
 	f.holyShards = holyShards
 	CreateShards( f.holyShards)
@@ -158,6 +161,7 @@ logan:SetScript("OnEvent", function(self, event)
 	if not yo.Addons.unitFrames then return end
 	if yo.pType[myClass] and yo.pType[myClass].powerID then
 		CreateShardsBar( plFrame)
+		--CreateShardsBar( tarFrame)
 	end
 end)
 

@@ -71,6 +71,7 @@ end
 
 local function onEvent(self, event, ...)
 	if(self:IsVisible()) then
+		--print( event, self, self[event])
 		return self[event](self, event, ...)
 	end
 end
@@ -98,6 +99,7 @@ function frame_metatable.__index:RegisterEvent(event, func, unitless)
 	-- Block OnUpdate polled frames from registering events except for
 	-- UNIT_PORTRAIT_UPDATE and UNIT_MODEL_CHANGED which are used for
 	-- portrait updates.
+	--print( event, func, unitless)
 	if(self.__eventless and event ~= 'UNIT_PORTRAIT_UPDATE' and event ~= 'UNIT_MODEL_CHANGED') then return end
 
 	argcheck(event, 2, 'string')

@@ -55,8 +55,8 @@ Addons\IconAuras.lua
 Frames\tags.lua
 Frames\Chat.lua
 Frames\ActionBars.lua
-#-Frames\Units.lua
-Frames\Frames.lua
+Frames\Units.lua
+#-Frames\Frames.lua
 Frames\NamePlates.lua
 Frames\Raid.lua
 
@@ -64,10 +64,10 @@ Libs\rActionBar\core.lua
 Libs\rActionBar\blizzard.lua
 Libs\rActionBar\bars.lua
 #-Libs\rActionBar\range.lua
-#Libs\rActionBar\bind.lua
+#-Libs\rActionBar\bind.lua
 
 Addons\Aura.lua
-#Addons\AzeritPower.lua
+#-Addons\AzeritPower.lua
 #-Addons\AzeriteTooltip.lua
 Addons\CastBar.lua
 #-Addons\CastWatcher.lua
@@ -113,14 +113,13 @@ Addons\ToolTip.lua
 Addons\IDTooltip.lua
 Addons\WIM.lua
 Addons\WimHistory.lua
-
+Addons\yoque.lua
 Addons\ItemLvl.lua
 
 Infotext\System.lua
 Infotext\Durability.lua
 Infotext\Guild.lua
 Infotext\Friend.lua
-#-Infotext\Equipment.lua
 Infotext\Gold.lua
 Infotext\SpecLoot.lua
 Infotext\Bags.lua
@@ -131,4 +130,3 @@ Libs\oUF\elements\AutoResurrect.lua
 Skins\shBigWigs.lua
 Skins\WeakAuras.lua
 Skins\shDBM.lua
-#Skins\Details.lua

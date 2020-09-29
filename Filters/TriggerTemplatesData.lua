@@ -3920,6 +3920,7 @@ templates.items[2] = {
     { spell = 291170, type = "debuff", unit = "player", titleItemPrefix = 165578}, --heal
     { spell = 288156, type = "buff", unit = "player", titleItemPrefix = 165580},
     { spell = 287568, type = "buff", unit = "player", titleItemPrefix = 165569}, --tank
+    { spell = 260277, type = "buff", unit = "player", titleItemPrefix = 161115},
   }
 }
 

@@ -82,7 +82,6 @@ local function Enable(self)
 		if(element:IsObjectType('Texture') and not element:GetTexture()) then
 			element:SetTexture([[Interface\GroupFrame\UI-Group-AssistantIcon]])
 		end
-
 		return true
 	end
 end

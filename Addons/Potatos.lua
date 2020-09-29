@@ -24,6 +24,10 @@ local function DrawDefault( self)
 			self.tName:SetText( "waiting...")
 			self.icon:SetVertexColor( 0, 1, 1, 0.5)
 		end
+	elseif self.buyPots then
+		self.tName:SetText( "купи потцов")
+		self.tName:SetTextColor( 1,0,0,1)
+		self.icon:SetVertexColor( 1, 0, 0, 0.5)
 	else
 		self.usableItem = false
 		self.itemReady = false
@@ -42,14 +46,14 @@ local function initPotatos( self)
 	local start, itemCD = GetItemCooldown( self.itemID)
 	local usableItem, _ = IsUsableItem( self.item)
 
-	if self.buyPots then
-		self.tName:SetText( "купи потцов")
-		self.tName:SetTextColor( 1,0,0,1)
-		self.icon:SetVertexColor( 1, 0, 0, 0.5)
-		self.IsNormal = false
-	else
-		self.IsNormal = true
-	end
+	--if self.buyPots then
+	--	self.tName:SetText( "купи потцов")
+	--	self.tName:SetTextColor( 1,0,0,1)
+	--	self.icon:SetVertexColor( 1, 0, 0, 0.5)
+	--	self.IsNormal = false
+	--else
+	--	self.IsNormal = true
+	--end
 
 	if self.IsBL then
 		self.icon:SetTexture( self.iconBL)
@@ -305,8 +309,11 @@ local function CreatePotatos( f)
 	f.tCount = f.overlay:CreateFontString(nil, "OVERLAY")
 	f.tCount:SetFont( fontpx, fontsize, "OUTLINE")
 	f.tCount:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -0, 0)
-	f.tCount:SetText( ( GetItemCount( f.itemID) or 0))
+	--f.tCount:SetText( ( GetItemCount( f.itemID) or 0))
 	f.tCount:SetTextColor( 0, 0.5, 1, 0.7)
+	local itemCount = ( GetItemCount( f.itemID) or 0)
+	f.tCount:SetText( itemCount)
+	if itemCount <= 10 then f.buyPots = true else f.buyPots = false 	end
 
 	f.cd = CreateFrame("Cooldown", nil, f, "CooldownFrameTemplate")
 	f.cd.noCooldownCount = true

@@ -654,10 +654,11 @@ function InitOptions()
 
 			healBotka = {
 				name = "Хилботка", type = "group", order = 200,
-				hidden = function() return not yo.healBotka.enable end,
+				--hidden = function() return not yo.healBotka.enable end,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
 				get = function(info) return yo[info[1]][info[#info]] end,
 				args = {
+					enable 	= { width = "full",	order = 0, type = "toggle",	name = "Включить жалкое подобие на нормальные хилфреймы.", desc = "Настоятельно рекомендую предварительно установить |cffff0000`Персональные настройки`|r на первой странице.", disabled = false, },
 					set00	= {	order = 08, type = "description", name = "Маус ор клавабатон", width = 1.2,},
 					set01	= {	order = 09, type = "description", name = "Спелл фор биндинг", width = 1,},
 

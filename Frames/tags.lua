@@ -75,8 +75,9 @@ oUF.Tags.Methods['GetNameColor'] = function(u, r)
 	local _, class = UnitClass(u)
 	local reaction = UnitReaction(u, "player")
 
-	--if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
-	--	return "|cffA0A0A0"
+	if UnitIsDead(u) or UnitIsGhost(u) or not UnitIsConnected(u) then
+		return "|cffA0A0A0"
+	end
 	if (UnitIsPlayer(u)) then
 		return hex(oUF.colors.class[class])
 	elseif reaction then
@@ -101,7 +102,7 @@ oUF.Tags.Events["NameShort"] = "UNIT_NAME_UPDATE"
 
 oUF.Tags["NameMedium"] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 10, false)
+	return utf8sub(name, 12, false)
 end
 oUF.Tags.Events["NameMedium"] = "UNIT_NAME_UPDATE"
 
@@ -159,19 +160,19 @@ end
 oUF.Tags.Events['nameshort'] = 'UNIT_NAME_UPDATE'
 oUF.Tags.Methods['nameshort'] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 9, false)
+	return utf8sub(name, 13, false)
 end
 
-oUF.Tags.Events['namemedium'] = 'UNIT_NAME_UPDATE'
+oUF.Tags.Events['namemedium'] = 'UNIT_NAME_UPDATE UNIT_FLAGS'
 oUF.Tags.Methods['namemedium'] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 10, false)
+	return utf8sub(name, 18, false)
 end
 
 oUF.Tags.Events['namelong'] = 'UNIT_NAME_UPDATE'
 oUF.Tags.Methods['namelong'] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 35, true)
+	return utf8sub(name, 27, false)
 end
 
 oUF.Tags.Methods['hp']  = function(u)
@@ -328,21 +329,18 @@ oUF.Tags.Methods["NameplateHealth"] = function(unit)
 end
 oUF.Tags.Events["NameplateHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH NAME_PLATE_UNIT_ADDED"
 
-oUF.Tags.Methods["NameplateLevel"] = function(unit)
-	local level = UnitLevel(unit)
+oUF.Tags.Methods["unitLevel"] = function(unit, ...)
+	--local level = UnitLevel(unit)
 	local c = UnitClassification(unit)
-	if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
-		level = UnitBattlePetLevel(unit)
-	end
 
-	if level == UnitLevel( "player") and c == "normal" then return end
-	if level > 0 then
-		return level
-	else
-		return "??"
+	local level = ""
+	if unit == "player" and (( levelUP and levelUP ~= MAX_PLAYER_LEVEL) or UnitLevel( "player") ~= MAX_PLAYER_LEVEL) then
+		level = levelUP or UnitLevel( "player")
+		level = level .. " "
 	end
+	return level
 end
-oUF.Tags.Events["NameplateLevel"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
+oUF.Tags.Events["unitLevel"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
 
 oUF.Tags.Methods["NameplateNameColor"] = function(unit)
 	local reaction = UnitReaction(unit, "player")
@@ -390,3 +388,17 @@ oUF.Tags.Methods["DiffColor"] = function(unit)
 	return string.format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
 end
 oUF.Tags.Events["DiffColor"] = "UNIT_LEVEL"
+
+oUF.Tags.Methods['bossTarget'] = function(u)
+	for i = 1, MAX_BOSS_FRAMES do
+		local f = _G["yo_Boss"..i]
+		if f and f:IsShown() then
+			if f.unit and UnitIsUnit( f.unit, "target") then
+				if f.shadow then f.shadow:SetBackdropBorderColor( 0.9, 0, 0, 0.9) end
+			else
+				if f.shadow then f.shadow:SetBackdropBorderColor( .09, 0.09, 0.09, 0.9) end
+			end
+		end
+	end
+end
+oUF.Tags.Events["bossTarget"] = "PLAYER_TARGET_CHANGED"

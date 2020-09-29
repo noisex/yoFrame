@@ -76,6 +76,7 @@ local spells = {}
 
 local function parsespellbook(spellbook)
 	N.spellsBooks = {}
+	N.spellsBooksName = {}
 	local numTabs = GetNumSpellTabs();
 
 	for tabIndex = 1, 3 do
@@ -83,10 +84,11 @@ local function parsespellbook(spellbook)
    		for i = offset + 1, offset + numSlots do
       		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
       		local isPassive = IsPassiveSpell( i, "spell");
-   			local cd = GetSpellBaseCooldown( spellID)
 
    			if spellID and not isPassive and spellID ~= 125439 and spellID ~= 83958 then
+   				local cd = GetSpellBaseCooldown( spellID)
    				N.spellsBooks[spellID] = spellName
+   				N.spellsBooksName[spellName] = spellID
    				if cd > 5000 then
    					spells[spellID] = spellName
    				end

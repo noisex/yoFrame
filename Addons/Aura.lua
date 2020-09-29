@@ -8,12 +8,12 @@ local function OnUpdate(f, elapsed)
 		local stime = GetTime()
 		local timeLeft = f.expirationTime - stime
 		if f.reverse then timeLeft = abs((f.expirationTime - stime) - f.duration) end
-		
+
 		if not f.last or f.last < stime - 0.7  then
-			f.last = stime    
+			f.last = stime
 			f.ch = not f.ch
 		end
-		
+
 		-----------------------------------------------------------UnitIsUnit( unit, "target")
 		if f.svistelka then
 			if f.ch and timeLeft < 6 then
@@ -24,10 +24,10 @@ local function OnUpdate(f, elapsed)
 				f.icon:SetVertexColor( 1,0,0,1)
 			elseif timeLeft > 6 then
 				f.outerGlow:Hide()
-				f.icon:SetVertexColor( 1,1,1,1)		
+				f.icon:SetVertexColor( 1,1,1,1)
 			end
 		end
-				
+
 		if timeLeft > 0 then
 			local text = formatTime(timeLeft)
 			f.tTimer:SetText(text)
@@ -43,27 +43,27 @@ local function OnUpdate(f, elapsed)
 		f.elapsed = 0
 	end
 end
-		
+
 local function AuraUpdate( f, lastID, filter)
 	local unit = f.unit
 	if not UnitExists( unit) then return end
 
 	local count = f.count
 	local isboss = f:GetParent().isboss
-	local svistelka 
+	local svistelka
 	--print( "AURA: ", GetTime(), unit, filter, f)
-	
+
 	if isboss and (string.find( filter, "PLAYER") ~= nil) then
 		svistelka = true
 	else
 		svistelka = false
 	end
-	
+
 	for i = 1, count +5 do   --v in ipairs( f) do
 		if lastID >= ( count * 2) -1 then return end
 		local name, icon, stack, _, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, _, _, _, _, nameplateShowAll = UnitAura( unit, i, filter)
 		--if isBossDebuff then print ( "|cffff0000 isBossDebuff:|r " .. name .. " ( " .. spellId .. ")" ) end
-		
+
 		--if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and nameplateShowPersonal and duration >= 10)) then
 		if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and N.DebuffWhiteList[name])) then
 			f[lastID].icon:SetTexture( icon)
@@ -73,18 +73,18 @@ local function AuraUpdate( f, lastID, filter)
 			f[lastID].svistelka = svistelka
 			f[lastID].duration = duration
 			--f[lastID].cd:SetCooldown( expirationTime - duration, duration)
-			
+
 			if stack and stack > 1 then
 				f[lastID].tStack:SetText( stack)
-			else 
+			else
 				f[lastID].tStack:SetText( "")
 			end
-			
-			if(unit == "target") then	
+
+			if(unit == "target") then
 				if ( unitCaster == "player" or unitCaster == "vehicle") then
-					f[lastID].icon:SetDesaturated(false)                 
+					f[lastID].icon:SetDesaturated(false)
 				else --if( not UnitPlayerControlled(unit)) then
-					f[lastID].icon:SetDesaturated(true)  
+					f[lastID].icon:SetDesaturated(true)
 				end
 			elseif( unit == "player") then
 				if _G["DebuffButton" .. lastID .. "Border"] then
@@ -92,7 +92,7 @@ local function AuraUpdate( f, lastID, filter)
 					_G["DebuffButton" .. lastID .. "Border"]:Hide( )
 				end
 			end
-						
+
 			if duration and (duration > 0) then
 				f[lastID].expirationTime = expirationTime
 				--f[lastID].nextUpdate = 0								----------------------???????????????
@@ -104,7 +104,7 @@ local function AuraUpdate( f, lastID, filter)
 			end
 
 			f[lastID]:Show()
-			lastID = lastID + 1		
+			lastID = lastID + 1
 			f.lastID = lastID
 		else
 			f[lastID]:Hide()
@@ -125,10 +125,10 @@ local function BuffDEbuffDesign(...)
 		BuffFrame.moved = true
 	end
 
-	for i = 1, 2 do		
+	for i = 1, 2 do
 		for idx = blast[i], 30 do
-			bf =  bname[i] .. idx 		
-			if not _G[bf] then 
+			bf =  bname[i] .. idx
+			if not _G[bf] then
 				break
 			end
 			if not _G[bf].shadow then
@@ -143,7 +143,7 @@ local function BuffDEbuffDesign(...)
 				_G[bf.."Duration"]:SetFont( fontpx, 12, "OUTLINE")
 			end
 		end
-	end	
+	end
 end
 
 function AuraPrepare(f, event)
@@ -161,14 +161,14 @@ function AuraPrepare(f, event)
 			end
 			AuraUpdate( f, lastID, filter)
 		end
-	
+
 		for i = f.lastID, ( f.count * 2) do
 			f[i]:Hide()
 		end
 	end
 end
 
-local function BuffOnEnter( f) 
+local function BuffOnEnter( f)
 	GameTooltip:SetOwner( f, "ANCHOR_BOTTOMRIGHT", 8, -16)
 	GameTooltip:SetUnitAura( f:GetParent().unit, f.id, f.filter)
 end
@@ -180,7 +180,7 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 		f:SetSize(2, 2)
 		local unit = uf.unit
 		f.unit = unit
-		
+
 		uf[name] = f
 		uf[name].lastID = 1
 		uf[name].count = count
@@ -192,43 +192,43 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 				if not icon then
 					icon = CreateFrame("Button",  nil, f)
 					icon:SetPoint( from, uf, to, direct * ( iSize*(i-1) + ( shiftx *( i-1) + plusx)),                          -iSize *( j-1) - ( shifty * j))
-				
+
 					icon.icon = icon:CreateTexture(nil, "BORDER")
 					icon.icon:SetAllPoints()
 					icon.icon:SetTexCoord(unpack( yo.tCoord))
 					icon.icon:SetVertexColor( 1,1,1,1)
-				
+
 					icon.overlay = CreateFrame("Frame", nil, icon)
 					icon.overlay:SetFrameLevel(4)
-				
+
 					icon.tStack = icon.overlay:CreateFontString(nil, "OVERLAY")
 					icon.tStack:SetFont( fontpx, iSize / 1.7, "OUTLINE")
 					icon.tStack:SetPoint("CENTER", icon, "TOPRIGHT", 0, 0)
 					icon.tStack:SetTextColor( 1, 1, 0)
-				
+
 					icon.tTimer = icon.overlay:CreateFontString(nil, "OVERLAY")
 					icon.tTimer:SetFont( fontpx, iSize / 1.9, "OUTLINE")
 					icon.tTimer:SetPoint("CENTER", icon, "BOTTOM", 0, 0)
-				
+
 --[[				icon.cd = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")
 					icon.cd.noCooldownCount = true
 					icon.cd:SetDrawEdge( false)
 					icon.cd:SetDrawSwipe( false)
 					icon.cd:SetReverse(true)
 					icon.cd.noOCC = true
-]]--				
+]]--
 					icon.id = idx
 					icon:SetScript("OnEnter", BuffOnEnter)
 					icon:SetScript("OnLeave", GameTooltipOnLeave)
-								
+
 					icon:SetSize( iSize, iSize)
-				
+
 					icon:RegisterForClicks("AnyUp")
 					icon:SetScript('OnMouseUp', function(icon, mouseButton)
-					if mouseButton == 'RightButton' then				
+					if mouseButton == 'RightButton' then
 						CancelUnitBuff('player', idx)
 					end end)
-					
+
 					if uf.isboss then
 						icon.outerGlow = icon:CreateTexture( "OuterGlow", "ARTWORK")
 						icon.outerGlow:SetPoint("CENTER", icon)
@@ -239,23 +239,23 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 						icon.outerGlow:SetTexCoord(0.00781250, 0.50781250, 0.27734375, 0.52734375)
 						icon.outerGlow:Hide()
 					end
-					
+
 					f[idx] = icon
 					CreateStyle( f[idx], 4)
 					f[idx]:Hide()
-				end	
+				end
 			end
 		end
-		
+
 		if unit == "player" then
 			f.filter = {"HARMFUL"}
 			--f:RegisterEvent("PLAYER_ENTERING_WORLD")
 			f:RegisterUnitEvent("UNIT_AURA", unit)
-		elseif uf.isboss then 				
+		elseif uf.isboss then
 			if name == "aurabar" then
-				f.filter = {"HELPFUL"}			
+				f.filter = {"HELPFUL"}
 			else
-				f.filter = {"HARMFUL PLAYER", "HELPFUL PLAYER"} 
+				f.filter = {"HARMFUL PLAYER", "HELPFUL PLAYER"}
 			end
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 			--f:RegisterUnitEvent( "INSTANCE_ENCOUNTER_ENGAGE_UNIT", unit)
@@ -264,7 +264,7 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 			f:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		end
-			
+
 		f:RegisterEvent("PLAYER_TARGET_CHANGED")  ------------------------------?????????????????????
 		f:SetScript("OnEvent", AuraPrepare)
 	end
@@ -278,12 +278,13 @@ logan:SetScript("OnEvent", function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.unitFrames then return end
 
-	CreateBuff( plFrame,  "aurabar", 27, 7, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0) 
+	CreateBuff( plFrame,  "aurabar", 27, 7, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
 	CreateBuff( tarFrame, "aurabar", 21, 8, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
 	CreateBuff( fcFrame, "aurabar", 25, 4, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
 
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = _G["yo_Boss"..i]
+		if not bFrame then break end
 		CreateBuff(    bFrame, "aurabar",  bFrame:GetHeight(), 10, "LEFT", "RIGHT", 6, 0, 1, 7)
 		CreateBuff(    bFrame, "aurabuff", bFrame:GetHeight(), 10, "RIGHT", "LEFT", 7, 0, -1, 8)
 	end
@@ -297,5 +298,5 @@ end)
 --	stealable:SetPoint('TOPLEFT', -3, 3)
 --	stealable:SetPoint('BOTTOMRIGHT', 3, -3)
 --	stealable:SetBlendMode'ADD'
---	button.stealable = stealable 
-	
+--	button.stealable = stealable
+

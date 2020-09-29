@@ -1,5 +1,6 @@
+local L, yo, N = unpack( select( 2, ...))
 
-local L, yo = unpack( select( 2, ...))
+ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|cffff8000\"%s\"|r."
 
 QuestTypesIndex = {
 	[0] = "",           --default
@@ -114,7 +115,7 @@ local function CheckSlot( itemType )
 			if (slotName == itemType) then
 				local itemLocation = ItemLocation:CreateFromEquipmentSlot( i);
 				local item = Item:CreateFromItemLocation( itemLocation)
-     			local ilvl = item:GetCurrentItemLevel()
+				local ilvl = item:GetCurrentItemLevel()
 
 				retlvl = math.min( ilvl, ( retlvl or 9999))
 			end
@@ -139,6 +140,10 @@ local function OnEvent( self, event, ...)
 		self:RegisterEvent("QUEST_COMPLETE")
 		self:RegisterEvent("QUEST_ACCEPTED")
 		self:RegisterEvent("CINEMATIC_START")
+
+		--self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+		--self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+		--self:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 		--self:RegisterEvent("ADDON_LOADED")
 	end
 
@@ -148,15 +153,14 @@ local function OnEvent( self, event, ...)
 
 		local isDaily = QuestIsDaily();
 		local isWeekly = QuestIsWeekly();
-		--print( isWeekly, isDaily)
 
 		if ( isDaily or isWeekly) then --or (UnitLevel('player') == MAX_PLAYER_LEVEL) then
 			local money = GetQuestMoneyToGet()
-			local name, texture, amount = GetQuestCurrencyInfo("required", 1)
-			local iname, itexture, numItems, iquality, isUsable = GetQuestItemInfo("required", 1)
+			local name, texture, amount, quality = GetQuestCurrencyInfo("required", 1)
+			--local iname, itexture, numItems, iquality, isUsable = GetQuestItemInfo("required", 1)
 
 			if name then
-				local r, g, b, hexColor = GetItemQualityColor( select( 8, GetCurrencyInfo( name)))
+				local r, g, b, hexColor = GetItemQualityColor( quality)
 				print("|cffff0000"..L["Spend"].." |cff00ff00" .. amount .. " |r" .. '|T'.. texture ..':14|t |c' .. hexColor .. name .. "|cffffff00 "..L["myself"].."|r" .. L["DONT_SHIFT"])
 				CloseQuest()
 			elseif money > 1 then
@@ -217,14 +221,14 @@ local function OnEvent( self, event, ...)
 					slvl = CheckSlot( itemEquipLoc)
 				end
 
-	   			if slvl then
-	   				delta = clvl - slvl
-	   				if delta > bestDelta then
-	   					bestDelta = delta
-	   					bestChoice = i
-	   					bestString = "|cffff0000"..L["Your choice"]..": |r ".. _G[itemEquipLoc] .. " |c" .. hexColor.. "[".. clvl .. "]|r " .. itemLink .. " ( " .. clvl - slvl .. " "..L["from"].." [" .. slvl.. "])|r"
-	   				end
-	   			end
+				if slvl then
+					delta = clvl - slvl
+					if delta > bestDelta then
+						bestDelta = delta
+						bestChoice = i
+						bestString = "|cffff0000"..L["Your choice"]..": |r ".. _G[itemEquipLoc] .. " |c" .. hexColor.. "[".. clvl .. "]|r " .. itemLink .. " ( " .. clvl - slvl .. " "..L["from"].." [" .. slvl.. "])|r"
+					end
+				end
 			end
 				print( bestString)
 				GetQuestReward( bestChoice)
@@ -267,16 +271,16 @@ local function OnEvent( self, event, ...)
 			end
 		end
 
-   		for index=1, numAvailableQuests do -- index=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
-           	local isTrivial, isDaily, isRepeatable, isLegendary  = GetAvailableQuestInfo(index)
+		for index=1, numAvailableQuests do -- index=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
+			local isTrivial, isDaily, isRepeatable, isLegendary  = GetAvailableQuestInfo(index)
 			--if (isIgnored) then return end
 
-           	if isTrivial ~= true then --and not ( isDaily == LE_QUEST_FREQUENCY_DAILY or isDaily == LE_QUEST_FREQUENCY_WEEKLY ) then
-            	SelectAvailableQuest(index)
-            else
+			if isTrivial ~= true then --and not ( isDaily == LE_QUEST_FREQUENCY_DAILY or isDaily == LE_QUEST_FREQUENCY_WEEKLY ) then
+				SelectAvailableQuest(index)
+			else
 				print("|cffff0000SKIP_IT: |r", isTrivial ) --.. titleText)
-            end
-   		end
+			end
+		end
 
 	elseif event == "QUEST_ACCEPTED" then
 
@@ -285,13 +289,14 @@ local function OnEvent( self, event, ...)
 		C_QuestLog.SetSelectedQuest(questID);
 
 		local _, questObjectives = GetQuestLogQuestText();
-		local questTitle = C_QuestLog.GetTitleForQuestID( questID)
+		local questTitle	= C_QuestLog.GetTitleForQuestID( questID)
+		local watchType 	= C_QuestLog.GetQuestWatchType( questID)
 
 		if questTitle == nil or C_QuestLog.IsWorldQuest(questID) then return end
 
 		local qString = ""
 		if questObjectives then
-			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives)
+			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType)
 
 			local questObjNum = C_QuestLog.GetNumQuestObjectives(questID)
 
@@ -320,9 +325,9 @@ local function OnEvent( self, event, ...)
 					slvl = CheckSlot( itemEquipLoc)
 				end
 
-	   			if slvl and slvl < ilvl then
-	   				bestString = " |cffff0000"..L["Better than"].." [" .. slvl .. "] " .. L["on"] .. ilvl - slvl .. "|r"
-	   			end
+				if slvl and slvl < ilvl then
+					bestString = " |cffff0000"..L["Better than"].." [" .. slvl .. "] " .. L["on"] .. ilvl - slvl .. "|r"
+				end
 
 				print( "|cffffff00"..L["Choice"].." #" .. i ..": |r" .. " [|c" ..hexColor .. ilvl .. "|r] " .. ( _G[itemEquipLoc] or "") .. " " .. itemLink .. bestString)
 			end
@@ -379,11 +384,11 @@ hooksecurefunc( "AutoQuestPopupTracker_Update", function(self, ...)
 		local questID, popUpType = GetAutoQuestPopUp(i);
 	--	--print( i, questID, popUpType, self.id, ...)
 		if questID and popUpType then --== "COMPLETE"
-			local block = owningModule:GetBlock(questID, "ScrollFrame", "AutoQuestPopUpBlockTemplate");
+			local block = ObjectiveTrackerFrame.MODULES[6]:GetBlock(questID, "ScrollFrame", "AutoQuestPopUpBlockTemplate");
 			AutoQuestPopUpTracker_OnMouseDown(block)
 
-			ShowQuestOffer(GetQuestLogIndexByID(questID));
-			ShowQuestComplete(GetQuestLogIndexByID(questID));
+			--ShowQuestOffer(GetQuestLogIndexByID(questID));
+			--ShowQuestComplete(GetQuestLogIndexByID(questID));
 			AutoQuestPopupTracker_RemovePopUp(questID)
 		end
 	end

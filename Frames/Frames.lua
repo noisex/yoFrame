@@ -528,6 +528,8 @@ function CreateUFrame( f, unit)
 	absorbBar:SetFrameLevel(2)
 	f.absorbBar = absorbBar
 
+	--print(f:GetWidth(), f.healthBar:GetWidth(), f.absorbBar:GetWidth())
+
 	f.powerBar = CreateFrame("StatusBar" , nil, f)
 	f.powerBar:SetPoint("BOTTOM", f,"BOTTOM", 0, 4);
 	f.powerBar:SetStatusBarTexture( texture)
@@ -675,6 +677,26 @@ function CreateUFrame( f, unit)
 		f:RegisterUnitEvent("INCOMING_RESURRECT_CHANGED", unit)
 
 		--makeInspect( f, unit, "inspect")
+		if yo.healBotka.enable then
+--			f.header = CreateFrame( "Frame", nil, f, "SecureGroupHeaderTemplate")
+
+--			f:SetAttribute('template', 'SecureUnitButtonTemplate, SecureHandlerStateTemplate, SecureHandlerEnterLeaveTemplate')
+
+--			local initialConfigFunction = [[
+--				--local header = self:GetParent()
+--				--local frames = table.new()
+--				--table.insert(frames, self)
+--				--self:GetChildList(frames)
+--				print( "dddsdsdsdd")
+--				--clique:SetAttribute('clickcast_button', self)
+--				--clique:RunAttribute('clickcast_register')
+--]]
+--			f:SetAttribute('initialConfigFunction', initialConfigFunction)
+--			--f.header = Clique.header
+--			N.targetCliq = true
+--			N.makeQuiButton( f)
+		end
+
 	elseif unit == "pet" then
 		f:RegisterEvent("UNIT_PET")
 		f:RegisterUnitEvent("UNIT_NAME_UPDATE", unit)

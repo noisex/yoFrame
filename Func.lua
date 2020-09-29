@@ -11,7 +11,7 @@ N["statusBars"] = {}
 N["strings"]	= {}
 N["shadows"]	= {}
 N["spellsBooks"] 	= {}
-N.ScanTooltip = CreateFrame('GameTooltip', 'yo_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
+N.ScanTooltip = CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
 
 N.slots = {
 	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot",
@@ -425,8 +425,9 @@ function formatTime( s)
 	return format("%.1f", s) --, (s * 100 - floor(s * 100))/100
 end
 
-function formatTimeSec( s)
+function formatTimeSec( s, noSec)
 	local day, hour, minute = 86400, 3600, 60
+	local sec = noSec and "" or "s"
 	if s == -1 then
 		return LESS_THAN_ONE_MINUTE, s
 	elseif s >= day then
@@ -438,7 +439,7 @@ function formatTimeSec( s)
 	--elseif s >= minute / 12 then
 	--	return floor(s + 0.5), (s * 100 - floor(s * 100))/100
 	end
-	return format("%ds", s), (s * 100 - floor(s * 100))/100
+	return format("%d%s", s, sec), (s * 100 - floor(s * 100))/100
 end
 
 function SecondsToClock(seconds, noSec, noMin)
@@ -635,7 +636,9 @@ function CreateStyle(f, size, level, alpha, alphaborder)
 		r, g, b = myColor.r, myColor.g, myColor.b
 	end
     --shadow:SetBackdropColor( r, g, b, alpha or .9)
+
     shadow:SetBackdropColor(.07,.07,.07, alpha or .9)
+    --shadow:SetBackdropColor( myColor.r, myColor.g, myColor.b, 0.1)
 	shadow:SetBackdropBorderColor( r, g, b, alphaborder or 1)	--(0, 0, 0, alphaborder or 1)
     f.shadow = shadow
     table.insert( N["shadows"], f.shadow)
