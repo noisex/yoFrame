@@ -6,14 +6,16 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown
 	= GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown
 
-function isDruid( self)
-	if myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
-		--self:Hide()
-		return false
-	else
-		--self:Show()
-		return true
+local recolorShards = function(self, cols)
+	for i = 1, self.idx do
+		self[i]:SetStatusBarColor( cols[1], cols[2], cols[3], 1)
 	end
+
+	--if yo.Raid.classcolor == 1 then
+	--	self.shadow:SetBackdropBorderColor( 0.3, 0.3, 0.3, 0.9)
+	--else
+	--	self.shadow:SetBackdropBorderColor( cols[1], cols[2], cols[3], 0.6)
+	--end
 end
 
 local function pwUpdate( self, powerID)
@@ -31,7 +33,11 @@ local function pwUpdate( self, powerID)
 	end
 
 	if unitPower == self.idx and myClass ~= "DEATHKNIGHT" then
-		self.shadow:SetBackdropBorderColor( self:GetParent().colr, self:GetParent().colg, self:GetParent().colb, 0.6)
+		if yo.Raid.classcolor == 1 then
+			self.shadow:SetBackdropBorderColor( 0.3, 0.3, 0.3, 0.9)
+		else
+			self.shadow:SetBackdropBorderColor( self:GetParent().colr, self:GetParent().colg, self:GetParent().colb, 0.6)
+		end
 	else
 		self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.7)
 	end
@@ -50,11 +56,12 @@ end
 
 	self.idx = UnitPowerMax( self.unit, self.powerID)
 	self:SetWidth( plFrame:GetWidth() / 2)
+	--self.colr, self.colg, self.colb = self:GetParent().colr, self:GetParent().colg, self:GetParent().colb
 
 	for i = 1, self.idx do
 		self[i] = CreateFrame('StatusBar', nil, self)
 		self[i]:SetStatusBarTexture( texture)
-		self[i]:SetStatusBarColor( self.colr, self.colg, self.colb, 1)
+		--self[i]:SetStatusBarColor( self.colr, self.colg, self.colb, 1)
 		self[i]:SetHeight( self:GetHeight())
 		self[i]:SetWidth(self:GetWidth() / self.idx)
 		self[i]:SetAlpha( self.minAlpha)
@@ -79,7 +86,7 @@ end
 end
 
 local function OnEvent( self, event, unit, pToken, ...)
-	--print( event, " ptoken: ", pToken, " Type: ", yo.pType[myClass].powerID)
+	--print( event, " ptoken: ", pToken, " Type: ", yo.pType[myClass].powerID, unit)
 
 	if event == "RUNE_POWER_UPDATE" then
 
@@ -118,6 +125,13 @@ local function OnEvent( self, event, unit, pToken, ...)
 
 	elseif self.powerType and self.powerType == pToken then
 		pwUpdate( self, self.powerID, ...)
+
+	elseif event == "UNIT_ENTERED_VEHICLE" then
+		self:Hide()
+
+	elseif event == "UNIT_EXITED_VEHICLE" then
+		CreateShards( self)
+
 	end
 
  end
@@ -136,6 +150,9 @@ local function CreateShardsBar( f)
 	holyShards:RegisterEvent("PLAYER_TARGET_CHANGED")
 	holyShards:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
+	holyShards:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', "player")
+	holyShards:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
+
 	holyShards:SetScript("OnEvent", OnEvent)
 	CreateStyle( holyShards, 1, 5)
 
@@ -148,6 +165,7 @@ local function CreateShardsBar( f)
 	holyShards.TurnOff 	= ClassPowerBar.TurnOff
 	holyShards.TurnOn 	= ClassPowerBar.TurnOn
 	holyShards.unit 	= f.unit
+	holyShards.recolorShards	= recolorShards
 
 	f.holyShards = holyShards
 	CreateShards( f.holyShards)

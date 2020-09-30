@@ -1,6 +1,6 @@
 local L, yo, N = unpack( select( 2, ...))
 
-ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|cffff8000\"%s\"|r."
+ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|cffff00ff\"%s\"|r."
 
 QuestTypesIndex = {
 	[0] = "",           --default
@@ -296,7 +296,7 @@ local function OnEvent( self, event, ...)
 
 		local qString = ""
 		if questObjectives then
-			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType)
+			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType, " - ",#questObjectives)
 
 			local questObjNum = C_QuestLog.GetNumQuestObjectives(questID)
 

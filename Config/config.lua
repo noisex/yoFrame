@@ -10,28 +10,29 @@ local L, yo, N = unpack( ns)
 
 --L_GUI_MAP_EXPLORE = "Отслеживать на карте 'Первооткрыватель' и 'Хранитель мудрости'"
 
-function PixelUtil.GetNearestPixelSize(uiUnitSize, layoutScale, minPixels)
-	if uiUnitSize == 0 and (not minPixels or minPixels == 0) then
-		return 0;
-	end
+--function PixelUtil.GetNearestPixelSize(uiUnitSize, layoutScale, minPixels)
+--	if uiUnitSize == 0 and (not minPixels or minPixels == 0) then
+--		return 0;
+--	end
 
-	local uiUnitFactor = PixelUtil.GetPixelToUIUnitFactor();
-	--local numPixels = Round((uiUnitSize * layoutScale) / uiUnitFactor)
-	local numPixels = tonumber( Round((uiUnitSize * layoutScale) / uiUnitFactor))
-	if minPixels then
-		if uiUnitSize < 0.0 then
-			if numPixels > -minPixels then
-				numPixels = -minPixels;
-			end
-		else
-			if numPixels < minPixels then
-				numPixels = minPixels;
-			end
-		end
-	end
+--	local uiUnitFactor = PixelUtil.GetPixelToUIUnitFactor();
+--	local numPixels = Round((uiUnitSize * layoutScale) / uiUnitFactor)
+--	print( type( numPixels))
+--	local numPixels = tonumber( Round((uiUnitSize * layoutScale) / uiUnitFactor))
+--	if minPixels then
+--		if uiUnitSize < 0.0 then
+--			if numPixels > -minPixels then
+--				numPixels = -minPixels;
+--			end
+--		else
+--			if numPixels < minPixels then
+--				numPixels = minPixels;
+--			end
+--		end
+--	end
 
-	return numPixels * uiUnitFactor / layoutScale;
-end
+--	return numPixels * uiUnitFactor / layoutScale;
+--end
 
 myClass 	= select( 2, UnitClass( "player"))
 mySpec 		= GetSpecialization()
@@ -263,8 +264,8 @@ yo["NamePlates"] = {
 }
 
 yo["Media"] = {
-	--["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\statusbar4",
-	["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\bar_dground",
+	["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\statusbar4",
+	--["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\bar_dground",
 	["dgtexture"]	= "Interface\\AddOns\\yoFrame\\Media\\bar_dground",
 	["texhl"]   	= "Interface\\AddOns\\yoFrame\\Media\\raidbg",
 	["texglow"] 	= "Interface\\AddOns\\yoFrame\\Media\\glowTex",

@@ -103,10 +103,11 @@ end
 local function powerColor( f, unit)
 	local cols = colors.disconnected
 
+	--f.dead = false
 	if not UnitIsConnected( unit) then
 		cols = colors.disconnected
 	elseif UnitIsDead( unit) or UnitIsGhost( unit) then
-	--	f.alive = UnitIsDeadOrGhost( unit)
+		--f.dead = UnitIsDeadOrGhost( unit)
 		cols = colors.disconnected
 	elseif UnitIsPlayer( unit) then
 		cols = colors.class[select( 2,UnitClass( unit))]
@@ -124,6 +125,32 @@ local function powerColor( f, unit)
 	f.bgPower:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
 	f.powerText:SetTextColor( f.colr, f.colg, f.colb, 1)
 	if UnitPowerMax( unit) == 0 then f:Hide() else f:Show() end
+
+	if yo.Raid.classcolor == 1 then
+		local fader = 0.7
+		local dark  = 0.5
+		f:GetParent().Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 0.9)
+		f:GetParent().Health.hbg:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
+		if unit == "player" or unit == "target" then
+			f:GetParent().Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
+		end
+	elseif yo.Raid.classcolor == 2 then
+		local fader = 0.7
+		local dark  = 0.5
+		f:GetParent().Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 1)
+		f:GetParent().Health.hbg:SetVertexColor( 0.8, 0.8, 0.8, 0.9)
+		if unit == "player" or unit == "target" then
+			f:GetParent().Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
+		end
+	else
+		f:GetParent().Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
+		f:GetParent().Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
+		if ( unit == "player" or unit == "target") and f:GetParent().Health.AbsorbBar then
+			f:GetParent().Health.AbsorbBar:SetStatusBarColor( 0.25, 0.25, 0.25, 0.9)
+		end
+	end
+
+	if f:GetParent().holyShards then f:GetParent().holyShards:recolorShards( cols) end
 end
 
 local function updateFlash( self)
@@ -212,6 +239,7 @@ local function Shared(self, unit)
 	if cunit == "boss" then self.isboss = true end
 	self.cunit 	= cunit
 	self.colors = oUF_colors
+	self.colors.disconnected = { 0.2, 0.2, 0.2}
 	self:SetSize( _G["yo_Move" .. cunit]:GetSize())
 
 	------------------------------------------------------------------------------------------------------
@@ -222,8 +250,8 @@ local function Shared(self, unit)
 	self.Health:SetWidth( self:GetWidth())
 	self.Health:SetStatusBarTexture( texture)
 	self.Health:SetFrameLevel( 1)
-	--self.Health:SetStatusBarColor( 0.09, 0.09, 0.09, 0.9)
-	self.Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
+	----self.Health:SetStatusBarColor( 0.09, 0.09, 0.09, 0.9)
+	--self.Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
 	self.Health:GetStatusBarTexture():SetHorizTile(false)
 	self.Health.frequentUpdates = true
 	table.insert( N.statusBars, self.Health)
@@ -231,7 +259,7 @@ local function Shared(self, unit)
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( texture)
-	self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
+	--self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
@@ -244,6 +272,22 @@ local function Shared(self, unit)
 	self.bgHlight:SetAlpha(0.1)
 	self.bgHlight:Hide()
 
+--	if yo.Raid.classcolor == 1 then
+--		cols = colors.class[select( 2,UnitClass( unit))]
+--print(unit)
+--		tprint( cols)
+--		self.Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
+--		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
+
+--	elseif yo.Raid.classcolor == 222 then
+--		self.Health.colorSmooth = true
+--		self.Health.colorReaction = true
+
+--	else
+--		self.Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
+--		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
+--	end
+
 	local AbsorbBar = CreateFrame('StatusBar', nil, self.Health)
 	if unit == "player" or unit == "target" then
     	AbsorbBar:SetPoint('TOP')
@@ -252,7 +296,7 @@ local function Shared(self, unit)
     	AbsorbBar:SetWidth( self.Health:GetWidth())
 		AbsorbBar:SetStatusBarTexture(texture)
 		AbsorbBar:SetFillStyle( 'REVERSE')
-		AbsorbBar:SetStatusBarColor( 0.25, 0.25, 0.25, 1)
+		--AbsorbBar:SetStatusBarColor( 0.25, 0.25, 0.25, 1)
 		AbsorbBar:SetFrameLevel(2)
 		self.Health.AbsorbBar = AbsorbBar
 		self.Health.Override = healthUpdate
@@ -394,6 +438,8 @@ local function Shared(self, unit)
 			if inCombat then self.RestingIndicator:Hide() elseif not inCombat and IsResting() then	self.RestingIndicator:Show()end end
 
 	elseif unit == "target" then
+		N.makeQuiButton(self)
+
 		--self.PhaseIndicator = self:CreateTexture(nil, 'OVERLAY')
 	  	--self.PhaseIndicator:SetSize( 25, 25)
   		--self.PhaseIndicator:SetPoint('CENTER', self.PvPIndicator, "CENTER", 0, 0)
@@ -402,6 +448,7 @@ local function Shared(self, unit)
 		self.tarBorder = self:CreateFontString(nil ,"OVERLAY", 'GameFontNormal')
 		self:Tag( self.tarBorder, '[bossTarget]')
 	end
+
 ------------------------------------------------------------------------------------------------------
 ---											BEFORE END
 ------------------------------------------------------------------------------------------------------

@@ -943,7 +943,7 @@ local function OnNamePlateCreated( frame)
 	f.Class:Hide()
 	f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")
 	f.Class.Icon:SetAllPoints()
-	f.Class.Icon:SetTexture( [[Interface\GossipFrame\AvailableQuestIcon]] ) --"Interface\\WorldStateFrame\\Icons-Classes")
+	f.Class.Icon:SetTexture( [[Interface\GossipFrame\AvailableLegendaryQuestIcon]] ) --"Interface\\WorldStateFrame\\Icons-Classes")
 
 	--f.Class.Icon:SetTexCoord(0, 0, 0, 0)
 	--CreateStyle(f.Class, 1)

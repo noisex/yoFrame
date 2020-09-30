@@ -29,7 +29,7 @@ local floor = math.floor
 local min = math.min
 local GetTime = GetTime
 
-Round = function(number, decimals)
+local Round = function(number, decimals)
 	if not decimals then decimals = 0 end
     return (("%%.%df"):format(decimals)):format(number)
 end

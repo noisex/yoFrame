@@ -62,6 +62,16 @@ N.slotEquipType = {
 }
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
+function isDruid( self)
+	if myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
+		--self:Hide()
+		return false
+	else
+		--self:Show()
+		return true
+	end
+end
+
 ----------------------------------------------------------------------------------------
 --	Kill object function
 ----------------------------------------------------------------------------------------

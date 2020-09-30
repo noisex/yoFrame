@@ -14,7 +14,7 @@ Locale\ruRU.lua
 Libs\rLib\core.lua
 Libs\rLib\dragframe.lua
 Libs\rLib\framefader.lua
-#Libs\rLib\slashcmd.lua
+#-Libs\rLib\slashcmd.lua
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
@@ -56,26 +56,19 @@ Frames\tags.lua
 Frames\Chat.lua
 Frames\ActionBars.lua
 Frames\Units.lua
-#-Frames\Frames.lua
 Frames\NamePlates.lua
 Frames\Raid.lua
 
 Libs\rActionBar\core.lua
 Libs\rActionBar\blizzard.lua
 Libs\rActionBar\bars.lua
-#-Libs\rActionBar\range.lua
-#-Libs\rActionBar\bind.lua
 
 Addons\Aura.lua
-#-Addons\AzeritPower.lua
-#-Addons\AzeriteTooltip.lua
 Addons\CastBar.lua
-#-Addons\CastWatcher.lua
 Addons\Challenges.lua
 Addons\ChallengeFrame.lua
 Addons\ChallengeProc.lua
 Addons\ChatBar.lua
-#-Addons\CheloBuff.lua
 Addons\Cooldown.lua
 Addons\CooldownFlash.lua
 Addons\CTA.lua
@@ -86,7 +79,6 @@ Addons\DoLoot.lua
 Addons\HolyShards.lua
 Addons\Inspect.lua
 Addons\Fliger.lua
-
 Addons\FogOfWar.lua
 Addons\Experience.lua
 Addons\Loot.lua
@@ -105,7 +97,6 @@ Addons\QuestAuto.lua
 Addons\RaidCooldowns.lua
 Addons\RaidUtility.lua
 Addons\Reputation.lua
-#-Addons\sayBubble.lua
 Addons\ScrollText.lua
 Addons\Scripts.lua
 Addons\TalkingHead.lua
@@ -130,3 +121,14 @@ Libs\oUF\elements\AutoResurrect.lua
 Skins\shBigWigs.lua
 Skins\WeakAuras.lua
 Skins\shDBM.lua
+
+#-Libs\rActionBar\range.lua
+#-Libs\rActionBar\bind.lua
+
+#-Frames\Frames.lua
+
+#-Addons\AzeritPower.lua
+#-Addons\AzeriteTooltip.lua
+#-Addons\CastWatcher.lua
+#-Addons\CheloBuff.lua
+#-Addons\sayBubble.lua

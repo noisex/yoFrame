@@ -1,8 +1,8 @@
 local L, yo = unpack( select( 2, ...))
 
 local function loginEvent(self, ...)
-	resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution")
-	getscreenwidth, getscreenheight = GetPhysicalScreenSize() --DecodeResolution(resolution)
+	local resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution")
+	local getscreenwidth, getscreenheight = GetPhysicalScreenSize() --DecodeResolution(resolution)
 
 
 	if yo.Media.AutoScale == "manual" then
@@ -79,41 +79,19 @@ local function loginEvent(self, ...)
 	SetCVar("doNotFlashLowHealthWarning", 1)
 end
 
-local function InterfaceOptions_UpdateMultiActionBars()
-	SHOW_MULTI_ACTIONBAR_1 = 1
-----	SHOW_MULTI_ACTIONBAR_2 = 1
-	SHOW_MULTI_ACTIONBAR_3 = 1
-----	SHOW_MULTI_ACTIONBAR_4 = 1
-	ALWAYS_SHOW_MULTIBARS  = 1
-
-	if ( SHOW_MULTI_ACTIONBAR_1 == "0" ) then
-		SHOW_MULTI_ACTIONBAR_1 = nil;
+local function buttonsUP( self)
+	if not InCombatLockdown() then
+		SHOW_MULTI_ACTIONBAR_1 = 1
+		SHOW_MULTI_ACTIONBAR_3 = 1
+		ALWAYS_SHOW_MULTIBARS  = 1
+		SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
+		MultiBarBottomLeft:SetShown(true)
+		MultiBarRight:SetShown(true)
+		MultiActionBar_ShowAllGrids(ACTION_BUTTON_SHOW_GRID_REASON_CVAR);
+--		InterfaceOptions_UpdateMultiActionBars()
+	else
+		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	end
-
-	if ( SHOW_MULTI_ACTIONBAR_2 == "0" ) then
-		SHOW_MULTI_ACTIONBAR_2 = nil;
-	end
-
-	if ( SHOW_MULTI_ACTIONBAR_3 == "0" ) then
-		SHOW_MULTI_ACTIONBAR_3 = nil;
-	end
-
-	if ( SHOW_MULTI_ACTIONBAR_4 == "0" ) then
-		SHOW_MULTI_ACTIONBAR_4 = nil;
-	end
-
-	if ( ALWAYS_SHOW_MULTIBARS == "0" ) then
-		ALWAYS_SHOW_MULTIBARS = nil;
-	end
-
-	if ( LOCK_ACTIONBAR == "0" ) then
-		LOCK_ACTIONBAR = nil;
-	end
-
-	SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
-	MultiActionBar_Update();
-	UIParent_ManageFramePositions();
-	StatusTrackingBarManager:UpdateBarTicks();
 end
 
 local function enterEvent( self)
@@ -144,7 +122,7 @@ local function enterEvent( self)
 	if not yo.Addons.BlackPanels then RightDataPanel:Hide() LeftDataPanel:Hide() end
 	if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
 
-	InterfaceOptions_UpdateMultiActionBars ()
+	C_Timer.After( 2, function() buttonsUP(self) end )
 end
 
 local function OnEvent( self, event, ...)
@@ -155,6 +133,9 @@ local function OnEvent( self, event, ...)
 		myRole = UnitGroupRolesAssigned( "player")
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		enterEvent( self)
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+		buttonsUP( self)
 	end
 
 end
@@ -168,6 +149,7 @@ local csf = CreateFrame("Frame")
 csf:RegisterEvent("PLAYER_LOGIN")
 csf:RegisterEvent("PLAYER_ENTERING_WORLD")
 csf:RegisterEvent("PLAYER_ROLES_ASSIGNED")
+--csf:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 csf:SetScript("OnEvent", OnEvent)
 

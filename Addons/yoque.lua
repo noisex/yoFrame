@@ -8,6 +8,38 @@ local spells = {
 	[6]     = 774,
 }
 
+--ClickCastFrames = _G.ClickCastFrames or {}
+--for _, v in pairs({
+--	"yo_Player", "yo_Target",
+--	--"PlayerFrame", "PetFrame",
+--	---- Party members
+--	--"PartyMemberFrame1", "PartyMemberFrame2", "PartyMemberFrame3", "PartyMemberFrame4", "PartyMemberFrame5",
+--	---- Party pets
+--	--"PartyMemberFrame1PetFrame", "PartyMemberFrame2PetFrame", "PartyMemberFrame3PetFrame", "PartyMemberFrame4PetFrame", "PartyMemberFrame5PetFrame",
+--	-- Compact party member frame
+--	--"CompactPartyFrameMemberSelf", "CompactPartyFrameMemberSelfBuff1", "CompactPartyFrameMemberSelfBuff2", "CompactPartyFrameMemberSelfBuff3", "CompactPartyFrameMemberSelfDebuff1", "CompactPartyFrameMemberSelfDebuff2", "CompactPartyFrameMemberSelfDebuff3",
+--	--"CompactPartyFrameMember1Buff1", "CompactPartyFrameMember1Buff2", "CompactPartyFrameMember1Buff3", "CompactPartyFrameMember1Debuff1", "CompactPartyFrameMember1Debuff2", "CompactPartyFrameMember1Debuff3",
+--	--"CompactPartyFrameMember2Buff1", "CompactPartyFrameMember2Buff2", "CompactPartyFrameMember2Buff3", "CompactPartyFrameMember2Debuff1", "CompactPartyFrameMember2Debuff2", "CompactPartyFrameMember2Debuff3",
+--	--"CompactPartyFrameMember3Buff1", "CompactPartyFrameMember3Buff2", "CompactPartyFrameMember3Buff3", "CompactPartyFrameMember3Debuff1", "CompactPartyFrameMember3Debuff2", "CompactPartyFrameMember3Debuff3",
+--	--"CompactPartyFrameMember4Buff1", "CompactPartyFrameMember4Buff2", "CompactPartyFrameMember4Buff3", "CompactPartyFrameMember4Debuff1", "CompactPartyFrameMember4Debuff2", "CompactPartyFrameMember4Debuff3",
+--	--"CompactPartyFrameMember5Buff1", "CompactPartyFrameMember5Buff2", "CompactPartyFrameMember5Buff3", "CompactPartyFrameMember5Debuff1", "CompactPartyFrameMember5Debuff2", "CompactPartyFrameMember5Debuff3",
+--	---- Target and focus frames
+--	--"TargetFrame", "TargetFrameToT",
+--	--"FocusFrame", "FocusFrameToT",
+--	---- Boss and arena frames
+--	--"Boss1TargetFrame", "Boss2TargetFrame", "Boss3TargetFrame", "Boss4TargetFrame",
+--	--"ArenaEnemyFrame1", "ArenaEnemyFrame2", "ArenaEnemyFrame3", "ArenaEnemyFrame4", "ArenaEnemyFrame5",
+--}) do
+--	if _G[v] then ClickCastFrames[_G[v]] = true end
+--end
+
+--hooksecurefunc("CreateFrame", function(_, name, _, template)
+--	if template and template:find("SecureUnitButtonTemplate") then
+--		ClickCastFrames[_G[name]] = true
+--	end
+--end)
+
+
 local function onAuras( self, event, unit, ...)
 	if event == "UNIT_AURA" and self:GetParent().unit  == unit then
 		index = 0
@@ -30,8 +62,8 @@ local function onAuras( self, event, unit, ...)
 end
 
 N.CreateClique = function( self)
-	Clique = CreateFrame("Frame", "yo_Clique", UIParent)
-	local header = CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
+	Clique = Clique or CreateFrame("Frame", "yo_Clique", UIParent)
+	local header = Clique.header or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
 	Clique.header = header
 	local ret, cet = "", ""
 
@@ -95,15 +127,15 @@ N.CreateClique = function( self)
 		--self:RunFor(button, self:GetAttribute("setup_clicks"))
 ]===])
 
-	if N.targetCliq then
-		SecureHandlerSetFrameRef(tarFrame.header, 'clickcast_header', Clique.header)
-		--local clique = header:GetFrameRef('clickcast_header')
-		--print("...", clique)
-		--if(clique) then
-		tarFrame.header = header
-		tarFrame.header:SetAttribute('clickcast_button', tarFrame)
-		--print( tarFrame.header:GetAttribute("clickcast_register"))
-		tarFrame.header:RunAttribute('clickcast_register')
+	if true then
+		--SecureHandlerSetFrameRef(tarFrame, 'clickcast_header', Clique.header)
+		----local clique = header:GetFrameRef('clickcast_header')
+		----print("...", clique)
+		----if(clique) then
+		----tarFrame.header = header
+		--tarFrame:SetAttribute('clickcast_button', tarFrame)
+		----print( tarFrame.header:GetAttribute("clickcast_register"))
+		--tarFrame:RunAttribute('clickcast_register')
 		--end
 	end
 end
@@ -168,6 +200,8 @@ N.makeQuiButton = function ( self )
 			end
 		end
 	end
+
+	if self:GetName() == "yo_Target" then return end
 
 	local buffHots = CreateFrame("Frame", nil, self)
 	buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
