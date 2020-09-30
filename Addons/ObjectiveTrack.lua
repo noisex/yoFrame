@@ -4,7 +4,8 @@ local L, yo = unpack( select( 2, ...))
 --	Add quest level and type
 ----------------------------------------------------------------------------------------
 QuestLevelFormat = " [%d] %s"
-WatchFrameLevelFormat = "[%d%s%s] %s"
+--WatchFrameLevelFormat = "[%d%s%s] %s"
+WatchFrameLevelFormat = "%s%s %s"
 --QuestTypesIndex = {
 --	[0] = "",           --default
 --	[1] = "g",			--Group
@@ -20,20 +21,20 @@ WatchFrameLevelFormat = "[%d%s%s] %s"
 
 local function ShowQuestLevelInLog()
 
-	for button in QuestMapFrame.QuestsFrame.titleFramePool:EnumerateActive() do
-		if (button and button.questLogIndex) then
-			local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID,
-				  startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = C_QuestLog.GetTitleForLogIndex( button.questLogIndex) --GetQuestLogTitle(button.questLogIndex)
-			local text = button.Text:GetText()
-			if title and text and (not string.find(text, "^%[.*%].*")) then
-				local prevHeight = button:GetHeight() - button.Text:GetHeight()
-				button.Text:SetText( QuestLevelFormat:format(level, title))
-				button:SetHeight(prevHeight + button.Text:GetHeight())
-				-- replacind checkbox image to the new position
-				button.Check:SetPoint("LEFT", button.Text, button.Text:GetWrappedWidth() + 2, 0);
-			end
-		end
-	end
+	--for button in QuestMapFrame.QuestsFrame.titleFramePool:EnumerateActive() do
+	--	if (button and button.questLogIndex) then
+	--		local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID,
+	--			  startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = C_QuestLog.GetTitleForLogIndex( button.questLogIndex) --GetQuestLogTitle(button.questLogIndex)
+	--		local text = button.Text:GetText()
+	--		if title and text and (not string.find(text, "^%[.*%].*")) then
+	--			local prevHeight = button:GetHeight() - button.Text:GetHeight()
+	--			--button.Text:SetText( QuestLevelFormat:format(level, title))
+	--			button:SetHeight(prevHeight + button.Text:GetHeight())
+	--			-- replacind checkbox image to the new position
+	--			button.Check:SetPoint("LEFT", button.Text, button.Text:GetWrappedWidth() + 2, 0);
+	--		end
+	--	end
+	--end
 
 end
 
@@ -57,7 +58,8 @@ local function ShowQuestLevelInWatchFrame()
 
 						--resizing the block if new line requires more spaces.
 						local h = block.height - block.HeaderText:GetHeight()
-						block.HeaderText:SetText( WatchFrameLevelFormat:format( questInfo.level, tagString, dailyMod, questInfo.title))
+						--block.HeaderText:SetText( WatchFrameLevelFormat:format( questInfo.level, tagString, dailyMod, questInfo.title))
+						block.HeaderText:SetText( WatchFrameLevelFormat:format( tagString, dailyMod, questInfo.title))
 						block.height = h + block.HeaderText:GetHeight()
 						block:SetHeight(block.height)
 
@@ -84,7 +86,7 @@ local function ShowQuestLevelInWatchFrame()
 							block.itemButton.icon:SetTexCoord(unpack( yo.tCoord))
 							CreateStyle( block.itemButton, 4, 0, 0)
 			--				--block.itemButton.shadow:SetBackdropColor( 0, 0, 0, 0)
-							block.itemButton.shadow:SetBackdropBorderColor( 0, 1, 0)--( 1, 0.7, 0, 1)
+							block.itemButton.shadow:SetBackdropBorderColor( 0, 1, 0.8)--( 1, 0.7, 0, 1)
 						end
 					end
 				end
@@ -93,7 +95,7 @@ local function ShowQuestLevelInWatchFrame()
 	end
 end
 hooksecurefunc("ObjectiveTracker_Update", ShowQuestLevelInWatchFrame)
-hooksecurefunc("QuestLogQuests_Update", ShowQuestLevelInLog)
+--hooksecurefunc("QuestLogQuests_Update", ShowQuestLevelInLog)
 hooksecurefunc("QuestObjectiveItem_OnUpdate", function(self, elapsed) 		-- Rahge Check ItemButtom
 	local rangeTimer = self.rangeTimer;
 	rangeTimer = rangeTimer - elapsed;

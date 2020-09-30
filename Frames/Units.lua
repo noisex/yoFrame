@@ -26,36 +26,47 @@ local function OnLeave(f, event)
 	end
 end
 
-local function powerUpdate( f, unit, pmin, min, pmax)
-	local uPP, uPText
+local function updateFlash( self)
+	local timeElapsed = GetTime() - self.startTime
 
-	if myClass == "WARLOCK" and mySpec == 3 then
-		pmin, pmax = UnitPower( unit, 7, true), 10
-		pmin = mod( pmin, 10)
+	if ( timeElapsed > self.tick ) then
+		self.powerFlashBar:SetValue( 0)
+		self:SetScript("OnUpdate", nil)
+	else
+		local predPlus 	= timeElapsed / self.tick
+		local predMinus = 1 - predPlus
+		local pmin 		= UnitPower( "player")
+		local cost 		= self.predictedPowerCost - self.predictedPowerCost * predPlus
+		self.powerFlashBar:SetStatusBarColor( self.colr * predMinus, self.colg * predMinus, self.colb * predMinus, 1)-- - predPlus)
+		self.powerFlashBar:SetValue( min( cost, self.powerMax - pmin))
+	end
+end
+
+local function powerManaCost(self, event, _, _, spellID) -- 240022
+	if myClass == "WARLOCK" and mySpec == 3 or spellID == 240022 then return end
+
+	local cost 		= 0;
+	local powerType = UnitPowerType("player")
+	local costTable = GetSpellPowerCost( spellID)
+	for _, costInfo in pairs( costTable) do
+		if (costInfo.type == powerType) then
+			cost = costInfo.cost;
+			break;
+		end
 	end
 
-	if pmin >= 1 then uPP = math.floor( pmin / pmax * 100) else uPP = 0 end
-
-    if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "focustarget" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) or pmin == 0 then
-        uPText = ""
-	elseif f.isboss then
-		uPText = uPP .. "%"
-    else
-    	if pmin == pmax then
-    		uPText = nums( pmin)
-    	else
-    		if myClass == "WARLOCK" and mySpec == 3 then
-				uPText = nums( pmin) .. " | 10"
-   			else
-   				uPText = nums( pmin) .. " | " .. uPP .. "%"
-   			end
-   		end
-   	end
-
-	f.powerText:SetText( uPText)
-	f:SetMinMaxValues( 0, pmax)
-	f:SetValue( pmin)
-	f.powerMax = pmax
+	if cost > 0 then
+		self.Power.powerFlashBar:SetMinMaxValues( self.Power:GetMinMaxValues())
+		--self.powerFlashBar:SetValue( cost)
+		self.Power.tick 	=  0.5
+		self.Power.startTime= GetTime()
+		self.Power.predictedPowerCost = cost;
+		self.Power:SetScript("OnUpdate", updateFlash)
+	else
+		self.Power.powerFlashBar:SetMinMaxValues( 0 ,0)
+		self.Power.powerFlashBar:SetValue( 0)
+		self.Power:SetScript("OnUpdate", nil)
+	end
 end
 
 local function healthUpdate( f, event, unit)
@@ -100,8 +111,66 @@ local function healthUpdate( f, event, unit)
 	end
 end
 
-local function powerColor( f, unit)
+local function updateTOTAuras( self, unit)
+-- DEBUFFS
+	local index, fligerPD = 1, 1
+	local filter = UnitPlayerControlled( unit) and "HARMFUL" or "HELPFUL"
+
+	while true and fligerPD < self.pDebuff.count do
+		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
+		if not name then break end
+
+		if --unit == self.pDebuff.unit and
+			not blackSpells[spellID] then
+
+			if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM")end
+			UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
+			fligerPD = fligerPD + 1
+		end
+
+		index = index + 1
+	end
+
+	for index = fligerPD,	#self.pDebuff	do self.pDebuff[index]:Hide()   end
+end
+
+local function powerUpdate( f, unit, pmin, min, pmax)
+	local uPP, uPText
+
+	if myClass == "WARLOCK" and mySpec == 3 then
+		pmin, pmax = UnitPower( unit, 7, true), 10
+		pmin = mod( pmin, 10)
+	end
+
+	if pmin >= 1 then uPP = math.floor( pmin / pmax * 100) else uPP = 0 end
+
+    if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "focustarget" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) or pmin == 0 then
+        uPText = ""
+	elseif f.isboss then
+		uPText = uPP .. "%"
+    else
+    	if pmin == pmax then
+    		uPText = nums( pmin)
+    	else
+    		if myClass == "WARLOCK" and mySpec == 3 then
+				uPText = nums( pmin) .. " | 10"
+   			else
+   				uPText = nums( pmin) .. " | " .. uPP .. "%"
+   			end
+   		end
+   	end
+
+	f.powerText:SetText( uPText)
+	f:SetMinMaxValues( 0, pmax)
+	f:SetValue( pmin)
+	f.powerMax = pmax
+end
+
+local function powerColor( f, unit, cur, min, max, displayType, event)
 	local cols = colors.disconnected
+
+	if unit == "targettarget" and event == "OnUpdate" then updateTOTAuras( f, unit) --return
+	elseif event:match( "UNIT_POWER_") then return end
 
 	--f.dead = false
 	if not UnitIsConnected( unit) then
@@ -121,6 +190,7 @@ local function powerColor( f, unit)
 
 	f.colr, f.colg, f.colb = cols[1], cols[2], cols[3]
 	f:GetParent().colr, f:GetParent().colg, f:GetParent().colb = cols[1], cols[2], cols[3]
+
 	f:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
 	f.bgPower:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
 	f.powerText:SetTextColor( f.colr, f.colg, f.colb, 1)
@@ -153,82 +223,16 @@ local function powerColor( f, unit)
 	if f:GetParent().holyShards then f:GetParent().holyShards:recolorShards( cols) end
 end
 
-local function updateFlash( self)
-	local timeElapsed = GetTime() - self.startTime
-
-	if ( timeElapsed > self.tick ) then
-		self.powerFlashBar:SetValue( 0)
-		self:SetScript("OnUpdate", nil)
-	else
-		local predPlus 	= timeElapsed / self.tick
-		local predMinus = 1 - predPlus
-		local pmin 		= UnitPower( "player")
-		local cost 		= self.predictedPowerCost - self.predictedPowerCost * predPlus
-		self.powerFlashBar:SetStatusBarColor( self.colr * predMinus, self.colg * predMinus, self.colb * predMinus, 1)-- - predPlus)
-		self.powerFlashBar:SetValue( min( cost, self.powerMax - pmin))
-	end
-end
-
-local function powerManaCost(self, event, _, _, spellID) -- 240022
-	if myClass == "WARLOCK" and mySpec == 3 or spellID == 240022 then return end
-
-	local cost 		= 0;
-	local powerType = UnitPowerType("player")
-	local costTable = GetSpellPowerCost( spellID)
-	for _, costInfo in pairs( costTable) do
-		if (costInfo.type == powerType) then
-			cost = costInfo.cost;
-			break;
-		end
-	end
-
-	if cost > 0 then
-		self.Power.powerFlashBar:SetMinMaxValues( self.Power:GetMinMaxValues())
-		--self.powerFlashBar:SetValue( cost)
-		self.Power.tick 	=  0.5
-		self.Power.startTime= GetTime()
-		self.Power.predictedPowerCost = cost;
-		self.Power:SetScript("OnUpdate", updateFlash)
-	else
-		self.Power.powerFlashBar:SetMinMaxValues( 0 ,0)
-		self.Power.powerFlashBar:SetValue( 0)
-		self.Power:SetScript("OnUpdate", nil)
-	end
-end
-
-local function updateTOTAuras( self, unit)
--- DEBUFFS
-	local index, fligerPD = 1, 1
-	local filter = UnitPlayerControlled( unit) and "HARMFUL" or "HELPFUL"
-
-	while true and fligerPD < self.pDebuff.count do
-		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
-		if not name then break end
-
-		if --unit == self.pDebuff.unit and
-			not blackSpells[spellID] then
-
-			if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM")end
-			UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
-			fligerPD = fligerPD + 1
-		end
-
-		index = index + 1
-	end
-
-	for index = fligerPD,	#self.pDebuff	do self.pDebuff[index]:Hide()   end
-end
-
-local function OnUpdate(f, elapse)
-	f.tick = f.tick + elapse
-	if f.tick > 0.7 then
-		f.tick = 0
-		if f:IsShown() then
-			initFrame( f)
-			updateTOTAuras( f, f.unit)
-		end
-	end
-end
+--local function OnUpdate(f, elapse)
+--	f.tick = f.tick + elapse
+--	if f.tick > 0.7 then
+--		f.tick = 0
+--		if f:IsShown() then
+--			initFrame( f)
+--			updateTOTAuras( f, f.unit)
+--		end
+--	end
+--end
 
 ------------------------------------------------------------------------------------------------------
 ---											BEGIN
@@ -338,6 +342,15 @@ local function Shared(self, unit)
 		self.Power.powerFlashBar = powerFlashBar
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", powerManaCost)
 		table.insert( N.statusBars, powerFlashBar)
+
+	elseif unit == "targettarget" then
+		self.Power.pDebuff = CreateFrame("Frame", nil, self)
+		self.Power.pDebuff:SetPoint("TOPLEFT", f, "BOTTOMLEFT",  0, -5)
+		self.Power.pDebuff:SetWidth( self:GetWidth())
+		self.Power.pDebuff:SetHeight( 25)
+		self.Power.pDebuff.direction 	= "RIGHT"
+		self.Power.pDebuff.unit 		= "targettarget"
+		self.Power.pDebuff.count 		= self.Power.pDebuff:GetWidth() / self.Power.pDebuff:GetHeight()
 	end
 
 ------------------------------------------------------------------------------------------------------
@@ -437,7 +450,7 @@ local function Shared(self, unit)
 		self.CombatIndicator.PostUpdate = function( f, inCombat)
 			if inCombat then self.RestingIndicator:Hide() elseif not inCombat and IsResting() then	self.RestingIndicator:Show()end end
 
-	elseif unit == "target" then
+	elseif unit == "target" and yo.healBotka.enable then
 		N.makeQuiButton(self)
 
 		--self.PhaseIndicator = self:CreateTexture(nil, 'OVERLAY')

@@ -228,7 +228,7 @@ local function Update(self, event, unit)
 	* max         - the unit's maximum possible power value (number)
 	* displayType - the alternative power display type if applicable (number?)[Enum.PowerType.Alternate]
 	--]]
-	element:UpdateColor(unit, cur, min, max, displayType)
+	element:UpdateColor(unit, cur, min, max, displayType, event)
 
 	--[[ Callback: Power:PostUpdate(unit, cur, min, max)
 	Called after the element has been updated.

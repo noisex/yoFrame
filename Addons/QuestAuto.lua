@@ -295,8 +295,8 @@ local function OnEvent( self, event, ...)
 		if questTitle == nil or C_QuestLog.IsWorldQuest(questID) then return end
 
 		local qString = ""
-		if questObjectives then
-			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType, " - ",#questObjectives)
+		if questObjectives and #questObjectives > 5 then
+			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType, " - ", #questObjectives)
 
 			local questObjNum = C_QuestLog.GetNumQuestObjectives(questID)
 
