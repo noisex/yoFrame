@@ -153,6 +153,9 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 		if ( duration and duration > 0) and est > 0.1 then
 			--print( button.tFormat( 12))
 			button.timer:SetText( button.tFormat( est, true)) --formatTime( est))
+		elseif duration and duration == 0 then
+			button.timer:SetText( "")
+			self:SetScript("OnUpdate", nil)
 		else
 			button.timer:SetText( "")
 			button:Hide()

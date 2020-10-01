@@ -6,6 +6,8 @@
 ## SavedVariables: yo_AllData, yo_AllConfig, yo_BB yo_BBCount, yo_WIMSTER
 ## SavedVariablesPerCharacter: yo_Position, yo_PersonalConfig, yo_ChatHistory
 
+#yoFrame.xml
+
 Func.lua
 Locale\locale.lua
 Locale\enUS.lua

@@ -938,7 +938,7 @@ local function OnNamePlateCreated( frame)
 	f.disIcons.direction = "UP"
 
 	f.Class = CreateFrame("Frame", nil, f)
-	f.Class:SetPoint("RIGHT", f.healthBar, "LEFT", 0, 0)
+	f.Class:SetPoint("RIGHT", f.healthBar, "LEFT", -2, 0)
 	f.Class:SetSize( 18, 18)
 	f.Class:Hide()
 	f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")

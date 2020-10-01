@@ -112,7 +112,6 @@ local function healthUpdate( f, event, unit)
 end
 
 local function updateTOTAuras( self, unit)
--- DEBUFFS
 	local index, fligerPD = 1, 1
 	local filter = UnitPlayerControlled( unit) and "HARMFUL" or "HELPFUL"
 
@@ -120,18 +119,16 @@ local function updateTOTAuras( self, unit)
 		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
 		if not name then break end
 
-		if --unit == self.pDebuff.unit and
-			not blackSpells[spellID] then
-
-			if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM")end
-			UpdateAuraIcon( self.pDebuff[fligerPD], filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
+		if not blackSpells[spellID] then
+			local aIcon	= CreateAuraIcon( self.pDebuff, fligerPD, false, "BOTTOM") --end
+			UpdateAuraIcon( aIcon, filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
 			fligerPD = fligerPD + 1
 		end
 
 		index = index + 1
 	end
 
-	for index = fligerPD,	#self.pDebuff	do self.pDebuff[index]:Hide()   end
+	for index = fligerPD, #self.pDebuff	do self.pDebuff[index]:Hide()   end
 end
 
 local function powerUpdate( f, unit, pmin, min, pmax)
@@ -222,17 +219,6 @@ local function powerColor( f, unit, cur, min, max, displayType, event)
 
 	if f:GetParent().holyShards then f:GetParent().holyShards:recolorShards( cols) end
 end
-
---local function OnUpdate(f, elapse)
---	f.tick = f.tick + elapse
---	if f.tick > 0.7 then
---		f.tick = 0
---		if f:IsShown() then
---			initFrame( f)
---			updateTOTAuras( f, f.unit)
---		end
---	end
---end
 
 ------------------------------------------------------------------------------------------------------
 ---											BEGIN
@@ -345,12 +331,12 @@ local function Shared(self, unit)
 
 	elseif unit == "targettarget" then
 		self.Power.pDebuff = CreateFrame("Frame", nil, self)
-		self.Power.pDebuff:SetPoint("TOPLEFT", f, "BOTTOMLEFT",  0, -5)
-		self.Power.pDebuff:SetWidth( self:GetWidth())
-		self.Power.pDebuff:SetHeight( 25)
+		self.Power.pDebuff:SetPoint("TOPLEFT", self, "BOTTOMLEFT",  0, -5)
+		self.Power.pDebuff:SetWidth( 16) -- self:GetWidth())
+		self.Power.pDebuff:SetHeight( 16)
 		self.Power.pDebuff.direction 	= "RIGHT"
 		self.Power.pDebuff.unit 		= "targettarget"
-		self.Power.pDebuff.count 		= self.Power.pDebuff:GetWidth() / self.Power.pDebuff:GetHeight()
+		self.Power.pDebuff.count 		= self:GetWidth() / self.Power.pDebuff:GetHeight()
 	end
 
 ------------------------------------------------------------------------------------------------------

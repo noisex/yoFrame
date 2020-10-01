@@ -11,26 +11,21 @@ local function loginEvent(self, ...)
 		UIParent:SetScale( yo.Media.ScaleRate)
 
 	elseif yo.Media.AutoScale == "auto" then
+		local autoScale = tonumber( string.sub( 768 / getscreenheight, 0, 4))
 
 		if getscreenwidth < 1024 and GetCVar("gxMonitor") == "0" then
 			SetCVar("useUiScale", 0)
 			StaticPopup_Show("DISABLE_UI")
+
 		elseif getscreenwidth == 1366 and getscreenheight == 768 then
 			SetCVar("useUiScale", 1)
 			SetCVar("uiScale", 0.82)
 			UIParent:SetScale( 0.82)
-		elseif getscreenwidth < 1900 then
-			SetCVar("useUiScale", 1)
-			SetCVar("uiScale", 0.75)
-			UIParent:SetScale( 0.75)
-		elseif getscreenwidth >= 1900 and getscreenheight == 1080 then
-			SetCVar("useUiScale", 1)
-			SetCVar("uiScale", 0.7)
-			UIParent:SetScale( 0.7)
+
 		else
 			SetCVar("useUiScale", 1)
-			SetCVar("uiScale", 0.64)
-			UIParent:SetScale( 0.64)
+			SetCVar("uiScale", autoScale)
+			UIParent:SetScale( autoScale)
 
 			-- Hack for 4K and WQHD Resolution
 			local customScale = min(2, max(0.32, 768 / string.match(resolution, "%d+x(%d+)")))
@@ -42,8 +37,6 @@ local function loginEvent(self, ...)
 		end
 	else
 		SetCVar("useUiScale", 0)
-		--SetCVar("uiScale", 0.64)
-		--UIParent:SetScale( 0.64)
 	end
 
 	if yo.General.scriptErrors == true then
@@ -186,3 +179,4 @@ SlashCmdList.CLEAR_CHAT = function()
 end
 SLASH_CLEAR_CHAT1 = "/clear"
 SLASH_CLEAR_CHAT2 = "/сдуфк"
+SLASH_CLEAR_CHAT3 = "/cl"
