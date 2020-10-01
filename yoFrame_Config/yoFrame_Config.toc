@@ -1,0 +1,22 @@
+## Interface: 80300
+## Title: yoFrame Config
+## Notes: In-game configuration for yoFrame
+## Author: Noisex
+## Version: 7.30
+## RequiredDeps: yoFrame
+## SavedVariables: yo_AllConfig, yo_AllData
+## SavedVariablesPerCharacter: yo_PersonalConfig
+
+Libs\libs.xml
+
+Locale\locale.lua
+Locale\enUS.lua
+Locale\ruRU.lua
+
+#Config\config.lua
+configui.lua
+
+
+#Core.lua
+
+#Options.lua
