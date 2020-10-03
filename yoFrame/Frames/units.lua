@@ -198,7 +198,7 @@ local function powerColor( f, unit, cur, min, max, displayType, event)
 		local dark  = 0.5
 		f:GetParent().Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 0.9)
 		f:GetParent().Health.hbg:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
-		if unit == "player" or unit == "target" then
+		if unit == "player" or unit == "target" or unit == "pet" then
 			f:GetParent().Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	elseif yo.Raid.classcolor == 2 then
@@ -206,13 +206,13 @@ local function powerColor( f, unit, cur, min, max, displayType, event)
 		local dark  = 0.5
 		f:GetParent().Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 1)
 		f:GetParent().Health.hbg:SetVertexColor( 0.8, 0.8, 0.8, 0.9)
-		if unit == "player" or unit == "target" then
+		if unit == "player" or unit == "target" or unit == "pet" then
 			f:GetParent().Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	else
 		f:GetParent().Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
 		f:GetParent().Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
-		if ( unit == "player" or unit == "target") and f:GetParent().Health.AbsorbBar then
+		if unit == "player" or unit == "target" or unit == "pet" then
 			f:GetParent().Health.AbsorbBar:SetStatusBarColor( 0.25, 0.25, 0.25, 0.9)
 		end
 	end
@@ -279,7 +279,7 @@ local function Shared(self, unit)
 --	end
 
 	local AbsorbBar = CreateFrame('StatusBar', nil, self.Health)
-	if unit == "player" or unit == "target" then
+	if unit == "player" or unit == "target" or unit == "pet" then
     	AbsorbBar:SetPoint('TOP')
     	AbsorbBar:SetPoint('BOTTOM')
     	AbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture(), 'RIGHT')
@@ -512,7 +512,7 @@ logan:SetScript("OnEvent", function(self, event)
 end)
 
 
-	--local healthColorMode = "CLASS"
-	--health.colorClass = healthColorMode == "CLASS"
-	--health.colorReaction = healthColorMode == "CLASS"
-	--health.colorSmooth = healthColorMode == "HEALTH"
+--local healthColorMode = "CLASS"
+--health.colorClass = healthColorMode == "CLASS"
+--health.colorReaction = healthColorMode == "CLASS"
+--health.colorSmooth = healthColorMode == "HEALTH"

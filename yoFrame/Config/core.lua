@@ -1,7 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
-LeftInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-LeftDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
@@ -10,13 +10,13 @@ local function buttonsUP( self)
 		SHOW_MULTI_ACTIONBAR_1 = 1
 		SHOW_MULTI_ACTIONBAR_3 = 1
 		ALWAYS_SHOW_MULTIBARS  = 1
-		SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
+		--SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
 		MultiBarBottomLeft:SetShown(true)
 		MultiBarRight:SetShown(true)
-		MultiActionBar_ShowAllGrids(ACTION_BUTTON_SHOW_GRID_REASON_CVAR);
+		--MultiActionBar_ShowAllGrids(ACTION_BUTTON_SHOW_GRID_REASON_CVAR);
 --		InterfaceOptions_UpdateMultiActionBars()
 	else
-		self:RegisterEvent("PLAYER_REGEN_ENABLED")
+		--self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	end
 end
 
@@ -48,7 +48,8 @@ local function enterEvent( self)
 	if not yo.Addons.BlackPanels then RightDataPanel:Hide() LeftDataPanel:Hide() end
 	if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
 
-	C_Timer.After( 2, function() buttonsUP(self) end )
+	--C_Timer.After( 2, function() buttonsUP(self) end )
+	buttonsUP(self)
 end
 
 local function OnEvent( self, event, ...)
@@ -58,8 +59,8 @@ local function OnEvent( self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		enterEvent( self)
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-		buttonsUP( self)
+		--self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+		--buttonsUP( self)
 	end
 
 end

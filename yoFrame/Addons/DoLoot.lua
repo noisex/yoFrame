@@ -169,7 +169,7 @@ local function checkDungeLoot( filterType)
 						elseif 	i == "ITEM_MOD_INTELLECT_SHORT" 		or
 								i == "ITEM_MOD_AGILITY_SHORT" 			or
 								i == "ITEM_MOD_STRENGTH_SHORT" 			then 				temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
-						else																temptext = temptext .. "|cff00ff00+" .. floor( data) .. " " .. _G[i] .. "\n|r"
+						else																temptext = temptext .. "|cff00ff00+" .. Round( data) .. " " .. _G[i] .. "\n|r"
 						end
 					end
 
@@ -203,7 +203,7 @@ local function checkDungeLoot( filterType)
 							lolButton.onuse:SetText(temptext, 1, 1, 1, 0)
 						end
 
-						local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
+						local tt = N.ScanTooltip --CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
 						tt:SetOwner( UIParent, "ANCHOR_NONE")
 						tt:SetHyperlink( itemInfo.link)
 						tt:Show()
@@ -408,7 +408,7 @@ for _, slot in pairs(N.slots) do
 	local button = _G["Character"..slot]
 	button.filterType = locationToFilter[slot]
 	button:HookScript( "OnClick", function(self, but)
-		if but == "RightButton" then checkDungeLoot( self.filterType) end
+		if but == "RightButton" and not IsShiftKeyDown() then checkDungeLoot( self.filterType) end
 	end)
 end
 

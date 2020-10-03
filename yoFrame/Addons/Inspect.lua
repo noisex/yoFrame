@@ -57,7 +57,7 @@ local function UpdateButtonsText(frame)
 		local id = GetInventorySlotInfo(slot)
 		--print(id, slot, slotsRight[slot])
 
-		local tt = CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate")
+		local tt = N.ScanTooltip --CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate")
 		tt:SetOwner( UIParent, "ANCHOR_NONE")
 		tt:SetInventoryItem( unit, id)
 		tt:Show()

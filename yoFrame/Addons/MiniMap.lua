@@ -4,7 +4,7 @@ local tick, ptick = 1, 0
 
 local cfg = {
   	scale = 1,
-  	point = { "TOPRIGHT", UIPARENT, "TOPRIGHT", 10, 10},
+  	point = { "TOPRIGHT", UIParent, "TOPRIGHT", 10, 10},
 }
 	--onenter/show
 local function Show()

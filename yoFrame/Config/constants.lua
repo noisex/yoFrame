@@ -18,10 +18,11 @@ mySex		= UnitSex('player')
 
 dummy = function() return end
 
-N["statusBars"] = {}
-N["strings"]	= {}
-N["shadows"]	= {}
+N["statusBars"] 	= {}
+N["strings"]		= {}
+N["shadows"]		= {}
 N["spellsBooks"] 	= {}
+
 N.ScanTooltip = CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
 
 N.slots = {
@@ -72,12 +73,26 @@ N.slotEquipType = {
 	--["INVTYPE_RELIC"]	=	{18,},
 }
 
+N.QuestTypesIndex = {
+	[0]  = "",           									--default
+	[1]  = " |cff00ff00"..PARTY.."|r",						--Group
+	[41] = " |cffff0000PvP|r",								--PvP
+	[62] = " |cff00ff00"..LFG_TYPE_RAID.."|r",				--Raid
+	[81] = " |cff0080ff" ..LFG_TYPE_DUNGEON.. "|r",
+	[83] = " |cffff7000"..LOOT_JOURNAL_LEGENDARIES.."|r",	--Legendary
+	[85] = " |cff8000ff"..ITEM_HEROIC.."|r",				--Heroic
+	[98] = " |cffff8000"..TRACKER_HEADER_SCENARIO.."|r", 	--Scenario QUEST_TYPE_SCENARIO
+	[102]= " |cff0080ffAccount|r", 							-- Account
+	[226]= " |cff0080ffCombat|r", 							-- Combat Ally
+}
+
 yo["General"] = {
 	["1st"] 	= true,
 	["cFrame"] 	= 0,
 	["cConfig"] = 0,
 	["scriptErrors"]	= false,
 }
+
 yo["Bags"] = {
 	["enable"] 				= true,
 	["numContainerColumns"] = 11,
@@ -94,6 +109,7 @@ yo["Bags"] = {
 	["showGuilBank"]		= true,
 	["countAltBags"]		= true,
 }
+
 yo["Addons"] = {
 	["ChangeSystemFonts"] 			= true,			--
 	["FlashIconCooldown"] 			= true,
@@ -134,7 +150,9 @@ yo["Addons"] = {
 	["AutoQuestComplete"]			= true,
 	["AutoQuestSkipScene"]			= true,
 	["AutoQuestComplete2Choice"]	= true,
+	["ObjectiveTracker"]			= true,
 	["ObjectiveHeight"]				= 500,
+	["ObjectiveShort"]				= false,
 	["hideObjective"]				= false,
 	["cheloBuff"]					= false,
 	["equipNewItem"]				= true,
@@ -146,6 +164,7 @@ yo["Addons"] = {
 	["AutoLeader"]					= false,
 	["disenchanting"]				= true,
 }
+
 yo["ActionBar"] = {
 	["enable"]		= true,
 	["ShowGrid"]	= true,
@@ -160,6 +179,7 @@ yo["ActionBar"] = {
 	["buttonSpace"]	= 2,
 	["hoverTexture"]= true,
 }
+
 yo["CastBar"] = {
 	["player"] = {
 		["enable"]		= true,
@@ -238,6 +258,7 @@ yo["CastBar"] = {
 		["treatborder"]	= false,
 	},
 }
+
 yo["NamePlates"] = {
 	["enable"]			= true,
 	["width"]			= 175,
@@ -299,8 +320,8 @@ yo["Media"] = {
 
 yo["Raid"] = {
 	["enable"] 			= true,
-	["width"] 			= 90,
-	["height"]   		= 28,
+	["width"] 			= 80,
+	["height"]   		= 25,
 	["classcolor"] 		= 3,
 	["showSolo"] 		= false,
 	["showGroupNum"]	= true,
@@ -327,6 +348,7 @@ yo["Raid"] = {
 	["widthMT"]			= 100,
 	["simpeRaid"]		= false,
 }
+
 yo["Chat"] = {
 	["EnableChat"] 		= true,
 	["fontsize"] 		= 10,

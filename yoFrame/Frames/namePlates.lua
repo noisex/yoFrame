@@ -441,7 +441,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	local unit = unitFrame.displayedUnit
 	local cols = { .6, .6, .6}
 	local unitTarget = unit .. "target"
-	local treatText = ""
+	local treatText, fader = "", 1
 
 	local isTanking, status, scaledPercent, rawPercent = UnitDetailedThreatSituation( "player", unit)
 
@@ -450,7 +450,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 
 	elseif UnitPlayerControlled( unit) then 											-- юнит-игрок / цвет класса
 		cols = oUF.colors.class[ select( 2, UnitClass( unit))]
-
+		fader = 0.55
 	elseif status then
 		cols = treatColor[status]
 
@@ -485,7 +485,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	end
 
 	unitFrame.threat:SetText( treatText)
-	unitFrame.healthBar:SetStatusBarColor( cols[1], cols[2], cols[3])
+	unitFrame.healthBar:SetStatusBarColor( cols[1]*fader, cols[2]*fader, cols[3]*fader)
 	unitFrame.name:SetTextColor( cols[1], cols[2], cols[3])
 end
 
@@ -531,7 +531,7 @@ local function UpdateName( unitFrame)
 		unitFrame.level:SetTextColor(r, g, b)
 
 		if UnitIsUnit( unitFrame.displayedUnit, "target") then
-			glowTargetStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 16, 0.125, 4, 1, 0, 0, false, 1 )
+			glowTargetStart( unitFrame.healthBar, {0.95, 0.95, 0.32, 1}, 20, 0.125, 4, 2, 0, 0, false, 1 )
 			if showArrows then unitFrame.arrows:Show() end
 			if unitFrame.classPower then
 				UpdateUnitPower( unitFrame.classPower)
@@ -554,27 +554,27 @@ local function UpdateName( unitFrame)
 			glowBadStop( unitFrame.healthBar, 2)
 		end
 
-		if 	--UnitClass( unitFrame.displayedUnit)
-			UnitIsPlayer( unitFrame.displayedUnit) or eTeam[mobID] 	then
+		--if 	--UnitClass( unitFrame.displayedUnit)
+		--	UnitIsPlayer( unitFrame.displayedUnit) or eTeam[mobID] 	then
 
-			if unitFrame.Class then
+			--if unitFrame.Class then
 				--local _, class = UnitClass( unitFrame.displayedUnit)
 				--local texcoord = CLASS_ICON_TCOORDS[class]
 				--unitFrame.Class.Icon:SetTexCoord(texcoord[1] + 0.015, texcoord[2] - 0.02, texcoord[3] + 0.018, texcoord[4] - 0.02)
-				local specID = GetInspectSpecialization( unitFrame.displayedUnit)
+				----local specID = GetInspectSpecialization( unitFrame.displayedUnit)
 				--GetSpecializationInfoByID(specID, sex);
-				local id, name, description, icon, background, role = GetSpecializationInfo(specID)
-				print( unitFrame.displayedUnit, specID, id, name, description, icon)
+				----local id, name, description, icon, background, role = GetSpecializationInfo(specID)
+				--print( unitFrame.displayedUnit, specID, id, name, description, icon)
 				--unitFrame.Class:Show()
-			end
-			if eTeam[mobID] and not GetRaidTargetIndex( unitFrame.displayedUnit) then
-				SetRaidTarget( unitFrame.displayedUnit, eTeam[mobID]);
-			end
-		else
-			if unitFrame.Class then
-				unitFrame.Class:Hide()
-			end
-		end
+			--end
+			--if eTeam[mobID] and not GetRaidTargetIndex( unitFrame.displayedUnit) then
+			--	SetRaidTarget( unitFrame.displayedUnit, eTeam[mobID]);
+			--end
+		--else
+		--	if unitFrame.Class then
+		--		unitFrame.Class:Hide()
+		--	end
+		--end
 	end
 	scanToQuest( unitFrame)
 end

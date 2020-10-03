@@ -584,9 +584,9 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     shadow:SetPoint("BOTTOMRIGHT", size, -size)
     shadow:SetBackdrop(style)
     local r, g, b = strsplit( ",", yo.Media.shadowColor)
-    if yo.Media.classBorder then
-		r, g, b = myColor.r, myColor.g, myColor.b
-	end
+ --   if yo.Media.classBorder then
+	--	r, g, b = myColor.r, myColor.g, myColor.b
+	--end
     --shadow:SetBackdropColor( r, g, b, alpha or .9)
 
     shadow:SetBackdropColor(.07,.07,.07, alpha or .9)

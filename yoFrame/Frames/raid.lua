@@ -40,8 +40,10 @@ function OnChangeTarget( self)
 end
 
 local PostIconUpdate = function( self, button)
-	button.icon:SetTexCoord( unpack( yo.tCoord))
-	CreateStyle( button, 4)
+	if not button.shadow then
+		button.icon:SetTexCoord( unpack( yo.tCoord))
+		CreateStyle( button, 4)
+	end
 end
 
 local function OnEnter( f)
@@ -723,7 +725,7 @@ logan:SetScript("OnEvent", function(self, event)
 			"columnAnchorPoint", "LEFT"
 		)
 
-		--CreateMovier( yo_Party)
+		CreateMovier( yo_Party)
 
 		if yo.Raid.showMT then --and not yo.Raid.simpeRaid then
 			local heightMT = yo.Raid.heightMT

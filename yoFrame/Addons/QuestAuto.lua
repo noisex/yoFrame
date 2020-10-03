@@ -1,18 +1,8 @@
 local L, yo, N = unpack( select( 2, ...))
 
-ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|cffff00ff\"%s\"|r."
+if not yo.Addons.AutoQuest then return end
 
-QuestTypesIndex = {
-	[0] = "",           --default
-	[1] =  " |cff00ff00"..PARTY.."|r",		--Group
-	[41] = " |cffff0000PvP|r",			--PvP
-	[62] = " |cff00ff00"..LFG_TYPE_RAID.."|r",			--Raid
-	[81] = " |cff0080ff" ..LFG_TYPE_DUNGEON.. "|r",
-	[83] = " |cffff7000"..LOOT_JOURNAL_LEGENDARIES.."|r", 		--Legendary
-	[85] = " |cff8000ff"..ITEM_HEROIC.."|r",		--Heroic
-	[98] = " |cffff8000"..TRACKER_HEADER_SCENARIO.."|r", 	--Scenario QUEST_TYPE_SCENARIO
-	[102]= " |cff0080ffAccount|r", 		-- Account
-}
+ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|cffff00ff\"%s\"|r."
 
 local WeaponTypes = {
 	["INVTYPE_WEAPON"]			=	true,
@@ -141,7 +131,7 @@ local function OnEvent( self, event, ...)
 		self:RegisterEvent("QUEST_ACCEPTED")
 		self:RegisterEvent("CINEMATIC_START")
 
-		--self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+		--self:RegisterEvent("PLAY_MOVIE")
 		--self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 		--self:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 		--self:RegisterEvent("ADDON_LOADED")
@@ -177,12 +167,13 @@ local function OnEvent( self, event, ...)
 		end
 
 	elseif event == "CINEMATIC_START" then
+
 		if not yo.Addons.AutoQuestSkipScene then return end
 
 		if TimerMovie == nil then
 			TimerMovie = self:CreateAnimationGroup()
 			TimerMovie.anim = TimerMovie:CreateAnimation()
-			TimerMovie.anim:SetDuration(0.5)
+			TimerMovie.anim:SetDuration( 0.5)
 			TimerMovie:SetLooping("REPEAT")
 			TimerMovie:SetScript("OnLoop", function(self, event, ...)
 				print( L["SCIP_VIDEO"])
@@ -296,7 +287,7 @@ local function OnEvent( self, event, ...)
 
 		local qString = ""
 		if questObjectives and #questObjectives > 5 then
-			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType, " - ", #questObjectives)
+			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType)
 
 			local questObjNum = C_QuestLog.GetNumQuestObjectives(questID)
 
@@ -366,8 +357,10 @@ local function OnEvent( self, event, ...)
 			 qString =  qString .. "|cffffff00"..MONEY_COLON.." |r" .. formatMoney( GetQuestLogRewardMoney()).. "|r "
 		end
 
-		print( qString)
-		print( " ")
+		if qString  ~= "" then
+			print( qString)
+			print( " ")
+		end
 	else
 		--print("|cffff0000Unknown event: " .. event, ...)
 	end

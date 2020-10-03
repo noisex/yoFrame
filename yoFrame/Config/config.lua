@@ -1,7 +1,26 @@
 local addon, ns = ...
 local L, yo, N = unpack( ns)
 
-if not IsAddOnLoaded("yoFrame_Config") then return end
+if not IsAddOnLoaded("yoFrame_Config") then
+
+	StaticPopupDialogs["NEED_CONFIG"] = {
+  		text = "Теперпь для корректной работы необходимо включить дополнение |cff00ffff\"yoFrame_Config\"|r!",
+  		button1 = "Включить его",
+  		--button2 = "No",
+  		OnAccept = function()
+     		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
+			HideUIPanel(GameMenuFrame);
+			ShowUIPanel(AddonList);
+  		end,
+  		timeout = 0,
+  		whileDead = true,
+  		hideOnEscape = true,
+  		preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+	}
+
+	 StaticPopup_Show ("NEED_CONFIG")
+	return
+end
 
 if yo_AllData 		== nil then yo_AllData = {} end
 if yo_AllConfig 	== nil then yo_AllConfig = {} end

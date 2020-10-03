@@ -1,4 +1,4 @@
-local L, _, N = unpack( select( 2, ...))
+local L, _ = unpack( select( 2, ...))
 
 local ACD
 local needReload = false
@@ -6,6 +6,7 @@ local needReload = false
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
+N = {}
 
 LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
 
@@ -39,12 +40,13 @@ LSM:Register("font", "yoSansNarrow","Interface\\Addons\\yoFrame\\Media\\qSans.tt
 
 local function UpdateShadowEdge( scale)
 	for k, shadow in pairs( N.shadows) do
-
 		local drop = shadow:GetBackdrop()
 		local esize = max( 1, drop.edgeSize + ( scale or 0)) --yo.Media.edgeSize
 		local dropCr, dropCg, dropCb, dropCa = shadow:GetBackdropColor()
 		local dropBCr, dropBCg, dropBCb, dropBCa = shadow:GetBackdropBorderColor()
-		local _, p = shadow:GetPoint(1)
+		--if shadow:GetPoint(1) then
+		--	local _, p = shadow:GetPoint(1)
+		--end
 
 		if yo.Media.classBorder then
 			dropBCr, dropBCg, dropBCb = myColor.r, myColor.g, myColor.b
@@ -57,19 +59,18 @@ local function UpdateShadowEdge( scale)
 		shadow:SetBackdropColor( dropCr, dropCg, dropCb, dropCa)
 		shadow:SetBackdropBorderColor( dropBCr, dropBCg, dropBCb, dropBCa)
 
-		if p then
-			shadow:ClearAllPoints()
-			shadow:SetPoint( "TOPLEFT", p, "TOPLEFT", -esize, esize)
-			shadow:SetPoint( "BOTTOMRIGHT", p, "BOTTOMRIGHT", esize, -esize)
-		end
-
+		--if p then
+		--	shadow:ClearAllPoints()
+		--	shadow:SetPoint( "TOPLEFT", p, "TOPLEFT", -esize, esize)
+		--	shadow:SetPoint( "BOTTOMRIGHT", p, "BOTTOMRIGHT", esize, -esize)
+		--end
 	end
 end
 
-local function UpdateShadows()
-	local r, g, b = strsplit( ",", yo.Media.shadowColor)
+local function UpdateShadows( r, g, b)
+	--local r, g, b = strsplit( ",", yo.Media.shadowColor)
 	for k, bar in pairs( N.shadows) do
-		bar:SetBackdropBorderColor(r, g, b)
+		bar:SetBackdropBorderColor(r, g, b, 0.9)
 	end
 end
 
@@ -77,6 +78,15 @@ local function UpdateStatusBars()
 	for k, bar in pairs( N.statusBars) do
 		if bar:GetStatusBarTexture() then
 			bar:SetStatusBarTexture( yo.Media.texture)
+		end
+	end
+end
+
+local function UpdateStrings( newVal, curVal)
+	for k, string in pairs( N.strings) do
+		if string then
+			local fn, fs, fc = string:GetFont()
+			string:SetFont( fn, fs - curVal + newVal, fc)
 		end
 	end
 end
@@ -92,44 +102,26 @@ local function UpdateStringScale( scale)
 	end
 end
 
-function Setlers( path, val)
+local aConf
+function Setlers( path, val, noReboot)
 	local p1, p2, p3, p4 = strsplit("#", path)
 
-	local pers = false
-	if yo_AllData[myRealm][myName].PersonalConfig then
-		pers = true
-	end
+	if not noReboot then needReload = true end
 
-	needReload = true
-	--print( p1, p2, p3, p4, val, pers)
+	if yo_AllData[myRealm][myName].PersonalConfig then 	aConf = yo_PersonalConfig
+	else												aConf = yo_AllConfig	end
 
 	if p4 then
-		if pers then
-			yo_PersonalConfig[p1][p2][p3][p4] = val
-		else
-			yo_AllConfig[p1][p2][p3][p4] = val
-		end
+		aConf[p1][p2][p3][p4] = val
 		yo[p1][p2][p3][p4] = val
 	elseif p3 then
-		if pers then
-			yo_PersonalConfig[p1][p2][p3] = val
-		else
-			yo_AllConfig[p1][p2][p3] = val
-		end
+		aConf[p1][p2][p3] = val
 		yo[p1][p2][p3] = val
 	elseif p2 then
-		if pers then
-			yo_PersonalConfig[p1][p2] = val
-		else
-			yo_AllConfig[p1][p2] = val
-		end
+		aConf[p1][p2] = val
 		yo[p1][p2] = val
 	else
-		if pers then
-			yo_PersonalConfig[p1] = val
-		else
-			yo_AllConfig[p1] = val
-		end
+		aConf[p1] = val
 		yo[p1] = val
 	end
 end
@@ -137,7 +129,7 @@ end
 local function tr( path)
 	if not L[path] or L[path] == "" then
 		--print( "|cffff0000UNKNOWN LOCALE : |cff00ffff" .. path)
-		L[path] = "|cffff0000UNKNOWN LOCALE: ".. path
+		L[path] = "|cffff0000UNKNOWN LOCALE: |r".. path
 	end
 
 	return L[path]
@@ -159,6 +151,7 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
 
 
 function InitOptions()
+	N = yoFrame[3]
 
 	local defaults = {
 		profile = {},
@@ -179,29 +172,28 @@ function InitOptions()
 						desc = L["PERSONAL_DESC"],	descStyle = "inline",
 						get = function(info) return yo_AllData[myRealm][myName].PersonalConfig end,
 						set = function(info,val) StaticPopup_Show ("CONFIRM_PERSONAL") end,	},
-
+					scriptErrors= {
+						name = function(info) return tr( info[#info]) end,
+						order = 9, type = "toggle",
+						get = function(info) return yo["General"][info[#info]] end, width = "full",
+						set = function(info,val) Setlers( "General#" .. info[#info], val) end,	},
 			        ChangeSystemFonts = {
 						order = 10, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",
 						get = function(info) return yo["Addons"][info[#info]] end,
 						set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 	},
 			        sysfontsize = {
 			        	order = 11,	type = "range", name = function(info) return tr( info[#info]) end,
-						desc = L["SYSFONT_DESC"], min = 10, max = 14, step = 1, width = "full",
+						desc = L["SYSFONT_DESC"], min = 9, max = 16, step = 1, width = "full",
 						disabled = function() return not yo["Addons"].ChangeSystemFonts; end,
 						get = function(info) return yo["Media"].sysfontsize end,
-						set = function(info,val) Setlers( "Media#sysfontsize", val) ChangeSystemFonts( val) end,},
+						set = function(info,val) Setlers( "Media#sysfontsize", val, true) ChangeSystemFonts( val) end,},
 			        FontSize = {
 			   			name = function(info) return tr( info[#info]) end,
 						order = 15,	type = "range",
 						desc = L["DEFAULT"] .. 10,
-						min = 10, max = 14, step = 1, width = "full",
+						min = 9, max = 16, step = 1, width = "full",
 						get = function(info) return yo["Media"].fontsize end,
-						set = function(info,val) Setlers( "Media#fontsize", val) end,},
-					scriptErrors= {
-						name = function(info) return tr( info[#info]) end,
-						order = 9, type = "toggle",
-						get = function(info) return yo["General"][info[#info]] end, width = "full",
-						set = function(info,val) Setlers( "General#" .. info[#info], val) end,	},
+						set = function(info,val) UpdateStrings( val, yo.Media.fontsize) Setlers( "Media#fontsize", val, true) end,},
 					texture = {
 						name = function(info) return tr( info[#info]) end,
 						order = 30,	type = "select",	width = "full",
@@ -211,7 +203,7 @@ function InitOptions()
 							for k, val in pairs( LSM:List("statusbar")) do
 								if yo["Media"][info[#info]] == LSM:Fetch("statusbar", val) then return val end
 							end	end,
-						set = function(info, val) Setlers( "Media#" .. info[#info], LSM:Fetch("statusbar", val)) UpdateStatusBars() end,},
+						set = function(info, val) Setlers( "Media#" .. info[#info], LSM:Fetch("statusbar", val), true) UpdateStatusBars() end,},
 
 					AutoScale = {
 						name = function(info) return tr( info[#info]) end, 	order = 40, type = "select",
@@ -227,34 +219,34 @@ function InitOptions()
 							SetCVar("useUiScale", 1)	SetCVar("uiScale", val) UIParent:SetScale( val)	end, },
 
 					set00	= {	order = 50, type = "description", name = " ", width = "full"},
-					fontSizeMinus = {
+					fontSizeMinus = { hidden = true,
            				order = 51,	type = "execute", width = 0.5, name = "Font -",
            				func = function() Setlers( "Media#fontsize", yo.Media.fontsize - 1) UpdateStringScale( -1) end,},
-           			fontSizePlus = {
+           			fontSizePlus = { hidden = true,
            				order = 52,	type = "execute", width = 0.5, name = "Font +",
            				func = function() Setlers( "Media#fontsize", yo.Media.fontsize + 1) UpdateStringScale( 1) end,},
 
-           			set01	= {	order = 60, type = "description", name = " ", width = "full"},
-           			edgeSizeMinus = {
-           				order = 61,	type = "execute", width = 0.5, name = "Edge -",
-           				func = function() Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize - 1)) UpdateShadowEdge( -1) end,},
-           			edgeizePlus = {
-           				order = 62,	type = "execute", width = 0.5, name = "Edge +",
-           				func = function() Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize + 1)) UpdateShadowEdge( 1) end,},
+           			set01	= {	order = 60, type = "description", name = " ", width = "full",  hidden = true,},
+           			edgeSizeMinus = {  hidden = true,
+           				order = 61,	type = "execute", width = 0.5, name = "Edge -", desc = "JUST FOR FUN",
+           				func = function() --[[Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize - 1))]] UpdateShadowEdge( -1) end,},
+           			edgeizePlus = {  hidden = true,
+           				order = 62,	type = "execute", width = 0.5, name = "Edge +", desc = "JUST FOR FUN",
+           				func = function() --[[Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize + 1)) ]] UpdateShadowEdge( 1) end,},
 
            			--edgeSize = { order = 62, type = "range", name = "Shadow edgeSize", min = 1, max = 10, step = 1,
            			--	get = function(info) return yo["Media"][info[#info]] end,
            			--	set = function(info,val) Setlers( "Media#" .. info[#info], val) UpdateShadowEdge() end,},
 
-           			set02	= {	order = 63, type = "description", name = " ", width = "full"},
-					classBorder	= {	order = 64, type = "toggle", name = "Shadow classColor",
-						get = function(info) return yo["Media"][info[#info]] end,
-           				set = function(info,val) Setlers( "Media#" .. info[#info], val) UpdateShadowEdge() end,},
-           				--Setlers( "Media#shadowColor", strjoin(",", myColor.r, myColor.g, myColor.b))
+           			--set02	= {	order = 63, type = "description", name = " ", width = "full",  hidden = true},
            			shadowColor	= {
-           				order = 66, type = "color",		name = "Shadow Color",
+           				order = 70, type = "color",		name = "Shadow Border Color", desc = "JUST FOR FUN", width = "full",
 						get = function(info, r, g, b)  return strsplit( ",", yo.Media.shadowColor)	end,
-						set = function(info, r, g, b) Setlers( "Media#shadowColor", strjoin(",", r, g, b)) UpdateShadows() end,},
+						set = function(info, r, g, b) --[[Setlers( "Media#shadowColor", strjoin(",", r, g, b))]] UpdateShadows(  r, g, b) end,},
+					classBorder	= {	order = 74, type = "execute", name = "Shadow classColor", desc = "JUST FOR FUN",
+           				func = function() UpdateShadows( myColor.r, myColor.g, myColor.b) end,},
+           			borderReset	= {	order = 76, type = "execute", name = "Shadow Reset", desc = "JUST FOR FUN",
+           				func = function() UpdateShadows( strsplit( ",", yo.Media.shadowColor)) end,},
 			 	},
 			 },
 
@@ -279,7 +271,10 @@ function InitOptions()
 					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					-- lootbox
 					-- cooldowns
-					ObjectiveHeight = { order = 20, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	},
+					ObjectiveTracker= {	order = 19, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
+					ObjectiveShort	= {	order = 21, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
+					ObjectiveHeight = { order = 22, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	},
+
 					hideObjective	= {	order = 24, type = "toggle",name = function(info) return tr( info[#info]) end,   },
 
 					MiniMaps = {
@@ -487,53 +482,53 @@ function InitOptions()
 					showResourses	= { width = "full",	order = 63, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showArrows 		= { width = "full",	order = 65, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					moreDebuffIcons = { width = "full",	order = 66, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					blueDebuff 		= { width = "full",	order = 67, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					tankMode		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					blueDebuff 		= { width = "full",	order = 68, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					tankMode		= { width = "full",	order = 69, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					showTauntDebuff = { width = "full",	order = 70, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					classDispell 	= { width = "full",	order = 33, type = "toggle",	name = function(info) return tr( info[#info]) end,},
-					glowTarget		= { width = "full",	order = 80, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					glowBadType		= {	order = 90, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
+					glowTarget		= { width = "full",	order =140, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					glowBadType		= {	order = 150, type = "select", name = function(info) return tr( info[#info])  end,	values = { ["none"] = "None", ["pixel"] = "Red Lines", ["button"] = "Button Glow", ["cast"] = "Auto Cast Dots",},},
 
-					showToolTip 	= {	order = 50, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
+					showToolTip 	= {	order = 51, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] =L["NONE"], ["cursor"] = L["UND_CURCOR"], ["yes"] = L["IN_CONNER"],},},
 
-					executePhaze ={ order = 71, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full"	},
-					executeProc  ={ order = 75,	type = "range", name = function(info) return tr( info[#info]) end,	min = 0, max = 100, step = 1,},
-					executeColor ={	order = 72, type = "color",	name = function(info) return tr( info[#info]) end,
-						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
-						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-
-					desc01 = {	order = 79, type = "description", name = L["DESC_TCOL"], width = "full",},
-
-					c0 ={	order = 80, type = "color",	name = function(info) return tr( info[#info]) end, width = 1.5,
-						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
-						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-					c0t ={	order = 81, type = "color",	name = function(info) return tr( info[#info]) end,	width = 0.5,
+					executePhaze ={ order = 170, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full"	},
+					executeProc  ={ order = 180,	type = "range", name = function(info) return tr( info[#info]) end,	min = 0, max = 100, step = 1,},
+					executeColor ={	order = 190, type = "color",	name = function(info) return tr( info[#info]) end,
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 
-					c1 ={	order = 82, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
+					desc01 = {	order = 200, type = "description", name = "\n " .. L["DESC_TCOL"] .. "\n ", width = "full",},
+
+					c0 ={	order = 210, type = "color",	name = function(info) return tr( info[#info]) end, width = 1.5,
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-					c2 ={	order = 84, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
+					c0t ={	order = 220, type = "color",	name = function(info) return tr( info[#info]) end,	width = 0.5,
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 
-					c3 ={	order = 86, type = "color",	name = function(info) return tr( info[#info]) end,width = 1.5,
+					c1 ={	order = 230, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-					c3t ={	order = 87, type = "color",	name = function(info) return tr( info[#info]) end,	width = 0.5,
+					c2 ={	order = 240, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 
-					desc02 = {	order = 87, type = "description", name = L["DESC_ACOL"], width = "full",},
+					c3 ={	order = 250, type = "color",	name = function(info) return tr( info[#info]) end,width = 1.5,
+						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+					c3t ={	order = 260, type = "color",	name = function(info) return tr( info[#info]) end,	width = 0.5,
+						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 
-					myPet ={	order = 88, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
+					desc02 = {	order = 270, type = "description", name = "\n " .. L["DESC_ACOL"] .. "\n ", width = "full",},
+
+					myPet ={	order = 280, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-					tankOT ={	order = 90, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
+					tankOT ={	order = 290, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-					badGood ={	order = 92, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
+					badGood ={	order = 300, type = "color",	name = function(info) return tr( info[#info]) end,  width = "full",
 						get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 				},

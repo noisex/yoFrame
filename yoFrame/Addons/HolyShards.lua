@@ -7,10 +7,10 @@ local GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCo
 	= GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown
 
 local recolorShards = function(self, cols)
+	self.cols = cols
 	for i = 1, self.idx do
 		self[i]:SetStatusBarColor( cols[1], cols[2], cols[3], 1)
 	end
-
 	--if yo.Raid.classcolor == 1 then
 	--	self.shadow:SetBackdropBorderColor( 0.3, 0.3, 0.3, 0.9)
 	--else
@@ -19,7 +19,7 @@ local recolorShards = function(self, cols)
 end
 
 local function pwUpdate( self, powerID)
-	local unitPower = UnitPower( self.unit, powerID)	--, true)
+	local unitPower = UnitPower( self.unit, powerID)
 
 	for i = 1, min( unitPower, #self) do
 		if not self[i].on then
@@ -33,13 +33,15 @@ local function pwUpdate( self, powerID)
 	end
 
 	if unitPower == self.idx and myClass ~= "DEATHKNIGHT" then
-		if yo.Raid.classcolor == 1 then
-			self.shadow:SetBackdropBorderColor( 0.3, 0.3, 0.3, 0.9)
+		if yo.Raid.classcolor < 3 then
+			local f = 0.7
+			--self.shadow:SetBackdropBorderColor( self:GetParent().colr *f, self:GetParent().colg *f, self:GetParent().colb *f, 0.99)
+			self.shadow:SetBackdropBorderColor( self.cols[1] *f, self.cols[2] *f, self.cols[3] *f, 0.99)
 		else
-			self.shadow:SetBackdropBorderColor( self:GetParent().colr, self:GetParent().colg, self:GetParent().colb, 0.6)
+			self.shadow:SetBackdropBorderColor( self.cols[1], self.cols[2], self.cols[3], 0.6)
 		end
 	else
-		self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.7)
+		self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.6)
 	end
 end
 
@@ -56,13 +58,19 @@ end
 
 	self.idx = UnitPowerMax( self.unit, self.powerID)
 	self:SetWidth( plFrame:GetWidth() / 2)
-	--self.colr, self.colg, self.colb = self:GetParent().colr, self:GetParent().colg, self:GetParent().colb
+
+	if not self.cols then
+		self.cols = {}
+		self.cols[1] = self:GetParent().colr
+		self.cols[2] = self:GetParent().colg
+		self.cols[3] = self:GetParent().colb
+	end
 
 	for i = 1, self.idx do
 		self[i] = CreateFrame('StatusBar', nil, self)
 		self[i]:SetStatusBarTexture( yo.texture)
-		--self[i]:SetStatusBarColor( self.colr, self.colg, self.colb, 1)
-		self[i]:SetHeight( self:GetHeight())
+		self[i]:SetStatusBarColor( self.cols[1], self.cols[2], self.cols[3],  1)
+		self[i]:SetHeight( self:GetHeight() -2)
 		self[i]:SetWidth(self:GetWidth() / self.idx)
 		self[i]:SetAlpha( self.minAlpha)
 		self[i]:SetFrameLevel(10)
@@ -74,8 +82,8 @@ end
 			self[i]:SetPoint('LEFT', self[i-1], 'RIGHT', 1, 0)
 		end
 
-		SetUpAnimGroup( self[i], "Fadein", 0.2, 0.8, 0.4, true)
-		SetUpAnimGroup( self[i], "Fadeout", 0.2, 0.8, 0.7, true)
+		SetUpAnimGroup( self[i], "Fadein", 0.2, 0.9, 0.4, true)
+		SetUpAnimGroup( self[i], "Fadeout", 0.2, 0.9, 0.7, true)
 	end
 
 	self:SetWidth( self:GetWidth() + self.idx + 1)
@@ -138,9 +146,9 @@ local function OnEvent( self, event, unit, pToken, ...)
 
 local function CreateShardsBar( f)
 	local holyShards = f.holyShards or CreateFrame( "Frame", nil, f)
-	holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 7, -5)
+	holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 7, -4)
 	holyShards:SetWidth( f:GetWidth() / 2)
-	holyShards:SetHeight( 5)
+	holyShards:SetHeight( 6)
 	holyShards:SetFrameLevel(9)
 
 	holyShards:RegisterUnitEvent("UNIT_POWER_UPDATE", f.unit)
@@ -154,7 +162,7 @@ local function CreateShardsBar( f)
 	holyShards:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
 
 	holyShards:SetScript("OnEvent", OnEvent)
-	CreateStyle( holyShards, 1, 5)
+	CreateStyle( holyShards, 2, 5, 0.6)
 
 	holyShards.colr, holyShards.colg, holyShards.colb = f.colr, f.colg, f.colb
 	holyShards.powerID 	= yo.pType[myClass].powerID
@@ -182,55 +190,3 @@ logan:SetScript("OnEvent", function(self, event)
 		--CreateShardsBar( tarFrame)
 	end
 end)
-
-
-	--for i = 1, self.idx do
-	--	if i <= unitPower then
-	--		if not self[i].on then
-	--			local alphaValue = self[i]:GetAlpha();
-	--			self[i].fadein:Stop();
-	--			self[i].fadeout:Stop();
-	--			self[i].on = true
-	--			if alphaValue < self.maxAlpha then
-	--				self[i].fadein.anim:SetFromAlpha( alphaValue);
-	--				self[i].fadein:Play()
-	--			end
-	--		end
-	--	else
-	--		if self[i].on then
-	--			local alphaValue = self[i]:GetAlpha();
-	--			self[i].fadein:Stop();
-	--			self[i].fadeout:Stop();
-	--			self[i].on = false
-	--			if alphaValue > self.minAlpha then
-	--				self[i].fadeout.anim:SetFromAlpha( alphaValue);
-	--				self[i].fadeout:Play()
-	--			end
-	--		end
-	--	end
-	--end
-
-	--for i = 1, min( charges, self.maxComboPoints) do
-	--	if (not self.cPoints[i].on) then
-	--		self:TurnOn( self.cPoints[i], self.cPoints[i].Point, 1)
-	--	end
-	--end
-	--for i = charges + 1, self.maxComboPoints do
-	--	if ( self.cPoints[i].on) then
-	--		self:TurnOff( self.cPoints[i], self.cPoints[i].Point, 0);
-	--	end
-	--end
-
-	--if charges == self.maxComboPoints then
-	--	for i = 1, self.maxComboPoints do
-	--		local alpga = self.cPoints[i].BackFX:GetAlpha()
-	--		self.cPoints[i].BackFX:SetAlpha(0.8)
-	--		print( "ONN: :", i, alpga, self.cPoints[i].BackFX:GetAlpha())
-	--	end
-	--else
-	--	for i = 1, self.maxComboPoints do
-	--		local alpga = self.cPoints[i].BackFX:GetAlpha()
-	--		self.cPoints[i].BackFX:SetAlpha( 0)
-	--		print( "OFF: ", i, alpga, self.cPoints[i].BackFX:GetAlpha())
-	--	end
-	--end
