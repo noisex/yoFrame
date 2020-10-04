@@ -15,19 +15,42 @@ local L, yo = unpack( select( 2, ...))
 --	local frame = L:CreateButtonFrame(cfg,buttonList)
 --end
 
+-- update OverrideBar new buttons
+hooksecurefunc("ActionBarController_UpdateAll", function(self, ...)
+	--print("fsffsdfsdf", CURRENT_ACTION_BAR_STATE, LE_ACTIONBAR_STATE_OVERRIDE, HasVehicleActionBar(), HasOverrideActionBar())
+	--if CURRENT_ACTION_BAR_STATE == LE_ACTIONBAR_STATE_OVERRIDE then
+		for i = 1, 8 do
+	--		print("...")
+			if ActionBarButtonEventsFrame.frames[i] then ActionBarButtonEventsFrame.frames[i]:Update() end
+		end
+	--end
+end)
+
+local function buttonsUP( self)
+	if not InCombatLockdown() then
+		print("Buttons UP!")
+		SHOW_MULTI_ACTIONBAR_1 = 1
+		SHOW_MULTI_ACTIONBAR_3 = 1
+		ALWAYS_SHOW_MULTIBARS  = 1
+		--SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
+		--MultiBarBottomLeft:SetShown(true)
+		--MultiBarRight:SetShown(true)
+		--MultiActionBar_ShowAllGrids(ACTION_BUTTON_SHOW_GRID_REASON_CVAR);
+		--InterfaceOptions_UpdateMultiActionBars()
+	else
+		--self:RegisterEvent("PLAYER_REGEN_ENABLED")
+	end
+end
+
 function ActionButton_UpdateRangeIndicator(self, checksRange, InRange)
 	--print( self:GetName(), checksRange, inRange)
 	if not self.action then return end
 
-	local ID 			= self.action
 	local Icon 			= self.icon
 	local NormalTexture = self.NormalTexture
-	--local HasRange 		= ActionHasRange(ID)
-	local canAttack 	= UnitCanAttack("player", "target")
-	local IsUsable, NotEnoughMana = IsUsableAction(ID)
-	--local InRange = IsActionInRange(ID)
+	local IsUsable, NotEnoughMana = IsUsableAction( self.action)
 
-	if canAttack and (checksRange and InRange == false) then -- Out of range
+	if UnitCanAttack("player", "target") and (checksRange and InRange == false) then -- Out of range
 		Icon:SetVertexColor(0.8, 0.1, 0.1)
 		NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
 	else -- In range
@@ -346,7 +369,6 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			--panel:SetFrameLevel(button:GetFrameLevel() - 1)
 			panel:SetBackdropColor(.05,.05,.05, .6)
 
-
 			Icon:SetTexCoord(unpack( yo.tCoord))
 			Icon:SetPoint("TOPLEFT", Button, 2, -2)
 			Icon:SetPoint("BOTTOMRIGHT", Button, -2, 2)
@@ -515,27 +537,22 @@ bars:SetScript("OnEvent", function(self, event)
 			local button = _G[format("ActionButton%d", i)]
 			button:SetAttribute("showgrid", 1)
 			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarRightButton%d", i)]
 			button:SetAttribute("showgrid", 1)
 			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarBottomRightButton%d", i)]
 			button:SetAttribute("showgrid", 1)
 			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarLeftButton%d", i)]
 			button:SetAttribute("showgrid", 1)
 			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
 			button = _G[format("MultiBarBottomLeftButton%d", i)]
 			button:SetAttribute("showgrid", 1)
 			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-			--ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 		end
 	end
 
@@ -545,17 +562,9 @@ bars:SetScript("OnEvent", function(self, event)
 	ZoneAbilityFrame:SetPoint('LEFT', LeftDataPanel, 'RIGHT', 170, 20)
 	--DraenorZoneAbilityFrame:SetScript("OnShow", DraenorZoneAbilityFrame.Hide)
 	ZoneAbilityFrame.ignoreFramePositionManager = true
-end)
 
-
--- update OverrideBar new buttons
-hooksecurefunc("ActionBarController_UpdateAll", function(self, ...)
-	if CURRENT_ACTION_BAR_STATE == LE_ACTIONBAR_STATE_OVERRIDE then
-		for i = 1, 12 do
-			print("...")
-			if ActionBarButtonEventsFrame.frames[i] then ActionBarButtonEventsFrame.frames[i]:Update() end
-		end
-	end
+	--buttonsUP( self)
+	--C_Timer.After( 2, function() buttonsUP(self) end )
 end)
 
 --------------------------------------------------------------------------------------------

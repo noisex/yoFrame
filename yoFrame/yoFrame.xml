@@ -22,9 +22,9 @@
 	<Script file="Filters\RaidSpels.lua"/>
 	<Script file="Filters\TriggerTemplatesData.lua"/>
 
-	<Include file="Infotext\infotexts.xml"/>
+ 	<Include file="Infotext\infotexts.xml"/>
 
-	<Script file="Frames\chat.lua"/>
+ 	<Script file="Frames\chat.lua"/>
 	<Script file="Frames\actionBars.lua"/>
 	<Script file="Frames\tags.lua"/>
 	<Script file="Frames\raid.lua"/>

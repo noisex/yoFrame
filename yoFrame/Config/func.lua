@@ -14,6 +14,9 @@ function isDruid( self)
 	end
 end
 
+--if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end
+
+
 ----------------------------------------------------------------------------------------
 --	Kill object function
 ----------------------------------------------------------------------------------------
@@ -245,23 +248,50 @@ function timeLastWeeklyReset()
 	return timeLastWeeklyReset, timeNextWeeklyReset
 end
 
-function tprint(t, s)
+function tprint(t, s, indent)
+	if not indent then indent = 0 end
+
     for k, v in pairs(t) do
+    	local meta = tostring(k):find( "__")
+    	--print( tostring(k), meta, tostring(v) )
+
         local kfmt = '["' .. tostring(k) ..'"]'
+
         if type(k) ~= 'string' then
-            kfmt = '[' .. k .. ']'
+            kfmt = '[' .. tostring(k) .. ']'
         end
+
         local vfmt = '"'.. tostring(v) ..'"'
-        if type(v) == 'table' then
-            tprint(v, (s or '')..kfmt)
-        else
-            if type(v) ~= 'string' then
-                vfmt = tostring(v)
-            end
-            print(type(t)..(s or '')..kfmt..' = '..vfmt)
+        if not meta then
+        	if type(v) == 'table' and type(v) ~= 'userdata' and indent < 1 then
+        		indent = indent + 1
+            	tprint(v, (s or '')..kfmt, indent)
+        	else
+            	if type(v) ~= 'string' then
+                	vfmt = tostring(v)
+            	end
+            	print(type(t), (s or ''), kfmt, ' = ', vfmt)
+        	end
         end
     end
 end
+
+--function tprint (tbl, indent)
+--	--tbl = tableAPIShow( tbl)
+--  	if not indent then indent = 0 end
+--  	for k, v in pairs(tbl) do
+--    	formatting = string.rep("-", indent) .. k or "--" .. ": "
+--    	if type(v) == "table" then
+--      		print(formatting)
+--      		tprint(v, indent+1)
+--    	elseif type(v) == 'boolean' then
+--      		print(formatting, tostring(v))
+--    	else
+--      		print(formatting, v)
+--    	end
+--  	end
+--end
+
 
 function GetColors( f)
 

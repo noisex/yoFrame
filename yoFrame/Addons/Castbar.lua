@@ -3,6 +3,15 @@ local L, yo, N = unpack( select( 2, ...))
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
+
+--/dump GetCVar("SpellQueueWindow") – чтобы узнать текущее значение
+--/console spellqueuewindow 200 – чтобы установить значение 200
+--/cqs
+--/cancelqueuedspell
+--/cast Команда «Взять!»
+-- do unterapt text
+-- do latency text
+
 local cfg = {}
 
 local function DisableBlizzardFrame( f)
@@ -25,7 +34,7 @@ local function FadingOut( f)
 end
 
 function spellDelay( self)
-	for spellID, _ in pairs( interupt_spells) do
+	for spellID, _ in pairs( N.interuptSpells) do
 		local _, duration = GetSpellCooldown( spellID)
 		if duration ~= 0 then
 			return false
@@ -89,26 +98,37 @@ local function stopCast( f, unit, ...)
 	f:SetScript('OnUpdate', FadingOut)
 end
 
+---------------------------------------------------------------------------------------
+-- 												START CAST
+---------------------------------------------------------------------------------------
+
 local function startCast( f, unit, ...)
 
-	if unit and unit ~= f.unit then
-		--stopCast( f, unit, ...)
-		return
-	end
+	if f.castBoss and f.isBoss then unit = f.secondUnit end
 
-	if not UnitExists( f.unit) then
+	if unit and unit ~= f.unit then return end
+
+	if not UnitExists( unit) then
 		f:SetScript('OnUpdate', nil)
 		--stopCast( f, f.unit)
-		--print( "NO BOSS")
+		print( "NO BOSS")
 	end
 
 	local name,  texture, startTime, endTime, notInterruptible, spellID
 
 	if f.reversed then
-		name, _, texture, startTime, endTime, _, notInterruptible = UnitChannelInfo( f.unit)
+		if unit == "player" then
+			f.latSpell:Hide()
+			f.latency = f.latChan
+		end
+		name, _, texture, startTime, endTime, _, notInterruptible = UnitChannelInfo( unit)
 		spellID = "CHANNEL"
 	else
-		name,  _, texture, startTime, endTime, _, _, notInterruptible, spellID = UnitCastingInfo( f.unit)
+		if unit == "player" then
+			f.latChan:Hide()
+			f.latency = f.latSpell
+		end
+		name,  _, texture, startTime, endTime, _, _, notInterruptible, spellID = UnitCastingInfo( unit)
 	end
 
 	if not name then return end
@@ -155,43 +175,40 @@ local function startCast( f, unit, ...)
 	f.spellDelay = yo.General.spellDelay
 
 	f:SetMinMaxValues(0, f.endTime - f.startTime)
-	if f.unit ~= "focus" then
+	if unit ~= "focus" then
 		f.nameText:SetText( utf8sub( name, f:GetWidth() / 10, true))
 	else
 		f.nameText:SetText( utf8sub( name, f:GetWidth() / 7, false))
 	end
 
 	if f.latency then
-		delay = select( 4, GetNetStats()) / 1000
-		f.latency:ClearAllPoints()
-		f.latency:SetPoint("RIGHT", f, "RIGHT", 0, 0)
+		--local delay = select( 4, GetNetStats()) / 1000
+		local delay =  GetCVar("SpellQueueWindow") / 1000
+		--f.latency:ClearAllPoints()
+		--f.latency:SetPoint("RIGHT", f, "RIGHT", 0, 0)
 		f.latency:SetWidth( f:GetWidth() * min( delay / ( f.endTime - f.startTime), 1.0))
 		f.latency:Show()
 	end
-	if f.unit ~= "focus" then
+	if unit ~= "focus" then
 		f.spark:Show()
 	end
 	f:SetScript('OnUpdate', TimerUpdate)
 	f:SetAlpha( 1)
-	UnitColors( f, f.unit)
+	UnitColors( f, unit)
 	f:Show()
 end
 
 local function OnEvent( f, event, unit, ...)
-	--print(event, f.cfgname, unit, f.unit)
+	--print(event, unit, f.unit, f.cfgname, f.isBoss, f.castBoss)
 
 	if event == "PLAYER_TARGET_CHANGED" then
 		if f.unit == "target" then
 			if UnitExists( "target") then
 				if UnitCastingInfo( f.unit) then
 					f.reversed = false
-					--unit = "target"
-					--event = "UNIT_SPELLCAST_START"
 					startCast( f, f.unit, ...)
 				elseif UnitChannelInfo( f.unit) then
 					f.reversed = true
-					--unit = "target"
-					--event = "UNIT_SPELLCAST_CHANNEL_START"
 					startCast( f, f.unit, ...)
 				elseif f:IsShown() then
 					f.castId = nil
@@ -206,41 +223,44 @@ local function OnEvent( f, event, unit, ...)
 		f.inCombat = false
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		f.inCombat = true
+
 	elseif event == "ENCOUNTER_END" then
 		stopCast( f, unit, ...)
-		if f.cfgname == "BCB" then
-			f.unit = "target"
+		if f.castBoss then
+			f.isBoss = false
+			f.unit = f.firstUnit
 		end
+
 	elseif event == "ENCOUNTER_START" then
-		if f.cfgname == "BCB" then
-			f.unit = "boss1"
+		if f.castBoss then
+			f.isBoss = true
+			f.unit = f.secondUnit
 		end
+
 	end
 
-	if unit ~= f.unit then return end
+	if unit == f.unit then
 
-	if event == "UNIT_SPELLCAST_START" then
-		f.reversed = false
-		startCast( f, unit, ...)
-	elseif event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
-		f.reversed = true
-		startCast( f, unit, ...)
-	elseif event == "UNIT_SPELLCAST_STOP" then
-		stopCast( f, unit, ...)
-	elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
-		stopCast( f, unit, ...)
-	elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
-		f:SetStatusBarColor( 1, 0, 0, 1)
-		--f.nameText:SetText( f.nameText:GetText() .. "|cffff0000 (interupt)")
-		--f.bgcBar:SetVertexColor( 1, 0, 0, 1)
-		--stopCast( f, unit, ...)
-		--print(GetTime(), f, unit, ...)
+		if event == "UNIT_SPELLCAST_START" then
+			f.reversed = false
+			startCast( f, unit, ...)
+		elseif event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
+			f.reversed = true
+			startCast( f, unit, ...)
+		elseif event == "UNIT_SPELLCAST_STOP" then
+			stopCast( f, unit, ...)
+		elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
+			stopCast( f, unit, ...)
+		elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
+			f:SetStatusBarColor( 1, 0, 0, 1)
+			--f.nameText:SetText( f.nameText:GetText() .. "|cffff0000 (interupt)")
+			--f.bgcBar:SetVertexColor( 1, 0, 0, 1)
+			--stopCast( f, unit, ...)
+			--print(GetTime(), f, unit, ...)
 
-	--elseif event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" then
-	--	f:SetStatusBarColor( 1, 0, 0, 1)
-
-	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-		yo.General.spellDelay = spellDelay()
+		elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
+			yo.General.spellDelay = spellDelay()
+		end
 	end
 end
 
@@ -274,8 +294,17 @@ function CreateCastBar( frame, cfg)
 	bar.castBar:SetStatusBarTexture( texture)
 	bar.castBar:SetHeight( height)
 	bar.castBar:SetWidth( width)
-	bar.castBar:SetFrameLevel( 1)
+	bar.castBar:SetFrameLevel( 12)
 	table.insert( N.statusBars, bar.castBar)
+
+	bar.castBar.unit 		= unit
+	bar.castBar.noLag 		= noLag
+	bar.castBar.inCombat 	= false
+	bar.castBar.cfgname 	= cfgname
+	bar.castBar.classcolor 	= cfg.classcolor
+	bar.castBar.treatborder	= cfg.treatborder
+	bar.castBar.iconincombat= cfg.iconincombat
+	bar.castBar.fadeDuration= cfg.fadeDuration or 1.5
 
 	bar.castBar.bgcBar = bar.castBar:CreateTexture(nil, 'BACKGROUND')
 	bar.castBar.bgcBar:SetAllPoints( bar.castBar)
@@ -310,10 +339,19 @@ function CreateCastBar( frame, cfg)
 	bar.castBar.spark:Hide()
 
 	if unit == "player" then
-		bar.castBar.latency = bar.castBar:CreateTexture(nil, "OVERLAY")
-		bar.castBar.latency:SetColorTexture(0.5, 0, 0, 0.8)
-		bar.castBar.latency:SetBlendMode("BLEND")
-		bar.castBar.latency:SetHeight( height)
+		bar.castBar.latSpell = bar.castBar:CreateTexture(nil, "OVERLAY")
+		bar.castBar.latSpell:SetColorTexture(0.7, 0.1, 0.1, 0.8)
+		bar.castBar.latSpell:SetBlendMode("BLEND")
+		bar.castBar.latSpell:SetHeight( height)
+		bar.castBar.latSpell:SetAlpha(0.5)
+		bar.castBar.latSpell:SetPoint("RIGHT", bar.castBar, "RIGHT", 0, 0)
+
+		bar.castBar.latChan = bar.castBar:CreateTexture(nil, "OVERLAY")
+		bar.castBar.latChan:SetColorTexture(0.7, 0.1, 0.1, 0.8)
+		bar.castBar.latChan:SetBlendMode("BLEND")
+		bar.castBar.latChan:SetHeight( height)
+		bar.castBar.latChan:SetAlpha(0.5)
+		bar.castBar.latChan:SetPoint("LEFT", bar.castBar, "LEFT", 0, 0)
 
 		bar.castBar:RegisterEvent("PLAYER_REGEN_ENABLED")
 		bar.castBar:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -333,100 +371,69 @@ function CreateCastBar( frame, cfg)
 		CreateStyle( bar.castBar.ibg, 3)
 	end
 
-	if cfgname == "BCB" then
-
-		----local firstUnit, secondUnit = unit, nil
-
-		--if unit == "boss1" then
-		--	firstUnit = "target"
-		--	secondUnit = "boss1"
-		--	bar.castBar:RegisterEvent("ENCOUNTER_END")
-		--	bar.castBar:RegisterEvent("ENCOUNTER_START")
-
-		--	if UnitExists("boss1") then
-		--		unit = "boss1"
-		--	end
-		--end
-
-		--bar.castBar:SetAlpha(0.7)
-		--bar.castBar.shadow:SetAlpha(0.7)
-		--bar.castBar.bgcBar:SetAlpha(0.7)
-
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit)
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", firstUnit, secondUnit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit)
-
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit)
-
-
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_START", firstUnit, secondUnit)
-		----bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", firstUnit, secondUnit)
-		----bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", firstUnit, secondUnit)
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", firstUnit, secondUnit)
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", firstUnit, secondUnit)
-
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", firstUnit, secondUnit)
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", firstUnit, secondUnit)
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", firstUnit, secondUnit)
-
-		bar.castBar:RegisterEvent("PLAYER_TARGET_CHANGED")
-
-		bar:SetAlpha( yo.CastBar.BCB.castbarAlpha)
-	else
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit)
-		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit)
-
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit)
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit)
-	end
-
-	--f.castBar:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", unit)
-	--f.castBar:RegisterUnitEvent('UNIT_SPELLCAST_INTERRUPTIBLE', unit)
-	--f.castBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit)
-	--f.castBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED_QUIET", unit)
-
+	if cfgname == "BCB" then bar:SetAlpha( yo.CastBar.BCB.castbarAlpha) end
 	if unit == "target" then
 		bar.castBar:RegisterEvent("PLAYER_TARGET_CHANGED")
 	end
 
-	bar.castBar:SetScript('OnMinMaxChanged', OnBarValuesChange)
-	bar.castBar:SetScript('OnValueChanged', OnBarValuesChange)
-	bar.castBar:SetScript('OnShow', OnBarValuesChange)
-	bar.castBar:SetScript('OnEvent', OnEvent)
-
 	if unit == "player" then
 		DisableBlizzardFrame(CastingBarFrame)
-	elseif unit == "target" then
+	elseif unit == "target" or unit == "boss1" then
 		DisableBlizzardFrame(TargetFrameSpellBar)
 	elseif unit == "focus" then
 		DisableBlizzardFrame(FocusFrameSpellBar)
 	elseif unit == "pet" then
 		DisableBlizzardFrame(PetCastingBarFrame)
 	end
+
 	CreateStyle( bar.castBar, 3)
 	GetColors( bar.castBar)
 
-	bar.castBar.unit 		= unit
-	bar.castBar.noLag 		= noLag
-	bar.castBar.inCombat 	= false
-	bar.castBar.cfgname 	= cfgname
-	bar.castBar.classcolor 	= cfg.classcolor
-	bar.castBar.treatborder	= cfg.treatborder
-	bar.castBar.iconincombat= cfg.iconincombat
-	bar.castBar.fadeDuration= cfg.fadeDuration or 1.5
-
 	bar.castBar:Hide()
-
 	frame.castbar = bar.castBar
+
+	if cfgname == "BCB" and cfg.castBoss then
+
+		bar.castBar.castBoss	= cfg.castBoss
+		bar.castBar.firstUnit 	= unit
+		bar.castBar.secondUnit 	= "boss1"
+
+		if cfg.castBoss and UnitExists("boss1") then
+			bar.castBar.isBoss 	= true
+			bar.castBar.unit 	= bar.castBar.secondUnit
+		end
+
+		bar.castBar:RegisterEvent("ENCOUNTER_END")
+		bar.castBar:RegisterEvent("ENCOUNTER_START")
+		bar.castBar:RegisterEvent("PLAYER_TARGET_CHANGED")
+
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit, bar.castBar.secondUnit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit, bar.castBar.secondUnit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit, bar.castBar.secondUnit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit, bar.castBar.secondUnit)
+
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit, bar.castBar.secondUnit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit, bar.castBar.secondUnit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit, bar.castBar.secondUnit)
+	else
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_START", unit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit)
+
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", unit)
+		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit)
+	end
+
+	bar.castBar:SetScript('OnMinMaxChanged', OnBarValuesChange)
+	bar.castBar:SetScript('OnValueChanged', OnBarValuesChange)
+	bar.castBar:SetScript('OnShow', OnBarValuesChange)
+	bar.castBar:SetScript('OnEvent', OnEvent)
 end
+
+
+
 
 local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -435,30 +442,30 @@ logan:SetScript("OnEvent", function(self, event)
 
 	if not yo.Addons.unitFrames then return end
 
-	cfg 		= yo["CastBar"]["player"]
+	cfg 		= yo.CastBar.player
 	--cfg.cfgname	= "player"
 	cfg.width 	= yo_MovePlayerCastBar:GetWidth()
 	cfg.height 	= yo_MovePlayerCastBar:GetHeight()
 	cfg.point 	= { "CENTER", yo_MovePlayerCastBar, "CENTER", 0, 0}
 	CreateCastBar( plFrame, cfg)
 
-	cfg 		= yo["CastBar"]["target"]
+	cfg 		= yo.CastBar.target
 	cfg.width	= tarFrame:GetWidth()
 	cfg.point	= { "BOTTOM", tarFrame, "TOP", 0, 8}
 	CreateCastBar( tarFrame, cfg)
 
-	cfg 		= yo["CastBar"]["focus"]
+	cfg 		= yo.CastBar.focus
 	cfg.width	= fcFrame:GetWidth()
 	cfg.point 	= { "BOTTOM", fcFrame, "TOP", 0, 8}
 	CreateCastBar( fcFrame, cfg)
 
-	cfg 		= yo["CastBar"]["BCB"]
+	cfg 		= yo.CastBar.BCB
 	cfg.cfgname = "BCB"
 	cfg.point	= { "CENTER", UIParent, "CENTER", cfg.offsetX, cfg.offsetY}
 	yo_castBig = CreateFrame("Frame", "yo_castBig", UIParent)
 	CreateCastBar( yo_castBig, cfg)
 
-	cfg 		= yo["CastBar"]["boss"]
+	cfg 		= yo.CastBar.boss
 	cfg.width 	= yo_Moveboss:GetWidth()
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = _G["yo_Boss"..i]

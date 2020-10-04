@@ -187,7 +187,7 @@ local function UpdateBuffs(unitFrame)
 
 			--elseif spellID == 277242 then showGuune = true
 
-			elseif ( filter == "HELPFUL" and not isPlayer and not blackSpells[spellID]) then
+			elseif ( filter == "HELPFUL" and not isPlayer and not N.blackSpells[spellID]) then
 
 				if dissIcons ~= "none"	or iDisp > 2 then
 					if ( dissIcons == "dispell" and badClassTypes[myClass][debuffType])
@@ -704,8 +704,8 @@ local function OnCPEvent( self, event, unit, powerType)
 end
 
 function CreateCPpoints( self)
-	if not yo.pType[myClass].powerID then return end
-	if yo.pType[myClass].spec and yo.pType[myClass].spec ~= GetSpecialization() then return end
+	if not N.pType[myClass].powerID then return end
+	if N.pType[myClass].spec and N.pType[myClass].spec ~= GetSpecialization() then return end
 
 	local size = 8
 	local maxComboPoints = UnitPowerMax("player", self.powerID);
@@ -967,7 +967,7 @@ local function OnNamePlateCreated( frame)
 
 	f:EnableMouse(false)
 
-	if yo.NamePlates.showResourses and yo.pType[myClass] then
+	if yo.NamePlates.showResourses and N.pType[myClass] then
 		f.classPower = CreateFrame("Frame", nil, f)
 		f.classPower:SetPoint("CENTER", f.healthBar, "BOTTOM", 0, 0)
 		f.classPower:SetSize(60, 13)
@@ -977,8 +977,8 @@ local function OnNamePlateCreated( frame)
 		f.classPower.TurnOn 	= ClassPowerBar.TurnOn
 		--f.classPower.TurnOff 	= TurnOff
 		--f.classPower.TurnOn 	= TurnOn
-		f.classPower.powerID 	= yo.pType[myClass].powerID
-		f.classPower.powerType	= yo.pType[myClass].powerType
+		f.classPower.powerID 	= N.pType[myClass].powerID
+		f.classPower.powerType	= N.pType[myClass].powerType
 		CreateCPpoints( f.classPower)
 
 		f.classPower:SetScript("OnEvent", OnCPEvent)

@@ -32,8 +32,8 @@ local function UpdateAura( self, unit)
 		end
 
 		if yo.fliger.pDebuffEnable then
-			if unit == self.pDebuff.unit and not blackSpells[spellID] then
-			--if unit == self.pDebuff.unit and RaidDebuffList[spellID] then
+			if unit == self.pDebuff.unit and not N.blackSpells[spellID] then
+			--if unit == self.pDebuff.unit and N.RaidDebuffList[spellID] then
 				--if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = CreateAuraIcon( self.pDebuff, fligerPD) end
 				UpdateAuraIcon( CreateAuraIcon( self.pDebuff, fligerPD), filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
 				fligerPD = fligerPD + 1

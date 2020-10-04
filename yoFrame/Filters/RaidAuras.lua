@@ -1,4 +1,6 @@
-blackSpells = {
+local L, yo, N = unpack( select( 2, ...))
+
+N.blackSpells = {
 	[36900]  = true, -- Soul Split: Evil!
 	[36901]  = true, -- Soul Split: Good
 	[36893]  = true, -- Transporter Malfunction
@@ -27,7 +29,7 @@ blackSpells = {
 	[15007]  = true, -- Ress Sickness
 	[113942] = true, -- Demonic: Gateway
 	[89140]  = true, -- Demonic Rebirth: Cooldown
-	
+
 	--[783]	= true,  -- test
 	--[188031] = true, -- test
 	[206151] = true, -- Бремя претендента
@@ -40,7 +42,7 @@ blackSpells = {
 	[124013] = true, -- Убийца хозенов
 }
 
-RaidDebuffList = {
+N.RaidDebuffList = {
 	-- Mythic Dungeons
 	--[209858] = true, -- Necrotic
 	--[226512] = true, -- Sanguine
@@ -209,7 +211,7 @@ RaidDebuffList = {
 	--[260685] = true, -- Taint of G'huun
 	--[266107] = true, -- Thirst for Blood
 	--[260455] = true, -- Serrated Fangs
-		
+
 	-- Uldir
 	-- MOTHER
 	[268277] = true, -- Purifying Flame

@@ -67,7 +67,7 @@ end
 
 local funcWhiteList = function( self, button, ...)
 	local spellID = select( 11, ...)
-	if not blackSpells[spellID] then
+	if not N.blackSpells[spellID] then
 		return true
 	else
 		return false
@@ -76,7 +76,7 @@ end
 
 local funcBlackList = function( self, button, ...)
 	local spellID = select( 11, ...)
-	if RaidDebuffList[spellID] then
+	if N.RaidDebuffList[spellID] then
 		return true
 	else
 		return false

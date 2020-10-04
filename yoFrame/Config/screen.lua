@@ -69,3 +69,5 @@ SetCVar("nameplateShowEnemyMinions", 1)
 
 SetCVar("autoLootDefault", 1)
 SetCVar("doNotFlashLowHealthWarning", 1)
+
+SetCVar("SpellQueueWindow", yo.CastBar.BCB.QueueWindow)

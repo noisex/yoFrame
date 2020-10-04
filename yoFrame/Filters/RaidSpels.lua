@@ -1,3 +1,5 @@
+local L, yo, N = unpack( select( 2, ...))
+
 bls = {
  	[774] = true,     	-- "for esting..."   омоложение
     [8936] = true,    	-- "for esting..." восстановление
@@ -12,7 +14,7 @@ bls = {
     [230935] = true   	-- "Drums of the Mountain"
 }
 
-interupt_spells = {
+N.interuptSpells = {
 	-- Speck Knock
 	[47528]  = 15, --Mind Freeze
     [106839] = 15, --Skull Bash

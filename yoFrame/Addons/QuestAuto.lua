@@ -131,7 +131,7 @@ local function OnEvent( self, event, ...)
 		self:RegisterEvent("QUEST_ACCEPTED")
 		self:RegisterEvent("CINEMATIC_START")
 
-		--self:RegisterEvent("PLAY_MOVIE")
+		self:RegisterEvent("PLAY_MOVIE")
 		--self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 		--self:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 		--self:RegisterEvent("ADDON_LOADED")
@@ -166,8 +166,12 @@ local function OnEvent( self, event, ...)
 			CompleteQuest()
 		end
 
-	elseif event == "CINEMATIC_START" then
+	elseif event == "PLAY_MOVIE" then
+		--print("PLAY_MOVIE ", ...)
+		--/run MovieFrame_PlayMovie(MovieFrame, 2)
+		--function MovieFrame_PlayMovie(self, index)
 
+	elseif event == "CINEMATIC_START" then
 		if not yo.Addons.AutoQuestSkipScene then return end
 
 		if TimerMovie == nil then
@@ -386,3 +390,4 @@ hooksecurefunc( "AutoQuestPopupTracker_Update", function(self, ...)
 		end
 	end
 end)
+

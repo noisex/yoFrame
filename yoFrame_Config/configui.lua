@@ -102,8 +102,8 @@ local function UpdateStringScale( scale)
 	end
 end
 
-local aConf
 function Setlers( path, val, noReboot)
+	local aConf = {}
 	local p1, p2, p3, p4 = strsplit("#", path)
 
 	if not noReboot then needReload = true end
@@ -345,20 +345,23 @@ function InitOptions()
 						set = function(info,val) Setlers( info[1] .."#".. info[2] .."#".. info[#info], val)	end,
 						disabled = function() return not yo.CastBar.BCB.enable; end,
 						args = {
-							enable 		= { order = 1, type = "toggle", 	name = L["BCBenable"], width = "full", disabled = false, },
-							unit 		= { order = 2, type = "select", 	name = L["BCDunit"], width = "double",	values = {["player"] = L["player"], ["target"] = L["target"], ["boss1"] = L["BCBBoss"]},},
-							width 		= { order = 3,	type = "range", 	name = function(info) return tr( info[#info]) end, 		min = 150, max = 800, step = 10,},
-							height 		= {	order = 4,	type = "range", 	name = function(info) return tr( info[#info]) end,		min = 10, max = 40, step = 1,},
-							offsetY 	= {	order = 7,	type = "range", 	name = function(info) return tr( info[#info]) end, 	min = -500, max = 500, step = 1,},
-							offsetX 	= {	order = 6,	type = "range", 	name = function(info) return tr( info[#info]) end, 	min = -900, max = 900, step = 1,},
-							icon 		= {	order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end,},
-							iconSize 	= {	order = 11,	type = "range", 	name = function(info) return tr( info[#info]) end,		min = 10, max = 60, step = 1,},
-							iconoffsetX = {	order = 12,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = -400, max = 400, step = 1,},
-							iconoffsetY = {	order = 13,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = -70, 	max = 70, step = 1,},
-							iconincombat= { order = 14, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
-							classcolor 	= {	order = 15, type = "toggle",	name = L["CBclasscolor"],	desc = L["DESC_BCB_CC"],	width = "full",},
-							treatborder = {	order = 16, type = "toggle",	name = function(info) return tr( info[#info]) end,	desc = L["DESC_BCB_TREAT"],	width = "full",},
-							castbarAlpha= {	order = 20,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 0, max = 1, step = 0.01,},
+							QueueWindow = {	order = 1,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = 100, max = 1000, step = 10, width = "full", desc = L["DESC_QUEUE"],
+								set = function(info,val) Setlers( info[1] .."#".. info[2] .."#".. info[#info], val, true) SetCVar("SpellQueueWindow", val) end, },
+							enable 		= { order = 3,  type = "toggle", 	name = L["BCBenable"], width = "full",  disabled = false, },
+							unit 		= { order = 4,  type = "select", 	name = L["BCDunit"],   width = 1,	values = {["player"] = L["player"], ["target"] = L["target"]},},
+							castBoss	= {	order = 7,  type = "toggle",	name = function(info) return tr( info[#info]) end, desc = L["DESC_CASTBOSS"],},
+							width 		= { order = 10,	type = "range", 	name = function(info) return tr( info[#info]) end, 	min = 150, max = 800, step = 10,},
+							height 		= {	order = 14,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = 10, max = 40, step = 1,},
+							offsetY 	= {	order = 16,	type = "range", 	name = function(info) return tr( info[#info]) end, 	min = -500, max = 500, step = 1,},
+							offsetX 	= {	order = 18,	type = "range", 	name = function(info) return tr( info[#info]) end, 	min = -900, max = 900, step = 1,},
+							icon 		= {	order = 20, type = "toggle",	name = function(info) return tr( info[#info]) end,},
+							iconSize 	= {	order = 21,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = 10, max = 60, step = 1,},
+							iconoffsetX = {	order = 22,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = -400, max = 400, step = 1,},
+							iconoffsetY = {	order = 23,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = -70, 	max = 70, step = 1,},
+							iconincombat= { order = 24, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
+							classcolor 	= {	order = 25, type = "toggle",	name = L["CBclasscolor"],	desc = L["DESC_BCB_CC"],	width = "full",},
+							treatborder = {	order = 26, type = "toggle",	name = function(info) return tr( info[#info]) end,	desc = L["DESC_BCB_TREAT"],	width = "full",},
+							castbarAlpha= {	order = 40,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 0, max = 1, step = 0.01,},
 						},
 					},
 					player = {

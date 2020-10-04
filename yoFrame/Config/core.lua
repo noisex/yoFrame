@@ -5,33 +5,10 @@ LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "
 RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
-local function buttonsUP( self)
-	if not InCombatLockdown() then
-		SHOW_MULTI_ACTIONBAR_1 = 1
-		SHOW_MULTI_ACTIONBAR_3 = 1
-		ALWAYS_SHOW_MULTIBARS  = 1
-		--SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
-		MultiBarBottomLeft:SetShown(true)
-		MultiBarRight:SetShown(true)
-		--MultiActionBar_ShowAllGrids(ACTION_BUTTON_SHOW_GRID_REASON_CVAR);
---		InterfaceOptions_UpdateMultiActionBars()
-	else
-		--self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	end
-end
-
 local function enterEvent( self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	mySpec = GetSpecialization()
 	myRole = UnitGroupRolesAssigned( "player")
-
-	local function GameTooltipDefault(tooltip, parent)
-		tooltip:SetOwner(parent, "ANCHOR_NONE")
-		tooltip:ClearAllPoints()
-		tooltip:SetPoint("BOTTOMRIGHT", yo_MoveToolTip, "BOTTOMRIGHT", 0, 0)
-		tooltip.default = 1
-	end
-	hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
 
 	CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
 	CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
@@ -48,8 +25,18 @@ local function enterEvent( self)
 	if not yo.Addons.BlackPanels then RightDataPanel:Hide() LeftDataPanel:Hide() end
 	if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
 
+	----------------------------------------------------------------------------------------
+	--	Tooltip replace
+	----------------------------------------------------------------------------------------
+	local function GameTooltipDefault(tooltip, parent)
+		tooltip:SetOwner(parent, "ANCHOR_NONE")
+		tooltip:ClearAllPoints()
+		tooltip:SetPoint("BOTTOMRIGHT", yo_MoveToolTip, "BOTTOMRIGHT", 0, 0)
+		tooltip.default = 1
+	end
+	hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
+
 	--C_Timer.After( 2, function() buttonsUP(self) end )
-	buttonsUP(self)
 end
 
 local function OnEvent( self, event, ...)

@@ -203,7 +203,7 @@ local function checkDungeLoot( filterType)
 							lolButton.onuse:SetText(temptext, 1, 1, 1, 0)
 						end
 
-						local tt = N.ScanTooltip --CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
+						local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
 						tt:SetOwner( UIParent, "ANCHOR_NONE")
 						tt:SetHyperlink( itemInfo.link)
 						tt:Show()

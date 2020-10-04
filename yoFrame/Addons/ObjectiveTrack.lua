@@ -10,47 +10,59 @@ QuestLevelFormat = " [%d] %s"
 --WatchFrameLevelFormat = "[%d%s%s] %s"
 WatchFrameLevelFormat = "%s%s %s"
 
-if yo.Addons.ObjectiveShort then
-	local function CompareQuestWatchInfos(info1, info2)
-		local quest1, quest2 = info1.quest, info2.quest;
+--[[
+local function CompareQuestWatchInfos(info1, info2)
+	local quest1, quest2 = info1.quest, info2.quest;
+	if quest1:IsCalling() 			~= quest2:IsCalling() 			then return quest1:IsCalling(); end
+	if quest1.overridesSortOrder 	~= quest2.overridesSortOrder 	then return quest1.overridesSortOrder; end
+	return info1.index < info2.index;
+end
 
-		if quest1:IsCalling() ~= quest2:IsCalling() then
-			return quest1:IsCalling();
-		end
+origBuildQuestWatchInfos = QUEST_TRACKER_MODULE.BuildQuestWatchInfos
 
-		if quest1.overridesSortOrder ~= quest2.overridesSortOrder then
-			return quest1.overridesSortOrder;
-		end
+myShortQuester = function ()
+	local infos = {};
 
-		return info1.index < info2.index;
-	end
-
-	function QUEST_TRACKER_MODULE:BuildQuestWatchInfos()
-		local infos = {};
-
-		for i = 1, C_QuestLog.GetNumQuestWatches() do
-			local questID = C_QuestLog.GetQuestIDForQuestWatchIndex(i);
-			if questID then
-				local quest = QuestCache:Get(questID);
-				local onMap, hasLocalPOI = C_QuestLog.IsOnMap( questID)
-				--if ( yo.Addons.ObjectiveShort and ( hasLocalPOI or onMap)) then --and self:ShouldDisplayQuest(quest) then
-				if self:ShouldDisplayQuest(quest) then
-					--print( onMap, hasLocalPOI, questID, self:ShouldDisplayQuest(quest))
-					if yo.Addons.ObjectiveShort and not onMap then
-					else
-						table.insert(infos, { quest = quest, index = i });
-					end
+	for i = 1, C_QuestLog.GetNumQuestWatches() do
+		local questID = C_QuestLog.GetQuestIDForQuestWatchIndex(i);
+		if questID then
+			local quest = QuestCache:Get(questID);
+			local onMap, hasLocalPOI = C_QuestLog.IsOnMap( questID)
+			--if ( yo.Addons.ObjectiveShort and ( hasLocalPOI or onMap)) then --and self:ShouldDisplayQuest(quest) then
+			if QUEST_TRACKER_MODULE:ShouldDisplayQuest(quest) then
+				--print( onMap, hasLocalPOI, questID, self:ShouldDisplayQuest(quest))
+				if yo.Addons.ObjectiveShort and not onMap then
+				else
+					table.insert(infos, { quest = quest, index = i });
 				end
 			end
 		end
-
-		table.sort(infos, CompareQuestWatchInfos);
-		return infos;
 	end
+	table.sort(infos, CompareQuestWatchInfos);
+	return infos;
 end
 
-local function ShowQuestLevelInLog()
+local shortButton = CreateFrame("CheckButton", nil, ObjectiveTrackerFrame.HeaderMenu, "InterfaceOptionsCheckButtonTemplate")
+shortButton:SetPoint("RIGHT", ObjectiveTrackerFrame.HeaderMenu, "LEFT", -120, 0)
+shortButton:SetChecked( yo.Addons.ObjectiveShort)
+shortButton.Text:SetText("ShortMenu")
+shortButton:SetScript("OnClick", function(self, ...)
+	Setlers( "Addons#ObjectiveShort", self:GetChecked(), true)
+	if self:GetChecked() then 	QUEST_TRACKER_MODULE.BuildQuestWatchInfos = myShortQuester
+	else 						QUEST_TRACKER_MODULE.BuildQuestWatchInfos = origBuildQuestWatchInfos end
+	QUEST_TRACKER_MODULE:Update()
+end)
 
+if yo.Addons.ObjectiveShort then
+	QUEST_TRACKER_MODULE.BuildQuestWatchInfos = myShortQuester
+	--QUEST_TRACKER_MODULE:Update()
+end
+ --QUEST_TRACKER_MODULE:BuildQuestWatchInfos
+--ObjectiveTrackerFrame.HeaderMenu
+--yo.Addons.ObjectiveShort
+	--ObjectiveTrackerFrame.HeaderMenu.ShortButton = shortButton
+]]
+local function ShowQuestLevelInLog()
 	--for button in QuestMapFrame.QuestsFrame.titleFramePool:EnumerateActive() do
 	--	if (button and button.questLogIndex) then
 	--		local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID,
@@ -65,7 +77,6 @@ local function ShowQuestLevelInLog()
 	--		end
 	--	end
 	--end
-
 end
 
 local function ShowQuestLevelInWatchFrame()

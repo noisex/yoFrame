@@ -1,6 +1,6 @@
 local L, yo, N = unpack( select( 2, ...))
 
-yo.pType = {
+N.pType = {
 	MAGE 		= { powerID = 16,	powerType = 'ARCANE_CHARGES', 	spec = 1},
 	WARLOCK 	= { powerID = 7, 	powerType = 'SOUL_SHARDS'		},
 	PALADIN 	= { powerID = 9, 	powerType = 'HOLY_POWER'		}, --, 		spec = 3},
@@ -22,7 +22,7 @@ end
 
 N.DebuffWhiteList 	= {}
 
-tankSpecIDs			= {
+N.tankSpecIDs			= {
 	["250 "]	= true, 	-- DEATHKNIGHT
 	["104"]		= true,		-- DRUID
 	["268"]		= true,		-- MONK
@@ -231,7 +231,7 @@ logan:SetScript("OnEvent", function(self, ...)
 	local id, name, _, icon = GetSpecializationInfo( GetSpecialization())
 	mySpec = id
 
-	if yo.NamePlates.showTauntDebuff or tankSpecIDs[mySpec] then
+	if yo.NamePlates.showTauntDebuff or N.tankSpecIDs[mySpec] then
 		for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do
 			if k and v then
 				N.tauntsSpell[k] = v

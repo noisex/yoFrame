@@ -94,7 +94,7 @@ end
 end
 
 local function OnEvent( self, event, unit, pToken, ...)
-	--print( event, " ptoken: ", pToken, " Type: ", yo.pType[myClass].powerID, unit)
+	--print( event, " ptoken: ", pToken, " Type: ", N.pType[myClass].powerID, unit)
 
 	if event == "RUNE_POWER_UPDATE" then
 
@@ -165,14 +165,15 @@ local function CreateShardsBar( f)
 	CreateStyle( holyShards, 2, 5, 0.6)
 
 	holyShards.colr, holyShards.colg, holyShards.colb = f.colr, f.colg, f.colb
-	holyShards.powerID 	= yo.pType[myClass].powerID
-	holyShards.powerType= yo.pType[myClass].powerType
-	holyShards.spec 	= yo.pType[myClass].spec
+	holyShards.powerID 	= N.pType[myClass].powerID
+	holyShards.powerType= N.pType[myClass].powerType
+	holyShards.spec 	= N.pType[myClass].spec
 	holyShards.minAlpha = 0.2
 	holyShards.maxAlpha = 0.9
 	holyShards.TurnOff 	= ClassPowerBar.TurnOff
 	holyShards.TurnOn 	= ClassPowerBar.TurnOn
 	holyShards.unit 	= f.unit
+	holyShards.idx 		= 0
 	holyShards.recolorShards	= recolorShards
 
 	f.holyShards = holyShards
@@ -185,8 +186,9 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.unitFrames then return end
-	if yo.pType[myClass] and yo.pType[myClass].powerID then
-		CreateShardsBar( plFrame)
-		--CreateShardsBar( tarFrame)
+	if N.pType[myClass] and N.pType[myClass].powerID then
+		--if not N.pType[myClass].spec or N.pType[myClass].spec == mySpec then
+			CreateShardsBar( plFrame)
+		--end
 	end
 end)
