@@ -676,9 +676,7 @@ function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	})
 	f:SetBackdropColor(.07,.07,.07, alpha or .9)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
-	if yo.Media.classBorder then
-			r, g, b = myColor.r, myColor.g, myColor.b
-	end
+	--if yo.Media.classBorder then r, g, b = myColor.r, myColor.g, myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0)	--(.15,.15,.15, alphaborder  or 0)
 	--table.insert( N["shadows"], f)
 	return f
@@ -716,9 +714,7 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	})
 	f:SetBackdropColor(.07,.07,.07, alpha or 0.9)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
-	if yo.Media.classBorder then
-			r, g, b = myColor.r, myColor.g, myColor.b
-	end
+	--if yo.Media.classBorder then r, g, b = myColor.r, myColor.g, myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0) --(0, 0, 0, alphaborder or 1)
 	--table.insert( N["shadows"], f)
 end

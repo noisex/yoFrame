@@ -364,7 +364,7 @@ local function Shared(self, unit)
 
 		self.rText =  self:CreateFontString(nil ,"OVERLAY")
 		self.rText:SetFont( yo.Media.fontpx, yo.fontsize, "OUTLINE")
-		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, 0)
+		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -2)
 		self:Tag( self.rText, "[GetNameColor][group]")
 	end
 
@@ -379,7 +379,7 @@ local function Shared(self, unit)
 
     if cunit ~= "boss" or unit ~= "focustarget" then
     	self.LeaderIndicator = CreateFrame("Button", nil, self, BackdropTemplateMixin and "BackdropTemplate")
-    	self.LeaderIndicator:SetPoint("CENTER", self, "TOPLEFT", 15, 4)
+    	self.LeaderIndicator:SetPoint("CENTER", self, "TOPLEFT", 15, 2)
 		self.LeaderIndicator:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-LeaderIcon", })
     	self.LeaderIndicator:SetSize(10, 10)
 

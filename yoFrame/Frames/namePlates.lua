@@ -136,25 +136,26 @@ local function scanToQuest( self, ...)
 	tt:SetOwner( UIParent, "ANCHOR_NONE")
 	tt:SetUnit( self.unit)
 	tt:Show()
+	local p1, p2, p3, p4
 	for i = 3, min( 8, tt:NumLines()) do
 		local line = _G["yoFrame_ScanTooltipTextLeft"..i]
 		if line then
 			local lineText = line:GetText()
-			local p1, p2 = lineText:match(": (%d+)/(%d+)$")
 
-			if p1 and p2 and not (p1 == p2) then --and not string.match( line, RARITY) then
-				showMe = true
-				--print(p1, p2)
-				break end
+			p1, p2 = lineText:match(": (%d+)/(%d+)$")
+			if p1 and p2 and not (p1 == p2) then showMe = true	break end
 
-			--print(lineText)
-			local p3 = lineText:match ("%. %((%d+%%)%)$")
-			if p3 and not (p3 == "100%") then
-				showMe = true break end
+			p3 = lineText:match ("%. %((%d+%%)%)$")
+			if p3 and not (p3 == "100%") then showMe = true break end
 
-			--print( GetTime(), p1, p2, showMe)
+			p4 = lineText:match (" %((%d+%%)%)$")
+			if p4 and not (p4 == "100%") then showMe = true break end
 		end
 	end
+	--print( p1, p2, p3, p4, showMe)
+	if p4 	then self.Class.Icon:SetTexture( [[Interface\GossipFrame\DailyQuestIcon]])
+			else self.Class.Icon:SetTexture( [[Interface\GossipFrame\AvailableLegendaryQuestIcon]])	end
+
 	if showMe then self.Class:Show() else self.Class:Hide() end
 	tt:Hide()
 end
@@ -943,7 +944,7 @@ local function OnNamePlateCreated( frame)
 	f.Class:Hide()
 	f.Class.Icon = f.Class:CreateTexture(nil, "OVERLAY")
 	f.Class.Icon:SetAllPoints()
-	f.Class.Icon:SetTexture( [[Interface\GossipFrame\AvailableLegendaryQuestIcon]] ) --"Interface\\WorldStateFrame\\Icons-Classes")
+	f.Class.Icon:SetTexture( [[Interface\GossipFrame\AvailableLegendaryQuestIcon]] ) --"Interface\\WorldStateFrame\\Icons-Classes") --Interface\GossipFrameDailyQuestIcon
 
 	--f.Class.Icon:SetTexCoord(0, 0, 0, 0)
 	--CreateStyle(f.Class, 1)

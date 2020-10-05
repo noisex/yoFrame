@@ -17,6 +17,9 @@ end
 -------------------------------------------------------------------------------------------------------
 
 -- Global strings
+--_G.CHAT_YOU_CHANGED_NOTICE	= "" 															-- СМЕНА КАНАЛА
+--_G.CHAT_YOU_CHANGED_NOTICE_BN = ""
+
 _G.CHAT_INSTANCE_CHAT_GET = "|Hchannel:INSTANCE_CHAT|h[".."R".."]|h %s:\32"
 _G.CHAT_INSTANCE_CHAT_LEADER_GET = "|Hchannel:INSTANCE_CHAT|h[".."RL".."]|h %s:\32"
 _G.CHAT_BN_WHISPER_GET = "Fr".." %s:\32"
@@ -74,7 +77,11 @@ local function Abbreviate(channel)
 end
 
 local function AddMessage(self, message, ...)
-    message = message:gsub('|Hchannel:(.-)|h%[(.-)%]|h', Abbreviate)
+	if not message:find("Вы покинули канал ") then
+		if not message:find("Смена канала: ") then
+    		message = message:gsub('|Hchannel:(.-)|h%[(.-)%]|h', Abbreviate)
+    	end
+    end
 
     return hooks[self](self, message, ...)
 end
@@ -86,6 +93,8 @@ for index = 1, NUM_CHAT_WINDOWS do
         frame.AddMessage = AddMessage
     end
 end
+
+
 
 function OnHyperlinkEnter(frame, refString)
 	if InCombatLockdown() then return; end

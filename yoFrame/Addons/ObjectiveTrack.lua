@@ -10,6 +10,33 @@ QuestLevelFormat = " [%d] %s"
 --WatchFrameLevelFormat = "[%d%s%s] %s"
 WatchFrameLevelFormat = "%s%s %s"
 
+hooksecurefunc("ObjectiveTrackerProgressBar_OnEvent", function(self, ...)
+	if not self.Bar.shadow then
+		self.Bar:SetStatusBarTexture(texture)
+		--self.Bar.BorderLeft 	= nil
+		self.Bar.BorderLeft:Hide()
+		self.Bar.BorderRight:Hide()
+		self.Bar.BorderMid:Hide()
+
+		CreateStyle( self.Bar, 2)
+	end
+end)
+
+
+hooksecurefunc("BonusObjectiveTrackerProgressBar_OnEvent", function(self, ...)
+	if not self.Bar.shadow then
+		self.Bar:SetStatusBarTexture(texture)
+		self.Bar.BarFrame:Hide()
+		self.Bar.BarFrame2:Hide()
+		self.Bar.BarFrame3:Hide()
+		self.Bar.IconBG:Hide()
+		self.Bar.Icon:SetMask( nil)
+		self.Bar.Icon:SetTexCoord( unpack( yo.tCoord))
+
+		CreateStyle( self.Bar, 2)
+	end
+end)
+
 --[[
 local function CompareQuestWatchInfos(info1, info2)
 	local quest1, quest2 = info1.quest, info2.quest;
@@ -293,7 +320,7 @@ frame:SetScript("OnEvent", function(self, event)
 	end
 
 	local instanceType = select( 2, GetInstanceInfo())
-	if IsInInstance() and instanceType ~= "scenario" and yo.Addons.hideObjective then
+	if IsInInstance() --[[and instanceType ~= "scenario"]] and yo.Addons.hideObjective then
 		ObjectiveTracker_Collapse()
 	elseif ObjectiveTrackerFrame.collapsed and not InCombatLockdown() then
 		ObjectiveTracker_Expand()

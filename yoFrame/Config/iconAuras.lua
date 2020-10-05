@@ -16,9 +16,10 @@ local posz = {
 }
 
 local function BuffOnEnter( f)
+
 	if true or showToolTip == "cursor" then
-		GameTooltip:SetOwner( f, "ANCHOR_BOTTOMRIGHT", 8, -16)
-	else
+		--GameTooltip:SetOwner( f, "ANCHOR_CURSOR", 0, 10) --"ANCHOR_CURSOR", 0, 0)--  "ANCHOR_BOTTOMRIGHT", 8, -16)
+	--else
 		GameTooltip:SetOwner( f, "ANCHOR_NONE", 0, 0)
 		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	end

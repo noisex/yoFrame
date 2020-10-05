@@ -194,7 +194,7 @@ local Shared = function(self, unit)
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( texture)
-	self.Health.hbg:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
+	self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
@@ -209,8 +209,8 @@ local Shared = function(self, unit)
 
 	else
 		self.Health.colorHealth = true
-		self.colors.health = { 0.15, 0.15, 0.15 }
-		self.Health.hbg:SetVertexColor( 0.7, 0.7, 0.7, 1)
+		self.colors.health = { 0.13, 0.13, 0.15, 0.9}
+		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
 	end
 
 	if yo.Raid.simpeRaid and yo.Raid.classcolor ~= 3 then
@@ -305,7 +305,7 @@ local Shared = function(self, unit)
 
 	self.bgHlight = self.Overlay:CreateTexture(nil, "OVERLAY")
 	self.bgHlight:SetAllPoints( self)
-	self.bgHlight:SetVertexColor( 0.5,0.5,0.5,0.9)
+	self.bgHlight:SetVertexColor( 0.4,0.4,0.4,0.9)
 	self.bgHlight:SetTexture( texhl)
 	self.bgHlight:SetBlendMode( "ADD")
 	self.bgHlight:SetAlpha( 0.2)

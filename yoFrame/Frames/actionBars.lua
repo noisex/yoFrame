@@ -42,6 +42,22 @@ local function buttonsUP( self)
 	end
 end
 
+local function myButtonBorder( self, name, shift, alpha, cols)
+	local shift = shift or 5
+	local alpha = alpha or 0.9
+	local cols  = cols 	or { 1, 1, 1}
+
+	local texture = self:CreateTexture("frame", nil, self)
+	texture:SetTexture("Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
+	texture:SetVertexColor( cols[1], cols[2], cols[3])
+	texture:SetPoint("TOPLEFT", -shift, shift)
+	texture:SetPoint("BOTTOMRIGHT", shift, -shift)
+	texture:SetAlpha( alpha)
+	self[name] = texture
+	return texture
+end
+
+
 function ActionButton_UpdateRangeIndicator(self, checksRange, InRange)
 	--print( self:GetName(), checksRange, inRange)
 	if not self.action then return end
@@ -137,43 +153,20 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 --------------------------------------------------------------------------------------------
 	elseif 	name:match("ExtraActionButton") then
 
-		button:SetScale( 0.9)
-		button:SetNormalTexture("")
+		button.style:Hide()
+		button.style.Show = dummy
 
-		button.oldicon = _G[name.."Icon"]
-		button.oldicon:Hide()
-
-		local panel = CreateFrame("Frame", name.."Panel", button, BackdropTemplateMixin and "BackdropTemplate")
-		CreatePanel(panel, buttonWidth +10, buttonWidth +10, "CENTER", button, "CENTER", 0, 0)
-		--CreateStyle(panel, 4)
-		--panel.shadow:SetBackdropColor(1, 1, 0)
-		button:GetHighlightTexture():ClearAllPoints()
-		button:GetHighlightTexture():SetPoint("TOPLEFT", panel, -5, 5)
-		button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", panel, 5, -5)
-
-		button:GetCheckedTexture():ClearAllPoints()
-		button:GetCheckedTexture():SetPoint("TOPLEFT", panel, -5, 5)
-		button:GetCheckedTexture():SetPoint("BOTTOMRIGHT", panel, 5, -5)
-		panel:SetBackdropColor( 1, 1, 0, 0.5)
-
-		panel.icon = panel:CreateTexture(nil, "BORDER")
-		panel.icon:SetTexCoord(unpack( yo.tCoord))
-		panel.icon:SetPoint("TOPLEFT", panel, 2, -2)
-		panel.icon:SetPoint("BOTTOMRIGHT", panel, -2, 2)
-		panel.icon:SetTexture( button.oldicon:GetTexture())
-
+		button:SetScale( 1.1)
+		button.Count:Hide()
+		button.icon:SetTexCoord(unpack( yo.tCoord))
 		button.cooldown:ClearAllPoints()
-		button.cooldown:SetAllPoints( panel.icon)
+		button.cooldown:SetAllPoints( button)
 
-		button:HookScript('OnShow',  function(self, ...)
-			local name = self:GetName()
-			self.style:Hide()
-			local oldicon = _G[name.."Icon"]
-			oldicon:Hide()
+		local shift, alpfa = 7, 0.9
 
-			local panel = _G[name.."Panel"]
-			panel.icon:SetTexture( oldicon:GetTexture())
-		end)
+		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa,   { 1, 1, 0})) end
+		if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "pushed", shift, alpfa,  { 0, 1, 0})) 	end
+		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa, { 1, 0, 0})) end
 
 --------------------------------------------------------------------------------------------
 --		Pet Menu
@@ -181,11 +174,10 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 	elseif name:match("PetAction") or name:match("StanceButton") then
 
 		local Flash	 	= _G[name.."Flash"]
-			local icon	 	= _G[name.."Icon"]
+		local icon	 	= _G[name.."Icon"]
 		local normal  	= _G[name.."NormalTexture2"]
 		local Border  	= _G[name.."Border"]
-
-		Flash:SetTexture("")
+		local shift, alpfa = 3, 0.9
 
 		if not _G[name.."Panel"] then
 			button:SetWidth(buttonWidth)
@@ -216,24 +208,12 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			end
 		end
 
-		-- if Border then
-			-- Border:Hide()
-			-- Border = dummy
-		-- end
-
-		--button:SetNormalTexture( nil)
+		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa, { 0, 1, 0})) end
+		if button.SetPushedTexture 		then button:SetPushedTexture( 		myButtonBorder( button, "pushed", shift, alpfa, { 1, 0, 0})) 	end
+		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa - 0.3, { 1, 1, 0})) end
 		button:SetNormalTexture( "")
 		button:GetNormalTexture():SetSize( 1,1)
-
-
-		--button:SetNormalTexture():ClearAllPoints()
-		--button.SetNormalTexture = dummy
-
-		-- if normal then
-			-- normal:ClearAllPoints()
-			-- normal:SetPoint("TOPLEFT")
-			-- normal:SetPoint("BOTTOMRIGHT")
-		-- end
+		Flash:SetTexture("")
 
 --------------------------------------------------------------------------------------------
 --		Totem Menu
@@ -292,38 +272,9 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			CD:SetPoint("BOTTOMRIGHT", -2, 2)
 		end
 
-		if button.SetHighlightTexture and not button.hover then
-			local hover = button:CreateTexture("frame", nil, self)
-			hover:SetTexture( texture)
-			hover:SetVertexColor( 0, 1, 0, 1)
-			hover:SetPoint("TOPLEFT", -shift, shift)
-			hover:SetPoint("BOTTOMRIGHT", shift, -shift)
-			hover:SetAlpha( 0.9)
-			button.hover = hover
-			button:SetHighlightTexture(hover)
-		end
-
-		if button.SetPushedTexture and not button.pushed then
-			local pushed = button:CreateTexture("frame", nil, self)
-			pushed:SetTexture( texture)
-			pushed:SetVertexColor( 1, 0, 0, 1)
-			pushed:SetPoint("TOPLEFT", -shift, shift)
-			pushed:SetPoint("BOTTOMRIGHT", shift, -shift)
-			pushed:SetAlpha( 0.9)
-			button.pushed = pushed
-			button:SetPushedTexture(pushed)
-		end
-
-		if button.SetCheckedTexture and not button.checked then
-			local checked = button:CreateTexture("frame", nil, self)
-			checked:SetTexture( texture)
-			checked:SetVertexColor( 1, 1, 0, 1)
-			checked:SetPoint("TOPLEFT", -shift, shift)
-			checked:SetPoint("BOTTOMRIGHT", shift, -shift)
-			checked:SetAlpha( alpfa - 0.3)
-			button.checked = checked
-			button:SetCheckedTexture( checked)
-		end
+		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa, { 0, 1, 0})) end
+		if button.SetPushedTexture 		then button:SetPushedTexture( 		myButtonBorder( button, "pushed", shift, alpfa, { 1, 0, 0})) 	end
+		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa - 0.3, { 1, 1, 0})) end
 
 		Flash:SetTexture("Interface\\Buttons\\WHITE8x8")
 		Button:SetNormalTexture("")

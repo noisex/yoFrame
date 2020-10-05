@@ -35,15 +35,16 @@ local mythicRewards = {
 	{15,210,226},
 }
 
-local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
+local affixWeeks = { 	--affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
+						-- local a = C_MythicPlus.GetCurrentAffixes() print( a[1].id , a[2].id, a[3].id)
 
     [1] =  	{[1]=10,	[2]=11,		[3]=124,	[4]=120, 	[5] = "Меченная Бездной посланница",},
     [2] =  	{[1]=9,		[2]=8,		[3]=12,  	[4]=120, 	[5] = "Посланница глубин",},
     [3] = 	{[1]=10, 	[2]=112,	[3]=13,		[4]=120, 	[5] = "Зачарованная посланница",},
     [4] = 	{[1]=9,  	[2]=6,		[3]=14,		[4]=120, 	[5] = "Меченная Бездной посланница",},
-    [5] = 	{[1]=10, 	[2]=8,		[3]=12,		[4]=120, 	[5] = "Посланница глубин",},			---
-    [6] =  	{[1]=9,  	[2]=11,		[3]=4, 		[4]=120, 	[5] = "Зачарованная посланница",},
-    [7] =  	{[1]=10, 	[2]=8,		[3]=14,		[4]=120, 	[5] = "Меченная Бездной посланница",},
+    [5] = 	{[1]=10, 	[2]=8,		[3]=12,		[4]=120, 	[5] = "Посланница глубин",},
+    [6] =  	{[1]=9,  	[2]=11,		[3]=4, 		[4]=120, 	[5] = "Зачарованная посланница",}, --- bad
+    [7] =  	{[1]=10, 	[2]=7,		[3]=2,		[4]=120, 	[5] = "Меченная Бездной посланница",}, ---
     [8] =  	{[1]=9,  	[2]=7,		[3]=13,		[4]=120, 	[5] = "Посланница глубин",},
     [9] = 	{[1]=10, 	[2]=11,		[3]=3, 		[4]=120, 	[5] = "Зачарованная посланница",},
     [10] = 	{[1]=9,  	[2]=6,		[3]=4, 		[4]=120, 	[5] = "Меченная Бездной посланница",},
@@ -161,6 +162,14 @@ local function UpdateAffixes( self)
 		self.WeeklyInfo.Child.RunStatus:SetPoint("TOP", self, "TOP", 0, -150)
 		self.WeeklyInfo.Child.RunStatus:SetWidth( 250)
 		self.WeeklyInfo.Child.RunStatus.ClearAllPoints = dummy
+	end
+
+	if self.WeeklyInfo.Child.Description then
+		self.WeeklyInfo.Child.Description:SetFont( yo.font, yo.fontsize + 2, "OUTLINE")
+		self.WeeklyInfo.Child.Description:ClearAllPoints()
+		self.WeeklyInfo.Child.Description:SetPoint("TOP", self, "TOP", 0, -100)
+		self.WeeklyInfo.Child.Description:SetWidth( 250)
+		self.WeeklyInfo.Child.Description.ClearAllPoints = dummy
 	end
 
 	C_MythicPlus.RequestCurrentAffixes()

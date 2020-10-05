@@ -1,5 +1,5 @@
 ## Interface: 80300
-## Title: |cff00ffffyoFrame Config|r
+## Title: |cff00ffffyoFrame|cffbbbbbb Config
 ## Notes: In-game configuration for yoFrame
 ## Author: Noisex
 ## Version: 7.30

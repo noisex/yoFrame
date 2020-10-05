@@ -443,7 +443,6 @@ logan:SetScript("OnEvent", function(self, event)
 	if not yo.Addons.unitFrames then return end
 
 	cfg 		= yo.CastBar.player
-	--cfg.cfgname	= "player"
 	cfg.width 	= yo_MovePlayerCastBar:GetWidth()
 	cfg.height 	= yo_MovePlayerCastBar:GetHeight()
 	cfg.point 	= { "CENTER", yo_MovePlayerCastBar, "CENTER", 0, 0}
@@ -481,8 +480,8 @@ end)
 		self.Border:SetTexture(nil)
 		self.BorderShield:SetTexture(nil)
 
-		self:SetWidth( 300)
-		self:SetHeight( 22)
+		self:SetWidth( 350)
+		self:SetHeight( 25)
 		self:SetStatusBarTexture( texture)
 		self:ClearAllPoints()
 		self:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 100)

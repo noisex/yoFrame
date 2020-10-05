@@ -197,9 +197,8 @@ local function pvpTimer( self, elapsed)
 	if not self.pvpText then
 		self.pvpIcon = self:CreateTexture(nil, "OVERLAY")
 		self.pvpIcon:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
-		self.pvpIcon:SetTexture("texture")
 		self.pvpIcon:SetSize(22, 22)
-		unitPVP( self, "player")
+		--unitPVP( self, "player")
 
 		self.pvpText = self:CreateFontString(nil, "OVERLAY")
 		self.pvpText:SetFont( yo.font, yo.fontsize  +3, "OUTLINE")
@@ -208,9 +207,30 @@ local function pvpTimer( self, elapsed)
 	end
 
 	if IsPVPTimerRunning() then
-		self.pvpIcon:Show()
-		self.pvpText:Show()
-		self.pvpText:SetText( timeFormat( GetPVPTimer() /1000))
+		local status
+		local factionGroup = UnitFactionGroup( "player") or 'Neutral'
+
+		if(UnitIsPVPFreeForAll( "player")) then
+			status = 'FFA'
+		elseif(factionGroup ~= 'Neutral' and UnitIsPVP( "player")) then
+			if(unit == 'player' and UnitIsMercenary("player")) then
+				if(factionGroup == 'Horde') then
+					factionGroup = 'Alliance'
+				elseif(factionGroup == 'Alliance') then
+					factionGroup = 'Horde'
+				end
+			end
+
+			status = factionGroup
+		end
+
+		if(status) then
+			self.pvpIcon:SetTexture([[Interface\TargetingFrame\UI-PVP-]] .. status)
+			self.pvpIcon:SetTexCoord(0, 0.65625, 0, 0.65625)
+			self.pvpIcon:Show()
+			self.pvpText:Show()
+			self.pvpText:SetText( timeFormat( GetPVPTimer() /1000))
+		end
 	else
 		self.pvpIcon:Hide()
 		self.pvpText:Hide()

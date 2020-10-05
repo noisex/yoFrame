@@ -317,6 +317,15 @@ do
   -- end)
 end
 
-hooksecurefunc("TaskPOI_OnEnter", function(self)
-  if self and self.questID then addLine(GameTooltip, self.questID, types.quest) end
-end)
+hooksecurefunc("TaskPOI_OnEnter", function(self) if self and self.questID then addLine(GameTooltip, self.questID, types.quest) end end)
+
+--GameTooltip:HookScript("SetHyperlink", function(self, ...)
+--hooksecurefunc(GameTooltip, "Show", function(self, ...)
+--  print("...")
+--  if not InCombatLockdown() then
+--    if not GameTooltip:IsClampedToScreen() then
+--      --GameTooltip:SetClampedToScreen( true)
+--      print("|cffff0000DEV: |cffbbbbbbGameToolTip over screen! But we are returned him back...|r")
+--    end
+--  end
+--end)
