@@ -210,10 +210,10 @@ local function powerColor( f, unit, cur, min, max, displayType, event)
 			f:GetParent().Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	else
-		f:GetParent().Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
-		f:GetParent().Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
+		f:GetParent().Health:SetStatusBarColor( 0.09, 0.09, 0.09, 0.9) --( 0.13, 0.13, 0.13, 0.9)
+		f:GetParent().Health.hbg:SetVertexColor( 0.45, 0.45, 0.45, 0.9)
 		if unit == "player" or unit == "target" or unit == "pet" then
-			f:GetParent().Health.AbsorbBar:SetStatusBarColor( 0.25, 0.25, 0.25, 0.9)
+			f:GetParent().Health.AbsorbBar:SetStatusBarColor( 0.2, 0.2, 0.2, 0.9) --( 0.25, 0.25, 0.25, 0.9)
 		end
 	end
 

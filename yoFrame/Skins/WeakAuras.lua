@@ -67,21 +67,47 @@ local function styleIcon( region)
 	end
 end
 
+local function styleText( regFrame)
+
+	if regFrame.text then
+		local t0, t1, t2 = regFrame.text:GetFont()
+		if t0 then regFrame.text:SetFont( font, t1, t2) end
+	end
+
+	if regFrame.text2 then
+		local t0, t1, t2 = regFrame.text2:GetFont()
+		if t0 then regFrame.text2:SetFont( font, t1, t2) end
+	end
+
+	if regFrame.timer then
+		local t0, t1, t2 = regFrame.timer:GetFont()
+		if t0 then regFrame.timer:SetFont( font, t1, t2) end
+	end
+
+	if regFrame.stacks then
+		local t0, t1, t2 = regFrame.stacks:GetFont()
+		if t0 then regFrame.stacks:SetFont( font, t1, t2) end
+	end
+end
+
 
 local function checkDynamic( self)
-	for k, children in pairs( self.controlledRegions) do
-		local chiFrame = children.region
+	for k, children in pairs( self.sortedChildren) do
+		local regFrame = children.region
 
-		if chiFrame.icon then
-			chiFrame:SetScript("OnShow", function(self, ...)
-				--print("Dynamic show: ", k)
-				styleIcon( self)
-			end)
-			--chiFrame:SetScript("OnSizeChanged", function(self, ...)
-			--	print("Dynamic hide: ", k)
-			--	styleIcon( self)
-			--end)
-		end
+		if regFrame		 	then styleText( regFrame) end
+		if regFrame.icon 	then styleIcon( regFrame) end
+
+		--if chiFrame.icon then
+		--	chiFrame:SetScript("OnShow", function(self, ...)
+		--		print("Dynamic show: ", k)
+		--		styleIcon( self)
+		--	end)
+		--	--chiFrame:SetScript("OnSizeChanged", function(self, ...)
+		--	--	print("Dynamic hide: ", k)
+		--	--	styleIcon( self)
+		--	--end)
+		--end
 	end
 end
 
@@ -89,43 +115,21 @@ local function chackRegion( self)
 	for k, regions in pairs( WeakAuras.regions) do
 		local regFrame = regions.region
 
-		if regFrame.text then
-			local t0, t1, t2 = regFrame.text:GetFont()
-			if t0 then regFrame.text:SetFont( font, t1, t2) end
-		end
-
-		if regFrame.text2 then
-			local t0, t1, t2 = regFrame.text2:GetFont()
-			if t0 then regFrame.text2:SetFont( font, t1, t2) end
-		end
-
-		if regFrame.timer then
-			local t0, t1, t2 = regFrame.timer:GetFont()
-			if t0 then regFrame.timer:SetFont( font, t1, t2) end
-		end
-
-		if regFrame.stacks then
-			local t0, t1, t2 = regFrame.stacks:GetFont()
-			if t0 then regFrame.stacks:SetFont( font, t1, t2) end
-		end
-
-		if regFrame.icon then
-			styleIcon( regFrame)
-		end
+		if regFrame 		then styleText( regFrame) end
+		if regFrame.icon 	then styleIcon( regFrame) end
 
 		if regions.regionType == "dynamicgroup" then
 			regFrame:SetScript("OnSizeChanged", function(self, ...)
-				if self.controlledRegions then
-					checkDynamic( self)
-				end
+				--print("Size: ", self, regFrame, self.sortedChildren)
+				if self.sortedChildren then checkDynamic( self) end
 			end)
 
-			regFrame:SetScript("OnShow", function(self, ...)
-				--print("Show: ", self, regFrame)
-				if self.controlledRegions then
-					checkDynamic( self)
-				end
-			end)
+			--regFrame:SetScript("OnShow", function(self, ...)
+			--	--print("Show: ", self, regFrame, self.sortedChildren)
+			--	if self.sortedChildren then
+			--		checkDynamic( self)
+			--	end
+			--end)
 		end
 	end
 end

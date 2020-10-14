@@ -28,7 +28,7 @@ function openMail(index)
 
 		TakeInboxMoney(index)
 		needsToWait = true
-		if total_cash then total_cash = total_cash - money end
+		--if total_cash then total_cash = total_cash - money end
 	end
 	local items = GetInboxNumItems()
 	if (numItems and numItems > 0) or (items > 1 and index <= items) then
@@ -46,7 +46,7 @@ function waitForMail(this, arg1)
 		t = 0
 		needsToWait = false
 		button2:SetScript("OnUpdate", nil)
-		
+
 		local _, _, _, _, money, COD, _, numItems = GetInboxHeaderInfo(lastopened)
 		if money > 0 or ((not takingOnlyCash) and COD <= 0 and numItems and (numItems > 0)) then
 			--The lastopened index inbox item still contains stuff we want
@@ -63,7 +63,7 @@ function stopOpening(msg, ...)
 		InboxFrame_OnClick = baseInboxFrame_OnClick
 	end
 	takingOnlyCash = false
-	total_cash = nil
+	--total_cash = nil
 	needsToWait = false
 	if msg then DEFAULT_CHAT_FRAME:AddMessage("OpenAll: "..msg, ...) end
 end
@@ -79,7 +79,7 @@ button2:SetScript("OnEnter", function()
 		total_cash = total_cash + select(5, GetInboxHeaderInfo(index))
 	end
 	--end
-	GameTooltip:SetOwner(button2, "ANCHOR_RIGHT")	
+	GameTooltip:SetOwner(button2, "ANCHOR_RIGHT")
 	GameTooltip:AddLine( ENCLOSED_MONEY .. ": " .. formatMoney(total_cash), 1, 1, 1)
 	GameTooltip:Show()
 end)
