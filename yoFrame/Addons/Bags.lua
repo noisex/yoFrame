@@ -996,7 +996,7 @@ function addon:CreateLayout( isBank)
 					f.Bags[bagID][slotID] = CreateFrame('ItemButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BankItemButtonGenericTemplate' or 'ContainerFrameItemButtonTemplate');
 
 					if not f.Bags[bagID][slotID].shadow then
-						CreateStyle( f.Bags[bagID][slotID], 2, nil, 0.6)
+						CreateStyle( f.Bags[bagID][slotID], 2, nil, 0.8)
 						StyleButton( f.Bags[bagID][slotID])
 						--f.Bags[bagID][slotID].IconBorder:SetAlpha(0)
 					end

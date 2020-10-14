@@ -109,8 +109,9 @@ local function CreateIcon( index)
 	bg:SetPoint("BOTTOMRIGHT", equipSet, "BOTTOMRIGHT", -5, 0)
 	bg:SetScript("OnEnter", OnEnter)
 	bg:SetScript("OnLeave", OnLeave)
-	CreateStyle( bg, 2, 0, 0.5)
+	CreateStyle( bg, 1, 0, 0.5)
 	bg.shadow:SetBackdropColor(0.126, 0.129, 0.145, 1)
+	bg.shadow:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5)
 
 	button.nameItem = nameItem
 	button.icon 	= icon

@@ -204,6 +204,8 @@ local Shared = function(self, unit)
 	    self.Health.colorReaction = true
 	    self.Health.bg = self.Health.hbg
 		self.Health.bg.multiplier = .6
+		self.shadowAlpha = 0.5
+		self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha - 0.2,}
 
 	elseif yo.Raid.classcolor == 2 then
 		self.Health.colorSmooth = true
@@ -213,6 +215,7 @@ local Shared = function(self, unit)
 		self.Health.colorHealth = true
 		self.colors.health = { 0.13, 0.13, 0.15, 0.9}
 		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
+		self.shadowAlpha = 0
 	end
 
 	if yo.Raid.simpeRaid and yo.Raid.classcolor ~= 3 then
@@ -220,18 +223,20 @@ local Shared = function(self, unit)
 		self.Health.bg.multiplier = .5
 	end
 
-	--self.Range.PostUpdate = function(object, inRange, checkedRange, connected)
-	--	if connected then
-	--		--print( inRange, checkedRange)
-	--		if checkedRange then
-	--		--	self.Health.hbg:SetAlpha(0)
-	--		else
-	--		--	self.Health.hbg:SetAlpha(0)
-	--		end
-	--	else
-	--		--self.Health.hbg:SetAlpha(1)
-	--	end
-	--end
+	self.Range.PostUpdate = function(object, self, inRange, checkedRange, connected)
+		if connected then
+			if checkedRange and not inRange then
+				self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
+				self.shadow:SetAlpha( self.shadowAlpha)
+			else
+				self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
+				self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
+			end
+		else
+			self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
+			self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
+		end
+	end
 
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR

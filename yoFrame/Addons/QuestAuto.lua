@@ -4,6 +4,9 @@ if not yo.Addons.AutoQuest then return end
 
 ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|cffff00ff\"%s\"|r."
 
+LOOT_ITEM_PUSHED_SELF = "Получено: %s."
+LOOT_ITEM_PUSHED_SELF_MULTIPLE = "Получено: %sx%d."
+
 local WeaponTypes = {
 	["INVTYPE_WEAPON"]			=	true,
 	["INVTYPE_SHIELD"]			=	true,

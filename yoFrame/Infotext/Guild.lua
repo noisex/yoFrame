@@ -204,7 +204,7 @@ end)
 Stat:SetScript("OnEnter", function(self)
 	if not IsInGuild() then return end
 
-	GuildRoster()
+	C_GuildInfo.GuildRoster()
 	UpdateGuildMessage()
 	BuildGuildTable()
 
@@ -301,7 +301,7 @@ local function Update(self, event, ...)
 		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		if not GuildFrame and IsInGuild() then
 			LoadAddOn("Blizzard_GuildUI")
-			GuildRoster()
+			C_GuildInfo.GuildRoster()
 		end
 	end
 
@@ -311,7 +311,7 @@ local function Update(self, event, ...)
 		return
 	end
 
-	GuildRoster() -- Bux Fix on 5.4.
+	C_GuildInfo.GuildRoster() -- Bux Fix on 5.4.
 	local _, online = GetNumGuildMembers()
 	Text:SetFormattedText(displayString, online)
 end

@@ -190,45 +190,44 @@ local function BuildBNTable(total)
 	wipe(BNTableBSAp)
 	wipe(BNTableDST)
 
-	local _, bnetIDAccount, accountName, battleTag, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText
-	local isGameAFK, isGameBusy, realmName, faction, race, class, zoneName, level, wowProjectID
-
 	for i = 1, total do
-		bnetIDAccount, accountName, battleTag, _, characterName, bnetIDGameAccount, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
+		local bnetIDAccount, accountName, battleTag, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText
+		local isGameAFK, isGameBusy, realmName, faction, race, class, zoneName, level, wowProjectID
+
+		local BNetAccountInfo = C_BattleNet.GetFriendAccountInfo(i)
+
+		if BNetAccountInfo then
+			bnetIDAccount 		= BNetAccountInfo.bnetAccountID
+			accountName 		= BNetAccountInfo.accountName
+			battleTag 			= BNetAccountInfo.battleTag
+			bnetIDGameAccount 	= BNetAccountInfo.gameAccountInfo.gameAccountID
+			isAFK 				= BNetAccountInfo.isAFK
+			isDND 				= BNetAccountInfo.isDND
+			noteText			= BNetAccountInfo.note
+		end
 
 		local BNETaccount = C_BattleNet.GetGameAccountInfoByID(bnetIDGameAccount or bnetIDAccount);
 
 		if BNETaccount then
-			isGameAFK	= BNETaccount.isGameAFK
-			isGameBusy	= BNETaccount.isGameBusy
-			realmName 	= BNETaccount.realmName
-			faction 	= BNETaccount.factionName
-			race  		= BNETaccount.raceName
-			class 		= BNETaccount.className
-			zoneName 	= BNETaccount.areaName --richPresence
-			level 		= BNETaccount.characterLevel
-			wowProjectID= BNETaccount.wowProjectID
+			isGameAFK			= BNETaccount.isGameAFK
+			isGameBusy			= BNETaccount.isGameBusy
+			realmName 			= BNETaccount.realmName
+			faction 			= BNETaccount.factionName
+			race  				= BNETaccount.raceName
+			class 				= BNETaccount.className
+			zoneName 			= BNETaccount.areaName --richPresence
+			level 				= BNETaccount.characterLevel
+			wowProjectID		= BNETaccount.wowProjectID
+			isOnline 			= BNETaccount.isOnline
+			client 				= BNETaccount.clientProgram
+			characterName 		= BNETaccount.characterName
 		end
-
---clientProgram	string	globalstring BNET_CLIENT
---isOnline	boolean
---isGameBusy	boolean
---isGameAFK	boolean
---wowProjectID	number (nilable)
---characterName	string (nilable)	The name of the logged in toon/character
---realmName	string (nilable)	The name of the logged in realm
---realmDisplayName	string (nilable)
---realmID	number (nilable)	The ID for the logged in realm
---factionName	string (nilable)	The faction name (i.e., "Alliance" or "Horde")
---raceName	string (nilable)	The localized race name (e.g., "Blood Elf")
---className	string (nilable)	The localized class name (e.g., "Death Knight")
---areaName	string (nilable)	The localized zone name (e.g., "The Undercity")
---characterLevel
 
 		if isOnline then
 			characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client) or "";
 			for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
 			for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if class == v then class = k end end
+
 			BNTable[i] = { bnetIDAccount, accountName, battleTag, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-Scicon", "StarCraft", isGameAFK, isGameBusy }
 
 			if client == scString then
