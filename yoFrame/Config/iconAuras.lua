@@ -19,10 +19,14 @@ local function BuffOnEnter( f)
 
 	if true or showToolTip == "cursor" then
 		--GameTooltip:SetOwner( f, "ANCHOR_CURSOR", 0, 10) --"ANCHOR_CURSOR", 0, 0)--  "ANCHOR_BOTTOMRIGHT", 8, -16)
-	--else
+		GameTooltip:SetOwner( f)--, "ANCHOR_BOTTOMRIGHT", 8, -16)
+		--GameTooltip:SetOwner( f, "ANCHOR_CURSOR", 0, 10)
+	else
+		--print("sdfdsfdsfdsffdsf")
 		GameTooltip:SetOwner( f, "ANCHOR_NONE", 0, 0)
 		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	end
+	print( f.unit, f.id, f.filter, f)
 	GameTooltip:SetUnitAura( f.unit or f:GetParent().unit, f.id, f.filter)
 	--GameTooltip:AddDoubleLine("Caster", f.caster, 1, 1, 0, 1, 1, 1)
 	GameTooltip:Show()
@@ -103,7 +107,24 @@ function CreateAuraIcon( parent, index)
 
 	if not parent.hideTooltip then
 		button:EnableMouse(true)
-		button:SetScript("OnEnter", BuffOnEnter)
+		button:SetScript("OnEnter", function( self)
+
+			--if true or showToolTip == "cursor" then
+				--GameTooltip:SetOwner( f, "ANCHOR_CURSOR", 0, 10) --"ANCHOR_CURSOR", 0, 0)--  "ANCHOR_BOTTOMRIGHT", 8, -16)
+				--GameTooltip:SetOwner( button, "ANCHOR_RIGHT", 0, 0)
+				--GameTooltip:SetOwner( button, "ANCHOR_CURSOR", 0, 0)
+			--else
+
+				--print("sdfdsfdsfdsffdsf")
+				GameTooltip:SetOwner( button, "ANCHOR_NONE", 0, 0)
+				GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+
+			--end
+			--print( button.unit, button.id, button.filter, button)
+			GameTooltip:SetUnitAura( button.unit or button:GetParent().unit, button.id, button.filter)
+			GameTooltip:Show()
+		end)
+
 		button:SetScript("OnLeave", BuffOnLeave)
 	end
 
@@ -122,6 +143,8 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 	button.unit = unit
 	button.id = index
 	button.tick = 1
+
+	button.timer:SetTextColor( 1, 1, 0)
 
 	if button.shadow then
 		local color = DebuffTypeColor[debuffType] or DebuffTypeColor.none
@@ -147,12 +170,11 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 			button:Hide()
 			self:SetScript("OnUpdate", nil)
 			return
-		else
-			button.timer:SetTextColor( 1, 1, 0)
+		--else
+		--	button.timer:SetTextColor( 1, 1, 0)
 		end
 
 		if ( duration and duration > 0) and est > 0.1 then
-			--print( button.tFormat( 12))
 			button.timer:SetText( button.tFormat( est, true)) --formatTime( est))
 		elseif duration and duration == 0 then
 			button.timer:SetText( "")

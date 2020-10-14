@@ -10,6 +10,8 @@ local function enterEvent( self)
 	mySpec = GetSpecialization()
 	myRole = UnitGroupRolesAssigned( "player")
 
+	SetCVar("multiBarRightVerticalLayout", 0)  -- уменьшает 4 и 5 бары, если включено
+
 	CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
 	CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
 

@@ -202,6 +202,8 @@ local Shared = function(self, unit)
 	if yo.Raid.classcolor == 1 then
 		self.Health.colorClass = true
 	    self.Health.colorReaction = true
+	    self.Health.bg = self.Health.hbg
+		self.Health.bg.multiplier = .6
 
 	elseif yo.Raid.classcolor == 2 then
 		self.Health.colorSmooth = true
@@ -717,7 +719,7 @@ logan:SetScript("OnEvent", function(self, event)
 			"showRaid", false,
 			"xOffset", spaicing * yo.Raid.partyScale,
 			"groupBy", groupBy,
-			"groupingOrder", groupingOrder,
+			"groupingOrder", 'TANK,HEALER,DAMAGER,NONE', --groupingOrder,
 			"yOffset", -spaicing * yo.Raid.partyScale * 1.0,			---6,
 			"unitsPerColumn", unitsPerColumn,
 			"columnSpacing", yo.Raid.spaicing,

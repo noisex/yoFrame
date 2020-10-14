@@ -14,7 +14,7 @@ local DAYISH, HOURISH, MINUTEISH = 3600 * 23.5, 60 * 59.5, 59.5 --used for forma
 local HALFDAYISH, HALFHOURISH, HALFMINUTEISH = DAY/2 + 0.5, HOUR/2 + 0.5, MINUTE/2 + 0.5 --used for calculating next update times
 
 local FONT_FACE = yo.Media.fontpx --what font to use
-local FONT_SIZE = 20 --the base font size to use at a scale of 1
+local FONT_SIZE = 22 --the base font size to use at a scale of 1
 local MIN_SCALE = 0.5 --the minimum scale we want to show cooldown counts at, anything below this will be hidden
 local MIN_DURATION = 2 --the minimum duration to show cooldown text for
 local EXPIRING_DURATION = 2 --the minimum number of seconds a cooldown must be to use to display in the expiring format
@@ -37,11 +37,11 @@ end
 local function getTimeText(s)
 	--format text as seconds when below a minute
 	if s < MINUTEISH then
-		local seconds = tonumber(Round(s))
+		local seconds = s --tonumber(Round(s))
 		if seconds > EXPIRING_DURATION then
-			return SECONDS_FORMAT, seconds, s - (seconds - 0.51)
+			return SECONDS_FORMAT, seconds, s - (seconds)-- - 0.51)
 		else
-			return EXPIRING_FORMAT, s, 0.051
+			return EXPIRING_FORMAT, s, 0 --0.051
 		end
 	--format text as minutes when below an hour
 	elseif s < HOURISH then
@@ -93,7 +93,7 @@ local function Timer_OnUpdate(self, elapsed)
 		self.nextUpdate = self.nextUpdate - elapsed
 	else
 		local remain = self.duration - (GetTime() - self.start)
-		if tonumber(Round(remain)) > 0 then
+		if remain > 0 then --tonumber(Round(remain)) > 0 then
 			if (self.fontScale * self:GetEffectiveScale() / UIParent:GetScale()) < MIN_SCALE then
 				self.text:SetText('')
 				self.nextUpdate  = 1

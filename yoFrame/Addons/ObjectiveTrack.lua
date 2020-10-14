@@ -320,10 +320,14 @@ frame:SetScript("OnEvent", function(self, event)
 	end
 
 	local instanceType = select( 2, GetInstanceInfo())
-	if IsInInstance() --[[and instanceType ~= "scenario"]] and yo.Addons.hideObjective then
+
+	if IsInInstance() and instanceType ~= "scenario" and yo.Addons.hideObjective then
 		ObjectiveTracker_Collapse()
+	elseif 	instanceType == "scenario" and yo.Addons.hideObjective then
+		QUEST_TRACKER_MODULE.Header.MinimizeButton:Click()
 	elseif ObjectiveTrackerFrame.collapsed and not InCombatLockdown() then
 		ObjectiveTracker_Expand()
+		QUEST_TRACKER_MODULE.Header.MinimizeButton:Click()
 	end
 end)
 

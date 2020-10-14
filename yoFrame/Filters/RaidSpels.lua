@@ -14,6 +14,7 @@ bls = {
     [230935] = true   	-- "Drums of the Mountain"
 }
 
+--- в найплейты для синей полосы НАДО ЧТо-то ДЕАЛТЬ С ЭТИМ!!!
 N.interuptSpells = {
 	-- Speck Knock
 	[47528]  = 15, --Mind Freeze
@@ -29,11 +30,13 @@ N.interuptSpells = {
     [1766]   = 15, --Kick
     [57994]  = 12, --Wind Shear
     [6552]   = 15, --Pummel
-    [171140] = 24, --Shadow Lock
-	[171138] = 24, --Shadow Lock if used from pet bar
-	[119910] = 24, -- warloc new pet
+    [171140] = 24, --Shadow прист
+	[171138] = 24, --Shadow прист if used from pet bar
+	--[119910] = 24, -- warloc new pet
+	[19647]	 = 24, -- Запрет чар
 }
 
+-- в кастопалку кэдешку
 raid_CD_Spells = {
 	-- Testing
 	--[48438] = 10,
@@ -53,9 +56,10 @@ raid_CD_Spells = {
     [1766]   = 15, --Kick
     [57994]  = 12, --Wind Shear
     [6552]   = 15, --Pummel
-    [171140] = 24, --Shadow Lock
-	[171138] = 24, --Shadow Lock if used from pet bar
-	[119910] = 24, -- warloc new pet
+    [171140] = 24, --Shadow прист
+	[171138] = 24, --Shadow прист if used from pet bar
+	--[119910] = 24, -- warloc new pet
+	[19647]	 = 24, -- Запрет чар
 
 	--[46968]  = 40, 	-- shockwave
 	--[30283]	 = 60, 	-- warlocl stun

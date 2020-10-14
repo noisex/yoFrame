@@ -2286,7 +2286,7 @@ templates.class.WARLOCK = {
         { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
         { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
         { spell = 6307, type = "buff", unit = "player"}, -- Blood Pact
-        { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
+        --{ spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
         { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
         { spell = 264571, type = "buff", unit = "player", talent = 1 }, -- Nightfall
         { spell = 111400, type = "buff", unit = "player", talent = 8 }, -- Burning Rush
@@ -2398,7 +2398,7 @@ templates.class.WARLOCK = {
         { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
         { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
         { spell = 6307, type = "buff", unit = "player"}, -- Blood Pact
-        { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
+        --{ spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
         { spell = 205146, type = "buff", unit = "player", talent = 4 }, -- Demonic Calling
         { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
         { spell = 265273, type = "buff", unit = "player"}, -- Demonic Power
@@ -2515,7 +2515,7 @@ templates.class.WARLOCK = {
         { spell = 196099, type = "buff", unit = "player", talent = 18 }, -- Grimoire of Sacrifice
         { spell = 6307, type = "buff", unit = "player"}, -- Blood Pact
         { spell = 266091, type = "buff", unit = "player", talent = 17 }, -- Grimoire of Supremacy
-        { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
+        --{ spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
         { spell = 266030, type = "buff", unit = "player", talent = 4 }, -- Reverse Entropy
         { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
         { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
@@ -2526,7 +2526,7 @@ templates.class.WARLOCK = {
         { spell = 7870, type = "buff", unit = "pet"}, -- Lesser Invisibility
         { spell = 112042, type = "buff", unit = "pet"}, -- Threatening Presence
         { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
-        { spell = 108366, type = "buff", unit = "pet"}, -- Soul Leech
+        --{ spell = 108366, type = "buff", unit = "pet"}, -- Soul Leech
         { spell = 755, type = "buff", unit = "pet"}, -- Health Funnel
       },
       icon = 136150

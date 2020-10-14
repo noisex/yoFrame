@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+if not yo.Addons.FlashIconCooldown then return end
+
 local lib = LibStub("LibCooldown")
 if not lib then error("CooldownFlash requires LibCooldown") return end
 
@@ -16,8 +18,8 @@ local filter = {
 
 local flash = CreateFrame("Frame", "yo_FlashIcon", UIParent)
 flash:SetPoint("CENTER", yo_MoveFlashIcon)
-flash:SetSize( yo_MoveFlashIcon:GetSize()) 
- 
+flash:SetSize( yo_MoveFlashIcon:GetSize())
+
 -- function flash:OnEnable( self)
 	-- print( flash, self)
    -- CT.RegisterCallback(flash, "LCT_CooldownUsed")
@@ -43,23 +45,23 @@ flash:SetSize( yo_MoveFlashIcon:GetSize())
       -- print("effect starts:", tracked.used_start)
       -- print("effect ends:", tracked.used_end)
       -- print(tracked.detected) -- use this to check if the unit has used this spell before (useful for detecting talents)
-   -- end   
+   -- end
 -- end
 
 flash:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 flash:SetScript("OnEvent", function( self)
 	if not yo["Addons"].FlashIconCooldown then flash:SetScript("OnEvent", nil) return end
-	
+
 	--print("EVENT ", self)
 	--flash.OnEnable( self)
-	
+
 	flash.icon = flash:CreateTexture(nil, "OVERLAY")
 	flash.icon:SetPoint("CENTER", flash)
 	flash.icon:SetSize( yo_MoveFlashIcon:GetSize())
-	flash.icon:SetTexCoord(.08, .92, .08, .92)	
+	flash.icon:SetTexCoord(.08, .92, .08, .92)
 	flash:Hide()
-	
+
 	flash:SetScript("OnUpdate", function(self, e)
 		if not yo["Addons"].FlashIconCooldown then flash:SetScript("OnEvent", nil) return end
 		flash.e = flash.e + e
@@ -71,11 +73,11 @@ flash:SetScript("OnEvent", function( self)
 			flash:SetAlpha(1-(flash.e%.5)*4)
 		end
 	end)
-	
+
 	CreateStyle(flash, 5)
 	flash:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	flash:SetScript("OnEvent", nil)
-	
+
 end)
 
 

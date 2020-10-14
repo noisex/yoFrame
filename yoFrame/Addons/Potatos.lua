@@ -13,6 +13,8 @@ local function DrawDefault( self)
     local start, itemCD = GetItemCooldown( self.itemID)
 	local usableItem, _ = IsUsableItem( self.item)
 	--IsConsumableItem()
+	--Flash( self, 0.5, true)
+
 	if usableItem then
 		self.usableItem = true
 		if itemCD == 0 then

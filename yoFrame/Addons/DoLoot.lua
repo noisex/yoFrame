@@ -44,7 +44,7 @@ local function OnEnter( self)
 end
 
 local function OnLeave( self)
-	self.shadow:SetBackdropColor( 0.09, 0.09, 0.09, 0.5)
+	self.shadow:SetBackdropColor( 0.126, 0.129, 0.145, 1)
 	GameTooltip:Hide()
 end
 
@@ -110,6 +110,7 @@ local function CreateIcon( index)
 	bg:SetScript("OnEnter", OnEnter)
 	bg:SetScript("OnLeave", OnLeave)
 	CreateStyle( bg, 2, 0, 0.5)
+	bg.shadow:SetBackdropColor(0.126, 0.129, 0.145, 1)
 
 	button.nameItem = nameItem
 	button.icon 	= icon
@@ -242,6 +243,7 @@ local function settingDoIt( self)
 		setting:SetSize(170, 140)
 		setting:Hide()
 		CreateStyle( setting, 2)
+		setting.shadow:SetBackdropColor(0.075, 0.078, 0.086, 1)
 
 		local close = CreateFrame("Button", nil, setting, "UIPanelCloseButton")
 		close:SetPoint("TOPRIGHT", setting, "TOPRIGHT", 8, 7)
@@ -251,6 +253,7 @@ local function settingDoIt( self)
 		hasteCheck:SetPoint("TOPLEFT", setting, "TOPLEFT", 10, -10)
 		hasteCheck:SetChecked( self.haste)
 		hasteCheck.Text:SetText( "Скорость")
+		hasteCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		hasteCheck:SetScript("OnClick", function() self.haste = hasteCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
 		local critCheck = CreateFrame("CheckButton", nil, setting, "InterfaceOptionsCheckButtonTemplate")
@@ -258,6 +261,7 @@ local function settingDoIt( self)
 		critCheck:SetPoint("TOPLEFT", hasteCheck, "TOPLEFT", 0, -25)
 		critCheck:SetChecked( self.crit)
 		critCheck.Text:SetText( "Критический")
+		critCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		critCheck:SetScript("OnClick", function() self.crit = critCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
 		local masterCheck = CreateFrame("CheckButton", nil, setting, "InterfaceOptionsCheckButtonTemplate")
@@ -265,6 +269,7 @@ local function settingDoIt( self)
 		masterCheck:SetPoint("TOPLEFT", critCheck, "TOPLEFT", 0, -25)
 		masterCheck:SetChecked( self.master)
 		masterCheck.Text:SetText( "Искусность")
+		masterCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		masterCheck:SetScript("OnClick", function() self.master = masterCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
 		local versaCheck = CreateFrame("CheckButton", nil, setting, "InterfaceOptionsCheckButtonTemplate")
@@ -272,6 +277,7 @@ local function settingDoIt( self)
 		versaCheck:SetPoint("TOPLEFT", masterCheck, "TOPLEFT", 0, -25)
 		versaCheck:SetChecked( self.versa)
 		versaCheck.Text:SetText( "Универсальность")
+		versaCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		versaCheck:SetScript("OnClick", function() self.versa = versaCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
 		local allCheck = CreateFrame("CheckButton", nil, setting, "InterfaceOptionsCheckButtonTemplate")
@@ -305,6 +311,7 @@ local function createDuLoot( self)
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing() end)
 	self:Hide()
+	self:SetBackdropColor(0.075, 0.078, 0.086, 1)
 
 	local headerKeeper = CreateFrame("Frame", nil, self)
 	headerKeeper:SetPoint("TOPLEFT", self, "TOPLEFT", 3, -3)

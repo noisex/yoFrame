@@ -1,5 +1,7 @@
 local L, yo, N = unpack( select( 2, ...))
 
+if not yo.Bags.enable then return end
+
 local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert = table.insert
@@ -16,6 +18,7 @@ local addon = CreateFrame("Frame", "yo_BagsFrame", UIParent)
 	addon:SetScript('OnEvent', function(self, event, ...)
 		self[event](self, event, ...)
 	end)
+LE_ITEM_QUALITY_POOR = 0
 
 ProfessionColors = {
 	[0x0008]   = {224/255, 187/255, 74/255},  -- Leatherworking
@@ -91,12 +94,9 @@ end
 
 local function ConvertER( str)
 	if not str then return "" end
-	local res = ""
-	local t={}
+	local res, t = "", {}
 	str:gsub(".",function(c)
-		if enrus[c] then
-			c = enrus[c]
-		end
+		if enrus[c] then c = enrus[c] end
 		table.insert( t, c )
 	end)
 
@@ -293,9 +293,25 @@ function addon:SetSlotAlphaForBag(f)
 				if f.Bags[bagID][slotID] then
 					if bagID == self.id then
 						f.Bags[bagID][slotID]:SetAlpha(1)
+						f.Bags[bagID][slotID].shadow:SetAlpha( 1)
 					else
-						f.Bags[bagID][slotID]:SetAlpha(0.1)
+						f.Bags[bagID][slotID]:SetAlpha(0.2)
+						f.Bags[bagID][slotID].shadow:SetAlpha(0.1)
 					end
+				end
+			end
+		end
+	end
+end
+
+function addon:ResetSlotAlphaForBags(f)
+	for _, bagID in ipairs(f.BagIDs) do
+		if f.Bags[bagID] then
+			local numSlots = GetContainerNumSlots(bagID);
+			for slotID = 1, numSlots do
+				if f.Bags[bagID][slotID] then
+					f.Bags[bagID][slotID]:SetAlpha(1)
+					f.Bags[bagID][slotID].shadow:SetAlpha( 1)
 				end
 			end
 		end
@@ -304,12 +320,12 @@ end
 
 local function Flash(object, duration, loop)
 	if not object.anim then
-		SetUpAnimGroup(object, loop and "FlashLoop" or 'Flash')
+		SetUpAnimGroup(object, loop and "FlashLoop" or 'Flash', 0.7, .0, duration * 1.7)
 	end
 
 	if not object.anim.playing then
-		object.anim.fadein:SetDuration(duration)
-		object.anim.fadeout:SetDuration(duration)
+		object.anim.fadein:SetDuration(duration * 1.7)
+		object.anim.fadeout:SetDuration(duration * 0.15)
 		object.anim:Play()
 		object.anim.playing = true
 	end
@@ -322,26 +338,13 @@ local function StopFlash(object)
 	end
 end
 
-function addon:ResetSlotAlphaForBags(f)
-	for _, bagID in ipairs(f.BagIDs) do
-		if f.Bags[bagID] then
-			local numSlots = GetContainerNumSlots(bagID);
-			for slotID = 1, numSlots do
-				if f.Bags[bagID][slotID] then
-					f.Bags[bagID][slotID]:SetAlpha(1)
-				end
-			end
-		end
-	end
-end
-
 function addon:NewItemGlowSlotSwitch(slot, show)
 	if slot and slot.newItemGlow then
 		if show then
-			slot.newItemGlow:SetVertexColor(1, 1, 1, 0)
+			slot.newItemGlow:SetVertexColor( 1, 1, 0.5, 0)
 			slot.newItemGlow:Show()
 			if yo.Bags.newIconAnimation then
-				Flash(slot.newItemGlow, 0.5, yo.Bags.newAnimationLoop)
+				Flash(slot.newItemGlow, 0.6, yo.Bags.newAnimationLoop)
 			end
 		else
 			slot.newItemGlow:Hide()
@@ -386,10 +389,8 @@ function addon:GetBagAssignedInfo(holder)
 
 	if not active then
 		holder.shadow:SetBackdropBorderColor(0.09, 0.09, 0.09)
-		--holder.ignoreBorderColors = nil --restore these borders to be updated
 	else
 		holder.shadow:SetBackdropBorderColor(unpack(color or AssignmentColors[0]))
-		--holder.ignoreBorderColors = true --dont allow these border colors to update for now
 		return active
 	end
 end
@@ -404,7 +405,6 @@ local function StyleButton(button, noHover, noPushed, noChecked)
 			hover:SetAlpha( 0.4)
 		button.hover = hover
 		button:SetHighlightTexture( hover)
-			--button:SetHighlightTexture(hover)
 	end
 
 	if button.SetPushedTexture and not button.pushed then
@@ -594,14 +594,10 @@ function UpdateSlot( self, bagID, slotID)
 
 	if ProfessionColors[bagType] then
 		local r, g, b = unpack( ProfessionColors[bagType])
-		--slot.newItemGlow:SetVertexColor(r, g, b , 0.2)
 		slot.shadow:SetBackdropBorderColor(r, g, b, 0.9)
-		--slot.ignoreBorderColors = true
 	elseif (clink) then
 		local iLvl, itemEquipLoc, itemClassID, itemSubClassID
-		--itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subClassID
 		slot.name, _, _, _, _, _, itemSubType, _, itemEquipLoc, _, _, itemClassID, itemSubClassID = GetItemInfo(clink);
-		--iLvl = GetDetailedItemLevelInfo(clink)
 
 		local item = Item:CreateFromBagAndSlot(bagID, slotID)
  		if ( item ) then
@@ -617,59 +613,42 @@ function UpdateSlot( self, bagID, slotID)
 
 		--Item Level
 		if iLvl and IsItemEligibleForItemLevelDisplay(itemClassID, itemSubClassID, itemEquipLoc, slot.rarity) then
-			if (iLvl >= 10) then
+			if (iLvl >= 1) then
 				slot.itemLevel:SetText(iLvl)
 				slot.itemLevel:SetTextColor(r, g, b)
 			end
 		end
 
 		if slot.UpgradeIcon then
-			--Check if item is an upgrade and show/hide upgrade icon accordingly
-			--UpdateItemUpgradeIcon(slot)
-			--local itemLocation = ItemLocation:CreateFromBagAndSlot( bagID, slotID)
 			checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)  --- C_NewItems_IsNewItem(bagID, slotID))
-			--MultiCheckLockation( slot, itemLocation, itemEquipLoc, bagID, slotID)
 		end
 
 		-- color slot according to item quality
 		if questId and not isActiveQuest then
-			--slot.newItemGlow:SetVertexColor(1.0, 0.3, 0.2);
 			slot.shadow:SetBackdropBorderColor(1.0, 0.3, 0.3, 0.9);
-			--slot.ignoreBorderColors = true
-			if(slot.questIcon) then
-				slot.questIcon:Show();
-			end
+			if(slot.questIcon) then slot.questIcon:Show(); end
+
 		elseif questId or isQuestItem then
-			--slot.newItemGlow:SetVertexColor(1.0, 0.3, 0.2);
 			slot.shadow:SetBackdropBorderColor(1.0, 0.3, 0.3, 0.9);
-			--slot.ignoreBorderColors = true
-			if(slot.questIcon) then
-				slot.questIcon:Show();
-			end
+			if(slot.questIcon) then slot.questIcon:Show(); end
+
 		elseif slot.rarity and slot.rarity > 1 then
-			--slot.newItemGlow:SetVertexColor(r, g, b, 0.2);
 			slot.shadow:SetBackdropBorderColor(r, g, b, 0.9);
-			--slot.ignoreBorderColors = true
+
 		elseif AssignmentColors[assignedBag] then
 			local rr, gg, bb = unpack( AssignmentColors[assignedBag])
-			--slot.newItemGlow:SetVertexColor(rr, gg, bb, 0.2)
 			slot.shadow:SetBackdropBorderColor(rr, gg, bb, 0.9)
-			--slot.ignoreBorderColors = true
+
 		else
-			--slot.newItemGlow:SetVertexColor(1, 1, 1 , 0.2)
 			slot.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 1)
-			--slot.ignoreBorderColors = nil
 		end
+
 	elseif AssignmentColors[assignedBag] then
 		local rr, gg, bb = unpack( AssignmentColors[assignedBag])
-		--slot.newItemGlow:SetVertexColor(rr, gg, bb, 0.2)
 		slot.shadow:SetBackdropBorderColor(rr, gg, bb, 0.25)    -- Prof Bags
-		--slot.ignoreBorderColors = true
 	else
-		--slot.newItemGlow:SetVertexColor(1, 0.5, 0, 0.2)
-		--slot.shadow:SetBackdropBorderColor( .09, .09, .09, .9)		-- DEFAULT border !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		slot.shadow:SetBackdropBorderColor( .12, .12, .12, .9)		-- DEFAULT border !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		--slot.ignoreBorderColors = nil
+		slot.shadow:SetBackdropBorderColor( .09, .09, .09, .9)		-- DEFAULT border !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		--slot.shadow:SetBackdropBorderColor( .12, .12, .12, .9)		-- DEFAULT border !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	end
 
 	addon:NewItemGlowSlotSwitch(slot, C_NewItems_IsNewItem(bagID, slotID))
@@ -736,45 +715,34 @@ end
 ----													SHOW HIDES
 -----------------------------------------------------------------------------------------------
 
-function addon_Toggle()
-	--print( "addon_Toggle")
-	if addon.bagFrame:IsShown() then
-		addon.bagFrame:Hide()
-	else
-		addon.bagFrame:Show()
-	end
-
-end
-
 function addon_Open()
 	--print( "BAGS Frame Open")
+	PlaySound ( 862, "Master")
 	addon.bagFrame:Show()
+	ContainerFrame4:Show()
 	UpdateAllSlots( addon.bagFrame)
-	--PlaySound ( 862, "Master")
 end
 
 function addon_Close()
 	--print( "BAGS Close")
+	if addon.bagFrame:IsShown() then PlaySound ( 863, "Master") end
+	ContainerFrame4:Hide()
 	addon.bagFrame:Hide()
 end
 
-local function addon_OnShow()
-	--print( "Event addon_ONShow")
-	-- Stuffing:PLAYERBANKSLOTS_CHANGED(29)
+function addon_Toggle()
+	--print( "addon_Toggle")
+	if addon.bagFrame:IsShown() then 	addon_Close()
+	else								addon_Open()	end
+end
 
-	-- for i = 0, #BAGS_BACKPACK - 1 do
-		-- Stuffing:BAG_UPDATE(i)
-	-- end
-
-	-- Stuffing:Layout()
-	-- Stuffing:SearchReset()
-	-- collectgarbage("collect")
+local function addon_OnShow() --print( "Event addon_ONShow")
 end
 
 local function addonBank_OnHide()
 	--print( "Event addonBANK_ONhide")
+	addon_Close()
 	addon.bankFrame:Hide()
-	addon.bagFrame:Hide()
 	BankFrame:Hide()
 	CloseBankFrame()
 end
@@ -814,6 +782,7 @@ local function addon_OnHide()
 
 	if addon.bankFrame and addon.bankFrame:IsShown() then
 		addon.bankFrame:Hide()
+		ContainerFrame4:Hide()
 		CloseAllBags(self);
 		CloseBankBagFrames();
 		CloseBankFrame();
@@ -826,73 +795,35 @@ end
 function addon:UpdateReagentSlot(slotID)
 	assert(slotID)
 	local bagID = REAGENTBANK_CONTAINER
-	local texture, count, locked = GetContainerItemInfo(bagID, slotID);
+	local texture, count = GetContainerItemInfo(bagID, slotID);
 	local clink = GetContainerItemLink(bagID, slotID);
 	local slot = _G["ReagentBankFrameItem"..slotID]
 	if not slot then return; end
 
 	slot:Show();
-	if(slot.questIcon) then
-		slot.questIcon:Hide();
-	end
-
 	slot.name, slot.rarity = nil, nil;
 
-	local start, duration, enable = GetContainerItemCooldown(bagID, slotID)
-	CooldownFrame_Set(slot.Cooldown, start, duration, enable)
-	if ( duration > 0 and enable == 0 ) then
-		SetItemButtonTextureVertexColor(slot, 0.4, 0.4, 0.4);
-	else
-		SetItemButtonTextureVertexColor(slot, 1, 1, 1);
-	end
-
-	if not slot.shadow then
-		CreateStyle( slot, 2)
-	end
+	if not slot.shadow then CreateStyle( slot, 2, nil, 0.6) end
 
 	if (clink) then
-		local name, _, rarity = GetItemInfo(clink);
-		slot.name, slot.rarity = name, rarity
+		slot.name, _, slot.rarity = GetItemInfo(clink);
 
-		local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID);
 		local r, g, b
 
-		if slot.rarity then
-			r, g, b = GetItemQualityColor(slot.rarity);
-		end
+		if slot.rarity then r, g, b = GetItemQualityColor(slot.rarity); end
 
-		-- color slot according to item quality
-		if questId and not isActiveQuest then
-			--slot.newItemGlow:SetVertexColor(1.0, 0.3, 0.2);
-			slot.shadow:SetBackdropBorderColor(1.0, 0.3, 0.9);
-			--slot.ignoreBorderColors = true
-			if (slot.questIcon) then
-				slot.questIcon:Show();
-			end
-		elseif questId or isQuestItem then
-			--slot.newItemGlow:SetVertexColor(1.0, 0.3, 0.2);
-			slot.shadow:SetBackdropBorderColor(1.0, 0.3, 0.9);
-			--slot.ignoreBorderColors = true
-		elseif slot.rarity and slot.rarity > 1 then
-			--slot.newItemGlow:SetVertexColor(r, g, b, 0.2);
+		if slot.rarity and slot.rarity > 1 then
 			slot.shadow:SetBackdropBorderColor(r, g, b);
-			--slot.ignoreBorderColors = true
+
 		else
-			--slot.newItemGlow:SetVertexColor(1, 1, 1, 0.2)
 			slot.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.9)
-			--slot.ignoreBorderColors = nil
 		end
 	else
-		--slot.newItemGlow:SetVertexColor(1, 0.5, 0, 0);   ----------!!!!!!!!!!!!!!!
 		slot.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.9)
-		--slot.ignoreBorderColors = nil
 	end
-
-	addon:NewItemGlowSlotSwitch(slot, C_NewItems_IsNewItem(bagID, slotID))
 
 	SetItemButtonTexture(slot, texture);
 	SetItemButtonCount(slot, count);
-	SetItemButtonDesaturated(slot, locked, 0.5, 0.5, 0.5);
 end
 
 ------------------------------------------------------------------------------------------
@@ -923,13 +854,9 @@ function addon:GetContainerFrame(arg)
 end
 
 function addon:CreateLayout( isBank)
-	--f = addon:GetContainerFrame( true)
-
 	local f = self:GetContainerFrame(isBank);
-
 	if not f then return; end
 
-	--local numContainerColumns 	= yo["Bags"]["numContainerColumns"]
 	local buttonSize 			= yo["Bags"]["buttonSize"]
 	local buttonSpacing 		= yo["Bags"]["buttonSpacing"]
 	local containerWidth 		= yo["Bags"]["containerWidth"]
@@ -950,9 +877,7 @@ function addon:CreateLayout( isBank)
 
 	f.holderFrame:SetWidth(holderWidth);
 
-	if(isBank) then
-		f.reagentFrame:SetWidth(holderWidth)
-	end
+	if(isBank) then f.reagentFrame:SetWidth(holderWidth) end
 
 	f.totalSlots = 0
 	local lastButton;
@@ -962,10 +887,11 @@ function addon:CreateLayout( isBank)
 
 	for i, bagID in ipairs(f.BagIDs) do
 		local assignedBag
-
 		--print( i, bagID, isBank, numContainerSlots, f:GetName(), GetContainerNumSlots(bagID))
 
-		--Bag Containers
+----------------------------------------------------------------------------
+--				CONTAINER SLOTS
+----------------------------------------------------------------------------
 		if (not isBank and bagID <= 3 ) or (isBank and bagID ~= -1 and numContainerSlots >= 1 and not (i - 1 > numContainerSlots)) then
 			if not f.ContainerHolder[i] then
 				--print( 'PutOUT - 1')
@@ -996,14 +922,11 @@ function addon:CreateLayout( isBank)
 				end
 
 				if not f.ContainerHolder[i].shadow then
-					CreateStyle( f.ContainerHolder[i], 2)
-					--frame1px( f.ContainerHolder[i])
+					CreateStyle( f.ContainerHolder[i], 2, nil, 0.6)
 					StyleButton( f.ContainerHolder[i])
 				end
 
-				--f.ContainerHolder[i].IconBorder:SetAlpha(0)			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				f.ContainerHolder[i]:SetNormalTexture("")
-				--f.ContainerHolder[i]:SetCheckedTexture(nil)
 				f.ContainerHolder[i]:SetPushedTexture("")
 
 				f.ContainerHolder[i].id = isBank and bagID or bagID + 1
@@ -1016,9 +939,11 @@ function addon:CreateLayout( isBank)
 						f.ContainerHolder[i].tooltipText = ""
 					end
 				end
-
-				f.ContainerHolder[i].iconTexture = _G[f.ContainerHolder[i]:GetName()..'IconTexture'];
-				f.ContainerHolder[i].iconTexture:SetTexCoord( unpack( f.texCoord))			--( unpack( yo.tCoord))
+				f.ContainerHolder[i].IconBorder:SetAlpha(0)
+				f.ContainerHolder[i].icon:ClearAllPoints()
+				f.ContainerHolder[i].icon:SetPoint("CENTER", f.ContainerHolder[i])
+				f.ContainerHolder[i].icon:SetSize(buttonSize -5, buttonSize -5)
+				f.ContainerHolder[i].icon:SetTexCoord( unpack( f.texCoord))
 			end
 
 			f.ContainerHolder:SetSize(((buttonSize) * (isBank and i - 1 or i)) + 10, buttonSize + (buttonSpacing * 2))
@@ -1042,7 +967,9 @@ function addon:CreateLayout( isBank)
 			lastContainerButton = f.ContainerHolder[i];
 		end
 
-		--Bag Slots
+----------------------------------------------------------------------------
+--				BAG/BANK SLOTS
+----------------------------------------------------------------------------
 		local numSlots = GetContainerNumSlots(bagID);
 		if numSlots > 0 then
 			if not f.Bags[bagID] then
@@ -1069,7 +996,7 @@ function addon:CreateLayout( isBank)
 					f.Bags[bagID][slotID] = CreateFrame('ItemButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BankItemButtonGenericTemplate' or 'ContainerFrameItemButtonTemplate');
 
 					if not f.Bags[bagID][slotID].shadow then
-						CreateStyle( f.Bags[bagID][slotID], 2)
+						CreateStyle( f.Bags[bagID][slotID], 2, nil, 0.6)
 						StyleButton( f.Bags[bagID][slotID])
 						--f.Bags[bagID][slotID].IconBorder:SetAlpha(0)
 					end
@@ -1122,14 +1049,11 @@ function addon:CreateLayout( isBank)
 						f.Bags[bagID][slotID].SetIcon = SetIcon
 					end
 
-					f.Bags[bagID][slotID].iconTexture = _G[f.Bags[bagID][slotID]:GetName()..'IconTexture'];
-					f.Bags[bagID][slotID].iconTexture:SetTexCoord( unpack( f.texCoord))  		--( unpack( yo.tCoord))
-					--f.Bags[bagID][slotID].iconTexture:SetAllPoints( f.Bags[bagID][slotID]);
+					f.Bags[bagID][slotID].icon:SetTexCoord( unpack( f.texCoord))  		--( unpack( yo.tCoord))
 
 
 					f.Bags[bagID][slotID].cooldown = _G[f.Bags[bagID][slotID]:GetName()..'Cooldown'];
 					f.Bags[bagID][slotID].cooldown.ColorOverride = 'bags'
-					--E:RegisterCooldown(f.Bags[bagID][slotID].cooldown)
 					f.Bags[bagID][slotID].bagID = bagID
 					f.Bags[bagID][slotID].slotID = slotID
 
@@ -1143,7 +1067,10 @@ function addon:CreateLayout( isBank)
 
 					if not f.Bags[bagID][slotID].newItemGlow then
 						local newItemGlow = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
-						newItemGlow:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagNewItemGlow")
+						--newItemGlow:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagNewItemGlow")
+						newItemGlow:SetTexture("Interface\\GLUES\\Models\\UI_LightforgedDraenei\\draenei_glow_blue.blp")
+						--newItemGlow:SetTexture([[Interface\Timer\HordeGlow-Logo.blp]])
+						newItemGlow:SetAllPoints( f.Bags[bagID][slotID])
 						newItemGlow:Hide()
 						f.Bags[bagID][slotID].newItemGlow = newItemGlow
 						f.Bags[bagID][slotID]:HookScript("OnEnter", hideNewItemGlow)
@@ -1201,6 +1128,9 @@ function addon:CreateLayout( isBank)
 		end
 	end
 
+----------------------------------------------------------------------------
+--				REAGENT SLOTS
+----------------------------------------------------------------------------
 	if(isBank and f.reagentFrame:IsShown()) then
 		if(not IsReagentBankUnlocked()) then
 			--f.reagentFrame.cover:Show();
@@ -1222,7 +1152,7 @@ function addon:CreateLayout( isBank)
 
 				StyleButton( f.reagentFrame.slots[i])
 				if not f.reagentFrame.slots[i].shadow then
-					CreateStyle( f.reagentFrame.slots[i], 2)
+					CreateStyle( f.reagentFrame.slots[i], 2, nil, 0.6)
 				end
 
 				f.reagentFrame.slots[i]:SetNormalTexture(nil);
@@ -1230,17 +1160,10 @@ function addon:CreateLayout( isBank)
 				f.reagentFrame.slots[i].Count:SetPoint('BOTTOMRIGHT', 0, 2);
 				f.reagentFrame.slots[i].Count:SetFont( yo.font, yo.fontsize -0, "OUTLINE") --, .db.bags.countFontOutline)
 
-				f.reagentFrame.slots[i].iconTexture = _G[f.reagentFrame.slots[i]:GetName()..'IconTexture'];
-				f.reagentFrame.slots[i].iconTexture:SetTexCoord( .08, .92, .08, .92)
+				f.reagentFrame.slots[i].icon:ClearAllPoints()
+				f.reagentFrame.slots[i].icon:SetAllPoints( f.reagentFrame.slots[i])
+				f.reagentFrame.slots[i].icon:SetTexCoord( unpack( f.texCoord))
 				f.reagentFrame.slots[i].IconBorder:SetAlpha(0)
-
-				if not f.reagentFrame.slots[i].newItemGlow then
-					local newItemGlow = f.reagentFrame.slots[i]:CreateTexture(nil, "OVERLAY")
-					newItemGlow:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagNewItemGlow")
-					newItemGlow:Hide()
-					f.reagentFrame.slots[i].newItemGlow = newItemGlow
-					f.reagentFrame.slots[i]:HookScript("OnEnter", hideNewItemGlow)
-				end
 			end
 
 			f.reagentFrame.slots[i]:ClearAllPoints()
@@ -1311,8 +1234,8 @@ function addon:CreateBagFrame( Bag, isBank)
 	f:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 
 	f.ContainerHolder = CreateFrame('Button', Bag..'ContainerHolder', f)
-	f.ContainerHolder:SetPoint('BOTTOMLEFT', f, 'TOPLEFT', -3, 3)
-	CreateStyle( f.ContainerHolder, 2)
+	f.ContainerHolder:SetPoint('BOTTOMLEFT', f, 'TOPLEFT', 0, 5)
+	CreateStyle( f.ContainerHolder, 2, nil, 0.6)
 	f.ContainerHolder:Hide()
 
 	f.holderFrame = CreateFrame('Frame', nil, f);
@@ -1324,11 +1247,13 @@ function addon:CreateBagFrame( Bag, isBank)
 	--f.holderFrame.closeButton:SetDesaturated( true)
 
 	if isBank then
-
+----------------------------------------------------------------------------
+--				BAG BUTTONS
+----------------------------------------------------------------------------
 		--Bags Button
 		f.bagsButton = CreateFrame("Button", "yo_" .. Bag..'BagsButton', f);
 		f.bagsButton:SetSize( 16, 16)
-		CreateStyle( f.bagsButton, 2)
+		CreateStyleSmall( f.bagsButton, 2)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", -2, 0)
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1343,8 +1268,8 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Banks Sort Button
 		f.bagsSortButton = CreateFrame("Button", "yo_" .. Bag..'bagsSortButton', f);
 		f.bagsSortButton:SetSize( 17, 17)
-		CreateStyle( f.bagsSortButton, 2)
-		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", 0, 0)
+		CreateStyleSmall( f.bagsSortButton, 2)
+		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -3, 0)
 		f.bagsSortButton:SetNormalTexture("Interface\\ICONS\\INV_Pet_Broom")
 		f.bagsSortButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
 		f.bagsSortButton:SetPushedTexture("Interface\\ICONS\\INV_Pet_Broom")
@@ -1368,7 +1293,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags to Reageng Button
 		f.bagsToReagent = CreateFrame("Button", "yo_" .. Bag..'bagsToReagent', f);
 		f.bagsToReagent:SetSize( 17, 17)
-		CreateStyle( f.bagsToReagent, 2)
+		CreateStyleSmall( f.bagsToReagent, 2)
 		f.bagsToReagent:SetPoint("RIGHT", f.bagsSortButton, "LEFT", -4, 0)
 		f.bagsToReagent:SetNormalTexture("Interface\\ICONS\\INV_Misc_Flower_02")
 		f.bagsToReagent:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1385,7 +1310,7 @@ function addon:CreateBagFrame( Bag, isBank)
 
 		f.purchaseBagButton = CreateFrame('Button', nil, f)
 		f.purchaseBagButton:SetSize( 17, 17)
-		CreateStyle( f.purchaseBagButton, 2)
+		CreateStyleSmall( f.purchaseBagButton, 2)
 		f.purchaseBagButton:SetPoint("RIGHT", f.bagsToReagent, "LEFT", -5, 0)
 		f.purchaseBagButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Coin_01")
 		f.purchaseBagButton:GetNormalTexture():SetTexCoord(unpack( f.texCoord))
@@ -1440,7 +1365,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bankToggle:SetSize(140, 18)
 		frame1px( f.bankToggle)
 		CreateStyle( f.bankToggle, 2)
-		f.bankToggle:SetBackdropColor(0.3, 0.3, 0.3, 0.5)
+		f.bankToggle:SetBackdropColor(0.3, 0.3, 0.3, 0.6)
 
 		f.bankToggle:RegisterForClicks("AnyUp")
 		f.bankToggle:SetScript("OnLeave", function( self)  f.bankToggle:SetBackdropBorderColor(.15,.15,.15, 0) end)
@@ -1477,6 +1402,9 @@ function addon:CreateBagFrame( Bag, isBank)
 
 
 	else
+---------------------------------------------------------------------------------
+--				BANK BUTTONS
+---------------------------------------------------------------------------------
 		--Gold Text
 		-- f.goldText = f:CreateFontString(nil, 'OVERLAY')
 		-- f.goldText:SetFont( font, fontsize)
@@ -1588,7 +1516,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.editBox.searchIcon:SetSize(15, 15)
 	end
 
-	CreateStyle( f, 5)
+	CreateStyle( f, 5, nil, 0.6)
 	tinsert( addon.BagFrames, f)
 	return f
 end
@@ -1599,7 +1527,7 @@ function addon:InitBags()
 
 	addon.BagFrames = {};
 
-	local f = self:CreateBagFrame("ElvUI_ContainerFrame")
+	local f = self:CreateBagFrame("ElvUI_ContainerFrame") --"ElvUI_ContainerFrame") ContainerFrame1
 	f:SetScript("OnShow", addon_OnShow)
 	f:SetScript("OnHide", addon_OnHide)
 
@@ -1685,28 +1613,19 @@ function addon:BANKFRAME_OPENED()
 	end
 end
 
-function addon:MERCHANT_CLOSED() addon_Close() end
-
+function addon:MERCHANT_CLOSED() 		addon_Close() end
 function addon:SCRAPPING_MACHINE_SHOW() addon_Open() end
-function addon:SCRAPPING_MACHINE_CLOSE() addon_Close() end
-function addon:AUCTION_HOUSE_SHOW() addon_Open() end
-function addon:AUCTION_HOUSE_CLOSED() addon_Close() end
-function addon:GUILDBANKFRAME_OPENED() addon_Open() end
-function addon:GUILDBANKFRAME_CLOSED() addon_Close() end
-function addon:TRADE_SHOW() addon_Open() end
-function addon:TRADE_CLOSED() addon_Close() end
-function addon:TRADE_SKILL_SHOW() addon_Open() end
-function addon:TRADE_SKILL_CLOSE() addon_Close() end
-
-
+function addon:SCRAPPING_MACHINE_CLOSE()addon_Close() end
+function addon:AUCTION_HOUSE_SHOW() 	addon_Open() end
+function addon:AUCTION_HOUSE_CLOSED() 	addon_Close() end
+function addon:GUILDBANKFRAME_OPENED() 	addon_Open() end
+function addon:GUILDBANKFRAME_CLOSED() 	addon_Close() end
+function addon:TRADE_SHOW() 			addon_Open() end
+function addon:TRADE_CLOSED() 			addon_Close() end
+function addon:TRADE_SKILL_SHOW() 		addon_Open() end
+function addon:TRADE_SKILL_CLOSE() 		addon_Close() end
 function addon:BANKFRAME_CLOSED()
 	HideUIPanel(self);
-
-	--print( "Event BANKFRAME_CLOSED")
-	if _G["StuffingFrameReagent"] and _G["StuffingFrameReagent"]:IsShown() then
-		--print( _G["StuffingFrameReagent"]:IsShown())
-		--_G["StuffingFrameReagent"]:Hide()
-	end
 	BankFrame:Hide()
 
 	if self.bankFrame then
@@ -1753,44 +1672,20 @@ hooksecurefunc( 'SetItemButtonCount', function( slot)
 	end
 end)
 
-local needCloseBags, needCloseWIM = false, false
+
 local function checkToClose(...)
-	if addon.bagFrame:IsShown() or ( yo_BBFrame and yo_BBFrame.bag and yo_BBFrame.bag:IsShown()) then
-		needCloseBags = true
-	else
-		needCloseBags = false
-	end
 
-	if yo_WIM and yo_WIM:IsShown() then
-		needCloseWIM = true
-	else
-		needCloseWIM = false
-	end
+	if yo_WIM and yo_WIM:IsShown() 					then yo_WIM:Hide() end
+	if addon.bagFrame:IsShown() 					then addon_Close() 	end
+	if yo_BBFrame.bag and yo_BBFrame.bag:IsShown() 	then yo_BBFrame.bag:Hide() end
 end
 
-local function tryToClose(...)
-	if needCloseBags then
-		addon_Close()
-		if yo_BBFrame.bag and yo_BBFrame.bag:IsShown() then
-			yo_BBFrame.bag:Hide()
-		end
-		--PlaySound ( 863, "Master")   -- 863	IG_BACKPACK_CLOSE
-		HideUIPanel(GameMenuFrame);
-		needCloseBags = false
-	end
-
-	if needCloseWIM then
-		yo_WIM:Hide()
-		HideUIPanel(GameMenuFrame);
-		needCloseWIM = false
-	end
-end
-
+ContainerFrame4 = CreateFrame("Frame", "ContainerFrame4", UIParent)
+ContainerFrame4:SetPoint("CENTER")
 
 function addon:PLAYER_ENTERING_WORLD()
 	addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	--print( "WTF BAG!", yo["Bags"].enable)
 	if not yo.Bags.enable then return end
 
 	self:InitBags()
@@ -1838,16 +1733,16 @@ function addon:PLAYER_ENTERING_WORLD()
 
 	SetInsertItemsLeftToRight( false)
 
-	ToggleBackpack = addon_Toggle
-	ToggleBag = addon_Toggle
-	ToggleAllBags = addon_Toggle
-	OpenAllBags = addon_Open
-	OpenBackpack = addon_Open
-	CloseAllBags = addon_Close
-	CloseBackpack = addon_Close
+	ToggleBackpack 	= addon_Toggle
+	ToggleBag 		= addon_Toggle
+	ToggleAllBags 	= addon_Toggle
+	OpenAllBags 	= addon_Open
+	OpenBackpack 	= addon_Open
+	CloseAllBags 	= addon_Close
+	CloseBackpack 	= addon_Close
 
 	hooksecurefunc( "CloseAllWindows", checkToClose)
-	hooksecurefunc( "ToggleGameMenu", tryToClose)
+	--hooksecurefunc( "ToggleGameMenu", tryToClose)
 
 	--Bag Assignment Dropdown Menu
 	ElvUIAssignBagDropdown = CreateFrame("Frame", "ElvUIAssignBagDropdown", UIParent, "UIDropDownMenuTemplate")
@@ -1857,20 +1752,3 @@ function addon:PLAYER_ENTERING_WORLD()
 	UIDropDownMenu_Initialize(ElvUIAssignBagDropdown, self.AssignBagFlagMenu, "MENU");
 end
 
-					--local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
-					--tt:SetOwner( UIParent, "ANCHOR_NONE")
-					--tt:SetBagItem(bagID, slotID)
-					--tt:Show()
-
-					--for x = 1, tt:NumLines() do
-					--	local lineR = _G['yoFrame_ItemTooltipTextRight'..x]
-					--	local lineTextR = lineR:GetText()
-					--	if lineTextR then
-					--		local lr, lg, lb = lineR:GetTextColor()
-					--		if lg > 0.5 then
-					--			--print( L["weared"] .. clink)
-					--			equipItem( bagID, slotID, clink, iLvl)
-					--		end
-					--	end
-					--end
-					--tt:Hide()

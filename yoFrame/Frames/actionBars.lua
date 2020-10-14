@@ -1,40 +1,15 @@
 local L, yo = unpack( select( 2, ...))
 
---local A, L = ...
-
---TotemBar
---function rActionBar:CreateTotemBar(addonName,cfg)
---	cfg.blizzardBar = TotemFrame
---	cfg.frameName = addonName.."TotemBar"
---	cfg.frameParent = cfg.frameParent or UIParent
---	cfg.frameTemplate = "SecureHandlerStateTemplate"
---	cfg.frameVisibility = cfg.frameVisibility or "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show"
---	local buttonName = "TotemFrameTotem"
---	local numButtons = MAX_TOTEMS
---	local buttonList = L:GetButtonList(buttonName, numButtons)
---	local frame = L:CreateButtonFrame(cfg,buttonList)
---end
-
--- update OverrideBar new buttons
-hooksecurefunc("ActionBarController_UpdateAll", function(self, ...)
-	--print("fsffsdfsdf", CURRENT_ACTION_BAR_STATE, LE_ACTIONBAR_STATE_OVERRIDE, HasVehicleActionBar(), HasOverrideActionBar())
-	--if CURRENT_ACTION_BAR_STATE == LE_ACTIONBAR_STATE_OVERRIDE then
-		for i = 1, 8 do
-	--		print("...")
-			if ActionBarButtonEventsFrame.frames[i] then ActionBarButtonEventsFrame.frames[i]:Update() end
-		end
-	--end
-end)
 
 local function buttonsUP( self)
 	if not InCombatLockdown() then
-		print("Buttons UP!")
+		--print("Buttons UP!")
 		SHOW_MULTI_ACTIONBAR_1 = 1
 		SHOW_MULTI_ACTIONBAR_3 = 1
 		ALWAYS_SHOW_MULTIBARS  = 1
-		--SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
-		--MultiBarBottomLeft:SetShown(true)
-		--MultiBarRight:SetShown(true)
+		SetActionBarToggles(not not SHOW_MULTI_ACTIONBAR_1, not not SHOW_MULTI_ACTIONBAR_2, not not SHOW_MULTI_ACTIONBAR_3, not not SHOW_MULTI_ACTIONBAR_4, not not ALWAYS_SHOW_MULTIBARS);
+		MultiBarBottomLeft:SetShown(true)
+		MultiBarRight:SetShown(true)
 		--MultiActionBar_ShowAllGrids(ACTION_BUTTON_SHOW_GRID_REASON_CVAR);
 		--InterfaceOptions_UpdateMultiActionBars()
 	else
@@ -44,12 +19,12 @@ end
 
 local function myButtonBorder( self, name, shift, alpha, cols)
 	local shift = shift or 5
-	local alpha = alpha or 0.9
+	local alpha = alpha or 1
 	local cols  = cols 	or { 1, 1, 1}
 
 	local texture = self:CreateTexture("frame", nil, self)
 	texture:SetTexture("Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
-	texture:SetVertexColor( cols[1], cols[2], cols[3])
+	texture:SetVertexColor( cols[1], cols[2], cols[3], alpha)
 	texture:SetPoint("TOPLEFT", -shift, shift)
 	texture:SetPoint("BOTTOMRIGHT", shift, -shift)
 	texture:SetAlpha( alpha)
@@ -59,28 +34,32 @@ end
 
 
 function ActionButton_UpdateRangeIndicator(self, checksRange, InRange)
-	--print( self:GetName(), checksRange, inRange)
 	if not self.action then return end
 
 	local Icon 			= self.icon
-	local NormalTexture = self.NormalTexture
 	local IsUsable, NotEnoughMana = IsUsableAction( self.action)
 
 	if UnitCanAttack("player", "target") and (checksRange and InRange == false) then -- Out of range
 		Icon:SetVertexColor(0.8, 0.1, 0.1)
-		NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
 	else -- In range
 		if IsUsable then -- Usable
 			Icon:SetVertexColor(1.0, 1.0, 1.0)
-			NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
 		elseif NotEnoughMana then -- Not enough power
 			Icon:SetVertexColor(0.1, 0.3, 1.0)
-			NormalTexture:SetVertexColor(0.1, 0.3, 1.0)
 		else -- Not usable
 			Icon:SetVertexColor(0.3, 0.3, 0.3)
-			NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
 		end
 	end
+
+	local isLevelLinkLocked = C_LevelLink.IsActionLocked(self.action);
+	if not Icon:IsDesaturated() then
+		Icon:SetDesaturated(isLevelLinkLocked);
+	end
+
+	if self.LevelLinkLockIcon then
+		self.LevelLinkLockIcon:SetShown(isLevelLinkLocked);
+	end
+
 end
 
 function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
@@ -89,14 +68,21 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 	if 	name:match("MultiCast") then return
 
-
+--------------------------------------------------------------------------------------------
+--		VENICHLE EXIT
+--------------------------------------------------------------------------------------------
 	elseif name:match("VehicleExitButton") then
 		local Icon = _G[name.."Icon"]
 
-		button:SetNormalTexture("")
 		button:SetSize( buttonWidth, buttonWidth)
 		Icon:SetTexCoord(unpack( yo.tCoord))
 		CreateStyle( button, 2)
+
+		local shift, alpfa = 3, 0.9
+		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa,   { 0, 1, 0})) end
+		if button.SetPushedTexture 		then button:SetPushedTexture( 		myButtonBorder( button, "pushed", shift, alpfa,  { 1, 0, 0})) end
+		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa, { 0, 0, 1})) end
+		if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "normal", shift, alpfa,  { 0.1, 0.1, 0.1})) end
 
 --------------------------------------------------------------------------------------------
 --		MicroMenu
@@ -165,7 +151,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local shift, alpfa = 7, 0.9
 
 		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa,   { 1, 1, 0})) end
-		if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "pushed", shift, alpfa,  { 0, 1, 0})) 	end
+		if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "normal", shift, alpfa,  { 0, 1, 0})) 	end
 		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa, { 1, 0, 0})) end
 
 --------------------------------------------------------------------------------------------
@@ -177,6 +163,8 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local icon	 	= _G[name.."Icon"]
 		local normal  	= _G[name.."NormalTexture2"]
 		local Border  	= _G[name.."Border"]
+		local cd 		= button.cooldown
+
 		local shift, alpfa = 3, 0.9
 
 		if not _G[name.."Panel"] then
@@ -191,26 +179,35 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 			icon:SetTexCoord(unpack( yo.tCoord))
 			icon:ClearAllPoints()
-			if false then
-				if buttonWidth < 30 then
-					local autocast = _G[name.."AutoCastable"]
-					autocast:SetAlpha(0)
-				end
-				local shine = _G[name.."Shine"]
-				shine:SetSize(buttonWidth, buttonWidth)
-				shine:ClearAllPoints()
-				shine:SetPoint("CENTER", button, 0, 0)
-				icon:SetPoint("TOPLEFT", button, 2, -2)
-				icon:SetPoint("BOTTOMRIGHT", button, -2, 2)
-			else
-				icon:SetPoint("TOPLEFT", button, 2, -2)
-				icon:SetPoint("BOTTOMRIGHT", button, -2, 2)
-			end
+			icon:SetPoint("TOPLEFT", button, 2, -2)
+			icon:SetPoint("BOTTOMRIGHT", button, -2, 2)
+
+			cd:ClearAllPoints()
+			cd:SetPoint("TOPLEFT", button, 2, -2)
+			cd:SetPoint("BOTTOMRIGHT", button, -2, 2)
+
+			--if false then
+			--	if buttonWidth < 10 then
+			--		local autocast = _G[name.."AutoCastable"]
+			--		autocast:SetAlpha(0)
+			--	end
+			--	local shine = _G[name.."Shine"]
+			--	shine:SetSize(buttonWidth, buttonWidth)
+			--	shine:ClearAllPoints()
+			--	shine:SetPoint("CENTER", button, 0, 0)
+			--end
 		end
 
+		button.HotKey:ClearAllPoints()
+		button.HotKey:SetPoint("TOPRIGHT", 0, 0)
+		button.HotKey:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
+		button.HotKey.ClearAllPoints = dummy
+		button.HotKey.SetPoint = dummy
+
+		if yo.ActionBar.HideHotKey 		then button.HotKey:Hide() end
 		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa, { 0, 1, 0})) end
 		if button.SetPushedTexture 		then button:SetPushedTexture( 		myButtonBorder( button, "pushed", shift, alpfa, { 1, 0, 0})) 	end
-		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa - 0.3, { 1, 1, 0})) end
+		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa - 0.5, { 1, 1, 0})) end
 		button:SetNormalTexture( "")
 		button:GetNormalTexture():SetSize( 1,1)
 		Flash:SetTexture("")
@@ -219,11 +216,12 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 --		Totem Menu
 --------------------------------------------------------------------------------------------
 	elseif name:match("TotemFrame") then
-		local Back = _G[name..'Background']
-		local Icon = _G[name.."Icon"]
-		local IconCD = _G[name.."IconCooldown"]
-		local IconTXT = _G[name.."IconTexture"]
-		local Dura = _G[name.."Duration"]
+		local Back 		= _G[name..'Background']
+		local Icon 		= _G[name.."Icon"]
+		local IconCD 	= _G[name.."IconCooldown"]
+		local IconTXT 	= _G[name.."IconTexture"]
+		local Dura 		= _G[name.."Duration"]
+		--local HotKey 	= _G[name.."HotKey"]
 
 		f1, f2 = button:GetChildren()
 		f2:Hide()
@@ -238,16 +236,19 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		Dura:SetFont( yo.fontpx, yo.fontsize +1, "OUTLINE")
 		CreateStyle( button, 2)
 
+		local shift, alpfa = 3, 0.9
+		--if yo.ActionBar.HideHotKey 		then button.HotKey:Hide() end
+		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa, { 0, 1, 0})) end
+		if button.SetPushedTexture 		then button:SetPushedTexture( 		myButtonBorder( button, "pushed", shift, alpfa, { 1, 0, 0})) 	end
+		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa - 0.5, { 1, 1, 0})) end
+
 --------------------------------------------------------------------------------------------
 --		Actions Bars
 --------------------------------------------------------------------------------------------
 	elseif name:match("MultiBar") or name:match( "ActionButton") then
 
-		button.UpdateUsable = dummy 			-- kill blizz not enough mana
-
 		local shift, alpfa 	= -2, .3
 		local action 	= button.action
-		local Button 	= button
 		local Icon 		= _G[name.."Icon"]
 		local Count 	= _G[name.."Count"]
 		local Flash	 	= _G[name.."Flash"]
@@ -277,7 +278,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa - 0.3, { 1, 1, 0})) end
 
 		Flash:SetTexture("Interface\\Buttons\\WHITE8x8")
-		Button:SetNormalTexture("")
+		button:SetNormalTexture("")
 
 		if Border then
 			Border:Hide()
@@ -321,8 +322,8 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			panel:SetBackdropColor(.05,.05,.05, .6)
 
 			Icon:SetTexCoord(unpack( yo.tCoord))
-			Icon:SetPoint("TOPLEFT", Button, 2, -2)
-			Icon:SetPoint("BOTTOMRIGHT", Button, -2, 2)
+			Icon:SetPoint("TOPLEFT", button, 2, -2)
+			Icon:SetPoint("BOTTOMRIGHT", button, -2, 2)
 		end
 
 		HotKey:ClearAllPoints()
@@ -341,16 +342,15 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			Btname:Hide()
 		end
 
-		if normal then
-			normal:ClearAllPoints()
-			normal:SetPoint("TOPLEFT")
-			normal:SetPoint("BOTTOMRIGHT")
-		end
+		--if normal then
+		--	normal:ClearAllPoints()
+		--	normal:SetPoint("TOPLEFT")
+		--	normal:SetPoint("BOTTOMRIGHT")
+		--end
 
-		--normal = nil
-		--ActionButton_ShowGrid(button)
 		if BtnBG then BtnBG:Hide() end
 
+		button.NormalTexture = nil
 	end
 
 
@@ -362,7 +362,7 @@ bars:SetScript("OnEvent", function(self, event)
 
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	if yo["ActionBar"].enable == true then
+	if yo.ActionBar.enable == true then
 
 		local fader01 = {
   			fadeInAlpha 	= 1,
@@ -406,44 +406,47 @@ bars:SetScript("OnEvent", function(self, event)
 		rActionBar:CreateActionBar1( "yoFrame", cfg)
 
 		cfg = defaultcfg
-		cfg.framePoint = { "CENTER", yo_MoveABar2, "CENTER", 0, 0}
+		cfg.framePoint 	= { "CENTER", yo_MoveABar2, "CENTER", 0, 0}
 		rActionBar:CreateActionBar2( "yoFrame", cfg)
 
 		--cfg.fader = fader
-		cfg.numCols = yo.ActionBar.panel3Cols
-		cfg.framePoint = { "TOPLEFT", yo_MoveABar3, "TOPLEFT", 0, 0}
+		cfg.numCols 	= yo.ActionBar.panel3Cols
+		cfg.framePoint 	= { "TOPLEFT", yo_MoveABar3, "TOPLEFT", 0, 0}
 		rActionBar:CreateActionBar3( "yoFrame", cfg)
 
-		cfg.numCols = 12
-		cfg.buttonWidth 	= 35
-		cfg.buttonHeight 	= 35
-		cfg.buttonMargin 	= 2
-		cfg.framePoint = { "CENTER", yo_MoveABar4, "CENTER", 0, 0}
+		cfg.numCols 	= 12
+		cfg.buttonWidth = 35
+		cfg.buttonHeight= 35
+		cfg.buttonMargin= 2
+		cfg.framePoint 	= { "CENTER", yo_MoveABar4, "CENTER", 0, 0}
 		rActionBar:CreateActionBar4( "yoFrame", cfg)
 
-		cfg.numCols = 1
-		cfg.framePoint = { "CENTER", yo_MoveABar5, "CENTER", 0, 0}
-		cfg.fader = fader00
+		cfg.numCols 	= 1
+		cfg.framePoint 	= { "CENTER", yo_MoveABar5, "CENTER", 0, 0}
+		cfg.buttonWidth = 35
+		cfg.buttonHeight= 35
+		cfg.fader 		= fader00
+		cfg.direction 	= "LEFT"
 		rActionBar:CreateActionBar5( "yoFrame", cfg)
 
-		cfg.fader = nill
+		cfg.fader 		= nill
 		cfg.buttonWidth = 30
-		cfg.buttonHeight = 30
-		cfg.startPoint = "TOPRIGHT"
-		cfg.numCols = 12
-		cfg.framePoint = { "CENTER", yo_MovePetBar, "CENTER", 0, 0}
+		cfg.buttonHeight= 30
+		cfg.startPoint 	= "TOPRIGHT"
+		cfg.numCols 	= 12
+		cfg.framePoint 	= { "CENTER", yo_MovePetBar, "CENTER", 0, 0}
 		rActionBar:CreateStanceBar( "yoFrame",cfg)
 		rActionBar:CreatePetBar( "yoFrame",cfg)
 
 		cfg.buttonWidth = 40
-		cfg.buttonHeight = 40
-		cfg.startPoint = "TOPLEFT"
-		cfg.framePoint = { "CENTER", yo_MoveExtr, "CENTER", 0, 0}
+		cfg.buttonHeight= 40
+		cfg.startPoint 	= "TOPLEFT"
+		cfg.framePoint 	= { "CENTER", yo_MoveExtr, "CENTER", 0, 0}
 		rActionBar:CreateExtraBar( "yoFrame",cfg)
 
 		cfg.buttonWidth = 35
-		cfg.buttonHeight = 35
-		cfg.framePoint = { "CENTER", yo_MoveExtr, "CENTER", 0, -60}
+		cfg.buttonHeight= 35
+		cfg.framePoint 	= { "CENTER", yo_MoveExtr, "CENTER", 0, -60}
 		cfg.frameVisibility = "[canexitvehicle][target=vehicle,exists] show;hide"
 		rActionBar:CreateVehicleExitBar( "yoFrame",cfg)
 
@@ -460,7 +463,7 @@ bars:SetScript("OnEvent", function(self, event)
 		cfg.framePoint = { "RIGHT", yo_MovePetBar, "RIGHT", 0, 0}
 		rActionBar:CreateTotemBar( "yoFrame",cfg)
 
-		if yo["ActionBar"].MicroMenu == true then
+		if yo.ActionBar.MicroMenu == true then
 			cfg = defaultcfg
 			cfg.buttonMargin = -4
 			cfg.fader = fader01
@@ -481,8 +484,7 @@ bars:SetScript("OnEvent", function(self, event)
 		hooksecurefunc(PlayerPowerBarAlt, "ClearAllPoints", Position)
 	end
 
-	-- TODO
-	if yo["ActionBar"].ShowGrid == true then
+	if yo.ActionBar.ShowGrid == true then
 		ActionButton_HideGrid = dummy
 		for i = 1, 12 do
 			local button = _G[format("ActionButton%d", i)]
@@ -515,7 +517,20 @@ bars:SetScript("OnEvent", function(self, event)
 	ZoneAbilityFrame.ignoreFramePositionManager = true
 
 	--buttonsUP( self)
-	--C_Timer.After( 2, function() buttonsUP(self) end )
+	C_Timer.After( 2, function() buttonsUP(self) end )
+end)
+
+
+--------------------------------------------------------------------------------------------
+---- 		update OverrideBar new buttons
+--------------------------------------------------------------------------------------------
+hooksecurefunc("ActionBarController_UpdateAll", function(self, ...)
+	if ( HasBonusActionBar() or HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() ) then
+		--print("ПОПАЛИ: ", CURRENT_ACTION_BAR_STATE, LE_ACTIONBAR_STATE_OVERRIDE, HasVehicleActionBar(), HasOverrideActionBar(), HasTempShapeshiftActionBar(), C_PetBattles.IsInBattle())
+		for i = 1, 6 do
+			if ActionBarButtonEventsFrame.frames[i] then ActionBarButtonEventsFrame.frames[i]:Update() end
+		end
+	end
 end)
 
 --------------------------------------------------------------------------------------------

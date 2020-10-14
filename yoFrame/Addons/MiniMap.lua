@@ -402,6 +402,93 @@ WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
 	end
 end)
 
+
+								--<Animations>
+								--	<AnimationGroup parentKey="MinimapLoopPulseAnim" looping="REPEAT">
+								--		<Alpha childKey="LoopingGlow" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+								--		<Alpha childKey="LoopingGlow" startDelay="0.5" duration="1" order="1" fromAlpha="1" toAlpha="0"/>
+								--		<Scale childKey="LoopingGlow" duration="0.75" order="1" fromScaleX="0.75" fromScaleY="0.75" toScaleX="1.1" toScaleY="1.1"/>
+								--		<Scripts>
+								--			<OnPlay>
+								--				self:GetParent().LoopingGlow:Show();
+								--			</OnPlay>
+								--			<OnStop>
+								--				self:GetParent().LoopingGlow:Hide();
+								--			</OnStop>
+								--			<OnFinished>
+								--				self:GetParent().LoopingGlow:Hide();
+								--			</OnFinished>
+								--		</Scripts>
+								--	</AnimationGroup>
+								--	<AnimationGroup parentKey="MinimapPulseAnim" setToFinalAlpha="true">
+								--		<Alpha childKey="CircleGlow" duration="0.1" order="1" fromAlpha="0" toAlpha="1"/>
+								--		<Alpha childKey="CircleGlow" startDelay="0.1" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+								--		<Scale childKey="CircleGlow" duration="0.25" order="1" fromScaleX="0.75" fromScaleY="0.75" toScaleX="1.75" toScaleY="1.75"/>
+								--		<Alpha childKey="SoftButtonGlow" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+								--		<Alpha childKey="SoftButtonGlow" startDelay="0.5" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+								--		<Scale childKey="SoftButtonGlow" duration="0.75" order="1" fromScaleX="1" fromScaleY="1" toScaleX="1.5" toScaleY="1.5"/>
+								--		<Scripts>
+								--			<OnPlay>
+								--				self:GetParent().CircleGlow:Show();
+								--				self:GetParent().SoftButtonGlow:Show();
+								--			</OnPlay>
+								--			<OnStop>
+								--				self:GetParent().CircleGlow:Hide();
+								--				self:GetParent().SoftButtonGlow:Hide();
+								--			</OnStop>
+								--			<OnFinished>
+								--				self:GetParent().CircleGlow:Hide();
+								--				self:GetParent().SoftButtonGlow:Hide();
+								--			</OnFinished>
+								--		</Scripts>
+								--	</AnimationGroup>
+								--	<AnimationGroup parentKey="MinimapAlertAnim" setToFinalAlpha="true">
+								--		<Alpha childKey="AlertText" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+								--		<Alpha childKey="AlertBG" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+								--		<Scale childKey="AlertBG" duration="0.25" order="1" fromScaleX="0.1" fromScaleY="1" toScaleX="1" toScaleY="1">
+								--			<Origin point="CENTER">
+								--				<Offset x="65" y="0"/>
+								--			</Origin>
+								--		</Scale>
+								--		<Alpha childKey="SideToastGlow" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+								--		<Alpha childKey="SideToastGlow" startDelay="0.5" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+								--		<Scale childKey="SideToastGlow" duration="0.5" order="1" fromScaleX="1" fromScaleY="1" toScaleX="2" toScaleY="1">
+								--			<Origin point="RIGHT">
+								--				<Offset x="-10" y="0"/>
+								--			</Origin>
+								--		</Scale>
+								--		<Alpha childKey="AlertText" startDelay="5" duration="0.25" order="2" fromAlpha="1" toAlpha="0"/>
+								--		<Alpha childKey="AlertBG" startDelay="5" duration="0.25" order="2" fromAlpha="1" toAlpha="0"/>
+								--		<Scale childKey="AlertBG" startDelay="5" duration="0.25" order="2" fromScaleX="1" fromScaleY="1" toScaleX="0.1" toScaleY="1">
+								--			<Origin point="RIGHT">
+								--				<Offset x="0" y="0"/>
+								--			</Origin>
+								--		</Scale>
+								--		<Scripts>
+								--			<OnPlay>
+								--				self:GetParent().AlertBG:Show();
+								--				self:GetParent().AlertText:Show();
+								--				self:GetParent().SideToastGlow:Show();
+								--				self:GetParent().MinimapPulseAnim:Play();
+								--			</OnPlay>
+								--			<OnStop>
+								--				self:GetParent().AlertBG:Hide();
+								--				self:GetParent().AlertText:Hide();
+								--				self:GetParent().SideToastGlow:Hide();
+								--				self:GetParent().MinimapPulseAnim:Stop();
+								--			</OnStop>
+								--			<OnFinished>
+								--				self:GetParent().AlertBG:Hide();
+								--				self:GetParent().AlertText:Hide();
+								--				self:GetParent().SideToastGlow:Hide();
+								--				self:GetParent().MinimapPulseAnim:Stop();
+								--				GarrisonMinimap_CheckQueuedHelpTip(self:GetParent());
+								--			</OnFinished>
+								--		</Scripts>
+								--	</AnimationGroup>
+								--</Animations>
+
+
 --Create the new minimap tracking dropdown frame and initialize it
 -- local ElvUIMiniMapTrackingDropDown = CreateFrame("Frame", "ElvUIMiniMapTrackingDropDown", UIParent, "UIDropDownMenuTemplate")
 -- ElvUIMiniMapTrackingDropDown:SetID(1)

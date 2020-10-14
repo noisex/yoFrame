@@ -16,7 +16,7 @@ LSM:Register("statusbar", "yo StatusBar", 	"Interface\\AddOns\\yoFrame\\Media\\s
 LSM:Register("statusbar", "yo DGroung", 	"Interface\\AddOns\\yoFrame\\Media\\bar_dground")
 LSM:Register("statusbar", "yo Striped", 	"Interface\\AddOns\\yoFrame\\Media\\striped")
 LSM:Register("statusbar", "yo Smooth", 		"Interface\\AddOns\\yoFrame\\Media\\flatsmooth")
-LSM:Register("statusbar", "yo Bar 04", 		"Interface\\AddOns\\yoFrame\\Media\\bar4")
+--LSM:Register("statusbar", "yo Bar 04", 		"Interface\\AddOns\\yoFrame\\Media\\bar4")
 LSM:Register("statusbar", "yo Bar 07", 		"Interface\\AddOns\\yoFrame\\Media\\bar7")
 --LSM:Register("statusbar", "yo Bar Solid",	"Interface\\AddOns\\yoFrame\\Media\\White8x8")
 LSM:Register("statusbar", "yo Bar 17", 		"Interface\\AddOns\\yoFrame\\Media\\bar17")
@@ -44,9 +44,6 @@ local function UpdateShadowEdge( scale)
 		local esize = max( 1, drop.edgeSize + ( scale or 0)) --yo.Media.edgeSize
 		local dropCr, dropCg, dropCb, dropCa = shadow:GetBackdropColor()
 		local dropBCr, dropBCg, dropBCb, dropBCa = shadow:GetBackdropBorderColor()
-		--if shadow:GetPoint(1) then
-		--	local _, p = shadow:GetPoint(1)
-		--end
 
 		if yo.Media.classBorder then
 			dropBCr, dropBCg, dropBCb = myColor.r, myColor.g, myColor.b
@@ -59,6 +56,9 @@ local function UpdateShadowEdge( scale)
 		shadow:SetBackdropColor( dropCr, dropCg, dropCb, dropCa)
 		shadow:SetBackdropBorderColor( dropBCr, dropBCg, dropBCb, dropBCa)
 
+		--if shadow:GetPoint(1) then
+		--	local _, p = shadow:GetPoint(1)
+		--end
 		--if p then
 		--	shadow:ClearAllPoints()
 		--	shadow:SetPoint( "TOPLEFT", p, "TOPLEFT", -esize, esize)
@@ -96,7 +96,6 @@ local function UpdateStringScale( scale)
 		if strings then
 			local font, fs, fd = strings:GetFont()
 			fs = fs + scale
-			--print( fs, fontsize, yo.Media.fontsize)
 			strings:SetFont( font, fs, fd)
 		end
 	end
@@ -271,28 +270,7 @@ function InitOptions()
 					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					-- lootbox
 					-- cooldowns
-					ObjectiveTracker= {	order = 19, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
-					ObjectiveShort	= {	order = 21, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
-					ObjectiveHeight = { order = 22, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	},
-
-					hideObjective	= {	order = 24, type = "toggle",name = function(info) return tr( info[#info]) end,   },
-
-					MiniMaps = {
-						name = L["MiniMaps"],	type = "group",	order = 30,	inline = true,
-						args = {
-							MiniMap 		= {	order = 1,  type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = 1},
-							MiniMapSize		= {	order = 2,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 100, max = 250, step = 10,},
-							MMColectIcons 	= {	order = 5,  type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
-							MiniMapCoord 	= {	order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end,  },
-							MiniMapHideText = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["MMHIDE_DESC"],},
-							MMCoordColor 	= {	order = 20, type = "color",		name = function(info) return tr( info[#info]) end,
-								disabled = function() return not yo.Addons.MiniMapCoord; end,
-								get = function(info, r, g, b)  return strsplit( ",", yo.Addons.MMCoordColor)	end,
-								set = function(info, r, g, b) Setlers( "Addons#MMCoordColor", strjoin(",", r, g, b)) end,},
-							MMCoordSize 	= {	order = 25,	type = "range", name = function(info) return tr( info[#info]) end,  min = 5, max = 16, step = 1, desc = L["DEFAULT"] .. 8,
-								disabled = function() return not yo.Addons.MiniMapCoord; end,	},
-					},	},
-					--CastWatcher = {
+						--CastWatcher = {
 					--	name = "CastWatcher", type = "group", order = 40, inline = true,
 					--	get = function(info) return yo["Addons"][info[#info]] end,
 					--	set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
@@ -307,20 +285,34 @@ function InitOptions()
 				},
 			},
 
-
 			Automatic = {
 				order = 25,	name = L["Automatic"], type = "group",
 				get = function(info) return yo["Addons"][info[#info]] end,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
 				args = {
 					AutoRepair 				= {	order = 1, type = "toggle", name = function(info) return tr( info[#info]) end,  width = "full", },
-					AutoSellGrayTrash 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["SALE_DESC"],},
-					AutoScreenOnLvlUpAndAchiv={ order = 3, type = "toggle",	name = function(info) return tr( info[#info]) end, 	},
-					AutoInvaitFromFriends 	= {	order = 4, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
-					AutoInvite 				= {	order = 5, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full", desc = "инв inv byd штм 123"},
-					AutoLeader 				= {	order = 6, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
-					equipNewItem			= {	order = 7, type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					equipNewItemLevel		= {	order = 8, type = "range",	name = function(info) return tr( info[#info]) end, 	min = 0, max = 800, step = 1,},
+					AutoSellGrayTrash 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = "full", desc = L["SALE_DESC"],},
+					AutoScreenOnAndAchiv	= { order = 3, type = "toggle",	name = function(info) return tr( info[#info]) end, 	},
+					AutoScreenOnLvlUp		= { order =13, type = "toggle",	name = function(info) return tr( info[#info]) end, 	},
+					AutoInvaitFromFriends 	= {	order =14, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
+					AutoInvite 				= {	order =15, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full", desc = "инв inv byd штм 123"},
+					AutoLeader 				= {	order =16, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
+					equipNewItem			= {	order =17, type = "toggle",	name = function(info) return tr( info[#info]) end, },
+					equipNewItemLevel		= {	order =18, type = "range",	name = function(info) return tr( info[#info]) end, 	min = 0, max = 800, step = 1,},
+				},
+			},
+
+			Quests = {
+				order = 27,	name = GARRISON_MISSIONS, type = "group",
+				get = function(info) return yo["Addons"][info[#info]] end,
+				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
+				--disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				args = {
+					ObjectiveTracker= {	order = 19, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
+					ObjectiveShort	= {	order = 21, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
+					ObjectiveHeight = { order = 22, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	},
+					hideObjective	= {	order = 24, type = "toggle",name = function(info) return tr( info[#info]) end,   },
+					showToday		= {	order = 26, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
 
 					AutoQuesting = {
 						order = 30,	name = L["AutoQuesting"], type = "group",	inline = true,
@@ -336,17 +328,46 @@ function InitOptions()
 				},
 			},
 
+			Minimaps = {
+				order = 25,	name = MINIMAP_LABEL, type = "group",
+				get = function(info) return yo["Addons"][info[#info]] end,
+				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
+				args = {
+					MiniMap 		= {	order = 1,  type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = 1},
+					MiniMapSize		= {	order = 2,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 100, max = 250, step = 10,},
+					MMColectIcons 	= {	order = 5,  type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full"},
+					MiniMapCoord 	= {	order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end,  },
+					MiniMapHideText = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["MMHIDE_DESC"],},
+					MMCoordColor 	= {	order = 20, type = "color",		name = function(info) return tr( info[#info]) end,
+						disabled = function() return not yo.Addons.MiniMapCoord; end,
+						get = function(info, r, g, b)  return strsplit( ",", yo.Addons.MMCoordColor)	end,
+						set = function(info, r, g, b) Setlers( "Addons#MMCoordColor", strjoin(",", r, g, b)) end,},
+					MMCoordSize 	= {	order = 25,	type = "range", name = function(info) return tr( info[#info]) end,  min = 5, max = 16, step = 1, desc = L["DEFAULT"] .. 8,
+						disabled = function() return not yo.Addons.MiniMapCoord; end,	},
+				},
+			},
+
 			CastBar = {
 				order = 30,	name = L["CastBar"], type = "group",
 				args = {
+					player = {
+						order = 10,	name = L["PCB"], type = "group",	inline = true,
+						get = function(info) return yo[info[1]][info[2]][info[#info]] end,
+						set = function(info,val)    Setlers( info[1] .."#".. info[2] .."#".. info[#info], val) end,
+						args = {
+							QueueWindow = {	order = 1,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = 100, max = 1000, step = 10, width = "full", desc = L["DESC_QUEUE"],
+								set = function(info,val) Setlers( info[1] .."#".. info[2] .."#".. info[#info], val, true) SetCVar("SpellQueueWindow", val) end, },
+							bigBar 		= {	order = 10, type = "toggle", 	name = function(info) return tr( info[#info]) end},
+							classcolor	= {	order = 14, type = "toggle", 	name = function(info) return tr( info[#info]) end},
+							iconincombat= { order = 20, type = "toggle",	name = function(info) return tr( info[#info]) end,	disabled = function() return not yo["CastBar"]["player"].enable; end,},
+						},
+					},
 					BCB = {
 						order = 20,	name = L["BCB"], type = "group",	inline = true,
 						get = function(info) return yo[info[1]][info[2]][info[#info]] end,
 						set = function(info,val) Setlers( info[1] .."#".. info[2] .."#".. info[#info], val)	end,
 						disabled = function() return not yo.CastBar.BCB.enable; end,
 						args = {
-							QueueWindow = {	order = 1,	type = "range", 	name = function(info) return tr( info[#info]) end,	min = 100, max = 1000, step = 10, width = "full", desc = L["DESC_QUEUE"],
-								set = function(info,val) Setlers( info[1] .."#".. info[2] .."#".. info[#info], val, true) SetCVar("SpellQueueWindow", val) end, },
 							enable 		= { order = 3,  type = "toggle", 	name = L["BCBenable"], width = "full",  disabled = false, },
 							unit 		= { order = 4,  type = "select", 	name = L["BCDunit"],   width = 1,	values = {["player"] = L["player"], ["target"] = L["target"]},},
 							castBoss	= {	order = 7,  type = "toggle",	name = function(info) return tr( info[#info]) end, desc = L["DESC_CASTBOSS"],},
@@ -362,15 +383,6 @@ function InitOptions()
 							classcolor 	= {	order = 25, type = "toggle",	name = L["CBclasscolor"],	desc = L["DESC_BCB_CC"],	width = "full",},
 							treatborder = {	order = 26, type = "toggle",	name = function(info) return tr( info[#info]) end,	desc = L["DESC_BCB_TREAT"],	width = "full",},
 							castbarAlpha= {	order = 40,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 0, max = 1, step = 0.01,},
-						},
-					},
-					player = {
-						order = 30,	name = L["PCB"], type = "group",	inline = true,
-						get = function(info) return yo[info[1]][info[2]][info[#info]] end,
-						set = function(info,val)    Setlers( info[1] .."#".. info[2] .."#".. info[#info], val) end,
-						args = {
-							enable 		= {	order = 1, type = "toggle", name = L["PCBenable"],},
-							iconincombat= { order = 14, type = "toggle",	name = function(info) return tr( info[#info]) end,	disabled = function() return not yo["CastBar"]["player"].enable; end,},
 						},
 					},
 				},

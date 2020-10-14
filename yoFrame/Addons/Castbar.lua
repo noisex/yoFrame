@@ -56,10 +56,10 @@ local function UnitColors( f)
 	else
 		--print( f.notInterruptible)
 		if f.notInterruptible then
-			cols[1], cols[2], cols[3] = 1, 0, 0
+			cols[1], cols[2], cols[3] = 0.8, 0.15, 0.25
 		else
 			if spellDelay() then
-				cols[1], cols[2], cols[3] = 0, 1, 0
+				cols[1], cols[2], cols[3] = 0.5, 1, 0
 			else
 				cols[1], cols[2], cols[3] = 0, 1, 1
 			end
@@ -85,13 +85,9 @@ local function stopCast( f, unit, ...)
 	if unit and unit ~= f.unit then return end
 
 	f.spellID = nil
-	if f.latency then
-		f.latency:Hide()
-	end
+	if f.latency then f.latency:Hide() end
+	if f.ibg and f.ibg:IsShown() then f.ibg:Hide() end
 
-	if f.ibg and f.ibg:IsShown() then
-		f.ibg:Hide()
-	end
 	f.spark:Hide()
 	f:SetValue( f.reversed and 0 or ( f.endTime or GetTime()))	-- - f.startTime))
 	f.endTime = GetTime()
@@ -184,14 +180,12 @@ local function startCast( f, unit, ...)
 	if f.latency then
 		--local delay = select( 4, GetNetStats()) / 1000
 		local delay =  GetCVar("SpellQueueWindow") / 1000
-		--f.latency:ClearAllPoints()
-		--f.latency:SetPoint("RIGHT", f, "RIGHT", 0, 0)
 		f.latency:SetWidth( f:GetWidth() * min( delay / ( f.endTime - f.startTime), 1.0))
 		f.latency:Show()
 	end
-	if unit ~= "focus" then
-		f.spark:Show()
-	end
+
+	if unit ~= "focus" then f.spark:Show()	end
+
 	f:SetScript('OnUpdate', TimerUpdate)
 	f:SetAlpha( 1)
 	UnitColors( f, unit)
@@ -442,16 +436,26 @@ logan:SetScript("OnEvent", function(self, event)
 
 	if not yo.Addons.unitFrames then return end
 
-	cfg 		= yo.CastBar.player
-	cfg.width 	= yo_MovePlayerCastBar:GetWidth()
-	cfg.height 	= yo_MovePlayerCastBar:GetHeight()
-	cfg.point 	= { "CENTER", yo_MovePlayerCastBar, "CENTER", 0, 0}
-	CreateCastBar( plFrame, cfg)
-
 	cfg 		= yo.CastBar.target
 	cfg.width	= tarFrame:GetWidth()
 	cfg.point	= { "BOTTOM", tarFrame, "TOP", 0, 8}
 	CreateCastBar( tarFrame, cfg)
+
+	if yo.CastBar.player.bigBar then
+		cfg 		= yo.CastBar.player
+		cfg.width 	= yo_MovePlayerCastBar:GetWidth()
+		cfg.height 	= yo_MovePlayerCastBar:GetHeight()
+		cfg.point 	= { "CENTER", yo_MovePlayerCastBar, "CENTER", 0, 0}
+	else
+		cfg 			= yo.CastBar.target
+		cfg.width		= plFrame:GetWidth()
+		cfg.unit 		= "player"
+		cfg.point		= { "BOTTOM", plFrame, "TOP", 0, 8}
+		cfg.classcolor	= yo.CastBar.player.classcolor
+		cfg.icon 		= yo.CastBar.player.icon
+		cfg.iconincombat= yo.CastBar.player.iconincombat
+	end
+	CreateCastBar( plFrame, cfg)
 
 	cfg 		= yo.CastBar.focus
 	cfg.width	= fcFrame:GetWidth()

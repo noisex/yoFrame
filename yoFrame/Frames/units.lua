@@ -262,22 +262,6 @@ local function Shared(self, unit)
 	self.bgHlight:SetAlpha(0.1)
 	self.bgHlight:Hide()
 
---	if yo.Raid.classcolor == 1 then
---		cols = colors.class[select( 2,UnitClass( unit))]
---print(unit)
---		tprint( cols)
---		self.Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
---		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
-
---	elseif yo.Raid.classcolor == 222 then
---		self.Health.colorSmooth = true
---		self.Health.colorReaction = true
-
---	else
---		self.Health:SetStatusBarColor( 0.13, 0.13, 0.13, 0.9)
---		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
---	end
-
 	local AbsorbBar = CreateFrame('StatusBar', nil, self.Health)
 	if unit == "player" or unit == "target" or unit == "pet" then
     	AbsorbBar:SetPoint('TOP')
@@ -367,6 +351,15 @@ local function Shared(self, unit)
 		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -2)
 		self:Tag( self.rText, "[GetNameColor][group]")
 	end
+
+	--if unit == "targettarget" then
+	--	print("...")
+	--	self.Health.healthText =  self.Health:CreateFontString(nil ,"OVERLAY")
+	--	self.Health.healthText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
+	--	self.Health.healthText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 2)
+	--	self.Health.healthText:SetText("text", 1, 1, 1, 1)
+	--	table.insert( N.strings, self.Health.healthText)
+	--end
 
 ------------------------------------------------------------------------------------------------------
 ---											ICONS

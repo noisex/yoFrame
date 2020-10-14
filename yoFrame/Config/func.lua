@@ -47,23 +47,30 @@ function SetUpAnimGroup(object, type, ...)
 		object.anim.fadeout:SetToAlpha(0)
 		object.anim.fadeout:SetOrder(1)
 	elseif type == 'FlashLoop' then
-		local maxAlpha, minAlpha = ...
+		local maxAlpha, minAlpha, delay = ...
 		object.anim = object:CreateAnimationGroup("Flash")
+		object.anim:SetLooping("REPEAT")
 		object.anim.fadein = object.anim:CreateAnimation("ALPHA", "FadeIn")
 		object.anim.fadein:SetFromAlpha( minAlpha or 0)
 		object.anim.fadein:SetToAlpha( maxAlpha or 1)
-		object.anim.fadein:SetOrder(2)
+		object.anim.fadein:SetOrder(1)
 
 		object.anim.fadeout = object.anim:CreateAnimation("ALPHA", "FadeOut")
+		object.anim.fadeout:SetStartDelay( delay or object.anim.fadein:GetDuration())
 		object.anim.fadeout:SetFromAlpha( maxAlpha or 1)
 		object.anim.fadeout:SetToAlpha( minAlpha or 0)
 		object.anim.fadeout:SetOrder(1)
 
-		object.anim:SetScript("OnFinished", function(_, requested)
-			if(not requested) then
-				object.anim:Play()
-			end
-		end)
+		--object.anim.scale = object.anim:CreateAnimation("SCALE", "Scale")
+		--object.anim.scale:SetOrder(1)
+		--object.anim.scale:SetDuration(0.75)
+		--object.anim.scale:SetFromScale( 0.7, .7)
+		--object.anim.scale:SetToScale( 1, 1)
+		--object.anim:SetScript("OnFinished", function(_, requested)
+		--	if(not requested) then
+		--		object.anim:Play( true)
+		--	end
+		--end)
 	elseif type == 'Shake' then
 		object.shake = object:CreateAnimationGroup("Shake")
 		object.shake:SetLooping("REPEAT")
@@ -614,13 +621,8 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     shadow:SetPoint("BOTTOMRIGHT", size, -size)
     shadow:SetBackdrop(style)
     local r, g, b = strsplit( ",", yo.Media.shadowColor)
- --   if yo.Media.classBorder then
-	--	r, g, b = myColor.r, myColor.g, myColor.b
-	--end
-    --shadow:SetBackdropColor( r, g, b, alpha or .9)
 
-    shadow:SetBackdropColor(.07,.07,.07, alpha or .9)
-    --shadow:SetBackdropColor( myColor.r, myColor.g, myColor.b, 0.1)
+    shadow:SetBackdropColor(.075,.075,.086, alpha or .9)
 	shadow:SetBackdropBorderColor( r, g, b, alphaborder or 1)	--(0, 0, 0, alphaborder or 1)
     f.shadow = shadow
     table.insert( N["shadows"], f.shadow)

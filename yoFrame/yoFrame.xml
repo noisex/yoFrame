@@ -3,10 +3,7 @@
 	<Script file="Config\constants.lua"/>
 	<Script file="Config\config.lua"/>
 
-	<Script file="Locale\locale.lua"/>
-	<Script file="Locale\enUS.lua"/>
-	<Script file="Locale\ruRU.lua"/>
-
+	<Include file="Locale\locale.xml"/>
 	<Include file="Libs\Load_Libraries.xml"/>
 
 	<Script file="Config\screen.lua"/>
@@ -17,11 +14,7 @@
 	<Script file="Config\core.lua"/>
 	<Script file="Config\iconAuras.lua"/>
 
-	<Script file="Filters\ClassDebuffOnTarget.lua"/>
-	<Script file="Filters\RaidAuras.lua"/>
-	<Script file="Filters\RaidSpels.lua"/>
-	<Script file="Filters\TriggerTemplatesData.lua"/>
-
+	<Include file="Filters\filters.xml"/>
  	<Include file="Infotext\infotexts.xml"/>
 
  	<Script file="Frames\chat.lua"/>
@@ -32,7 +25,9 @@
 	<Script file="Frames\units.lua"/>
 
 	<Script file="Addons\Aura.lua"/>
+	<Script file="Addons\AzeritPower.lua"/>
 	<Script file="Addons\CastBar.lua"/>
+	<Script file="Addons\CastBarNP.lua"/>
 	<Script file="Addons\Challenges.lua"/>
 	<Script file="Addons\ChallengeFrame.lua"/>
 	<Script file="Addons\ChallengeProc.lua"/>
@@ -45,6 +40,7 @@
 	<Script file="Addons\BagsEquip.lua"/>
 	<Script file="Addons\DoLoot.lua"/>
 	<Script file="Addons\HolyShards.lua"/>
+	<Script file="Addons\HolyShardsNP.lua"/>
 	<Script file="Addons\Inspect.lua"/>
 	<Script file="Addons\Fliger.lua"/>
 	<Script file="Addons\FogOfWar.lua"/>
@@ -75,21 +71,6 @@
 	<Script file="Addons\yoque.lua"/>
 	<Script file="Addons\ItemLvl.lua"/>
 
-
-	<!-- <Script file="Config\iconAuras.lua"/>
-	<Script file="Frames\tags.lua"/>
-	<Script file="Config\Profiles.lua"/>
-
-	<Script file="Core\GUI.lua"/>
-	<Script file="Core\PixelPerfect.lua"/>
-
-	<Include file="Libs\oUF\oUF.xml"/>
-	<Include file="Libs\oGlow\oGlow.xml"/>
-	<Script file="Libs\LitePanels\LitePanels.lua"/>
-	<Script file="Libs\LitePanels\Layout.lua"/>
-	<Script file="Config\DataText.lua"/>
-	<Script file="Libs\LiteStats\LiteStats.lua"/>
-	<Script file="Modules\UnitFrames\Colors.lua"/>
-
+	<Include file="Skins\skins.xml"/>
  -->
  </Ui>

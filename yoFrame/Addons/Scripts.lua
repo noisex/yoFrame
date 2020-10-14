@@ -425,9 +425,13 @@ local waitFrame = CreateFrame("Frame", "WaitFrame", UIParent)
 	end)
 	tinsert(waitTable, {delay, func, {...} })
 end
-local function OnEvent(...)
-	if not yo.Addons.AutoScreenOnLvlUpAndAchiv then return end
-	TakeScreen(1, Screenshot)
+
+local function OnEvent( self, event)
+	if event == "ACHIEVEMENT_EARNED" and yo.Addons.AutoScreenOnAndAchiv then
+		TakeScreen(1, Screenshot)
+	elseif event == "PLAYER_LEVEL_UP" and yo.Addons.AutoScreenOnLvlUp then
+		TakeScreen(1, Screenshot)
+	end
 end
 
 local AchScreen = CreateFrame("Frame")
@@ -470,24 +474,24 @@ local AchScreen = CreateFrame("Frame")
 ----------------------------------------------------------------------------------------
 -- Quest level(yQuestLevel by yleaf)
 ----------------------------------------------------------------------------------------
-local function update()
-	local buttons = QuestLogScrollFrame.buttons
-	local numButtons = #buttons
-	local scrollOffset = HybridScrollFrame_GetOffset(QuestLogScrollFrame)
-	local numEntries = GetNumQuestLogEntries()
+--local function update()
+--	local buttons = QuestLogScrollFrame.buttons
+--	local numButtons = #buttons
+--	local scrollOffset = HybridScrollFrame_GetOffset(QuestLogScrollFrame)
+--	local numEntries = GetNumQuestLogEntries()
 
-	for i = 1, numButtons do
-		local questIndex = i + scrollOffset
-		local questLogTitle = buttons[i]
-		if questIndex <= numEntries then
-			local title, level, _, isHeader = GetQuestLogTitle(questIndex)
-			if not isHeader then
-				questLogTitle:SetText("["..level.."] "..title)
-				QuestLogTitleButton_Resize(questLogTitle)
-			end
-		end
-	end
-end
+--	for i = 1, numButtons do
+--		local questIndex = i + scrollOffset
+--		local questLogTitle = buttons[i]
+--		if questIndex <= numEntries then
+--			local title, level, _, isHeader = GetQuestLogTitle(questIndex)
+--			if not isHeader then
+--				questLogTitle:SetText("["..level.."] "..title)
+--				QuestLogTitleButton_Resize(questLogTitle)
+--			end
+--		end
+--	end
+--end
 
 -----------------------------------------------------------------------------------------------
 --- Character Info Sheet
@@ -866,6 +870,6 @@ end)
 --end)
 --strip.model = DressUpModel
 
---function GameTooltipOnLeave()
---	GameTooltip:Hide()
---end
+function GameTooltipOnLeave()
+	GameTooltip:Hide()
+end

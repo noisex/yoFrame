@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<Script file="ClassDebuffOnTarget.lua"/>
+	<Script file="RaidAuras.lua"/>
+	<Script file="RaidSpels.lua"/>
+	<Script file="TriggerTemplatesData.lua"/>
+
+ </Ui>

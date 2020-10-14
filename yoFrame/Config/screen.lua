@@ -27,12 +27,12 @@ elseif yo.Media.AutoScale == "auto" then
 		UIParent:SetScale( autoScale)
 
 		-- Hack for 4K and WQHD Resolution
-		local customScale = min(2, max(0.32, 768 / string.match(resolution, "%d+x(%d+)")))
-		if customScale < 0.64 then
-			UIParent:SetScale(customScale)
-		elseif customScale < 0.64 then
-			UIParent:SetScale( 0.64)
-		end
+		--local customScale = min(2, max(0.32, 768 / string.match(resolution, "%d+x(%d+)")))
+		--if customScale >= 0.64 then
+		--	UIParent:SetScale(customScale)
+		--elseif customScale < 0.64 then
+		--	UIParent:SetScale( 0.64)
+		--end
 	end
 else
 	SetCVar("useUiScale", 0)

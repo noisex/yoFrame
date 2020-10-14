@@ -115,6 +115,10 @@ local function UpdateColor(element, unit, cur, max)
 	end
 
 	if(r or g or b) then
+		if element.colorClass then
+			f = 0.7
+			r, g, b = r*f, g*f, b*f
+		end
 		element:SetStatusBarColor(r, g, b)
 
 		local bg = element.bg

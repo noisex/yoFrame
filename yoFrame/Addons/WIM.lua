@@ -5,6 +5,8 @@ local oUF = ns.oUF
 local minAlpha 	= 1
 
 CreateAnchor("yo_MoveWIM", 	"Move PM Chat", 350, 250, 0, 0, "LEFT", "LEFT")
+ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
+ContainerFrame3:SetPoint("CENTER")
 
 local function UpdateTabs( self)
 	if not self.lastTab then return end
@@ -297,7 +299,7 @@ local function CreateWIM( self)
 	self:RegisterForDrag( "LeftButton")
 	self:SetScript("OnEnter", 		function() self:SetAlpha(1) end)
 	self:SetScript("OnLeave", 		function() self:SetAlpha( minAlpha) end)
-	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) end)
+	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) ContainerFrame3:Show() end)
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
 		yo_MoveWIM:ClearAllPoints()

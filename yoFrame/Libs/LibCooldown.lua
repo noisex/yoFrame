@@ -112,8 +112,7 @@ function addon:SPELL_UPDATE_COOLDOWN()
 	local now = GetTime()
 
 	for id in next, spells do
-		local enabled = 1
-		local charge, maxCharge, starttime, duration = GetSpellCharges( id)
+		local charge, maxCharge, starttime, duration, enabled = GetSpellCharges( id)
 
 		if not charge or charge > 0 then -- or charge == maxCharge then --  then
 			starttime, duration, enabled = GetSpellCooldown(id)
@@ -128,7 +127,11 @@ function addon:SPELL_UPDATE_COOLDOWN()
 
 			if enabled == 1 and timeleft > 1.51 then --> 1.51 then
 				if not watched[id] or watched[id].start ~= starttime then
-					start(id, starttime, timeleft, "spell", duration)
+					local cd = GetSpellBaseCooldown( id)/1000
+					if duration == cd then
+						--if id == 50977  or id == 48707 then print( format( "%d - %s - %d - %s", id, duration, cd/1000, enabled)) end
+						start(id, starttime, timeleft, "spell", duration)
+					end
 				end
 			elseif enabled == 1 and watched[id] and timeleft <= 0 then
 				stop(id, "spell")

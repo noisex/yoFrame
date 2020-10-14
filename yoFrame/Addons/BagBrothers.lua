@@ -132,7 +132,7 @@ function bagBro:CreateteItemIcon( self, buttonSize, noChecked)
 	icon.level:SetTextColor(1, 0.75, 0)
 	icon.level:SetPoint("TOP", icon, "TOP", 0, -2)
 
-	CreateStyle( icon, 3)
+	CreateStyle( icon, 2, nil, 0.5)
 
 	icon:SetScript("OnEnter", OnEnter)
 	icon:SetScript("OnLeave", OnLeave)
@@ -257,7 +257,7 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 
 		self:CreateBagIconButton( self.bag, self.bag)
-		CreateStyle( self.bag, 3)
+		CreateStyle( self.bag, 3, nil, 0.5)
 	end
 
 	local buttonSize 		= yo.Bags.buttonSize
@@ -289,7 +289,7 @@ local function CreateBag( self, name, bank, gtab)
 			self.bag.gtab = CreateFrame("Frame", nil, self.bag)
 			self.bag.gtab:SetPoint("TOPLEFT", self.bag, "TOPRIGHT", 5, 0)
 			self.bag.gtab:SetSize( buttonSize + buttonSpacing * 2, 30)
-			CreateStyle( self.bag.gtab, 3)
+			CreateStyle( self.bag.gtab, 3, nil, 0.5)
 
 			self.bag.gtab.icons = {}
 			for tabID, data in pairs( self.Realm[name]) do
@@ -434,6 +434,7 @@ local function CreateBag( self, name, bank, gtab)
 	for i = maxSlots, #self.Items do self.Items[i]:Hide() end
 
 	self.bag:Show()
+	PlaySound ( 862, "Master")
 
 	if needReload then
 		C_Timer.After( 0.5, function()

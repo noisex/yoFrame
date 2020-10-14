@@ -289,9 +289,13 @@ local function OnEvent( self, event, ...)
 
 		if questTitle == nil or C_QuestLog.IsWorldQuest(questID) then return end
 
-		local qString = ""
 		if questObjectives and #questObjectives > 5 then
-			print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives, "|cff333333 Dev: ", watchType)
+			if watchType then
+				print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives) --, "|cff333333 Dev: ", watchType)
+			elseif yo.Addons.showToday then
+				print( "|cffffff00Тудейки: |cff0080ff" .. questObjectives)
+			end
+
 
 			local questObjNum = C_QuestLog.GetNumQuestObjectives(questID)
 
@@ -347,6 +351,7 @@ local function OnEvent( self, event, ...)
 			end
 		end
 
+		local qString = ""
 		if GetQuestLogRewardXP() > 0 then
 			qString =  qString ..  "|cffffff00"..EXPERIENCE_COLON.." |r|cff0080ff" .. commav( GetQuestLogRewardXP()) .. "|r "
 		end
