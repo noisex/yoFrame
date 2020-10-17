@@ -1,5 +1,7 @@
-
 local L, yo, N = unpack( select( 2, ...))
+
+
+if not yo.Addons.ArtifactPowerbar then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_ArtifactPower(by Rainrider)
@@ -146,7 +148,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	if not yo["Addons"].ArtifactPowerbar then return end
+	if not yo.Addons.ArtifactPowerbar or not plFrame then return end
 
 	ArtifactPower( plFrame)
 	EnableAP( plFrame)

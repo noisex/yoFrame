@@ -1,5 +1,8 @@
 local L, yo, N = unpack( select( 2, ...))
 
+if not yo.Addons.unitFrames then return end
+
+
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
 local function OnUpdate(f, elapsed)
@@ -276,7 +279,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	if not yo.Addons.unitFrames then return end
+	if not yo.Addons.unitFrames or not yo_Player then return end
 
 	CreateBuff( plFrame,  "aurabar", 27, 7, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
 	CreateBuff( tarFrame, "aurabar", 21, 8, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)

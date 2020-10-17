@@ -38,6 +38,7 @@ local function enterEvent( self)
 	end
 	hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
 
+	hooksecurefunc( "CloseAllWindows", checkToClose)
 	--C_Timer.After( 2, function() buttonsUP(self) end )
 end
 

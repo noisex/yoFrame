@@ -456,7 +456,7 @@ local menuList = {
 }
 
 function bagBro:CreateBagIconButton( self, parent)
-	local parent = parent and parent or yo_BagsFrame.bagFrame
+	local parent = parent and parent or yo_Bags.bagFrame
 	local gicon, guildTexCoord
 
 	self.bagButton = CreateFrame("Button", nil, self)
@@ -620,15 +620,15 @@ local function OnEvent( self, event, change)
 			self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
 		end
 
-		if yo_BagsFrame.bagFrame then
-			yo_BagsFrame.bagFrame:HookScript("OnShow", function()
+		if yo_Bags.bagFrame then
+			yo_Bags.bagFrame:HookScript("OnShow", function()
 				self.tempBags = {}
 				for i, bag in pairs( bankas["bags"]) do
 					self.tempBags[bag] = self:tableCopy( self.Player[bag])
 				end
 			end)
 
-			yo_BagsFrame.bagFrame:HookScript("OnHide", function() bagBro:CheckForClean( self) end)
+			yo_Bags.bagFrame:HookScript("OnHide", function() bagBro:CheckForClean( self) end)
 		end
 
 		if firstRun then

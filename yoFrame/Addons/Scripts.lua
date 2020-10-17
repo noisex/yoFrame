@@ -1,4 +1,6 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
+local _, addon = ...
+local oUF = addon.oUF
 
 yo_Model = CreateFrame("DressUpModel", nil, UIParent, "TooltipBorderedFrameTemplate")
 yo_Model:Hide()
@@ -146,40 +148,6 @@ end)
 ----------------------------------------------------------------------------------------
 --LibStub("LibButtonGlow-1.0").ShowOverlayGlow(f)
 
---local tCount = CreateFrame("Frame")
---tCount:RegisterEvent("ADDON_LOADED")
---tCount:SetScript("OnEvent", function(_, _, name)
---	--if name ~= "yoFrame" then return end
---	tCount:UnregisterEvent("ADDON_LOADED")
---	tCount:SetScript("OnEvent", nil)
---	UIItemTooltip = UIItemTooltip or {count = true}
---end)
-
---function KeyPressed( self, key)
---	if key == "LSHIFT"
---		or key == "RSHIFT"
---		or key == "LCTRL"
---		or key == "RCTRL"
---		or key == "LALT"
---		or key == "RALT"
---		or key == "UNKNOWN"
---		--or key == "LeftButton"
---	then return end
---	local bingo = ""
---	local alt 	= IsAltKeyDown() 		and "ALT-" or ""
---	local ctrl 	= IsControlKeyDown()	and "CTRL-" or ""
---	local shift = IsShiftKeyDown() 		and "SHIFT-" or ""
---	local keyPress = alt .. ctrl .. shift .. key
-
---	if keyPress == yo.healBotka.key1 then
---		bingo = " KEY1 PRESSED"
---	elseif keyPress == yo.healBotka.key2 then
---		bingo = " KEY2 PRESSED"
---	end
-
---	print( keyPress, bingo, self.unit)
---end
-
 local function test_icon()
 	f = CreateFrame( "Button", "yo_test", UIParent) --, "SecureUnitButtonTemplate")
 	f:SetWidth(50)
@@ -203,48 +171,6 @@ local function test_icon()
 	--f.outerGlow:SetTexCoord( )
 
 	--f.outerGlow:Hide()
-
-	--f:RegisterForClicks("AnyDown")
-	--f:EnableMouse( true)
-	--f:EnableMouseWheel( true)
-	--f:EnableKeyboard( false)
-
-	--f:SetScript("OnKeyDown", KeyPressed)
-
-	--f:SetScript("OnMouseDown", KeyPressed)
-	--f:SetScript("OnMouseWheel", function(self, delta) if delta>0 then KeyPressed( self, "MOUSEWHEELUP") else KeyPressed( self, "MOUSEWHEELDOWN") end end)
-
-	--f:SetScript("OnLeave", function(self, ...)
-	--	f:EnableKeyboard( false)
-	--	f:SetScript("OnKeyDown", nil)
-	--	print('OnLeave')
-	--end)
-
-	--f:SetScript("OnEnter", function(self, ...)
-	--	f:EnableKeyboard( true)
-	--	f:SetScript("OnKeyDown", KeyPressed)
-	--	print('OnEnter')
-	--end)
-
-	--local aButtonId, aModiKey, anAction = 1, "", "Омоложение"
-
-	--f:SetAttribute("unit", "player")
-	--f:SetAttribute("type1", "spell");
-	--f:SetAttribute("spell1", "Омоложение");
-
-	--f:SetAttribute( "type2", "spell");
-	--f:SetAttribute( "spell2", "Жизнецвет");
-
-	--f:SetAttribute( "shift-type1", "spell");
-	--f:SetAttribute( "shift-spell1", "Восстановление");
-
-	--f:SetAttribute( "shift-type2", "spell");
-	--f:SetAttribute( "shift-spell2", "Буйный рост");
-
-	--f:SetAttribute( "type-w2", "macro");
-	--f:SetAttribute( "macrotext-w2", "/cast Буйный рост");
-
-	--RegisterUnitWatch( f)
 	f:Show()
 end
 --test_icon()
@@ -528,7 +454,7 @@ local function addAuraSource(self, func, unit, index, filter)
 				src = format("|cff%02x%02x%02x%s|r", color.r * 255, color.g * 255, color.b * 255, src)
 			end
 		else
-			local color = yo_Player.colors.reaction[UnitReaction(srcUnit, "player")]
+			local color = oUF.colors.reaction[UnitReaction(srcUnit, "player")]
 			if color then
 				src = format("|cff%02x%02x%02x%s|r", color[1] * 255, color[2] * 255, color[3] * 255, src)
 			end

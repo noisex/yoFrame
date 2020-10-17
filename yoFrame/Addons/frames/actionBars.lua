@@ -1,5 +1,6 @@
 local L, yo = unpack( select( 2, ...))
 
+if not yo.ActionBar.enable then return end
 
 local function buttonsUP( self)
 	if not InCombatLockdown() then

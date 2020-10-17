@@ -16,12 +16,7 @@
 
 	<Include file="Filters\filters.xml"/>
  	<Include file="Infotext\infotexts.xml"/>
-
-	<Script file="Frames\actionBars.lua"/>
-	<Script file="Frames\tags.lua"/>
-	<Script file="Frames\raid.lua"/>
-	<Script file="Frames\namePlates.lua"/>
-	<Script file="Frames\units.lua"/>
+ 	<Include file="addons\frames\frames.xml"/>
 
 	<Include file="addons\bags\bags.xml"/>
 	<Include file="addons\chat\chat.xml"/>

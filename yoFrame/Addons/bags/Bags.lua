@@ -13,7 +13,7 @@ local C_NewItems_IsNewItem = C_NewItems.IsNewItem
 local Search = LibStub('LibItemSearch-1.2')
 local defcol = 0.17
 
-local addon = CreateFrame("Frame", "yo_BagsFrame", UIParent)
+local addon = CreateFrame("Frame", "yo_Bags", UIParent)
 	--addon:RegisterEvent("ADDON_LOADED")
 	addon:RegisterEvent("PLAYER_ENTERING_WORLD")
 	addon:SetScript('OnEvent', function(self, event, ...)
@@ -1238,7 +1238,7 @@ function addon:CreateBagFrame( Bag, isBank)
 --				BAG BUTTONS
 ----------------------------------------------------------------------------
 		--Bags Button
-		f.bagsButton = CreateFrame("Button", "yo_" .. Bag..'BagsButton', f);
+		f.bagsButton = CreateFrame("Button", Bag..'BagsButton', f);
 		f.bagsButton:SetSize( 16, 16)
 		CreateStyleSmall( f.bagsButton, 2)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", -2, 0)
@@ -1253,7 +1253,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsButton:SetScript('OnClick', function() ToggleFrame(f.ContainerHolder) end)
 
 		--Banks Sort Button
-		f.bagsSortButton = CreateFrame("Button", "yo_" .. Bag..'bagsSortButton', f);
+		f.bagsSortButton = CreateFrame("Button", Bag..'bagsSortButton', f);
 		f.bagsSortButton:SetSize( 17, 17)
 		CreateStyleSmall( f.bagsSortButton, 2)
 		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -3, 0)
@@ -1278,7 +1278,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		end)
 
 		--Bags to Reageng Button
-		f.bagsToReagent = CreateFrame("Button", "yo_" .. Bag..'bagsToReagent', f);
+		f.bagsToReagent = CreateFrame("Button", Bag..'bagsToReagent', f);
 		f.bagsToReagent:SetSize( 17, 17)
 		CreateStyleSmall( f.bagsToReagent, 2)
 		f.bagsToReagent:SetPoint("RIGHT", f.bagsSortButton, "LEFT", -4, 0)
@@ -1400,7 +1400,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		-- f.goldText:SetText("BAGS FRAME")
 
 		--Bags Button
-		f.bagsButton = CreateFrame("Button", "yo_" .. Bag..'BagsButton', f);
+		f.bagsButton = CreateFrame("Button", Bag..'BankButton', f);
 		f.bagsButton:SetSize( 17, 17)
 		CreateStyleSmall( f.bagsButton, 2)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", 0, 0)
@@ -1415,7 +1415,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsButton:SetScript('OnClick', function() ToggleFrame(f.ContainerHolder) end)
 
 		--Bags Sort Button
-		f.bagsSortButton = CreateFrame("Button", "yo_" .. Bag..'bagsSortButton', f);
+		f.bagsSortButton = CreateFrame("Button", Bag..'BankSortButton', f);
 		f.bagsSortButton:SetSize( 17, 17)
 		CreateStyleSmall( f.bagsSortButton, 2)
 		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -4, 0)
@@ -1436,7 +1436,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		end)
 
 		--Bags to Reageng Button
-		f.bagsToReagent = CreateFrame("Button", "yo_" .. Bag..'bagsToReagent', f);
+		f.bagsToReagent = CreateFrame("Button", Bag..'BankToReagent', f);
 		f.bagsToReagent:SetSize( 17, 17)
 		CreateStyleSmall( f.bagsToReagent, 2)
 		f.bagsToReagent:SetPoint("RIGHT", f.bagsSortButton, "LEFT", -4, 0)
@@ -1454,7 +1454,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		end)
 
 		--Auto to Reageng Button
-		f.bagsAutoReagent = CreateFrame("Button", "yo_" .. Bag..'bagsAutoReagent', f);
+		f.bagsAutoReagent = CreateFrame("Button", Bag..'BankAutoReagent', f);
 		f.bagsAutoReagent:SetSize( 17, 17)
 		CreateStyleSmall( f.bagsAutoReagent, 2)
 		f.bagsAutoReagent:SetPoint("RIGHT", f.bagsToReagent, "LEFT", -4, 0)
@@ -1514,7 +1514,7 @@ function addon:InitBags()
 
 	addon.BagFrames = {};
 
-	local f = self:CreateBagFrame("ElvUI_ContainerFrame") --"ElvUI_ContainerFrame") ContainerFrame1
+	local f = self:CreateBagFrame("yoFrame_BagsFrame")
 	f:SetScript("OnShow", addon_OnShow)
 	f:SetScript("OnHide", addon_OnHide)
 
@@ -1525,7 +1525,7 @@ end
 
 function addon:InitBank()
 	if not self.bankFrame then
-		local f = self:CreateBagFrame("ElvUI_BankContainerFrame", true)
+		local f = self:CreateBagFrame("yoFrame_BanksFrame", true)
 		f:SetScript("OnHide", addonBank_OnHide)
 		f:SetScript("OnShow", addonBank_OnShow)
 		self.bankFrame = f
@@ -1659,21 +1659,6 @@ hooksecurefunc( 'SetItemButtonCount', function( slot)
 	end
 end)
 
-
-local function checkToClose(...)
-
-	if yo_WIM 			and yo_WIM:IsShown() 			then yo_WIM:Hide() end
-	if yo_BBFrame.bag 	and yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
-	if yo_DuLoot 		and yo_DuLoot:IsShown()			then yo_DuLoot:Hide()	end
-	if addon.bagFrame:IsShown() 						then addon_Close() 	end
-
-end
-
-if not ContainerFrame4  then
-	ContainerFrame4 = CreateFrame("Frame", "ContainerFrame4", UIParent)
-	ContainerFrame4:SetPoint("CENTER")
-end
-
 function addon:PLAYER_ENTERING_WORLD()
 	addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -1731,7 +1716,6 @@ function addon:PLAYER_ENTERING_WORLD()
 	CloseAllBags 	= addon_Close
 	CloseBackpack 	= addon_Close
 
-	hooksecurefunc( "CloseAllWindows", checkToClose)
 	--hooksecurefunc( "ToggleGameMenu", tryToClose)
 
 	--Bag Assignment Dropdown Menu

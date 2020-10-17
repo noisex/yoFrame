@@ -1,5 +1,7 @@
-
 local L, yo, N = unpack( select( 2, ...))
+
+if not yo.Addons.ArtifactPowerbar then return end
+
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)
@@ -123,7 +125,7 @@ local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
-	if not yo.Addons.ArtifactPowerbar then return end
+	if not yo.Addons.ArtifactPowerbar  or not plFrame then return end
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if (UnitLevel('player') ~= MAX_PLAYER_LEVEL) then return end  -- not yo["Addons"].Experience or
 

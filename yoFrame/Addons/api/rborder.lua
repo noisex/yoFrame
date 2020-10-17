@@ -1,6 +1,8 @@
 local addon, ns = ...
 local L, yo, N = unpack( ns)
 
+if true then return end
+
 --------------------------------------------------------------------------------------------------------------
 
 local borderColor = { 0.5, 0.5, 0.5 }
@@ -82,7 +84,7 @@ function CreateBorder(self, size, offset, parent, layer)
 
 	for i = 1, #sections do
 		local x = self:CreateTexture(nil, layer or "ARTWORK")
-		x:SetTexture([[Interface\AddOns\yoFrame\Media\SimpleSquare]])
+		x:SetTexture([[Interface\AddOns\yoFrame\Media\boder6px]])  --.blp   SimpleSquare
 		t[sections[i]] = x
 	end
 
@@ -152,7 +154,7 @@ local borderFrame1 = CreateFrame("Frame", nil, UIParent)
 borderFrame1:SetPoint("CENTER")
 borderFrame1:SetSize(250, 50)
 borderFrame1:Hide()
---CreateStyle( borderFrame1, 4)
+CreateStyle( borderFrame1, 4)
 
 --borderFrame1.texture = borderFrame1:CreateTexture(nil, "OVERLAY")
 --borderFrame1.texture:SetAllPoints()
@@ -183,7 +185,7 @@ CreateBorder(borderFrame3, 8)
 borderFrame2.texture:SetVertexColor( 1, 0.75, 0, 0.9)
 borderFrame3.texture:SetVertexColor( 0, 1, 1, 0.9)
 
---SetBorderColor(borderFrame1, 1, 0.75, 0, 1)
+SetBorderColor(borderFrame1, 1, 0.75, 0, 1)
 SetBorderColor(borderFrame2, 1, 0, 0, 1)
 
 local toggle = true

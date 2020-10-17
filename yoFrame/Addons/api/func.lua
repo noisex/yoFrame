@@ -14,6 +14,21 @@ function isDruid( self)
 	end
 end
 
+
+function checkToClose(...)
+
+	if yo_WIM 			and yo_WIM:IsShown() 			then yo_WIM:Hide() end
+	if yo_BBFrame.bag 	and yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
+	if yo_DuLoot 		and yo_DuLoot:IsShown()			then yo_DuLoot:Hide()	end
+	if yo_Bags.bagFrame and yo_Bags.bagFrame:IsShown()  then yo_Bags.bagFrame:Hide() end
+
+end
+
+if not ContainerFrame4  then
+	ContainerFrame4 = CreateFrame("Frame", "ContainerFrame4", UIParent)
+	ContainerFrame4:SetPoint("CENTER")
+end
+
 --if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end
 ----------------------------------------------------------------------------------------
 --	Kill object function
@@ -227,10 +242,3 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0) --(0, 0, 0, alphaborder or 1)
 	--table.insert( N["shadows"], f)
 end
-
-
-
-
-
-
-

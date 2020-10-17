@@ -1,5 +1,8 @@
 local L, yo, N = unpack( select( 2, ...))
 
+if not yo.Addons.unitFrames then return end
+
+
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
@@ -489,7 +492,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	if not yo.Addons.unitFrames then return end
+	if not yo.Addons.unitFrames or not yo_Player then return end
 
 	cfg 		= yo.CastBar.target
 	cfg.width	= tarFrame:GetWidth()
