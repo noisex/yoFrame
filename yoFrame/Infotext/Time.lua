@@ -71,7 +71,7 @@ local function OnEnter( self)
 
 		local totalPlayed, oneDate = 0
 		for realmName, realm in pairs ( yo_AllData) do
-			if type( realm) == "table" then
+			if type( realm) == "table"  and realmName ~= "editHistory" then
 
 				local tkeys = {}
       			for k, v in pairs( realm) do

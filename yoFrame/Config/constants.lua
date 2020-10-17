@@ -23,7 +23,7 @@ N["strings"]		= {}
 N["shadows"]		= {}
 N["spellsBooks"] 	= {}
 
-N.ScanTooltip = CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', _G.UIParent, 'GameTooltipTemplate')
+N.ScanTooltip = CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', UIParent, 'GameTooltipTemplate')
 
 N.slots = {
 	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot",
@@ -108,6 +108,7 @@ yo["Bags"] = {
 	["showAltBags"]			= true,
 	["showGuilBank"]		= true,
 	["countAltBags"]		= true,
+	["LeftToRight"]			= false,
 }
 
 yo["Addons"] = {
@@ -118,6 +119,7 @@ yo["Addons"] = {
 	["PredictionHealth"] 			= true,
 	["ReColorNamePlates"] 			= true,
 	["AutoRepair"] 					= true,			--
+	["RepairGuild"]					= true,
 	["AutoGreedOnLoot"] 			= true,
 	["AutoSellGrayTrash"] 			= false,		--
 	["AutoScreenOnLvlUp"] 	= true,			--
@@ -361,6 +363,7 @@ yo["Chat"] = {
 	["linkOverMouse"]	= true,
 	["showVoice"]		= false,
 	["showHistory"]		= false,
+	["showHistoryAll"] 	= false,
 	["chatBubble"]		= "border",
 	["chatBubbleFont"]	= 8,
 	["chatBubbleShadow"]= true,

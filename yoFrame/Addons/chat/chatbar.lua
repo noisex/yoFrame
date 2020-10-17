@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+if not yo.Chat.BarChat then return end
+
 local height = 13
 
 local function BEnter(self)

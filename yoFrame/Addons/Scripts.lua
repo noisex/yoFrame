@@ -280,24 +280,6 @@ SLASH_TEST_YO2 = "/нщеуые"
 local stop = true
 local list = {}
 
---local function SellGray()
---  if stop then return end
---  for bag = 0, 4 do
---    for slot= 0, GetContainerNumSlots( bag) do
---      if stop then return end
---      local link = GetContainerItemLink(bag, slot)
---      if link and select(3, GetItemInfo(link)) == 0 and not list["b"..bag.."s"..slot] then
---        print( A, "selling", link, "bag", bag, "slot", slot)
---        list["b"..bag.."s"..slot] = true
---        UseContainerItem( bag, slot)
---        C_Timer.After( 0.2, SellGray)
---        return
---      end
---    end
---  end
---end
-
-
 local function SellGray()
 	--local empowering = select(1, GetSpellInfo(228111))
 	local c = 0
@@ -341,7 +323,7 @@ local function OnMerchEvent(self,event)
 			cost, possible = GetRepairAllCost()
 			if cost > 0 then
 				if possible then
-					if CanGuildBankRepair() then
+					if CanGuildBankRepair() and  yo.Addons.RepairGuild then
 						RepairAllItems( true)
 						PlaySound(SOUNDKIT.ITEM_REPAIR);
 						cost, possible = GetRepairAllCost()

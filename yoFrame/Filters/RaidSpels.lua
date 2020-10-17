@@ -1,5 +1,24 @@
 local L, yo, N = unpack( select( 2, ...))
 
+-- List of spells to display ticks
+N.channelTicks = {
+	-- Warlock
+	[198590] = 5,	-- Drain Soul
+	[755]    = 6,	-- Health Funnel
+	[234153] = 6,	-- Drain Life
+	-- Priest
+	[64843]  = 4,	-- Divine Hymn
+	[15407]  = 4,	-- Mind Flay
+	[48045]  = 5,	-- Mind Sear
+	[47757]  = 5,	-- Penance
+	-- Mage
+	[5143]   = 5,	-- Arcane Missiles
+	[12051]  = 3,	-- Evocation
+	[205021] = 10,	-- Ray of Frost
+	-- Druid
+	[740]    = 4,	-- Tranquility
+}
+
 bls = {
  	[774] = true,     	-- "for esting..."   омоложение
     [8936] = true,    	-- "for esting..." восстановление

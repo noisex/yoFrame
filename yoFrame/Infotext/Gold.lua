@@ -193,7 +193,7 @@ local function OnEvent(self, event, ...)
 
 		local oneDate
 		for k, realm in pairs ( yo_AllData) do
-			if type( realm) == "table" then
+			if type( realm) == "table" and k ~= "editHistory" then
 
       			local tkeys = {}
       			for k, v in pairs( realm) do

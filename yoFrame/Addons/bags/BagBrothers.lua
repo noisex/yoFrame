@@ -22,7 +22,7 @@ local gender 	= { "", 'Male', 'Female'}
 local bankBags 	= {-1, 5, 6, 7, 8, 9, 10, 11}
 local bagBags  	= {0, 1, 2, 3, 4}
 
-local borderCols= { 0.12, 0.12, 0.12, 0.7}
+local borderCols= { 0.17, 0.17, 0.17, 0.9}
 
 local bankas = {
 	["bags"] = {0, 1, 2, 3, 4},
@@ -132,7 +132,7 @@ function bagBro:CreateteItemIcon( self, buttonSize, noChecked)
 	icon.level:SetTextColor(1, 0.75, 0)
 	icon.level:SetPoint("TOP", icon, "TOP", 0, -2)
 
-	CreateStyle( icon, 2, nil, 0.5)
+	CreateStyle( icon, 1, nil, 0.5)
 
 	icon:SetScript("OnEnter", OnEnter)
 	icon:SetScript("OnLeave", OnLeave)

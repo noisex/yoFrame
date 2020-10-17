@@ -164,11 +164,12 @@ local function startCast( f, unit, ...)
 		end
 	end
 
-	f.fadeDuration = 1.0
-	f.spellID = spellID
-	f.endTime = endTime/1000
-	f.startTime = startTime/1000
-	f.spellDelay = yo.General.spellDelay
+	f.fadeDuration 	= 1.0
+	f.spellID 		= spellID
+	f.endTime 		= endTime/1000
+	f.startTime 	= startTime/1000
+	f.max 			= ( endTime - startTime) / 1000
+	f.spellDelay 	= yo.General.spellDelay
 
 	f:SetMinMaxValues(0, f.endTime - f.startTime)
 	if unit ~= "focus" then
@@ -190,6 +191,54 @@ local function startCast( f, unit, ...)
 	f:SetAlpha( 1)
 	UnitColors( f, unit)
 	f:Show()
+end
+
+function hideTicks( self)
+	for i = 1, #self.ticks do
+		self.ticks[i]:Hide()
+	end
+	self.ticked = false
+end
+
+local function createTicks( self, extraTickRatio)
+	extraTickRatio = extraTickRatio or 0
+
+	local d = self:GetWidth() / ( self.numTicks + extraTickRatio)
+
+	for i = 1, self.numTicks do
+		if not self.ticks[i] then
+			self.ticks[i] = self:CreateTexture(nil, 'OVERLAY')
+			self.ticks[i]:SetTexture( texture)
+			self.ticks[i]:SetVertexColor( 0.09, 0.09, 0.09, 0.5)
+			self.ticks[i]:SetWidth( 2)
+			self.ticks[i]:SetHeight( self:GetHeight())
+		end
+
+		self.ticks[i]:ClearAllPoints()
+		self.ticks[i]:SetPoint('RIGHT', self, 'LEFT', d * i, 0)
+		self.ticks[i]:Show()
+		self.ticked = true
+	end
+end
+
+local function makeTicks( self, empty, spellID)
+
+	self.numTicks = N.channelTicks[spellID] and N.channelTicks[spellID] or 0
+	hideTicks( self)
+
+	if self.numTicks > 0 then
+		local extraTickRatio
+
+		if spellID == 198590 then
+			local curHaste = UnitSpellHaste('player') * 0.01
+			local baseTickSize = 1
+			local hastedTickSize = baseTickSize / (1 +  curHaste)
+			local extraTick = self.max - hastedTickSize * (self.numTicks)
+			extraTickRatio = extraTick / hastedTickSize
+		end
+
+		createTicks( self, extraTickRatio)
+	end
 end
 
 local function OnEvent( f, event, unit, ...)
@@ -238,9 +287,13 @@ local function OnEvent( f, event, unit, ...)
 		if event == "UNIT_SPELLCAST_START" then
 			f.reversed = false
 			startCast( f, unit, ...)
+			if unit == "player" and f.ticked then hideTicks( f) end
+
 		elseif event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
 			f.reversed = true
 			startCast( f, unit, ...)
+			if unit == "player" then makeTicks( f, ...) end
+
 		elseif event == "UNIT_SPELLCAST_STOP" then
 			stopCast( f, unit, ...)
 		elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" then
@@ -350,6 +403,8 @@ function CreateCastBar( frame, cfg)
 		bar.castBar:RegisterEvent("PLAYER_REGEN_ENABLED")
 		bar.castBar:RegisterEvent("PLAYER_REGEN_DISABLED")
 		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+
+		bar.castBar.ticks = {}
 	end
 
 	if isicon then

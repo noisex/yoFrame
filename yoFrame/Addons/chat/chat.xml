@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="chat.lua"/>
+	<Script file="chatbar.lua"/>
+	<Script file="chatcopy.lua"/>
+	<Script file="chathistory.lua"/>
+	<Script file="channelshort.lua"/>
+	<Script file="editboxhistory.lua"/>
+	<Script file="wim.lua"/>
+	<Script file="wimhistory.lua"/>
+
+<!--
+<Script file=""/>
+ -->
+ </Ui>

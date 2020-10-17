@@ -36,15 +36,25 @@ local function afterClearIcons( index)
 	end
 end
 
+--if ( IsModifiedClick("COMPAREITEMS") or GetCVarBool("alwaysCompareItems") ) then GameTooltip_ShowCompareItem(GameTooltip); end
+
 local function OnEnter( self)
 	self.shadow:SetBackdropColor( 0.09, 0.09, 0.09, 0.9)
-	GameTooltip:SetOwner( self, "ANCHOR_RIGHT", 20, 0)
-	GameTooltip:SetHyperlink( self.link)
-	GameTooltip:Show()
+	GameTooltip:SetOwner( self, "ANCHOR_RIGHT")
+
+	self:SetScript("OnUpdate", function(self, ...)
+		GameTooltip:SetHyperlink( self.link)
+		if IsShiftKeyDown() then
+			GameTooltip_ShowCompareItem( GameTooltip);
+		else
+		 	GameTooltip:Show()
+		end
+	end)
 end
 
 local function OnLeave( self)
 	self.shadow:SetBackdropColor( 0.126, 0.129, 0.145, 1)
+	self:SetScript("OnUpdate", nil)
 	GameTooltip:Hide()
 end
 
@@ -109,6 +119,7 @@ local function CreateIcon( index)
 	bg:SetPoint("BOTTOMRIGHT", equipSet, "BOTTOMRIGHT", -5, 0)
 	bg:SetScript("OnEnter", OnEnter)
 	bg:SetScript("OnLeave", OnLeave)
+
 	CreateStyle( bg, 1, 0, 0.5)
 	bg.shadow:SetBackdropColor(0.126, 0.129, 0.145, 1)
 	bg.shadow:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5)
@@ -140,8 +151,8 @@ local function checkDungeLoot( filterType)
 	frame.headerKeeper.textHeader:SetText( myColorStr .. class .. " | " .. frame.specLootName )
 
 	EJ_SetLootFilter(classID, frame.specLootID )
-	EJ_SetDifficulty( 23)
-	--EJ_SetDifficulty( 23) -- 1, 2, 23 ( 8	Mythic Keystone	party	isHeroic, isChallengeMode)
+	--EJ_SetDifficulty( DifficultyUtil.ID.PrimaryRaidMythic)
+	EJ_SetDifficulty( 23) -- 1, 2, 23 ( 8	Mythic Keystone	party	isHeroic, isChallengeMode)
 	--statTable = GetItemStatDelta("item1Link", "item2Link" [, returnTable])
 	local indexLol = 1
 
@@ -155,6 +166,8 @@ local function checkDungeLoot( filterType)
 		if instanceID then
 			EJ_SelectInstance( instanceID)
 			if EJ_GetNumLoot() then
+				frame.numLoot = frame.numLoot + EJ_GetNumLoot()
+
 				for lootIndex = 1, EJ_GetNumLoot() do
 					local temptext = ""
 					local itemInfo = C_EncounterJournal.GetLootInfoByIndex( lootIndex)
@@ -171,7 +184,7 @@ local function checkDungeLoot( filterType)
 						elseif 	i == "ITEM_MOD_INTELLECT_SHORT" 		or
 								i == "ITEM_MOD_AGILITY_SHORT" 			or
 								i == "ITEM_MOD_STRENGTH_SHORT" 			then 				temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
-						else																temptext = temptext .. "|cff00ff00+" .. Round( data) .. " " .. _G[i] .. "\n|r"
+						else																temptext = temptext .. "|cff00ff00+" .. Round( data) .. " " .. ( _G[i] or i).. "\n|r"
 						end
 					end
 
@@ -233,6 +246,12 @@ local function checkDungeLoot( filterType)
 			end
 			yo_DuLoot:Show()
 		end
+	end
+	if frame.firstRun then
+		C_Timer.After( 0.7, function(self, ...)
+			checkDungeLoot( yo_DuLoot.filterType)
+		end)
+		frame.firstRun = false
 	end
 	afterClearIcons( indexLol)
 end
@@ -311,6 +330,7 @@ local function createDuLoot( self)
 	self:RegisterForDrag( "LeftButton")
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing() end)
+	self:SetScript("OnShow", 		function() ContainerFrame4:Show() end)
 	self:Hide()
 	self:SetBackdropColor(0.075, 0.078, 0.086, 1)
 
@@ -375,6 +395,8 @@ local function createDuLoot( self)
 	self.seting.versa 	= true
 	self.seting.master 	= true
 	self.seting.allstat	= false
+	self.firstRun 		= true
+	self.numLoot 		= 0
 end
 
 local function OnEvent( self, event, ...)
@@ -394,6 +416,10 @@ local function OnEvent( self, event, ...)
 		self.specLootID 	= lootid
 		self.specLootIcon 	= looticon
 		self.specLootName 	= lootname
+	end
+	if not ContainerFrame4  then
+		ContainerFrame4 = CreateFrame("Frame", "ContainerFrame4", UIParent)
+		ContainerFrame4:SetPoint("CENTER")
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" then

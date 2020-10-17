@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="anime.lua"/>
+	<Script file="func.lua"/>
+ 	<Script file="time.lua"/>
+	<Script file="stringdigits.lua"/>
+	<Script file="colors.lua"/>
+	<Script file="tprint.lua"/>
+	<Script file="rborder.lua"/>
+
+	<!--
+	<Script file=""/>
+ -->
+ </Ui>

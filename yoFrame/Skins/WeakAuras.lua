@@ -1,10 +1,12 @@
 local L, yo = unpack( select( 2, ...))
 
 local aGlow = LibStub("LibCustomGlow-1.0", true)
+--local dynamicRegions = {}
 
 local function styleIcon( region)
 
 	if not region.border then
+
 		if region.bar then
 			local a1, p, a2, x, y = region.icon:GetPoint()
 			if a1 then
@@ -81,12 +83,12 @@ local function styleText( regFrame)
 
 	if regFrame.timer then
 		local t0, t1, t2 = regFrame.timer:GetFont()
-		if t0 then regFrame.timer:SetFont( font, t1, t2) end
+		if t0 then regFrame.timer:SetFont( yo.Media.fontpx, t1, t2) end
 	end
 
 	if regFrame.stacks then
 		local t0, t1, t2 = regFrame.stacks:GetFont()
-		if t0 then regFrame.stacks:SetFont( font, t1, t2) end
+		if t0 then regFrame.stacks:SetFont( yo.Media.fontpx, t1, t2) end
 	end
 end
 
@@ -95,18 +97,13 @@ local function checkDynamic( self)
 	for k, children in pairs( self.sortedChildren) do
 		local regFrame = children.region
 
+		--if not dynamicRegions[regFrame] then
 		if regFrame		 	then styleText( regFrame) end
 		if regFrame.icon 	then styleIcon( regFrame) end
+			--dynamicRegions[regFrame] = false
 
-		--if chiFrame.icon then
-		--	chiFrame:SetScript("OnShow", function(self, ...)
-		--		print("Dynamic show: ", k)
-		--		styleIcon( self)
-		--	end)
-		--	--chiFrame:SetScript("OnSizeChanged", function(self, ...)
-		--	--	print("Dynamic hide: ", k)
-		--	--	styleIcon( self)
-		--	--end)
+			--tprint( dynamicRegions)
+			--print("---------------")
 		--end
 	end
 end
@@ -125,10 +122,8 @@ local function chackRegion( self)
 			end)
 
 			--regFrame:SetScript("OnShow", function(self, ...)
-			--	--print("Show: ", self, regFrame, self.sortedChildren)
-			--	if self.sortedChildren then
-			--		checkDynamic( self)
-			--	end
+				--print("Show: ", self, regFrame, self.sortedChildren)
+				--if self.sortedChildren then checkDynamic( self) end
 			--end)
 		end
 	end

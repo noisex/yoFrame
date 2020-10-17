@@ -171,7 +171,11 @@ local function OnEnter( self)
 
 	if costTotal > 0 then
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine( REPAIR_ITEMS, formatMoney( costTotal), 1, .75, 0)
+		local repText = REPAIR_ITEMS
+		if CanGuildBankRepair() and yo.Addons.RepairGuild then repText = "Ремонт за счет гильдии" end
+
+		GameTooltip:AddDoubleLine( repText, formatMoney( costTotal), 1, .75, 0)
+
 	end
 	GameTooltip:Show()
 end
