@@ -209,7 +209,8 @@ local Shared = function(self, unit)
 
 	elseif yo.Raid.classcolor == 2 then
 		self.Health.colorSmooth = true
-		self.Health.colorReaction = true
+		self.Health.bg = self.Health.hbg
+		self.Health.bg.multiplier = .3
 
 	else
 		self.Health.colorHealth = true

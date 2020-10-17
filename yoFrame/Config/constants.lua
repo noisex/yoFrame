@@ -325,6 +325,13 @@ yo["Media"] = {
 	["classBorder"]	= false,
 }
 
+yo["UF"] 	= {
+	["enable"] 			= true,
+	["colorUF"]			= 0,
+	["classBackground"]	= true,
+	["simpeUF"]			= false,
+}
+
 yo["Raid"] = {
 	["enable"] 			= true,
 	["width"] 			= 80,

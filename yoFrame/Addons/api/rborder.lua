@@ -1,7 +1,7 @@
 local addon, ns = ...
 local L, yo, N = unpack( ns)
 
-if true then return end
+--if true then return end
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -9,7 +9,7 @@ local borderColor = { 0.5, 0.5, 0.5 }
 local borderSize = 16
 local sections = { "TOPLEFT", "TOPRIGHT", "TOP", "BOTTOMLEFT", "BOTTOMRIGHT", "BOTTOM", "LEFT", "RIGHT" }
 
-local function SetBorderColor(self, r, g, b, a, glow)
+function N.SetBorderColor(self, r, g, b, a, glow)
 	local t = self.BorderTextures
 	if not t then return end
 
@@ -32,11 +32,11 @@ local function SetBorderColor(self, r, g, b, a, glow)
 	--end
 end
 
-local function GetBorderColor(self)
+function N.GetBorderColor(self)
 	return self.BorderTextures and self.BorderTextures.TOPLEFT:GetVertexColor()
 end
 
-local function SetBorderParent(self, parent)
+function N.SetBorderParent(self, parent)
 	local t = self.BorderTextures
 	if not t then return end
 	if not parent then
@@ -48,7 +48,7 @@ local function SetBorderParent(self, parent)
 	self:SetBorderSize(self:GetBorderSize())
 end
 
-local function SetBorderSize(self, size, dL, dR, dT, dB)
+function N.SetBorderSize(self, size, dL, dR, dT, dB)
 	local t = self.BorderTextures
 	if not t then return end
 
@@ -71,20 +71,20 @@ local function SetBorderSize(self, size, dL, dR, dT, dB)
 end
 
 
-local function GetBorderSize(self)
+function N.GetBorderSize(self)
 	local t = self.BorderTextures
 	if not t then return end
 	return t.TOPLEFT:GetWidth(), t.LEFT.offset, t.RIGHT.offset, t.TOP.offset, t.BOTTOM.offset
 end
 
-function CreateBorder(self, size, offset, parent, layer)
+function N.CreateBorder(self, size, offset, parent, layer)
 	if type(self) ~= "table" or not self.CreateTexture or self.BorderTextures then return end
 
 	local t = {}
 
 	for i = 1, #sections do
 		local x = self:CreateTexture(nil, layer or "ARTWORK")
-		x:SetTexture([[Interface\AddOns\yoFrame\Media\boder6px]])  --.blp   SimpleSquare
+		x:SetTexture([[Interface\AddOns\yoFrame\Media\SimpleSquare]])  --.blp
 		t[sections[i]] = x
 	end
 
@@ -111,34 +111,34 @@ function CreateBorder(self, size, offset, parent, layer)
 
 	self.BorderTextures = t
 
-	self.SetBorderColor  = SetBorderColor
-	self.SetBorderLayer  = SetBorderLayer
-	self.SetBorderParent = SetBorderParent
-	self.SetBorderSize   = SetBorderSize
+	self.SetBorderColor  = N.SetBorderColor
+	self.SetBorderLayer  = N.SetBorderLayer
+	self.SetBorderParent = N.SetBorderParent
+	self.SetBorderSize   = N.SetBorderSize
 
-	self.GetBorderColor  = GetBorderColor
-	self.GetBorderLayer  = GetBorderLayer
-	self.GetBorderParent = GetBorderParent
-	self.GetBorderSize   = GetBorderSize
+	self.GetBorderColor  = N.GetBorderColor
+	self.GetBorderLayer  = N.GetBorderLayer
+	self.GetBorderParent = N.GetBorderParent
+	self.GetBorderSize   = N.GetBorderSize
 
-	if self.GetBackdrop then
-		local backdrop = self:GetBackdrop()
-		if type(backdrop) == "table" then
-			if backdrop.edgeFile then
-				backdrop.edgeFile = nil
-			end
-			if backdrop.insets then
-				backdrop.insets.top = 0
-				backdrop.insets.right = 0
-				backdrop.insets.bottom = 0
-				backdrop.insets.left = 0
-			end
-			self:SetBackdrop(backdrop)
-		end
-	end
+	--if self.GetBackdrop then
+	--	local backdrop = self:GetBackdrop()
+	--	if type(backdrop) == "table" then
+	--		if backdrop.edgeFile then
+	--			backdrop.edgeFile = nil
+	--		end
+	--		if backdrop.insets then
+	--			backdrop.insets.top = 0
+	--			backdrop.insets.right = 0
+	--			backdrop.insets.bottom = 0
+	--			backdrop.insets.left = 0
+	--		end
+	--		self:SetBackdrop(backdrop)
+	--	end
+	--end
 
 	if self.SetBackdropBorderColor then
-		self.SetBackdropBorderColor = SetBorderColor
+		self.SetBackdropBorderColor = N.SetBorderColor
 	end
 
 	--tinsert(ns.borderedObjects, self)
@@ -154,11 +154,11 @@ local borderFrame1 = CreateFrame("Frame", nil, UIParent)
 borderFrame1:SetPoint("CENTER")
 borderFrame1:SetSize(250, 50)
 borderFrame1:Hide()
-CreateStyle( borderFrame1, 4)
+--CreateStyle( borderFrame1, 4)
 
---borderFrame1.texture = borderFrame1:CreateTexture(nil, "OVERLAY")
---borderFrame1.texture:SetAllPoints()
---borderFrame1.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\bar_dground")
+borderFrame1.texture = borderFrame1:CreateTexture(nil, "OVERLAY")
+borderFrame1.texture:SetAllPoints()
+borderFrame1.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\bar_dground")
 
 local borderFrame2 = CreateFrame("Frame", nil, UIParent)
 borderFrame2:SetPoint("CENTER", borderFrame1, "CENTER", 0, 70)
@@ -176,17 +176,17 @@ borderFrame3.texture = borderFrame3:CreateTexture(nil, "OVERLAY")
 borderFrame3.texture:SetAllPoints()
 borderFrame3.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidbg")
 
---CreateBorder(borderFrame1, 16)
-CreateBorder(borderFrame2, 12)
-CreateBorder(borderFrame3, 8)
+N.CreateBorder(borderFrame1, 16)
+N.CreateBorder(borderFrame2, 12)
+N.CreateBorder(borderFrame3, 20)
 
-
---borderFrame1.texture:SetVertexColor( 0.2, 0.2, 0.2, 0.9)
+borderFrame1.texture:SetVertexColor( 0.09, 0.09, 0.09, 0.9)
 borderFrame2.texture:SetVertexColor( 1, 0.75, 0, 0.9)
 borderFrame3.texture:SetVertexColor( 0, 1, 1, 0.9)
 
-SetBorderColor(borderFrame1, 1, 0.75, 0, 1)
-SetBorderColor(borderFrame2, 1, 0, 0, 1)
+N.SetBorderColor(borderFrame1, 0, 0, 1, 1)
+N.SetBorderColor(borderFrame2, 1, 0, 0, 1)
+N.SetBorderColor(borderFrame3, 0, 0.75, 0, 1)
 
 local toggle = true
 SlashCmdList["TB"] = function()

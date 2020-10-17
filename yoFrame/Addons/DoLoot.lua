@@ -42,12 +42,16 @@ local function OnEnter( self)
 	self.shadow:SetBackdropColor( 0.09, 0.09, 0.09, 0.9)
 	GameTooltip:SetOwner( self, "ANCHOR_RIGHT")
 
-	self:SetScript("OnUpdate", function(self, ...)
-		GameTooltip:SetHyperlink( self.link)
-		if IsShiftKeyDown() then
-			GameTooltip_ShowCompareItem( GameTooltip);
-		else
-		 	GameTooltip:Show()
+	self:SetScript("OnUpdate", function( f, elapsed)
+		self.tick = ( self.tick + elapsed) or 0
+		if self.tick > 0.2 then
+			self.tick = 0
+			GameTooltip:SetHyperlink( self.link)
+			if IsShiftKeyDown() then
+				GameTooltip_ShowCompareItem( GameTooltip);
+			else
+				GameTooltip:Show()
+			end
 		end
 	end)
 end
@@ -75,7 +79,7 @@ local function CreateIcon( index)
 	end
 
 	local iconBack = CreateFrame("Frame", nil, button)
-	iconBack:SetPoint("TOPLEFT", button, "TOPLEFT", 0, -5)
+	iconBack:SetPoint("TOPLEFT", button, "TOPLEFT", 5, -5)
 	iconBack:SetWidth( size)
 	iconBack:SetHeight( size)
 	CreateStyle( iconBack, 3)
@@ -115,8 +119,9 @@ local function CreateIcon( index)
 	equipSet:SetPoint("TOPRIGHT", onEquip, "BOTTOMRIGHT", 0, -0)
 
 	local bg = CreateFrame("FRame", nil, frame)
-	bg:SetPoint("TOPLEFT", button, "TOPLEFT", -5, 1)
+	bg:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 1)
 	bg:SetPoint("BOTTOMRIGHT", equipSet, "BOTTOMRIGHT", -5, 0)
+	bg.tick = 10
 	bg:SetScript("OnEnter", OnEnter)
 	bg:SetScript("OnLeave", OnLeave)
 
@@ -137,7 +142,7 @@ local function CreateIcon( index)
 	frame[index]:Show()
   	frame:SetHeight(40)
 
-	--print( index, link)
+
 	return button
 end
 
@@ -320,7 +325,7 @@ local function settingDoIt( self)
 end
 
 local function createDuLoot( self)
-	CreatePanel( self, 460, CharacterFrame:GetHeight(), "TOPLEFT", CharacterFrame, "TOPRIGHT", 10, 0, 0.3, 1)
+	CreatePanel( self, 460, CharacterFrame:GetHeight() - 8, "LEFT", CharacterFrame, "RIGHT", 10, 0, 0.3, 0)
 	self:EnableMouse(true)
 	self:SetClampedToScreen(true)
 	self:SetMovable(true)
@@ -333,6 +338,9 @@ local function createDuLoot( self)
 	self:SetScript("OnShow", 		function() ContainerFrame4:Show() end)
 	self:Hide()
 	self:SetBackdropColor(0.075, 0.078, 0.086, 1)
+
+	N.CreateBorder( self, 14, -3)
+	--N.SetBorderColor(self, 1, 0.8, 0.1, 0.9)
 
 	local headerKeeper = CreateFrame("Frame", nil, self)
 	headerKeeper:SetPoint("TOPLEFT", self, "TOPLEFT", 3, -3)
@@ -445,85 +453,3 @@ for _, slot in pairs(N.slots) do
 		if but == "RightButton" and not IsShiftKeyDown() then checkDungeLoot( self.filterType) end
 	end)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-					--local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
-					--tt:SetOwner( UIParent, "ANCHOR_NONE")
-					--tt:SetBagItem(bagID, slotID)
-					--tt:Show()
-
-					--for x = 1, tt:NumLines() do
-					--	local lineR = _G['yoFrame_ItemTooltipTextRight'..x]
-					--	local lineTextR = lineR:GetText()
-					--	if lineTextR then
-					--		local lr, lg, lb = lineR:GetTextColor()
-					--		if lg > 0.5 then
-					--			--print( L["weared"] .. clink)
-					--			equipItem( bagID, slotID, clink, iLvl)
-					--		end
-					--	end
-					--end
-					--tt:Hide()
-
---local function GetLFGLockList()
---	local lockInfo = C_LFGInfo.GetLFDLockStates();
---	local lockMap = {};
---	for _, lock in ipairs(lockInfo) do
---		lockMap[lock.lfgID] = lock;
---	end
---	return lockMap;
---end
-
-----local raidList = GetLFRChoiceOrder();
---	--tprint( raidList)
---LFDDungeonList1 = {}
---LFGLockList1 = GetLFGLockList();
-----tprint( LFGLockList)
---local dungeonList = GetLFDChoiceOrder();
-
---for _, dungeonID in ipairs(dungeonList) do
---	if tonumber( dungeonID) > 0 and not LFGLockList1[dungeonID] then --or not LFGLockList1[dungeonID].hideEntry then
---		table.insert(LFDDungeonList1, dungeonID);
---		--print( dungeonID, LFGLockList1[dungeonID])--, LFGLockList1[dungeonID].hideEntry)
---		local name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel = GetLFGDungeonInfo(dungeonID)
---		--print( dungeonID, name, typeID, subtypeID, expansionLevel, difficulty, isHoliday, bonusRepAmount, isTimeWalker)
---	end
---end
-
-
---tprint( dungeonList)
-
-	--local mapID = C_Map.GetBestMapForUnit("player");
-	--local instanceID = mapID and EJ_GetInstanceForMap(1594) or 0;
-
-	--local hasLoot = C_EncounterJournal.InstanceHasLoot( 1012)
-	--local difficultyID = EJ_GetDifficulty();
-	----print( mapID, instanceID, hasLoot, EJ_GetNumLoot(), difficultyID) --EJ_GetInstanceInfo())
-
-	--local mapID = C_Map.GetBestMapForUnit("player");
-	--local instanceID = mapID and EJ_GetInstanceForMap(mapID) or 0;
-	----print(mapID, instanceID)
-
-	------C_EncounterJournal.InstanceHasLoot([instanceID])
-	------name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel = GetLFGDungeonInfo(dungeonID)

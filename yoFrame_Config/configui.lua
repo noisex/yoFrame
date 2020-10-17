@@ -412,6 +412,19 @@ function InitOptions()
 				},
 			},
 
+			UF = {
+				order = 37,	name = L["UF"], type = "group",
+				get = function(info) return yo["UF"][info[#info]] end,
+				set = function(info,val) Setlers( "UF#" .. info[#info], val) end,
+				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				args = {
+					enable 			= {	order = 1, 	type = "toggle",	name = L["UFenable"], width = "full", disabled = false,},
+					colorUF 		= {	order = 10, type = "select", 	name = function(info) return tr( info[#info]) end,	values = { [0]  = L["HBAR_TS"] ,[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
+					classBackground = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full"},
+					simpeUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+				},
+			},
+
 			Raid = {
 				order = 40,	name = L["Raid"],type = "group",
 				get = function(info) return yo["Raid"][info[#info]] end,

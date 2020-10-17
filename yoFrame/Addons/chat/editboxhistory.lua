@@ -8,7 +8,7 @@ local L, yo, N = unpack( ns)
 local function editboxAddHistory( self)
 	local text = self.tempString
 
-	if text and #text > 0 then
+	if text and #text > 1 then
 		if not yo_AllData.editHistory then yo_AllData.editHistory = {} end
 
 		if text ~= yo_AllData.editHistory[ table.maxn( yo_AllData.editHistory)] then
@@ -36,9 +36,10 @@ for i = 1, NUM_CHAT_WINDOWS do
 	end)
 end
 
+-- кривые команды, которые с ошибкой
 hooksecurefunc("ChatFrame_DisplayHelpTextSimple", function(self, ...)
 	local text = self.editBox:GetText()
-	if text and #text > 0 then
+	if text and #text > 1 then
 		self.editBox:AddHistoryLine( text)
 	end
 end)

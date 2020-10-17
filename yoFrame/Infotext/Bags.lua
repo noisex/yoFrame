@@ -62,7 +62,7 @@ Stat:RegisterEvent("BAG_UPDATE")
 
 Stat:SetScript("OnEvent", OnEvent)
 Stat:SetScript("OnMouseDown", function()
-	if yo_BagsFrame.bagFrame then
+	if yo_Bags.bagFrame then
 		addon_Toggle()
 	else
 		isOpen = not isOpen
