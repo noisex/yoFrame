@@ -208,9 +208,7 @@ for k, v in next, {
 		end
 
 		for _, func in next, self.__elements do
-			if type(func) == "function" then
-				func(self, event, unit)
-			end
+			func(self, event, unit)
 		end
 
 		if(self.PostUpdate) then

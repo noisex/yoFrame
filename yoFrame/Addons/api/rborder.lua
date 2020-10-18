@@ -21,15 +21,15 @@ function N.SetBorderColor(self, r, g, b, a, glow)
 		tex:SetVertexColor(r, g, b)
 	end
 
-	--if self.Glow then
-	--	if glow then
-	--		self.Glow:SetVertexColor(r, g, b, a)
-	--		self.Glow:Show()
-	--	else
-	--		self.Glow:SetVertexColor(1, 1, 1, 1)
-	--		self.Glow:Hide()
-	--	end
-	--end
+	if self.Glow then
+		if glow then
+			self.Glow:SetVertexColor(r, g, b, a)
+			self.Glow:Show()
+		else
+			self.Glow:SetVertexColor(1, 1, 1, 1)
+			self.Glow:Hide()
+		end
+	end
 end
 
 function N.GetBorderColor(self)

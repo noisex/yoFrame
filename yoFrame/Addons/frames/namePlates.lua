@@ -136,7 +136,7 @@ local function scanToQuest( self, ...)
 	tt:SetOwner( UIParent, "ANCHOR_NONE")
 	tt:SetUnit( self.unit)
 	tt:Show()
-	local p1, p2, p3, p4
+	local p1, p2, p4
 	for i = 3, min( 8, tt:NumLines()) do
 		local line = _G["yoFrame_ScanTooltipTextLeft"..i]
 		if line then
@@ -145,8 +145,11 @@ local function scanToQuest( self, ...)
 			p1, p2 = lineText:match(": (%d+)/(%d+)$")
 			if p1 and p2 and not (p1 == p2) then showMe = true	break end
 
-			p3 = lineText:match ("%. %((%d+%%)%)$")
-			if p3 and not (p3 == "100%") then showMe = true break end
+			p1 = lineText:match ("%. %((%d+%%)%)$")
+			if p1 and not (p1 == "100%") then showMe = true break end
+
+			p1 = lineText:match ("%.: (%d+%%)$")
+			if p1 and not (p1 == "100%") then showMe = true break end
 
 			p4 = lineText:match (" %((%d+%%)%)$")
 			if p4 and not (p4 == "100%") then showMe = true break end

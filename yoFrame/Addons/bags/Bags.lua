@@ -1037,6 +1037,10 @@ function addon:CreateLayout( isBank)
 					end
 
 					f.Bags[bagID][slotID].icon:SetTexCoord( unpack( f.texCoord))  		--( unpack( yo.tCoord))
+					f.Bags[bagID][slotID].icon:ClearAllPoints()
+					f.Bags[bagID][slotID].icon:SetPoint("CENTER", f.Bags[bagID][slotID])
+					f.Bags[bagID][slotID].icon:SetSize(f.Bags[bagID][slotID]:GetWidth() -5, f.Bags[bagID][slotID]:GetHeight() -5)
+					f.Bags[bagID][slotID].icon.ClearAllPoints = dummy
 
 
 					f.Bags[bagID][slotID].cooldown = _G[f.Bags[bagID][slotID]:GetName()..'Cooldown'];

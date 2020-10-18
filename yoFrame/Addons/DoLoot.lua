@@ -44,7 +44,7 @@ local function OnEnter( self)
 
 	self:SetScript("OnUpdate", function( f, elapsed)
 		self.tick = ( self.tick + elapsed) or 0
-		if self.tick > 0.2 then
+		if self.tick > 0.25 then
 			self.tick = 0
 			GameTooltip:SetHyperlink( self.link)
 			if IsShiftKeyDown() then

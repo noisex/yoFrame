@@ -163,11 +163,11 @@ local function powerUpdate( f, unit, pmin, min, pmax)
 	f.powerMax = pmax
 end
 
-local function powerColor( f, unit, cur, min, max, displayType, event)
+local function powerColor( f, event, unit)
 	local cols = colors.disconnected
 
-	if unit == "targettarget" and event == "OnUpdate" then updateTOTAuras( f, unit) --return
-	elseif event:match( "UNIT_POWER_") then return end
+	if unit == "targettarget" and event == "OnUpdate" then updateTOTAuras( f.Power, unit) --return
+	elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" then return end
 
 	--f.dead = false
 	if not UnitIsConnected( unit) then
@@ -186,38 +186,38 @@ local function powerColor( f, unit, cur, min, max, displayType, event)
 	end
 
 	f.colr, f.colg, f.colb = cols[1], cols[2], cols[3]
-	f:GetParent().colr, f:GetParent().colg, f:GetParent().colb = cols[1], cols[2], cols[3]
+	f.Power.colr, f.Power.colg, f.Power.colb = cols[1], cols[2], cols[3]
 
-	f:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
-	f.bgPower:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
-	f.powerText:SetTextColor( f.colr, f.colg, f.colb, 1)
-	if UnitPowerMax( unit) == 0 then f:Hide() else f:Show() end
+	f.Power:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
+	f.Power.bgPower:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
+	f.Power.powerText:SetTextColor( f.colr, f.colg, f.colb, 1)
+	if UnitPowerMax( unit) == 0 then f.Power:Hide() else f.Power:Show() end
 
 	if yo.Raid.classcolor == 1 then
 		local fader = 0.7
 		local dark  = 0.5
-		f:GetParent().Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 0.9)
-		f:GetParent().Health.hbg:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
+		f.Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 0.9)
+		f.Health.hbg:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
 		if unit == "player" or unit == "target" or unit == "pet" then
-			f:GetParent().Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
+			f.Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	elseif yo.Raid.classcolor == 2 then
 		local fader = 0.7
 		local dark  = 0.5
-		f:GetParent().Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 1)
-		f:GetParent().Health.hbg:SetVertexColor( 0.8, 0.8, 0.8, 0.9)
+		f.Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 1)
+		f.Health.hbg:SetVertexColor( 0.8, 0.8, 0.8, 0.9)
 		if unit == "player" or unit == "target" or unit == "pet" then
-			f:GetParent().Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
+			f.Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	else
-		f:GetParent().Health:SetStatusBarColor( 0.09, 0.09, 0.09, 0.9) --( 0.13, 0.13, 0.13, 0.9)
-		f:GetParent().Health.hbg:SetVertexColor( 0.45, 0.45, 0.45, 0.9)
+		f.Health:SetStatusBarColor( 0.09, 0.09, 0.09, 0.9) --( 0.13, 0.13, 0.13, 0.9)
+		f.Health.hbg:SetVertexColor( 0.45, 0.45, 0.45, 0.9)
 		if unit == "player" or unit == "target" or unit == "pet" then
-			f:GetParent().Health.AbsorbBar:SetStatusBarColor( 0.2, 0.2, 0.2, 0.9) --( 0.25, 0.25, 0.25, 0.9)
+			f.Health.AbsorbBar:SetStatusBarColor( 0.2, 0.2, 0.2, 0.9) --( 0.25, 0.25, 0.25, 0.9)
 		end
 	end
 
-	if f:GetParent().holyShards then f:GetParent().holyShards:recolorShards( cols) end
+	if f.holyShards then f.holyShards:recolorShards( cols) end
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -428,6 +428,16 @@ local function Shared(self, unit)
 		self.CombatIndicator:SetTexCoord(0.58, 0.90, 0.08, 0.41)
 		self.CombatIndicator.PostUpdate = function( f, inCombat)
 			if inCombat then self.RestingIndicator:Hide() elseif not inCombat and IsResting() then	self.RestingIndicator:Show()end end
+
+		if yo.UF.showGCD then
+			self.GCD = CreateFrame("StatusBar", nil, self)
+			self.GCD:SetPoint("LEFT", self, "TOPLEFT", 0, 0)
+			self.GCD:SetWidth( self:GetWidth())
+			self.GCD:SetHeight( 1)
+			self.GCD:SetFrameLevel( 5)
+			self.GCD:SetStatusBarTexture( texture)
+			self.GCD:SetStatusBarColor( 1, 1, 1, 0)
+		end
 
 	elseif unit == "target" and yo.healBotka.enable then
 		N.makeQuiButton(self)

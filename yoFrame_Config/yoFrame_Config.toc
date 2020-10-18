@@ -5,7 +5,7 @@
 ## Version: 7.30
 ## RequiredDeps: yoFrame
 ## SavedVariables: yo_AllConfig, yo_AllData
-## SavedVariablesPerCharacter: yo_PersonalConfig
+## SavedVariablesPerCharacter: yo_PersonalConfig, yo_ChatHistory
 
 Libs\libs.xml
 
@@ -13,10 +13,4 @@ Locale\locale.lua
 Locale\enUS.lua
 Locale\ruRU.lua
 
-#Config\config.lua
 configui.lua
-
-
-#Core.lua
-
-#Options.lua

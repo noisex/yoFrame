@@ -81,7 +81,7 @@ local function Enable(self, unit)
 			element:SetTexture([[Interface\CharacterFrame\UI-StateIcon]])
 			element:SetTexCoord(0, 0.5, 0, 0.421875)
 		end
-		--Update( self)
+
 		return true
 	end
 end

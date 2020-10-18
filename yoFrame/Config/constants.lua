@@ -330,6 +330,7 @@ yo["UF"] 	= {
 	["colorUF"]			= 0,
 	["classBackground"]	= true,
 	["simpeUF"]			= false,
+	["showGCD"]			= true,
 }
 
 yo["Raid"] = {

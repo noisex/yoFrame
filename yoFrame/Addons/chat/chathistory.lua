@@ -6,6 +6,23 @@ if not yo.Chat.showHistory then return end
 --	Chat History
 ----------------------------------------------------------------------------------------
 
+if yo_ChatHistory then
+	for i,v in ipairs( yo_ChatHistory ) do
+
+		for ii, vv in pairs( v) do
+			local channel, sender, text, chanColor, uclass, cols = vv[2], strsplit( "-",vv[3]), vv[1], vv[4], vv[6], vv[7]
+			--print(channel, sender, text, chanColor, uclass) --, RAID_CLASS_COLORS[uclass].colorStr)
+
+			sender = "|c" .. RAID_CLASS_COLORS[ ( uclass or "PRIEST")].colorStr .. sender .. "|r"
+			cols = cols or ( { ["r"] = 1, ["g"] = 1,["b"] = 1})
+
+			local string = format("%s[%s%s]: %s|r", channel, sender, ( chanColor or "|cffffffff" ), text)
+			DEFAULT_CHAT_FRAME:AddMessage( string, cols.r, cols.g, cols.b)
+		end
+	end
+end
+
+
 local function CheckLine( array)
 	local maxLine, index = 30
 
@@ -116,19 +133,19 @@ local function OnChatHistory( self, event, ...)
 
 		CheckLine( yo_ChatHistory)
 
-		for i,v in ipairs( yo_ChatHistory ) do
+		--for i,v in ipairs( yo_ChatHistory ) do
 
-			for ii,vv in pairs( v) do
-				local channel, sender, text, chanColor, uclass, cols = vv[2], strsplit( "-",vv[3]), vv[1], vv[4], vv[6], vv[7]
-				--print(channel, sender, text, chanColor, uclass) --, RAID_CLASS_COLORS[uclass].colorStr)
+		--	for ii,vv in pairs( v) do
+		--		local channel, sender, text, chanColor, uclass, cols = vv[2], strsplit( "-",vv[3]), vv[1], vv[4], vv[6], vv[7]
+		--		--print(channel, sender, text, chanColor, uclass) --, RAID_CLASS_COLORS[uclass].colorStr)
 
-				sender = "|c" .. RAID_CLASS_COLORS[ ( uclass or "PRIEST")].colorStr .. sender .. "|r"
-				cols = cols or ( { ["r"] = 1, ["g"] = 1,["b"] = 1})
+		--		sender = "|c" .. RAID_CLASS_COLORS[ ( uclass or "PRIEST")].colorStr .. sender .. "|r"
+		--		cols = cols or ( { ["r"] = 1, ["g"] = 1,["b"] = 1})
 
-				local string = format("%s[%s%s]: %s|r", channel, sender, ( chanColor or "|cffffffff" ), text)
-				DEFAULT_CHAT_FRAME:AddMessage( string, cols.r, cols.g, cols.b)
-			end
-		end
+		--		local string = format("%s[%s%s]: %s|r", channel, sender, ( chanColor or "|cffffffff" ), text)
+		--		DEFAULT_CHAT_FRAME:AddMessage( string, cols.r, cols.g, cols.b)
+		--	end
+		--end
 	end
 end
 

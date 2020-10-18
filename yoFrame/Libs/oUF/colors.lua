@@ -38,6 +38,7 @@ local colors = {
 	debuff = {},
 	reaction = {},
 	power = {},
+	threat = {},
 }
 
 -- We do this because people edit the vars directly, and changing the default
@@ -116,6 +117,14 @@ colors.power[16] = colors.power.ARCANE_CHARGES
 colors.power[17] = colors.power.FURY
 colors.power[18] = colors.power.PAIN
 
+-- alternate power, sourced from FrameXML/CompactUnitFrame.lua
+colors.power.ALTERNATE = {0.7, 0.7, 0.6}
+colors.power[10] = colors.power.ALTERNATE
+
+for i = 0, 3 do
+	colors.threat[i] = {GetThreatStatusColor(i)}
+end
+
 local function colorsAndPercent(a, b, ...)
 	if(a <= 0 or b == 0) then
 		return nil, ...
@@ -161,7 +170,7 @@ local function rgbToHCY(r, g, b)
 	local hue
 	if(chroma > 0) then
 		if(r == max) then
-			hue = ((g - b) / chroma)  %6
+			hue = ((g - b) / chroma) % 6
 		elseif(g == max) then
 			hue = (b - r) / chroma + 2
 		elseif(b == max) then
@@ -176,7 +185,7 @@ local function hcyToRGB(hue, chroma, luma)
 	local r, g, b = 0, 0, 0
 	if(hue and luma > 0) then
 		local h2 = hue * 6
-		local x = chroma * (1 - math.abs(h2  %2 - 1))
+		local x = chroma * (1 - math.abs(h2 % 2 - 1))
 		if(h2 < 1) then
 			r, g, b = chroma, x, 0
 		elseif(h2 < 2) then
@@ -236,7 +245,7 @@ function oUF:HCYColorGradient(...)
 			dh = dh - 1
 		end
 
-		return hcyToRGB((h1 + dh * relperc)  %1, c, y)
+		return hcyToRGB((h1 + dh * relperc) % 1, c, y)
 	else
 		return hcyToRGB(h1 or h2, c, y)
 	end
