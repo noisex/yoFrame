@@ -309,7 +309,7 @@ local function UpdateHealthColor(unitFrame, elapsed)
 
 	elseif UnitPlayerControlled( unit) then 											-- юнит-игрок / цвет класса
 		cols = oUF.colors.class[ select( 2, UnitClass( unit))]
-		fader = 0.55
+		fader = yo.Raid.fadeColor - 0.25
 		--unitFrame.castBar.spark:Hide()												-- прячем спарку на икроках
 
 	elseif status then

@@ -15,7 +15,7 @@ function tprint(t, s, indent)
             	if type(v) ~= 'string' then
                 	vfmt = tostring(v)
             	end
-            	print( format( "%s: %-30s %-10s = %s", type(t), s or '', kfmt, vfmt))
+            	print( format( "%s:%-8s %s=%s", type(t), s or '', kfmt, vfmt))
         	end
         end
     end

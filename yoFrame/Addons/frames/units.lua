@@ -202,16 +202,16 @@ function healthUpdateColor( f, event, unit, ...)
 	if UnitPowerMax( unit) == 0 then f.Power:Hide() else f.Power:Show() end
 
 	if yo.Raid.classcolor == 1 then
-		local fader = 0.7
-		local dark  = 0.5
+		local fader = yo.Raid.fadeColor
+		local dark  = yo.Raid.fadeColor - 0.2
 		f.Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 0.9)
 		f.Health.hbg:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
 		if f.Health.AbsorbBar and unit == "player" or unit == "target" or unit == "pet" then
 			f.Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	elseif yo.Raid.classcolor == 2 then
-		local fader = 0.7
-		local dark  = 0.5
+		local fader = yo.Raid.fadeColor
+		local dark  = yo.Raid.fadeColor - 0.2
 		f.Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 1)
 		f.Health.hbg:SetVertexColor( 0.8, 0.8, 0.8, 0.9)
 		if f.Health.AbsorbBar and unit == "player" or unit == "target" or unit == "pet" then
@@ -365,15 +365,6 @@ local function Shared(self, unit)
 		self:Tag( self.rText, "[GetNameColor][group]")
 	end
 
-	--if unit == "targettarget" then
-	--	print("...")
-	--	self.Health.healthText =  self.Health:CreateFontString(nil ,"OVERLAY")
-	--	self.Health.healthText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
-	--	self.Health.healthText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 2)
-	--	self.Health.healthText:SetText("text", 1, 1, 1, 1)
-	--	table.insert( N.strings, self.Health.healthText)
-	--end
-
 ------------------------------------------------------------------------------------------------------
 ---											ICONS
 ------------------------------------------------------------------------------------------------------
@@ -413,12 +404,6 @@ local function Shared(self, unit)
 		self.PvPIndicator:SetSize( 20, 20)
 		self.PvPIndicator:SetAlpha( 0.7)
 		self.PvPIndicator:SetDesaturated(true)
-
-		--self.Badge = self:CreateTexture(nil, 'ARTWORK')
-  --  	self.Badge:SetSize(50, 52)
-  --  	self.Badge:SetPoint('CENTER', self.PvPIndicator, 'CENTER')
-  --  	self.PvPIndicator.Badge = Badge
-		--self.PvPIndicator:Hide()
 
 		self.lfd = self:CreateFontString(nil ,"OVERLAY")
 		self.lfd:SetFont( fontsymbol, yo.fontsize - 1)

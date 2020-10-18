@@ -14,11 +14,13 @@ LSM:Register("statusbar", "yo Plain Gray", 	"Interface\\AddOns\\yoFrame\\Media\\
 LSM:Register("statusbar", "yo Plain White", "Interface\\AddOns\\yoFrame\\Media\\plain_white")
 LSM:Register("statusbar", "yo StatusBar", 	"Interface\\AddOns\\yoFrame\\Media\\statusbar4")
 LSM:Register("statusbar", "yo DGroung", 	"Interface\\AddOns\\yoFrame\\Media\\bar_dground")
-LSM:Register("statusbar", "yo Striped", 	"Interface\\AddOns\\yoFrame\\Media\\striped")
+--LSM:Register("statusbar", "yo Striped", 	"Interface\\AddOns\\yoFrame\\Media\\striped")
 LSM:Register("statusbar", "yo Smooth", 		"Interface\\AddOns\\yoFrame\\Media\\flatsmooth")
---LSM:Register("statusbar", "yo Bar 04", 		"Interface\\AddOns\\yoFrame\\Media\\bar4")
+
+LSM:Register("statusbar", "yo Smooth+", 	"Interface\\AddOns\\yoFrame\\Media\\lightflatsmooth")
+LSM:Register("statusbar", "yo Smooth++",	"Interface\\AddOns\\yoFrame\\Media\\verylightflatsmooth")
+
 LSM:Register("statusbar", "yo Bar 07", 		"Interface\\AddOns\\yoFrame\\Media\\bar7")
---LSM:Register("statusbar", "yo Bar Solid",	"Interface\\AddOns\\yoFrame\\Media\\White8x8")
 LSM:Register("statusbar", "yo Bar 17", 		"Interface\\AddOns\\yoFrame\\Media\\bar17")
 LSM:Register("statusbar", "yo Neal", 		"Interface\\AddOns\\yoFrame\\Media\\Neal")
 
@@ -444,6 +446,7 @@ function InitOptions()
 					showHPValue 	= {	order = 45, type = "select", name = function(info) return tr( info[#info]) end,	values = {["[DDG]"] = L["HP_HIDE"], ["[per]"] = L["HP_PROC"], ["[hp]"] = L["HP_HPPROC"]},},
 					manacolorClass 	= {	order = 50, type = "toggle", name = function(info) return tr( info[#info]) end,},
 					manabar 		= {	order = 55, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["MB_ALL"], [2] = L["MB_HEAL"], [3] = L["MB_HIDE"]},},
+					fadeColor		= {	order = 56,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 0.1, max = 1, step = .1,},
 					classBackground = {	order = 57, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					hpBarVertical 	= {	order = 60, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", },
 					hpBarRevers	 	= {	order = 65, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},

@@ -9,7 +9,7 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization
 	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization
 
-PlayerProcWhiteList = {}
+N.PlayerProcWhiteList = {}
 N.DebuffPlayerTargetList = {}
 
 local function UpdateAura( self, unit)
@@ -52,7 +52,6 @@ local function UpdateAura( self, unit)
 
 		if yo.fliger.tDebuffEnable then
 			if unit == self.tDebuff.unit and caster == "player" and N.BuffWhiteList[name] then
-				--if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = CreateAuraIcon( self.tDebuff, fligerTD) end
 				UpdateAuraIcon( CreateAuraIcon( self.tDebuff, fligerTD), filter, icon, count, nil, duration, expirationTime, spellID, index)
 				fligerTD = fligerTD + 1
 			end
@@ -60,15 +59,13 @@ local function UpdateAura( self, unit)
 
 		if yo.fliger.pBuffEnable then
 			if unit == self.pBuff.unit and N.PlayerBuffWhiteList[name] then
-				--if not self.pBuff[fligerPB] then self.pBuff[fligerPB] = CreateAuraIcon( self.pBuff, fligerPB) end
 				UpdateAuraIcon( CreateAuraIcon( self.pBuff, fligerPB), filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
 				fligerPB = fligerPB + 1
 			end
 		end
 
 		if yo.fliger.pProcEnable then
-			if unit == self.pProc.unit and PlayerProcWhiteList[name] then
-				--if not self.pProc[fligerProc] then self.pProc[fligerProc] = CreateAuraIcon( self.pProc, fligerProc) end
+			if unit == self.pProc.unit and N.PlayerProcWhiteList[spellID] then
 				UpdateAuraIcon( CreateAuraIcon( self.pProc, fligerProc), filter, icon, count, nil, duration, expirationTime, spellID, index)
 				fligerProc = fligerProc + 1
 			end
@@ -205,10 +202,12 @@ local function CheckClassTemplates( myClass, mySpec)
 		end
 	end
 
-	for i,v in pairs( N.templates.class[myClass][mySpec][5]["args"]) do
-		local spellId = GetSpellInfo( v.spell)
-		if spellId then
-			N.PlayerBuffWhiteList[spellId] = true
+	if N.templates.class[myClass][mySpec][5]["args"] then
+		for i,v in pairs( N.templates.class[myClass][mySpec][5]["args"]) do
+			local spellId = GetSpellInfo( v.spell)
+			if spellId then
+				N.PlayerBuffWhiteList[spellId] = true
+			end
 		end
 	end
 
@@ -225,43 +224,34 @@ local function CheckClassTemplates( myClass, mySpec)
 	end
 end
 
+
 local function CheckTemplates( myClass, mySpec)
-	--PlayerCDWhiteList = {}
-	--for i,v in pairs( N.templates.class[myClass][mySpec][3]["args"]) do
-	--	local starttime, duration = GetSpellCooldown( GetSpellInfo( v.spell))
-	--	if starttime then
-	--		PlayerCDWhiteList[GetSpellInfo( v.spell)] = v.icon
+
+	for i, v in pairs( N.templates.items) do N.PlayerProcWhiteList[ v] = true end
+
+	--if N.templates.items[2] then
+	--	for i,v in pairs( N.templates.items[2]["args"]) do
+	--		local spellId = GetSpellInfo( v.spell)
+	--		if spellId then PlayerProcWhiteList[spellId] = true end
 	--	end
+
+	--	for i,v in pairs( N.templates.items[3]["args"]) do PlayerProcWhiteList[v.title] = true 	end
+	--	for i,v in pairs( N.templates.items[4]["args"]) do PlayerProcWhiteList[v.title] = true 	end
+
+	--	wipe( N.templates.items)
 	--end
 
-	for i,v in pairs( N.templates.items[2]["args"]) do
-		local spellId = GetSpellInfo( v.spell)
-		if spellId then
-			PlayerProcWhiteList[spellId] = true
-		end
-	end
-
-	for i,v in pairs( N.templates.items[3]["args"]) do
-		PlayerProcWhiteList[v.title] = true
-	end
-
-	for i,v in pairs( N.templates.items[4]["args"]) do
-		PlayerProcWhiteList[v.title] = true
-	end
-
-	if yo.fliger.gAzetit then
-		for i,v in pairs( generalAzeriteTraits) do
-			local spellId = GetSpellInfo( v.spell)
-			if spellId then
-				PlayerProcWhiteList[spellId] = true
-			end
-		end
-	end
-	wipe( N.templates.items)
-	wipe( generalAzeriteTraits)
+	--if N.templates.spell_covenant and yo.fliger.gAzetit then
+	--	for i,v in pairs( generalAzeriteTraits) do
+	--		local spellId = GetSpellInfo( v.spell)
+	--		if spellId then PlayerProcWhiteList[spellId] = true end
+	--	end
+	--	wipe( generalAzeriteTraits)
+	--end
 
 	CheckClassTemplates( myClass, mySpec)
 end
+
 
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then

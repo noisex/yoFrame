@@ -309,7 +309,7 @@ yo["NamePlates"] = {
 
 yo["Media"] = {
 	--["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\statusbar4",
-	["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\flatsmooth",
+	["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\lightflatsmooth",
 	["dgtexture"]	= "Interface\\AddOns\\yoFrame\\Media\\bar_dground",
 	["texhl"]   	= "Interface\\AddOns\\yoFrame\\Media\\raidbg",
 	["texglow"] 	= "Interface\\AddOns\\yoFrame\\Media\\glowTex",
@@ -362,6 +362,7 @@ yo["Raid"] = {
 	["heightMT"]		= 25,
 	["widthMT"]			= 100,
 	["simpeRaid"]		= false,
+	["fadeColor"]		= 0.8,
 }
 
 yo["Chat"] = {
