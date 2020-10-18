@@ -17,6 +17,7 @@
 	<Script file="healthprediction.lua"/>
 	<Script file="oUF_DebuffHighlight.lua"/>
 	<Script file="GCD.lua"/>
+	<Script file= "AutoResurrect.lua"/>
 
 	<Script file="rActionBar\core.lua"/>
 	<Script file="rActionBar\blizzard.lua"/>

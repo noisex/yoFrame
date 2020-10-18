@@ -83,6 +83,7 @@ local Private = oUF.Private
 local unitSelectionType = Private.unitSelectionType
 
 local function UpdateColor(self, event, unit)
+	print(event, unit)
 	if(not unit or self.unit ~= unit) then return end
 	local element = self.Health
 

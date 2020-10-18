@@ -1,5 +1,6 @@
 local _, ns = ...
-local oUF = ns.oUF or oUF
+local oUF 	= ns.oUF or oUF
+local colors = oUF.colors
 
 local L, yo, N = ns[1], ns[2], ns[3]
 
@@ -46,25 +47,6 @@ local PostIconUpdate = function( self, button)
 	end
 end
 
-local function OnEnter( f)
-	if f.bgHlight then
-		f.bgHlight:Show()
-	end
-	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
-	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-	GameTooltip:SetUnit( f.unit)
-	GameTooltip:Show()
-end
-
-local function OnLeave( f)
-	if f.bgHlight then
-		f.bgHlight:Hide()
-	end
-	if GameTooltip:IsShown() then
-		GameTooltip:FadeOut( 2)
-	end
-end
-
 local funcWhiteList = function( self, button, ...)
 	local spellID = select( 11, ...)
 	if not N.blackSpells[spellID] then
@@ -82,6 +64,22 @@ local funcBlackList = function( self, button, ...)
 		return false
 	end
 end
+
+local manaBarHider = function( power, event, unit)
+	--print( self:GetName(), unit, event)
+	if event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" then return end
+
+	local role = UnitGroupRolesAssigned( unit)
+	if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) or power:GetName():match( "yo_Tanke") then
+		power.Power:SetAlpha( 1)
+		if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
+			power.Power:SetValue( UnitPowerMax(unit))
+		end
+	else
+		power.Power:SetAlpha(0)
+	end
+end
+
 
 -------------------------------------------------------------------------------------------------------
 --											SHARED
@@ -205,7 +203,7 @@ local Shared = function(self, unit)
 	    self.Health.bg = self.Health.hbg
 		self.Health.bg.multiplier = .6
 		self.shadowAlpha = 0.5
-		self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha - 0.2,}
+		self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha - 0.1,}
 
 	elseif yo.Raid.classcolor == 2 then
 		self.Health.colorSmooth = true
@@ -239,6 +237,8 @@ local Shared = function(self, unit)
 		end
 	end
 
+	self.Health.UpdateColor = healthUpdateColor
+
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR
 	------------------------------------------------------------------------------------------------------
@@ -252,19 +252,6 @@ local Shared = function(self, unit)
 		self.Power:SetHeight( 2)
 		table.insert( N.statusBars, self.Power)
 
-		self.Power.PostUpdate = function(power, unit, cur, min, max)
-			local role = UnitGroupRolesAssigned( unit)
-
-			if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) or self:GetParent():GetName():match( "yo_Tanke") then
-				power:Show( )
-				if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
-					power:SetValue( max)
-				end
-			else
-				power:Hide( )
-			end
-		end
-
 		self.Power:SetFrameLevel(10)
 		self.Power.frequentUpdates = false
 		self.Power.colorDisconnected = true
@@ -273,6 +260,7 @@ local Shared = function(self, unit)
 		else
 			self.Power.colorPower = true
 		end
+		self.Power:Hide()
 
 		-- Power bar background
 		self.Power.bg = self.Power:CreateTexture(nil, "BORDER")
@@ -280,30 +268,11 @@ local Shared = function(self, unit)
 		self.Power.bg:SetTexture( texture)
 		self.Power.bg:SetAlpha(1)
 		self.Power.bg.multiplier = 0.2
-
 		CreateStyle( self.Power, 1)
+
+		self.Power.UpdateColor = manaBarHider
 	end
 
---	    -- Position and size
---    local mainBar = CreateFrame('StatusBar', nil, self.Power)
---    mainBar:SetReverseFill(true)
---    mainBar:SetPoint('TOP')
---    mainBar:SetPoint('BOTTOM')
---    mainBar:SetPoint('RIGHT', self.Power:GetStatusBarTexture(), 'RIGHT')
---    mainBar:SetWidth( self:GetWidth() - 6)
-
---    --local altBar = CreateFrame('StatusBar', nil, self.AdditionalPower)
---    --altBar:SetReverseFill(true)
---    --altBar:SetPoint('TOP')
---    --altBar:SetPoint('BOTTOM')
---    --altBar:SetPoint('RIGHT', self.AdditionalPower:GetStatusBarTexture(), 'RIGHT')
---    --altBar:SetWidth(200)
-
---    -- Register with oUF
---    self.PowerPrediction = {
---        mainBar = mainBar
-----        altBar = altBar
---    }
 	------------------------------------------------------------------------------------------------------
 	----										OVERLAY
 	------------------------------------------------------------------------------------------------------
@@ -500,8 +469,8 @@ local Shared = function(self, unit)
 		N.makeQuiButton(self)
 
 	else
-		self:SetScript("OnEnter", OnEnter)
-		self:SetScript("OnLeave", OnLeave)
+		self:SetScript("OnEnter", frameOnEnter)
+		self:SetScript("OnLeave", frameOnLeave)
 	end
 
 	--if(UnitSpecific[unit]) then

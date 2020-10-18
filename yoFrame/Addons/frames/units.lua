@@ -11,16 +11,20 @@ local UpdateAllElements = function(frame)
 	end
 end
 
-local function OnEnter(f, event)
-	f.bgHlight:Show()
+function frameOnEnter(f, event)
+	if f.bgHlight then
+		f.bgHlight:Show()
+	end
 	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	GameTooltip:SetUnit( f.unit)
 	GameTooltip:Show()
 end
 
-local function OnLeave(f, event)
-	f.bgHlight:Hide()
+function frameOnLeave(f, event)
+	if f.bgHlight then
+		f.bgHlight:Hide()
+	end
 	if GameTooltip:IsShown() then
 		GameTooltip:FadeOut(2)
 	end
@@ -69,6 +73,7 @@ local function powerManaCost(self, event, _, _, spellID) -- 240022
 	end
 end
 
+
 local function healthUpdate( f, event, unit)
 	local thText
 	local absorb = UnitGetTotalAbsorbs( unit) or 0
@@ -111,6 +116,7 @@ local function healthUpdate( f, event, unit)
 	end
 end
 
+
 local function updateTOTAuras( self, unit)
 	local index, fligerPD = 1, 1
 	local filter = UnitPlayerControlled( unit) and "HARMFUL" or "HELPFUL"
@@ -130,6 +136,7 @@ local function updateTOTAuras( self, unit)
 
 	for index = fligerPD, #self.pDebuff	do self.pDebuff[index]:Hide()   end
 end
+
 
 local function powerUpdate( f, unit, pmin, min, pmax)
 	local uPP, uPText
@@ -163,11 +170,13 @@ local function powerUpdate( f, unit, pmin, min, pmax)
 	f.powerMax = pmax
 end
 
-local function powerColor( f, event, unit)
+function healthUpdateColor( f, event, unit, ...)
 	local cols = colors.disconnected
 
 	if unit == "targettarget" and event == "OnUpdate" then updateTOTAuras( f.Power, unit) --return
-	elseif event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" then return end
+	elseif
+		--event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" or
+		event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" then return end
 
 	--f.dead = false
 	if not UnitIsConnected( unit) then
@@ -189,8 +198,7 @@ local function powerColor( f, event, unit)
 	f.Power.colr, f.Power.colg, f.Power.colb = cols[1], cols[2], cols[3]
 
 	f.Power:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
-	f.Power.bgPower:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
-	f.Power.powerText:SetTextColor( f.colr, f.colg, f.colb, 1)
+	f.Power.bg:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
 	if UnitPowerMax( unit) == 0 then f.Power:Hide() else f.Power:Show() end
 
 	if yo.Raid.classcolor == 1 then
@@ -198,7 +206,7 @@ local function powerColor( f, event, unit)
 		local dark  = 0.5
 		f.Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 0.9)
 		f.Health.hbg:SetVertexColor( 0.1, 0.1, 0.1, 0.9)
-		if unit == "player" or unit == "target" or unit == "pet" then
+		if f.Health.AbsorbBar and unit == "player" or unit == "target" or unit == "pet" then
 			f.Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	elseif yo.Raid.classcolor == 2 then
@@ -206,19 +214,22 @@ local function powerColor( f, event, unit)
 		local dark  = 0.5
 		f.Health:SetStatusBarColor( f.colr * fader, f.colg * fader, f.colb * fader, 1)
 		f.Health.hbg:SetVertexColor( 0.8, 0.8, 0.8, 0.9)
-		if unit == "player" or unit == "target" or unit == "pet" then
+		if f.Health.AbsorbBar and unit == "player" or unit == "target" or unit == "pet" then
 			f.Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	else
 		f.Health:SetStatusBarColor( 0.09, 0.09, 0.09, 0.9) --( 0.13, 0.13, 0.13, 0.9)
 		f.Health.hbg:SetVertexColor( 0.45, 0.45, 0.45, 0.9)
-		if unit == "player" or unit == "target" or unit == "pet" then
+		if f.Health.AbsorbBar and unit == "player" or unit == "target" or unit == "pet" then
 			f.Health.AbsorbBar:SetStatusBarColor( 0.2, 0.2, 0.2, 0.9) --( 0.25, 0.25, 0.25, 0.9)
 		end
 	end
 
+	if f.Power.powerText then f.Power.powerText:SetTextColor( f.colr, f.colg, f.colb, 1) end
 	if f.holyShards then f.holyShards:recolorShards( cols) end
 end
+
+
 
 ------------------------------------------------------------------------------------------------------
 ---											BEGIN
@@ -228,7 +239,7 @@ local function Shared(self, unit)
 	local cunit = (unit and unit:find("boss%d")) and "boss" or unit
 	if cunit == "boss" then self.isboss = true end
 	self.cunit 	= cunit
-	self.colors = oUF_colors
+	self.colors = oUF.colors
 	self.colors.disconnected = { 0.2, 0.2, 0.2}
 	self:SetSize( _G["yo_Move" .. cunit]:GetSize())
 
@@ -277,6 +288,8 @@ local function Shared(self, unit)
 		self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", healthUpdate)
 	end
 
+	self.Health.UpdateColor = healthUpdateColor
+
 ------------------------------------------------------------------------------------------------------
 ---											POWER BAR
 ------------------------------------------------------------------------------------------------------
@@ -289,15 +302,11 @@ local function Shared(self, unit)
 	self.Power:SetHeight( 4)
 	table.insert( N.statusBars, self.Power)
 
-	self.Power.frequentUpdates = false
-    self.Power.UpdateColor = powerColor
-    self.Power.PostUpdate = powerUpdate
-
-	self.Power.bgPower = self.Power:CreateTexture(nil, 'BORDER')
-	self.Power.bgPower:SetAllPoints( self.Power)
-	self.Power.bgPower:SetVertexColor( 0.4, 0.4, 0.4, 0.5)
-	self.Power.bgPower:SetAlpha(0.2)
-	self.Power.bgPower:SetTexture( yo.texture)
+	self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
+	self.Power.bg:SetAllPoints( self.Power)
+	self.Power.bg:SetVertexColor( 0.4, 0.4, 0.4, 0.5)
+	self.Power.bg:SetAlpha(0.2)
+	self.Power.bg:SetTexture( yo.texture)
 
 	if unit == "player" then
 		local powerFlashBar = CreateFrame("StatusBar" , nil, self)
@@ -322,6 +331,10 @@ local function Shared(self, unit)
 		self.Power.pDebuff.unit 		= "targettarget"
 		self.Power.pDebuff.count 		= self:GetWidth() / self.Power.pDebuff:GetHeight()
 	end
+
+	self.Power.frequentUpdates = false
+    self.Power.UpdateColor = dummy
+    self.Power.PostUpdate = powerUpdate
 
 ------------------------------------------------------------------------------------------------------
 ---											TEXTS
@@ -409,7 +422,7 @@ local function Shared(self, unit)
 
 		self.lfd = self:CreateFontString(nil ,"OVERLAY")
 		self.lfd:SetFont( fontsymbol, yo.fontsize - 1)
-		self.lfd:SetPoint( "RIGHT", self, "RIGHT", -1, -1)
+		self.lfd:SetPoint( "RIGHT", self.Health.healthText, "LEFT", -5, 0)
 		self.lfd:SetJustifyH( "LEFT")
 		self:Tag( self.lfd, '[LFD]')
 	end
@@ -459,8 +472,8 @@ local function Shared(self, unit)
 	self:SetAlpha(1)
 	self:SetFrameStrata("BACKGROUND")
 	self:RegisterForClicks("AnyDown")
-	self:SetScript("OnEnter", OnEnter)
-	self:SetScript("OnLeave", OnLeave)
+	self:SetScript("OnEnter", frameOnEnter)
+	self:SetScript("OnLeave", frameOnLeave)
 	CreateStyle( self, 4)
 	CreateStyle( self.Power, 2, 4, .3, .9)
 end
