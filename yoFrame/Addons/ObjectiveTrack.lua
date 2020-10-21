@@ -115,8 +115,10 @@ local function ShowQuestLevelInWatchFrame()
 		if xxx then
 			for i, block in pairs(xxx) do
 				if block.id and block.HeaderText and block.HeaderText:GetText() and (not string.find(block.HeaderText:GetText(), "^%[.*%].*")) then
-					--print( i, block, block.id, block.HeaderText, block.HeaderText:GetText())
 					local questLogIndex = C_QuestLog.GetLogIndexForQuestID( block.id)
+					--print( i, block.id, questLogIndex, block.HeaderText:GetText())
+					if not questLogIndex then break end
+
 					local questInfo = C_QuestLog.GetInfo( questLogIndex)
 
 					if ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then

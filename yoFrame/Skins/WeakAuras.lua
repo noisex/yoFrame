@@ -44,7 +44,10 @@ local function styleIcon( region)
 			if not region.border then return end
 
 			if (showGlow) then
-				aGlow.PixelGlow_Start( region, {0.95, 0.95, 0.32, 1}, 8, 0.25, 10, 2, 2, 2, false, 1 )
+				local height 	= region:GetHeight() / 12
+				local leight 	= region:GetHeight() / 5
+				local count 	= Round( region:GetHeight() / 6)
+				aGlow.PixelGlow_Start( region, {0.95, 0.95, 0.32, 1}, count, 0.25, leight, height, 2, 2, false, 1 )
 				--aGlow.AutoCastGlow_Start( region, {0.95, 0.95, 0.32, 1}, 20, 0.1, 1.3, 3, 3, 1)
 				--aGlow.ButtonGlow_Start( region, {0.95, 0.95, 0.32, 1}, 20, 0.2, 4, 2, 0, 0, false, 1, 3)
     		else

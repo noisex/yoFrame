@@ -1,6 +1,7 @@
 local _, ns = ...
 local oUF 	= ns.oUF or oUF
-local colors = oUF.colors
+--local colors = oUF.colors
+local cols 	= {}
 
 local L, yo, N = ns[1], ns[2], ns[3]
 
@@ -34,9 +35,9 @@ function OnChangeTarget( self)
 		local _, class = UnitClass(unit)
 		local t = self.colors.class[class]
 		self.shadow:SetBackdropBorderColor( t[1], t[2], t[3])
-		if yo.Raid.simpeRaid then
+		--if yo.Raid.simpeRaid then
 			--self
-		end
+		--end
 	end
 end
 
@@ -85,7 +86,7 @@ end
 --											SHARED
 -------------------------------------------------------------------------------------------------------
 
-local Shared = function(self, unit)
+local raidShared = function(self, unit)
 	local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 	local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
 
@@ -95,7 +96,8 @@ local Shared = function(self, unit)
 					( self:GetParent():GetName():match( "yo_Tank")) and "tank" or unit
 
 	-- Set our own colors
-	self.colors = oUF_colors
+	--self.colors = oUF.colors
+	GetColors( self)
 
 	-- Register click
 	self:RegisterForClicks("AnyUp")
@@ -121,7 +123,7 @@ local Shared = function(self, unit)
 	local initialAnchor = "LEFT"
 	local growthX 		= "RIGHT"
 	local CustomFilter 	= funcWhiteList
-	local outsideAlpha	= 0.5
+	local outsideAlpha	= 0.6
 
 	if yo.Raid.simpeRaid then
 		posInfo			= {"LEFT", self, "RIGHT", 12, 0}
@@ -163,7 +165,7 @@ local Shared = function(self, unit)
 		sizeAuras 		= self:GetHeight() * 0.8
 		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -2, -2}
 		CustomFilter	= funcWhiteList --funcWhiteList
-		outsideAlpha	= 0.5
+		outsideAlpha	= 1
 	end
 
 	if self:GetParent():GetName():match( "yo_TanketsTar") then
@@ -199,11 +201,11 @@ local Shared = function(self, unit)
 
 	if yo.Raid.classcolor == 1 then
 		self.Health.colorClass = true
-	    self.Health.colorReaction = true
+	    --self.Health.colorReaction = true
 	    self.Health.bg = self.Health.hbg
 		self.Health.bg.multiplier = .6
 		self.shadowAlpha = 0.5
-		self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha - 0.1,}
+		self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha - 0.3,}
 
 	elseif yo.Raid.classcolor == 2 then
 		self.Health.colorSmooth = true
@@ -212,9 +214,10 @@ local Shared = function(self, unit)
 
 	else
 		self.Health.colorHealth = true
+		self.colors.disconnected = { 0.4, 0.4, 0.4}
 		self.colors.health = { 0.13, 0.13, 0.15, 0.9}
 		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
-		self.shadowAlpha = 0
+		self.shadowAlpha = 0.2
 	end
 
 	if yo.Raid.simpeRaid and yo.Raid.classcolor ~= 3 then
@@ -226,14 +229,16 @@ local Shared = function(self, unit)
 		if connected then
 			if checkedRange and not inRange then
 				self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
-				self.shadow:SetAlpha( self.shadowAlpha)
+				self.shadow:SetBackdropColor( .075,.075,.086, self.shadowAlpha) --:SetAlpha( self.shadowAlpha)
 			else
 				self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
-				self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
+				self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
+				--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 			end
 		else
 			self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
-			self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
+			self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
+			--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 		end
 	end
 
@@ -294,7 +299,11 @@ local Shared = function(self, unit)
 	self.Info:SetShadowOffset( 1, -1)
 	self.Info:SetShadowColor( 0, 0, 0, 1)
 	table.insert( N.strings, self.Info)
-	self:Tag( self.Info, "[GetNameColor][namemedium][afk]")
+	if unit == "tank" then
+		self:Tag( self.Info, "[GetNameColor][nameshort]")
+	else
+		 self:Tag( self.Info, "[GetNameColor][namemedium][afk]")
+	end
 
     local RaidTargetIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
     RaidTargetIndicator:SetSize( sizeRTarget, sizeRTarget)
@@ -308,7 +317,7 @@ local Shared = function(self, unit)
     self.ResurrectIndicator = ResurrectIndicator
 
 	local DeadText = self.Overlay:CreateFontString(nil ,"OVERLAY")
-	DeadText:SetFont( yo.font, sizeDeadFont)
+	DeadText:SetFont( yo.font, sizeDeadFont -3)
 	DeadText:SetPoint( unpack( posDead))
 	DeadText:SetShadowOffset( 1, -1)
 	DeadText:SetShadowColor( 0, 0, 0, 1)
@@ -604,7 +613,7 @@ logan:SetScript("OnEvent", function(self, event)
 	CompactRaidFrameManager_UpdateShown = dummy
 	CompactRaidFrameManager_UpdateOptionsFlowContainer = dummy
 
-	oUF:RegisterStyle("Raid", Shared)
+	oUF:RegisterStyle("Raid", raidShared)
 	oUF:Factory(function(self)
 		self:SetActiveStyle("Raid")
 		local groupBy, groupingOrder
@@ -612,7 +621,7 @@ logan:SetScript("OnEvent", function(self, event)
 		if yo.Raid.groupingOrder == "GROUP" then
 			local raid = {}
 			for i = 1, yo.Raid.numgroups do
-				local raidgroup = self:SpawnHeader("yo_RaidGroup"..i, nil, "raid",--"custom [@raid6,exists] show;hide",
+				local raidgroup = self:SpawnHeader("yo_RaidGroup"..i, nil, "custom [@raid6,exists] show;hide",
 					"oUF-initialConfigFunction", [[
 						local header = self:GetParent()
 						self:SetWidth(header:GetAttribute("initial-width"))
@@ -653,7 +662,7 @@ logan:SetScript("OnEvent", function(self, event)
 				groupingOrder = "1,2,3,4,5,6,7,8"
 			end
 
-			local raid = self:SpawnHeader( 'yo_Raid', nil, 'raid',
+			local raid = self:SpawnHeader( 'yo_Raid', nil, "custom [@raid6,exists] show;hide", --'raid',
 				"oUF-initialConfigFunction", [[
 					local header = self:GetParent()
 					self:SetWidth(header:GetAttribute("initial-width"))
@@ -664,9 +673,10 @@ logan:SetScript("OnEvent", function(self, event)
 				"groupingOrder", groupingOrder,
 				"initial-width", unit_width,
 				"initial-height", unit_height,
-			--	"showSolo", false,
-			--	"showPlayer", true,
+				"showSolo", false,
+				"showPlayer", true,
 				"showRaid", true,
+				"showParty", true,
 				"xOffset", spaicing,
 				"yOffset", -spaicing,			---6,
 				"maxColumns", yo.Raid.numgroups,
@@ -680,7 +690,7 @@ logan:SetScript("OnEvent", function(self, event)
 		end
 
 
-		local party = self:SpawnHeader( 'yo_Party', nil, 'party,solo',
+		local party = self:SpawnHeader( 'yo_Party', nil, "custom [@raid6,exists] hide;show", --'party,solo',
 			"oUF-initialConfigFunction", [[
 				local header = self:GetParent()
 				self:SetWidth(header:GetAttribute("initial-width"))
@@ -691,7 +701,7 @@ logan:SetScript("OnEvent", function(self, event)
 			"showSolo", yo.Raid.showSolo,
 			"showPlayer", true,
 			"showParty", true,
-			"showRaid", false,
+			"showRaid", true,
 			"xOffset", spaicing * yo.Raid.partyScale,
 			"groupBy", groupBy,
 			"groupingOrder", 'TANK,HEALER,DAMAGER,NONE', --groupingOrder,

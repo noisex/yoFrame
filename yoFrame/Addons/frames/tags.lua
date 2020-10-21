@@ -96,7 +96,7 @@ oUF.Tags.Events["NameArena"] = "UNIT_NAME_UPDATE"
 
 oUF.Tags["NameShort"] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 8, false)
+	return utf8sub(name, 10, false)
 end
 oUF.Tags.Events["NameShort"] = "UNIT_NAME_UPDATE"
 

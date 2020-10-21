@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="autoInvite.lua"/>
 	<Script file="chat.lua"/>
 	<Script file="chatbar.lua"/>
 	<Script file="chatcopy.lua"/>

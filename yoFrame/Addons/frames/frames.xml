@@ -4,6 +4,14 @@
 	<Script file="raid.lua"/>
 	<Script file="namePlates.lua"/>
  	<Script file="units.lua"/>
+
+ 	<Script file="aura.lua"/>
+ 	<Script file="castbar.lua"/>
+ 	<Script file="castbarNP.lua"/>
+ 	<Script file="holyShards.lua"/>
+ 	<Script file="holyShardsNP.lua"/>
+ 	<Script file="prediction.lua"/>
+ 	<Script file="yoque.lua"/>
 -->
 
 </Ui>

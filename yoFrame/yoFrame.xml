@@ -23,10 +23,7 @@
 	<Include file="addons\maps\maps.xml"/>
 	<Include file="addons\tooltip\tooltip.xml"/>
 
-	<Script file="Addons\Aura.lua"/>
 	<Script file="Addons\AzeritPower.lua"/>
-	<Script file="Addons\CastBar.lua"/>
-	<Script file="Addons\CastBarNP.lua"/>
 	<Script file="Addons\Challenges.lua"/>
 	<Script file="Addons\ChallengeFrame.lua"/>
 	<Script file="Addons\ChallengeProc.lua"/>
@@ -34,8 +31,6 @@
 	<Script file="Addons\CooldownFlash.lua"/>
 	<Script file="Addons\CTA.lua"/>
 	<Script file="Addons\DoLoot.lua"/>
-	<Script file="Addons\HolyShards.lua"/>
-	<Script file="Addons\HolyShardsNP.lua"/>
 	<Script file="Addons\Inspect.lua"/>
 	<Script file="Addons\Fliger.lua"/>
 	<Script file="Addons\Experience.lua"/>
@@ -44,7 +39,6 @@
 	<Script file="Addons\MoveBlizzFrames.lua"/>
 	<Script file="Addons\ObjectiveTrack.lua"/>
 	<Script file="Addons\Potatos.lua"/>
-	<Script file="Addons\Prediction.lua"/>
 	<Script file="Addons\QuestAuto.lua"/>
 	<Script file="Addons\RaidCooldowns.lua"/>
 	<Script file="Addons\RaidUtility.lua"/>
@@ -52,8 +46,6 @@
 	<Script file="Addons\ScrollText.lua"/>
 	<Script file="Addons\Scripts.lua"/>
 	<Script file="Addons\TalkingHead.lua"/>
-
-	<Script file="Addons\yoque.lua"/>
 
 	<Include file="Skins\skins.xml"/>
  -->

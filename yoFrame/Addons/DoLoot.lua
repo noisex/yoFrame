@@ -253,7 +253,7 @@ local function checkDungeLoot( filterType)
 		end
 	end
 	if frame.firstRun then
-		C_Timer.After( 0.7, function(self, ...)
+		C_Timer.After( 1, function(self, ...)
 			checkDungeLoot( yo_DuLoot.filterType)
 		end)
 		frame.firstRun = false

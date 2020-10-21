@@ -7,7 +7,7 @@ RGBToHex = function(r, g, b)
 	return string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
 end
 
-OmniCC = true --hack to work around detection from other addons for OmniCC
+--OmniCC = true --hack to work around detection from other addons for OmniCC
 local ICON_SIZE = 32 --the normal size for an icon (don't change this)
 local DAY, HOUR, MINUTE = 86400, 3600, 60 --used for formatting text
 local DAYISH, HOURISH, MINUTEISH = 3600 * 23.5, 60 * 59.5, 59.5 --used for formatting text at transition points

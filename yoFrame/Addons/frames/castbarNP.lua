@@ -55,7 +55,7 @@ function UpdateCastBar( f, id)
 			f.ibg.shadow:SetBackdropBorderColor( 0.8, 0.15, 0.25, 1)
 		end
 		f:SetStatusBarColor( 0.8, 0.15, 0.25, 1)
-		--f.spark:SetVertexColor( 0.8, 0.15, 0.25, 1)
+		f.spark:SetVertexColor( 0.8, 0.15, 0.25, 1)
 	else
 		--f.BorderShield:Hide()
 		if f.ibg then
@@ -63,10 +63,10 @@ function UpdateCastBar( f, id)
 		end
 		if spellDelay() then
 			f:SetStatusBarColor( 0.5, 1, 0, 1)
-			--f.spark:SetVertexColor( 0.5, 1, 0, 1)
+			f.spark:SetVertexColor( 0.5, 1, 0, 1)
 		else
 			f:SetStatusBarColor( 0, 1, 1, 1)
-			--f.spark:SetVertexColor( 0, 1, 1, 1)
+			f.spark:SetVertexColor( 0, 1, 1, 1)
 		end
 	end
 
@@ -111,12 +111,13 @@ function UpdateCastBar( f, id)
 		f.Text:SetText( "")
 	end
 
-	--if true then
-	--	--glowBadStart( f.ibg, glowColor, glowN, 0.2, glowLength, 3, 10, 10, false, 2)
-	--	glowTargetStart( f.ibg, {0.95, 0.95, 0.32, 1}, 8, 0.5, 5, 2, 2, 2, false, 1, 11 )
-	--else
-	--	glowBadStop( f.ibg, 1)
-	--end
+	if yo.NamePlates.badCasts then
+		f.spark:Show()
+		glowTargetStart( f.ibg, {0.95, 0.95, 0.32, 1}, 8, 0.5, 5, 2, 2, 2, false, 1, 11 )
+	else
+		f.spark:Hide()
+		glowBadStop( f.ibg, 1)
+	end
 
 	f:SetScript('OnUpdate', CastTimerUpdate)
 	f:SetAlpha( 1)

@@ -4,7 +4,7 @@ local oUF = ns.oUF
 
 local minAlpha 	= 1
 
-CreateAnchor("yo_MoveWIM", 	"Move PM Chat", 350, 250, 0, 0, "LEFT", "LEFT")
+CreateAnchor("yo_MoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", LeftDataPanel)
 ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
 ContainerFrame3:SetPoint("CENTER")
 
@@ -144,7 +144,7 @@ local function CreateTabs(self, ID)
 		yo_WIM:StopMovingOrSizing()
 		yo_MoveWIM:ClearAllPoints()
 		yo_MoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yo_MoveWIM, self)
+		SetAnchPosition( yo_MoveWIM, yo_WIM)
 	end)
 	tab.textBox = textBox
 
@@ -175,6 +175,7 @@ local function CreateTabs(self, ID)
 end
 
 local function CheckTabForUnit(self, unit, guid, btag, force)
+
 	local findUnit, tabID
 	if unit then
 		for ind, tab in pairs( self.tabber.tabs) do
@@ -197,7 +198,9 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 		self.tabber.tabs[tabID].name 	= unit
 		self.tabber.tabs[tabID].btag 	= btag
 		self.tabber.tabs[tabID].fullName= unit
-		self.tabber.tabs[tabID].fullTag	= select( 3 , BNGetFriendInfoByID( btag))
+
+		local BNETAccInfo = C_BattleNet.GetAccountInfoByID( btag)
+		self.tabber.tabs[tabID].fullTag	= BNETAccInfo.battleTag
 	elseif guid then
 		local _, classId, _, raceId, gender = GetPlayerInfoByGUID( guid)
 		local name, realm = strsplit("-", unit)
@@ -304,7 +307,7 @@ local function CreateWIM( self)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
 		yo_MoveWIM:ClearAllPoints()
 		yo_MoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yo_MoveWIM, self)
+		SetAnchPosition( yo_MoveWIM, yo_WIM)
 	end)
 	--self:SetScript("OnEscapePressed", function(self) self:Hide() end)
 
@@ -404,17 +407,17 @@ local function CreateWIM( self)
 	history:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.history = history
 
-	--local ignore = CreateFrame("CheckButton", nil, self)
-	--ignore:SetSize( 23, 23)
-	--ignore:SetPoint("TOP", history, "BOTTOM", 0, 1)
-	--ignore.text = IGNORE_QUEST
-	--ignore:SetNormalTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeUnhealthy")
-	--ignore:SetCheckedTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeTired")
-	--ignore:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-	--ignore:SetScript("OnClick", self.ignoreOnClick)
-	--ignore:SetScript("OnEnter", self.ignoreOnEnter)
-	--ignore:SetScript("OnLeave", self.tooltipHide)
-	--self.buttons.ignore = ignore
+	local ignore = CreateFrame("CheckButton", nil, self)
+	ignore:SetSize( 23, 23)
+	ignore:SetPoint("TOP", history, "BOTTOM", 0, 1)
+	ignore.text = IGNORE_QUEST
+	ignore:SetPushedTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeUnhealthy")
+	ignore:SetNormalTexture( 	"Interface\\CHARACTERFRAME\\UI-Player-PlayTimeTired")
+	ignore:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+	ignore:SetScript("OnClick", self.ignoreOnClick)
+	ignore:SetScript("OnEnter", self.ignoreOnEnter)
+	ignore:SetScript("OnLeave", self.tooltipHide)
+	self.buttons.ignore = ignore
 
 	local grabber = CreateFrame("Button", nil, self)
 	grabber:SetSize( 14, 14)
@@ -474,6 +477,8 @@ local function OutString(self, event, text, unit, guid, btag)
 	local target 	= unit
 	local colorLine
 
+
+
 	if tab.class then
 		local r, g, b = unpack( oUF.colors.class[tab.class])
 		colorLine = hex( r, g, b)
@@ -503,6 +508,7 @@ end
 --		EVENTS
 -----------------------------------------------------------------------------------
 local function OnEvent( self, event, ...)
+	--print(event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		if not yo.Chat.wim then return end
@@ -588,6 +594,7 @@ wim.ResizeTabs = function( self)
 end
 
 local splitMessage, splitMessageLinks = {}, {};
+
 function SendSplitMessage( theMsg, to, btag)
 	-- parse out links as to not split them incorrectly.
 	theMsg, results = string.gsub(theMsg, "(|H[^|]+|h[^|]+|h)", function(theLink)
@@ -609,6 +616,8 @@ function SendSplitMessage( theMsg, to, btag)
 				local index = tonumber(string.match(link, "(%d+)"));
 				return splitMessageLinks[index] or link;
 			end);
+
+			chunk = string.gsub( chunk, '%s+$', '')  -- remove spaces end end
 
 			if btag then
 				BNSendWhisper( btag, chunk)
@@ -658,7 +667,14 @@ end
 function wim:ignoreOnEnter()
 	local tabID = wim.tabber.checked
 	if tabID and wim.tabber.tabs[tabID] and not wim.tabber.tabs[tabID].btag then
-		local name 	= wim.tabber.tabs[tabID].fullName
+		local name 	= wim.tabber.tabs[tabID].name
+
+		if C_FriendList.IsIgnored( name) then
+			self.text = UNIGNORE_QUEST
+		else
+			self.text = IGNORE_QUEST
+		end
+
 		self.text2 = name
 	else
 		self.text2 = nil -- "i cant do this"
@@ -669,12 +685,12 @@ end
 function wim:ignoreOnClick()
 	local tabID = wim.tabber.checked
 	if tabID and wim.tabber.tabs[tabID] and not wim.tabber.tabs[tabID].btag then
-		local name 	= wim.tabber.tabs[tabID].fullName
-		if IsIgnored( name) then
-			DelIgnore( name)
+		local name 	= wim.tabber.tabs[tabID].name
+		if C_FriendList.IsIgnored( name) then
+			C_FriendList.DelIgnore( name)
 			print( "|cffffff00Вы успокоились и больше не игнорите " .. name)
 		else
-			AddIgnore( name)
+			C_FriendList.AddIgnore( name)
 		end
 	end
 end
@@ -683,20 +699,21 @@ function wim:inviteOnClick()
 	local tabID = wim.tabber.checked
 	if tabID and wim.tabber.tabs[tabID] and not wim.tabber.tabs[tabID].btag then
 		local name 	= wim.tabber.tabs[tabID].fullName
-		InviteUnit( name)
+		C_PartyInfo.InviteUnit( name)
 	else
 		if wim.tabber.tabs[tabID] and wim.tabber.tabs[tabID].btag then
 			local btag = wim.tabber.tabs[tabID].btag
-			local toonID, client = select( 6, BNGetFriendInfoByID( btag))
+			local bAcc = C_BattleNet.GetFriendAccountInfo( btag)
+			local client = bAcc.gameAccountInfo.clientProgram
+			local toonID = bAcc.gameAccountInfo.gameAccountID
+
+			--local toonID, client = select( 6, BNGetFriendInfoByID( btag))
 			if client == "WoW" then
 				BNInviteFriend( toonID)
 			end
 		end
 	end
 end
---		bnetIDAccount, accountName, battleTag, _, characterName, bnetIDGameAccount, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
---		hasFocus, charName, gclient , realmName, realmID, faction, race, class, guild, zoneName, level, gameText, broadcastText, broadcastTime, canSoR, toonID, bnetIDAccount, isGameAFK, isGameBusy = BNGetGameAccountInfo(bnetIDGameAccount or bnetIDAccount);
---		presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, broadcastTime, canSoR = BNGetFriendInfoByID( 15)
 
 function wim:inviteOnEnter()
 	local tabID = wim.tabber.checked
@@ -706,14 +723,17 @@ function wim:inviteOnEnter()
 	else
 		if wim.tabber.tabs[tabID] and wim.tabber.tabs[tabID].btag then
 			local btag = wim.tabber.tabs[tabID].btag
-			local toonID, client = select( 6, BNGetFriendInfoByID( btag))
+			local bAcc = C_BattleNet.GetFriendAccountInfo( btag)
+			local client = bAcc.gameAccountInfo.clientProgram
+
 			if client == "WoW" then
-				local _, charName, gclient , realmName, realmID, faction, race, class, guild, zoneName, level = BNGetGameAccountInfo( toonID)
+				local class = bAcc.gameAccountInfo.className
+
 				for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
 				for k,v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if class == v then class = k end end
 				local classCol 	= (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class].colorStr
-				local levelCol 	= hex( GetQuestDifficultyColor( level))
-				self.text2 =  levelCol .. level .. "|r |c" .. classCol .. charName .. " |cff999999(" .. realmName .. ")"
+				local levelCol 	= hex( GetQuestDifficultyColor( bAcc.gameAccountInfo.characterLevel))
+				self.text2 =  levelCol .. bAcc.gameAccountInfo.characterLevel .. "|r |c" .. classCol .. bAcc.gameAccountInfo.characterName .. " |cff999999(" .. bAcc.gameAccountInfo.realmName .. ")"
 			else
 				self.text2 = nil  --"i cant do this"
 			end
@@ -734,7 +754,6 @@ function wim:tooltipHide()	GameTooltip:Hide() end
 function wim:tooltipShow()	GameTooltip:SetOwner(self);
 	GameTooltip:ClearLines()
 	GameTooltip:AddLine(self.text)
-
 	if self.text2 then
 		if self.text2desc then
 			GameTooltip:AddLine(' ')

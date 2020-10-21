@@ -393,7 +393,8 @@ end)
 Stat.ShowFiends = function(self, btn)
 	GameTooltip:Hide()
 
-	local numberOfFriends, onlineFriends = GetNumFriends()
+	local onlineFriends = C_FriendList.GetNumOnlineFriends()
+	local numberOfFriends = C_FriendList.GetNumFriends()
 	local totalBNet, numBNetOnline = BNGetNumFriends()
 
 	local totalonline = onlineFriends + numBNetOnline
@@ -418,7 +419,7 @@ Stat.ShowFiends = function(self, btn)
 	if #friendTable > 0 then
 		for i = 1, #friendTable do
 			info = friendTable[i]
-			if (info[5]) then
+			if (info and info[5]) then
 				menuCountWhispers = menuCountWhispers + 1
 
 				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2] or myLevel)
@@ -433,8 +434,10 @@ Stat.ShowFiends = function(self, btn)
 		local grouped
 		for i = 1, #BNTable do
 			info = BNTable[i]
-			if (info[5]) then
+			if (info and info[5]) then
+
 				if info[6] == wowString and UnitFactionGroup("player") == info[12] then
+					--tprint( info)
 					if info[11] == myRealmShort then
 						classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[14]], GetQuestDifficultyColor(info[16] or myLevel)
 						classc = classc or GetQuestDifficultyColor(info[16] or myLevel)
@@ -452,7 +455,7 @@ Stat.ShowFiends = function(self, btn)
 		local realID
 		for i = 1, #BNTable do
 			info = BNTable[i]
-			if (info[5]) then
+			if (info and info[5]) then
 				realID = info[2]
 				menuCountWhispers = menuCountWhispers + 1
 				menuWIM[menuCountWhispers] = {text = realID, arg1 = realID, arg2 = true, notCheckable=true, func = whisperClick}

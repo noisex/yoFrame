@@ -39,7 +39,7 @@ end
 -- кривые команды, которые с ошибкой
 hooksecurefunc("ChatFrame_DisplayHelpTextSimple", function(self, ...)
 	local text = self.editBox:GetText()
-	if text and #text > 1 then
+	if text and #text > 2 then
 		self.editBox:AddHistoryLine( text)
 	end
 end)

@@ -1,6 +1,6 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
-local colors = oUF.colors
+--local colors = oUF.colors
 local L, yo, N = ns[1], ns[2], ns[3]
 local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
@@ -170,36 +170,40 @@ local function powerUpdate( f, unit, pmin, min, pmax)
 	f.powerMax = pmax
 end
 
-function healthUpdateColor( f, event, unit, ...)
-	local cols = colors.disconnected
+local cols 	= {}
 
-	if unit == "targettarget" and event == "OnUpdate" then updateTOTAuras( f.Power, unit) --return
-	elseif
-		--event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" or
-		event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" then return end
+function healthUpdateColor( f, event, unit, ...)
+
+	if unit == "targettarget" and event == "OnUpdate" then updateTOTAuras( f.Power, unit) end--return
+	if event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" then return end
+
+	cols = f.colors.disconnected or ( { 1, 1, 1} )
 
 	--f.dead = false
 	if not UnitIsConnected( unit) then
-		cols = colors.disconnected
-	elseif UnitIsDead( unit) or UnitIsGhost( unit) then
+		cols = f.colors.disconnected
+	--elseif UnitIsDead( unit) or UnitIsGhost( unit) then
 		--f.dead = UnitIsDeadOrGhost( unit)
-		cols = colors.disconnected
+		--f.cols = colors.disconnected
 	elseif UnitIsPlayer( unit) then
-		cols = colors.class[select( 2,UnitClass( unit))]
+		cols = f.colors.class[select( 2,UnitClass( unit))]
 	elseif UnitIsTapDenied( unit) then
-		cols = colors.tapped
+		cols = f.colors.tapped
 	elseif f:GetParent().isboss then
-		cols = colors.reaction[UnitReaction( unit, "player")]
+		cols = f.colors.reaction[UnitReaction( unit, "player")]
 	elseif UnitReaction( unit, 'player') or UnitPlayerControlled( unit) then
-		cols = colors.reaction[UnitReaction( unit, "player")]
+		cols = f.colors.reaction[UnitReaction( unit, "player")]
 	end
 
 	f.colr, f.colg, f.colb = cols[1], cols[2], cols[3]
-	f.Power.colr, f.Power.colg, f.Power.colb = cols[1], cols[2], cols[3]
 
-	f.Power:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
-	f.Power.bg:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
-	if UnitPowerMax( unit) == 0 then f.Power:Hide() else f.Power:Show() end
+	if f.Power then
+		f.Power.colr, f.Power.colg, f.Power.colb = cols[1], cols[2], cols[3]
+		f.Power:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
+		f.Power.bg:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
+		if UnitPowerMax( unit) == 0 then f.Power:Hide() else f.Power:Show() end
+		if f.Power.powerText then f.Power.powerText:SetTextColor( f.colr, f.colg, f.colb, 1) end
+	end
 
 	if yo.Raid.classcolor == 1 then
 		local fader = yo.Raid.fadeColor
@@ -218,14 +222,20 @@ function healthUpdateColor( f, event, unit, ...)
 			f.Health.AbsorbBar:SetStatusBarColor( f.colr * dark, f.colg * dark, f.colb * dark , 0.9)
 		end
 	else
-		f.Health:SetStatusBarColor( 0.09, 0.09, 0.09, 0.9) --( 0.13, 0.13, 0.13, 0.9)
+		if not UnitIsConnected( unit) then
+			cols = f.colors.disconnected
+			--print( f:GetName(), cols[1], cols[2], cols[3])
+		else
+			cols = { 0.09, 0.09, 0.09}
+		end
+
+		f.Health:SetStatusBarColor( cols[1], cols[2], cols[3], 0.9) --( 0.13, 0.13, 0.13, 0.9)
 		f.Health.hbg:SetVertexColor( 0.45, 0.45, 0.45, 0.9)
 		if f.Health.AbsorbBar and unit == "player" or unit == "target" or unit == "pet" then
 			f.Health.AbsorbBar:SetStatusBarColor( 0.2, 0.2, 0.2, 0.9) --( 0.25, 0.25, 0.25, 0.9)
 		end
 	end
 
-	if f.Power.powerText then f.Power.powerText:SetTextColor( f.colr, f.colg, f.colb, 1) end
 	if f.holyShards then f.holyShards:recolorShards( cols) end
 end
 
@@ -235,12 +245,14 @@ end
 ---											BEGIN
 ------------------------------------------------------------------------------------------------------
 
-local function Shared(self, unit)
+local function unitShared(self, unit)
 	local cunit = (unit and unit:find("boss%d")) and "boss" or unit
 	if cunit == "boss" then self.isboss = true end
 	self.cunit 	= cunit
-	self.colors = oUF.colors
-	self.colors.disconnected = { 0.2, 0.2, 0.2}
+
+	--self.colors = oUF.colors
+	GetColors( self)
+
 	self:SetSize( _G["yo_Move" .. cunit]:GetSize())
 
 	------------------------------------------------------------------------------------------------------
@@ -475,7 +487,7 @@ logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
 	if yo.Addons.unitFrames then
-		oUF:RegisterStyle("yoFrames", Shared)
+		oUF:RegisterStyle("yoFrames", unitShared)
 		oUF:SetActiveStyle("yoFrames")
 
 		plFrame = oUF:Spawn("player", "yo_Player")
@@ -517,3 +529,4 @@ end)
 --health.colorClass = healthColorMode == "CLASS"
 --health.colorReaction = healthColorMode == "CLASS"
 --health.colorSmooth = healthColorMode == "HEALTH"
+

@@ -201,19 +201,20 @@ local function SetChatStyle(frame)
 	editbox:SetFrameLevel(1)
 	CreateStyle(editbox, 2, 1 , 1, 1)
 
-	hooksecurefunc("ChatEdit_UpdateHeader", function()
-		local type = editbox:GetAttribute("chatType")
-		if ( type == "CHANNEL" ) then
-			local id = GetChannelName(editbox:GetAttribute("channelTarget"))
-			if id == 0 then
-				editbox:SetBackdropBorderColor(.15,.15,.15)
-			else
-				editbox:SetBackdropBorderColor(ChatTypeInfo[type..id].r,ChatTypeInfo[type..id].g,ChatTypeInfo[type..id].b)
-			end
-		elseif type then
-			editbox:SetBackdropBorderColor(ChatTypeInfo[type].r,ChatTypeInfo[type].g,ChatTypeInfo[type].b)
-		end
-	end)
+	--hooksecurefunc("ChatEdit_UpdateHeader", function()
+		--local type = editbox:GetAttribute("chatType")
+		--if ( type == "CHANNEL" ) then
+		--	print(type, editbox:GetAttribute("channelTarget"))
+		--	local id = GetChannelName(editbox:GetAttribute("channelTarget"))
+		--	if id == 0 then
+		--		editbox:SetBackdropBorderColor(.15,.15,.15)
+		--	else
+		--		editbox:SetBackdropBorderColor(ChatTypeInfo[type..id].r,ChatTypeInfo[type..id].g,ChatTypeInfo[type..id].b)
+		--	end
+		--elseif type then
+		--	editbox:SetBackdropBorderColor(ChatTypeInfo[type].r,ChatTypeInfo[type].g,ChatTypeInfo[type].b)
+		--end
+	--end)
 
 
 	-- Rename combat log tab

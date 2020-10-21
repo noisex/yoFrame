@@ -492,7 +492,7 @@ local function OnNamePlateCreated( frame)
 	f.healthBar.HightLight:SetVertexColor( r, g, b, 1)
 	f.healthBar.HightLight:SetBlendMode( "ADD")
 	f.healthBar.HightLight:SetTexture( texhl)
-	f.healthBar.HightLight:SetAlpha( 0.2)
+	f.healthBar.HightLight:SetAlpha( 0.5)
 	f.healthBar.HightLight:Hide()
 
 	f.healthBar.perc = f.healthBar:CreateFontString(nil, "OVERLAY")

@@ -305,6 +305,7 @@ yo["NamePlates"] = {
 	["tankMode"]		= false,
 	["moreDebuffIcons"]	= false,
 	["showTauntDebuff"] = false,
+	["badCasts"]		= false,
 }
 
 yo["Media"] = {
@@ -359,8 +360,8 @@ yo["Raid"] = {
 	["filterHighLight"]	= false,
 	["showMT"]			= true,
 	["showMTT"]			= true,
-	["heightMT"]		= 25,
-	["widthMT"]			= 100,
+	["heightMT"]		= 30,
+	["widthMT"]			= 110,
 	["simpeRaid"]		= false,
 	["fadeColor"]		= 0.8,
 }
