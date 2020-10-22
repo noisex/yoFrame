@@ -364,6 +364,7 @@ yo["Raid"] = {
 	["widthMT"]			= 110,
 	["simpeRaid"]		= false,
 	["fadeColor"]		= 0.8,
+	["darkAbsorb"]		= 0.6,
 }
 
 yo["Chat"] = {

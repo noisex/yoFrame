@@ -200,6 +200,7 @@ L["showMTT"]		= "Show Main Tanks targets"
 L["heightMT"]		= "Main Tanks Height"
 L["widthMT"]		= "Main Tanks Width"
 L["fadeColor"]		= "Изменить яркость классового цвета"
+L["darkAbsorb"]		= "Цвет абсорббара ( меньше нуля темнее, больше - светлее)"
 
 L["MB_ALL"]		= "У всех"
 L["MB_HEAL"]	= "Только у хилов"

@@ -1,4 +1,6 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
+
+if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
 
 local timerEnd, timerEst = GetTime(), 0
 local hpInRaid, hpInParty, hpInSolo, howBig = 30, 50, 50, 20
@@ -278,6 +280,13 @@ end
 
 
 local function CreatePotatos( f)
+
+	f.itemID 	= 142117  -- buffID = 229206
+	f.iconPul 	= 252188
+    f.item   	= GetItemInfo( f.itemID)
+    f.iconPot 	= GetItemIcon( f.itemID)
+	f:SetAllPoints( "yo_MovePotatos")
+
 	f.button = CreateFrame("Button", nil, f, "SecureActionButtonTemplate")
 	f.button:SetAllPoints( f)
 	--f.button:SetAttribute("unit", "player")
@@ -340,7 +349,7 @@ local function CreatePotatos( f)
 	f.blframe.outerGlow:Hide()
 	--f.blframe:SetFrameLevel(3)
 
-	CreateBorder( f)
+	N.CreateBorder( f)
 	f.timerEst = 0
 	f:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	f:RegisterEvent("CHAT_MSG_ADDON")
@@ -362,16 +371,11 @@ local function CreatePotatos( f)
 end
 ---------------------------------------------------------------------------------------------------------------------------
 local potatos = CreateFrame("Frame", "yo_Potatos", UIParent)
-	potatos:SetAllPoints( "yo_MovePotatos")
 	potatos:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-	potatos.itemID 		= 142117  -- buffID = 229206
-	potatos.iconPul 	= 252188
-    potatos.item   		= GetItemInfo( potatos.itemID)
-    potatos.iconPot 	= GetItemIcon( potatos.itemID)
 
 	potatos:SetScript("OnEvent", function(self, event)
 		if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
+		CreateAnchor("yo_MovePotatos", 		"Move Potatos", 40, 40, 250, 270, "BOTTOMLEFT", "BOTTOMLEFT")
 		CreatePotatos( self)
 		initPotatos( self)
 	end)

@@ -156,7 +156,7 @@ local raidShared = function(self, unit)
 		enableBorder 	= true
 		enableHealPr	= yo.Raid.healPrediction
 		enableAuras 	= true
-		enablePower		= true
+		enablePower		= false
 		numAuras		= 2
 		spacingAuras	= 3
 		sizeInfoFont	= yo.fontsize
@@ -180,43 +180,33 @@ local raidShared = function(self, unit)
 	---											HEALTH BAR
 	------------------------------------------------------------------------------------------------------
 	self.Health = CreateFrame("StatusBar", nil, self)
-	self.Health:SetPoint("TOPLEFT")
-	self.Health:SetPoint("TOPRIGHT")
-	self.Health:SetAllPoints()
+	self.Health:SetAllPoints( self)
+	self.Health:SetWidth( self:GetWidth())
+	self.Health:SetFrameLevel(1)
 	self.Health:SetStatusBarTexture( texture)
 	table.insert( N.statusBars, self.Health)
-
-	self.Health.frequentUpdates = true
-	self.Health.colorDisconnected = true
-	self.colors.disconnected = { 0.3, 0.3, 0.3}
-	self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha, }
 
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( texture)
-	self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
+	table.insert( N.statusBars, self.Health.hbg)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
+	if enableHealPr 		 then self.Health.healPred  = addHealPred( self) end
+	if unit == "tank" 		 then self.Health.AbsorbBar = addAbsorbBar( self) end
 
 	if yo.Raid.classcolor == 1 then
-		self.Health.colorClass = true
-	    --self.Health.colorReaction = true
-	    self.Health.bg = self.Health.hbg
-		self.Health.bg.multiplier = .6
 		self.shadowAlpha = 0.5
-		self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha - 0.3,}
+		outsideAlpha = 0.3
 
 	elseif yo.Raid.classcolor == 2 then
-		self.Health.colorSmooth = true
-		self.Health.bg = self.Health.hbg
-		self.Health.bg.multiplier = .3
+		--self.Health.colorSmooth = true
+		self.shadowAlpha = 0.5
+		outsideAlpha = 0.3
 
 	else
-		self.Health.colorHealth = true
 		self.colors.disconnected = { 0.4, 0.4, 0.4}
-		self.colors.health = { 0.13, 0.13, 0.15, 0.9}
-		self.Health.hbg:SetVertexColor( 0.5, 0.5, 0.5, 0.9)
 		self.shadowAlpha = 0.2
 	end
 
@@ -225,6 +215,7 @@ local raidShared = function(self, unit)
 		self.Health.bg.multiplier = .5
 	end
 
+	self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha, }
 	self.Range.PostUpdate = function(object, self, inRange, checkedRange, connected)
 		if connected then
 			if checkedRange and not inRange then
@@ -242,7 +233,17 @@ local raidShared = function(self, unit)
 		end
 	end
 
-	self.Health.UpdateColor = healthUpdateColor
+	self.fader 						= yo.Raid.fadeColor
+	self.darkAbsorb					= yo.Raid.darkAbsorb
+	self.colors.disconnected 		= { 0.3, 0.3, 0.3}
+
+	self.Health.colorThreat 		= true
+	self.Health.colorTapping 		= true
+	self.Health.colorSelection 		= true
+	self.Health.colorDisconnected 	= true
+	self.Health.frequentUpdates 	= true
+	self.Health.Override 			= healthUpdate
+	self.Health.UpdateColor 		= healthUpdateColor
 
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR
@@ -365,7 +366,6 @@ local raidShared = function(self, unit)
 		lfd:SetJustifyH"LEFT"
 		self:Tag(lfd, '[LFD]')
 	end
-	--end
 
 	------------------------------------------------------------------------------------------------------
 	---											AURAS
@@ -386,9 +386,6 @@ local raidShared = function(self, unit)
 		self.Debuffs.CustomFilter = CustomFilter
 
 		self.Debuffs.PostCreateIcon = function( self, button)
-			--button:SetAlpha( 1)
-			--button:EnableMouse(false)
-			--button.icon:SetDesaturated( true)
 			button.icon:SetTexCoord( unpack( yo.tCoord))
 			button.count:SetFont( yo.fontpx, self:GetHeight() / 1.5, 'OUTLINE')
 			button.count:ClearAllPoints()
@@ -398,56 +395,6 @@ local raidShared = function(self, unit)
 			button.cd:SetDrawSwipe( false)
 			CreateStyle( button, 3)
 		end
-	end
-
-	------------------------------------------------------------------------------------------------------
-	---										HEAL PREDICTION
-	------------------------------------------------------------------------------------------------------
-	if enableHealPr then
-		--local myBar = CreateFrame('StatusBar', nil, self.Health)
-	 	--myBar:SetPoint('TOP')
-  		--myBar:SetPoint('BOTTOM')
-  		--myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-  		--myBar:SetWidth(200)
-  		--myBar:SetStatusBarTexture(texture)
-
-    	local otherBar = CreateFrame('StatusBar', nil, self.Health)
-    	otherBar:SetPoint('TOP')
-    	otherBar:SetPoint('BOTTOM')
-    	otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-    	otherBar:SetWidth( self:GetWidth())
-    	otherBar:SetStatusBarTexture(texture)
-		otherBar:SetStatusBarColor( 0.5, 1, 0, 0.7)
-
-    	local absorbBar = CreateFrame('StatusBar', nil, self.Health)
-    	absorbBar:SetPoint('TOP')
-    	absorbBar:SetPoint('BOTTOM')
-    	absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-    	absorbBar:SetWidth( self:GetWidth())
-		absorbBar:SetStatusBarTexture(texture)
-		--absorbBar:SetFillStyle( 'REVERSE')
-		absorbBar:SetStatusBarColor( 1, 1, 0, 0.7)
-
-		local healAbsorbBar = CreateFrame('StatusBar', nil, self.Health)
-    	healAbsorbBar:SetPoint('TOP')
-    	healAbsorbBar:SetPoint('BOTTOM')
-    	healAbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture())
-    	healAbsorbBar:SetWidth( self:GetWidth())
-		healAbsorbBar:SetStatusBarTexture(texture)
-		healAbsorbBar:SetStatusBarColor( 0, .5, 1, 0.7)
-    	healAbsorbBar:SetReverseFill(true)
-
-    	self.HealthPred = {
-        	--myBar = myBar,
-        	otherBar = otherBar,
-        	absorbBar = absorbBar,
-   	        healAbsorbBar = healAbsorbBar,
-        	maxOverflow = 1,
-    	    frequentUpdates = true,
-	    }
-	    table.insert( N.statusBars, self.HealthPred.otherBar)
-	    table.insert( N.statusBars, self.HealthPred.absorbBar)
-	    table.insert( N.statusBars, self.HealthPred.healAbsorbBar)
 	end
 
    	if enableBorder then
@@ -466,26 +413,18 @@ local raidShared = function(self, unit)
 		self.DebuffHighlightMy:SetTexture(texture)
 		self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
 		self.DebuffHighlightMy:SetBlendMode("BLEND")
-		self.DebuffHighlightMyAlpha = 0.4
+		self.DebuffHighlightMyAlpha = 0.35
 		self.DebuffHighlightMyFilter = yo.Raid.filterHighLight
 		--self.DebuffHighlightUseTexture = true
 	end
 
 
-	--self:SetAttribute("unit", "player") ------------------!!!!!!!!!!!!!!!!!!
-
 	if yo.healBotka.enable then
 		N.makeQuiButton(self)
-
 	else
 		self:SetScript("OnEnter", frameOnEnter)
 		self:SetScript("OnLeave", frameOnLeave)
 	end
-
-	--if(UnitSpecific[unit]) then
-	--	return UnitSpecific[unit](self)
-	--end
-	--self.testers = testers
 end
 
 ------------------------------------------------------------------------------------------------------

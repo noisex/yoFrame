@@ -101,7 +101,7 @@ local function CreateTabs(self, ID)
 	editBox:SetText("")
 	editBox:SetAutoFocus(false)
 	editBox:SetHistoryLines(32);
-	editBox:SetFont( font, fontsize)
+	editBox:SetFont( font, fontsize +1 )
 	editBox:SetPoint('BOTTOMLEFT', self:GetParent(), 'BOTTOMLEFT', 6, 6);
 	editBox:SetPoint('BOTTOMRIGHT', self:GetParent(), 'BOTTOMRIGHT', -23, 6);
 	editBox:SetScript("OnLeave", 			function() self:SetAlpha( minAlpha) end)
@@ -820,7 +820,7 @@ local function CreatCopyFrame()
 	editBox:SetMaxLetters(199999)
 	editBox:EnableMouse(true)
 	editBox:SetAutoFocus(false)
-	editBox:SetFont( yo.Chat.chatFont, yo.Chat.fontsize)
+	editBox:SetFont( yo.Chat.chatFont, yo.Chat.fontsize +1 )
 	editBox:SetHeight(350)
 	editBox:SetScript("OnEscapePressed", function() copyFrame:Hide() end)
 	editBox:SetScript("OnTextSet", function(self)

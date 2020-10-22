@@ -20,8 +20,8 @@ N.channelTicks = {
 }
 
 bls = {
- 	[774] = true,     	-- "for esting..."   омоложение
-    [8936] = true,    	-- "for esting..." восстановление
+ 	--[774] = true,     	-- "for esting..."   омоложение
+    --[8936] = true,    	-- "for esting..." восстановление
 
     [80353] = true,     -- "Time Warp",
     [2825] = true,      -- "Bloodlust",

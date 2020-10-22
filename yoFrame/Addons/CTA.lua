@@ -1,5 +1,6 @@
-
 local L, yo = unpack( select( 2, ...))
+
+if not yo.CTA.enable then return end
 
 local yo_CTA = {}
 local tRole, hRole, dRole, timer
@@ -449,6 +450,7 @@ end
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if not yo.CTA.enable then return end
+		CreateAnchor("yo_MoveCTA",	"Move CTA", 220, 25,	-255, -175, "TOPRIGHT", "TOPRIGHT")
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent("LFG_ROLE_UPDATE");
 		self:RegisterEvent("LFG_UPDATE");

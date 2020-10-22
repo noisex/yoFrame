@@ -15,9 +15,9 @@ local ignoreButtons = {
 	["MinimapBackdrop"] = true,
 };
 
-local bShift = 0
+local bShift = 5
 local bSize = 30
-local frameHeight = 154
+local frameHeight = Minimap:GetHeight() + 12
 local lasttime = 0
 local count = 1
 local prevButton
@@ -93,7 +93,7 @@ local function CreateMiniMapFrame(self)
 		local numCol = math.floor( frameHeight / bSize + 0.5)
 		local numRow = math.ceil( #buttonList / numCol)
 
-		SimpleBackground( self, bSize * numRow, frameHeight, "RIGHT", Minimap, "LEFT", -8, 0)
+		SimpleBackground( self, bSize * numRow + bShift * 2, frameHeight, "RIGHT", Minimap, "LEFT", -8, 0)
 		CreateStyle( self, 3, 0, 0.85)
 		self:SetFrameLevel(10)
 		self:SetFrameStrata("HIGH")

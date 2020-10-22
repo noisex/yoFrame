@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+if not yo.Addons.stbEnable then return end
+
 --local eventData = {CombatLogGetCurrentEventInfo()};
 --	local logEvent = eventData[2];
 --	local unitGUID = eventData[8];
@@ -190,6 +192,7 @@ local function OnEvent( self, event, ...)
 
 		if not yo.Addons.stbEnable then return end
 
+		CreateAnchor("yo_MoveSBT",			"Move Combat Text", 150, 205,	300, -100, 	"CENTER", "CENTER")
 		CreateSBT( self)
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
