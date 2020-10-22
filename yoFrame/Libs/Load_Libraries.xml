@@ -14,7 +14,7 @@
 
 
 	<Include file="oUF\oUF.xml"/>
-	<Script file="healthprediction.lua"/>
+	<!-- <Script file="healthprediction.lua"/> -->
 	<Script file="oUF_DebuffHighlight.lua"/>
 	<Script file="GCD.lua"/>
 	<Script file= "AutoResurrect.lua"/>

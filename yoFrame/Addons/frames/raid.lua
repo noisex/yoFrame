@@ -525,6 +525,9 @@ logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
 	if not yo.Raid.enable then return end
+
+	CreateAnchor("yo_MoveRaid", 		"Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
+
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
 	if yo.healBotka.enable then N.CreateClique( self) end
 
@@ -654,6 +657,9 @@ logan:SetScript("OnEvent", function(self, event)
 		CreateMovier( yo_Party)
 
 		if yo.Raid.showMT then --and not yo.Raid.simpeRaid then
+
+			CreateAnchor("yo_MoveTanks", 		"Move Raid Tanks Frame", 200, 55, 5, 420, 	"TOPLEFT", "BOTTOMLEFT")
+
 			local heightMT = yo.Raid.heightMT
 			local widthMT = yo.Raid.widthMT
 			local offsetMT = 6 --+ heightMT * 2

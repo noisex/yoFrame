@@ -120,14 +120,8 @@ local function MakeFligerFrame( self)
 	local pProcSize		= yo.fliger.pProcSize
 	local cdSize		= yo.fliger.pCDSize
 
-	_G["P_DEBUFF"]:SetSize( pdebuffSize,pdebuffSize)
-	_G["T_DEBUFF"]:SetSize(	tdebuffSize,tdebuffSize)
-	_G["P_BUFF"]:SetSize(	pbuffSize, 	pbuffSize)
-	_G["P_PROC"]:SetSize(	pProcSize, 	pProcSize)
-	_G["P_CD"]:SetSize(		cdSize,		cdSize)
-	--CreateAnchor("T_BUFF", 		"Target Buff", 	buffSize, 	buffSize,	400, 150, 	"CENTER", "CENTER")
-
 	if yo.fliger.tDebuffEnable then
+		CreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	450, 	0, 		"CENTER", "CENTER")
 		local tDebuff = CreateFrame("Frame", nil, self)
 		tDebuff:SetPoint("CENTER", T_DEBUFF, "CENTER",  0, 0)
 		tDebuff:SetWidth( tdebuffSize)
@@ -137,16 +131,8 @@ local function MakeFligerFrame( self)
 		self.tDebuff 		= tDebuff
 	end
 
-	--local tBuff = CreateFrame("Frame", nil, self)
-	--tBuff:SetPoint("TOPLEFT", T_BUFF, "TOPLEFT",  0, 0)
-	--tBuff:SetWidth( buffSize * 10)
-	--tBuff:SetHeight( buffSize)
-	--tBuff.direction = "RIGHT"
-	--tBuff.unit 		= "target"
-	--tBuff.filter 	= "HELPFUL"
-	--self.tBuff 		= tBuff
-
 	if yo.fliger.pProcEnable then
+		CreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-450, 	-100, 	"CENTER", "CENTER")
 		local pProc = CreateFrame("Frame", nil, self)
 		pProc:SetPoint("CENTER", P_PROC, "CENTER",  0, 0)
 		pProc:SetWidth( pProcSize)
@@ -157,6 +143,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pBuffEnable then
+		CreateAnchor("P_BUFF", 				"Player Buff", 				pbuffSize, pbuffSize,	-450, 	0, 		"CENTER", "CENTER")
 		local pBuff = CreateFrame("Frame", nil, self)
 		pBuff:SetPoint("CENTER", P_BUFF, "CENTER",  0, 0)
 		pBuff:SetWidth( pbuffSize)
@@ -168,6 +155,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pDebuffEnable then
+		CreateAnchor("P_DEBUFF",			"Player Debuff",			pdebuffSize,	pdebuffSize,-450, 	150, 	"CENTER", "CENTER")
 		local pDebuff = CreateFrame("Frame", nil, self)
 		pDebuff:SetPoint("CENTER", P_DEBUFF, "CENTER",  0, 0)
 		pDebuff:SetWidth( pdebuffSize)
@@ -178,6 +166,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pCDEnable then
+		CreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", yo_MoveLeftPanel)
 		local pCD = CreateFrame("Frame", nil, self)
 		pCD:SetPoint("CENTER", P_CD, "CENTER",  0, 0)
 		pCD:SetWidth( cdSize)

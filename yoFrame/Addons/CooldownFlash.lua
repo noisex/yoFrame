@@ -17,6 +17,9 @@ local filter = {
 }
 
 local flash = CreateFrame("Frame", "yo_FlashIcon", UIParent)
+
+CreateAnchor("yo_MoveFlashIcon", 	"Move flash icon", 70, 70, 0, 200)
+
 flash:SetPoint("CENTER", yo_MoveFlashIcon)
 flash:SetSize( yo_MoveFlashIcon:GetSize())
 
@@ -51,10 +54,7 @@ flash:SetSize( yo_MoveFlashIcon:GetSize())
 flash:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 flash:SetScript("OnEvent", function( self)
-	if not yo["Addons"].FlashIconCooldown then flash:SetScript("OnEvent", nil) return end
-
-	--print("EVENT ", self)
-	--flash.OnEnable( self)
+	if not yo.Addons.FlashIconCooldown then flash:SetScript("OnEvent", nil) return end
 
 	flash.icon = flash:CreateTexture(nil, "OVERLAY")
 	flash.icon:SetPoint("CENTER", flash)
@@ -63,7 +63,7 @@ flash:SetScript("OnEvent", function( self)
 	flash:Hide()
 
 	flash:SetScript("OnUpdate", function(self, e)
-		if not yo["Addons"].FlashIconCooldown then flash:SetScript("OnEvent", nil) return end
+		if not yo.Addons.FlashIconCooldown then flash:SetScript("OnEvent", nil) return end
 		flash.e = flash.e + e
 		if flash.e > .75 then
 			flash:Hide()
@@ -83,6 +83,7 @@ end)
 
 lib:RegisterCallback("stop", function(id, class)
 	if not yo.Addons.FlashIconCooldown then return end
+
 	if filter[class]=="all" or filter[class][id] then return end
 	flash.icon:SetTexture(class=="item" and GetItemIcon(id) or select(3, GetSpellInfo(id)))
 	flash.e = 0

@@ -365,6 +365,15 @@ bars:SetScript("OnEvent", function(self, event)
 
 	if yo.ActionBar.enable == true then
 
+		CreateAnchor("yo_MoveABar1", 		"Move Action Bar #1", 445, 35, 0, 	2, 		"BOTTOM", "BOTTOM")
+		CreateAnchor("yo_MoveABar2", 		"Move Action Bar #2", 445, 35, 0, 	40, 	"BOTTOM", "BOTTOM")
+		CreateAnchor("yo_MoveABar3", 		"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT", "BOTTOMRIGHT")
+		CreateAnchor("yo_MoveABar4", 		"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
+		CreateAnchor("yo_MoveABar5", 		"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
+		CreateAnchor("yo_MoveAMicro", 		"Move MicroMenu Bar", 220, 18, -470,7, 		"BOTTOMRIGHT", "BOTTOMRIGHT")
+		CreateAnchor("yo_MovePetBar", 		"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yo_MoveLeftPanel)
+		CreateAnchor("yo_MoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yo_Moveplayer)
+
 		local fader01 = {
   			fadeInAlpha 	= 1,
   			fadeInDuration 	= 0.3,
