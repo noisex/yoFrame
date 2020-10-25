@@ -6,6 +6,7 @@
 	<Script file="chathistory.lua"/>
 	<Script file="channelshort.lua"/>
 	<Script file="editboxhistory.lua"/>
+	<Script file="version.lua"/>
 	<Script file="wim.lua"/>
 	<Script file="wimhistory.lua"/>
 

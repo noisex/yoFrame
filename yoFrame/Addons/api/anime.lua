@@ -142,7 +142,6 @@ function SetUpAnimGroup(object, type, ...)
 end
 
 function TurnOn(frame, texture, toAlpha)
-	print(frame, texture, toAlpha)
 	local alphaValue = texture:GetAlpha();
 	frame.Fadein:Stop();
 	frame.Fadeout:Stop();
@@ -159,6 +158,7 @@ function TurnOn(frame, texture, toAlpha)
 end
 
 function TurnOff(frame, texture, toAlpha)
+	--print("...")
 	local alphaValue = texture:GetAlpha();
 	frame.Fadein:Stop();
 	frame.Fadeout:Stop();

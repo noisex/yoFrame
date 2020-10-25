@@ -76,12 +76,12 @@ local function UpdateAura( self, unit)
 
 	-- CLEARING
 	if unit == "target" then
-		for index = fligerTD,	#self.tDebuff	do self.tDebuff[index]:Hide()   end
+		if self.tDebuff then for index = fligerTD,		#self.tDebuff	do self.tDebuff[index]:Hide() end end
 
 	elseif unit == "player"	then
-		for index = fligerPB,	#self.pBuff		do self.pBuff[index]:Hide()   end
-		for index = fligerPD,	#self.pDebuff	do self.pDebuff[index]:Hide()   end
-		for index = fligerProc,	#self.pProc		do self.pProc[index]:Hide()   end
+		if self.pBuff 	then for index = fligerPB,		#self.pBuff		do self.pBuff[index]:Hide()   end end
+		if self.pDebuff then for index = fligerPD,		#self.pDebuff	do self.pDebuff[index]:Hide() end end
+		if self.pProc 	then for index = fligerProc,	#self.pProc		do self.pProc[index]:Hide()   end end
 	end
 end
 
@@ -110,7 +110,7 @@ local function UpdatePCD( watched)
 		end
 	end
 
-	for index = fligerPCD,	#frame.pCD	do frame.pCD[index]:Hide() end
+	if frame.pCD then for index = fligerPCD,	#frame.pCD	do frame.pCD[index]:Hide() end end
 end
 
 local function MakeFligerFrame( self)

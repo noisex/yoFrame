@@ -1,5 +1,7 @@
 local L, yo, N = unpack( select( 2, ...))
 
+if not yo.Addons.RaidCoolDowns then return end
+
 ----------------------------------------------------------------------------------------
 --	Raid cooldowns(alRaidCD by Allez)
 ----------------------------------------------------------------------------------------
@@ -11,14 +13,14 @@ local band = bit.band
 local sformat = format
 local timer = 0
 local bars = {}
+local barsFrame = {}
 
 CreateAnchor("yo_MoveRaidCD", "Move RaidCD", 230, 150, 30, 150, "LEFT", "LEFT")
 
 local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
 RaidCDAnchor:SetPoint("BOTTOM", "yo_MoveRaidCD")
---RaidCDAnchor:SetPoint("TOPLEFT", "yo_MoveRaid", "BOTTOMLEFT", 30, -40)
-
 RaidCDAnchor:SetSize(186 + 32, 20)
+RaidCDAnchor.barsFrame = {}
 
 local FormatTime = function(time)
 	if time >= 60 then
@@ -31,18 +33,25 @@ end
 local CreateFS = function(frame, fsize, fstyle)
 	local fstring = frame:CreateFontString(nil, "OVERLAY")
 	fstring:SetFont( font, fontsize -1, "OUTLINE")
-	--fstring:SetShadowOffset(1 and 1 or 0, 1 and -1 or 0)
+	fstring:SetShadowOffset(1 and 1 or 0, 1 and -1 or 0)
 	return fstring
 end
 
 local UpdatePositions = function()
+	local index = 1
 	for i = 1, #bars do
 		bars[i]:ClearAllPoints()
 		if i == 1 then
 			bars[i]:SetPoint("BOTTOMRIGHT", RaidCDAnchor, "BOTTOMRIGHT", -2, 2)
 		else
-			--bars[i]:SetPoint("BOTTOMLEFT", bars[i-1], "TOPLEFT", 0, 5)
-			bars[i]:SetPoint("TOPLEFT", bars[i-1], "BOTTOMLEFT", 0, -5)
+			if #bars > 5 then
+				if i == 2 or i == 3 or i == #bars -1 or i == #bars then
+					bars[i]:SetPoint("TOPLEFT", bars[index], "BOTTOMLEFT", 0, -5)
+					index = i
+				end
+			else
+				bars[i]:SetPoint("TOPLEFT", bars[i-1], "BOTTOMLEFT", 0, -5)
+			end
 		end
 		bars[i].id = i
 	end
@@ -90,19 +99,14 @@ local OnMouseDown = function(self, button)
 	end
 end
 
-local CreateBar = function()
-	local bar = CreateFrame("Statusbar", nil, UIParent)
-	--bar:SetFrameStrata("MEDIUM")
-	bar:SetSize(186 + 28, 20)
+local CreateBar = function( self)
+	if self.barsFrame[#bars+1] then return self.barsFrame[#bars+1] end
 
+	local bar = CreateFrame("Statusbar", nil, UIParent)
+	bar:SetSize(186 + 28, 20)
 	bar:SetStatusBarTexture( texture)
 	bar:SetMinMaxValues(0, 100)
-
-	bar.backdrop = CreateFrame("Frame", nil, bar)
-	bar.backdrop:SetPoint("TOPLEFT", -2, 2)
-	bar.backdrop:SetPoint("BOTTOMRIGHT", 2, -2)
-	CreateStyle(bar.backdrop, 2)
-	bar.backdrop:SetFrameStrata("BACKGROUND")
+	CreateStyle(bar, 3)
 
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
 	bar.bg:SetAllPoints( bar)
@@ -111,7 +115,7 @@ local CreateBar = function()
 	bar.left = CreateFS(bar)
 	bar.left:SetPoint("LEFT", 2, 0)
 	bar.left:SetJustifyH("LEFT")
-	bar.left:SetSize(186 - 30, 20)
+	bar.left:SetSize(186 - 10, 20)
 
 	bar.right = CreateFS(bar)
 	bar.right:SetPoint("RIGHT", 1, 0)
@@ -121,18 +125,14 @@ local CreateBar = function()
 	bar.icon:SetWidth(bar:GetHeight())
 	bar.icon:SetHeight(bar.icon:GetWidth())
 	bar.icon:SetPoint("BOTTOMRIGHT", bar, "BOTTOMLEFT", -7, 0)
+	CreateStyle(bar.icon, 3)
 
-	bar.icon.backdrop = CreateFrame("Frame", nil, bar.icon)
-	bar.icon.backdrop:SetPoint("TOPLEFT", -2, 2)
-	bar.icon.backdrop:SetPoint("BOTTOMRIGHT", 2, -2)
-	CreateStyle(bar.icon.backdrop, 2)
-	bar.icon.backdrop:SetFrameStrata("BACKGROUND")
-
+	self.barsFrame[#bars+1] = bar
 	return bar
 end
 
-local StartTimer = function(name, spellId)
-	local bar = CreateBar()
+local StartTimer = function(self, name, spellId)
+	local bar = CreateBar( self)
 	local spell, rank, icon = GetSpellInfo(spellId)
 	bar.endTime = GetTime() + raid_CD_Spells[spellId]
 	bar.startTime = GetTime()
@@ -169,23 +169,21 @@ local OnEvent = function(self, event, ...)
 		if band(sourceFlags, filter) == 0 then return end
 
 		if raid_CD_Spells[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
-			StartTimer( strsplit( "-", sourceName), spellId)
+			StartTimer( self, strsplit( "-", sourceName), spellId)
 		end
 
 	elseif event == "CHALLENGE_MODE_START" then
 		for k, v in pairs(bars) do	StopTimer(v)	end
-		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		--self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 	elseif event == "CHALLENGE_MODE_COMPLETED" then
-		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		--self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 	elseif event == "ENCOUNTER_END" or event == "ENCOUNTER_START" then
 		if UnitInRaid("player") then
-			for k, bar in pairs( bars) do
-				--print("fsfsfsdfsfsfsfsfs", bar)
-				StopTimer( bar)
-			end
+			for k, bar in pairs( bars) do StopTimer( bar) end
 		end
+
 	elseif event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
 
 		if UnitInRaid("player") and yo_Raid then
@@ -200,32 +198,21 @@ local OnEvent = function(self, event, ...)
 			yo_RaidCD:ClearAllPoints()
 			yo_RaidCD:SetPoint("BOTTOM", yo_MoveRaidCD)
 		end
-
-		--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		if not yo.Addons.RaidCoolDowns then
-			self:UnregisterAllEvents()
-			self:SetScript("OnMouseDown", nil)
-			self:SetScript("OnEnter", nil)
-			self:SetScript("OnLeave", nil)
-			self:SetScript("OnEvent", nil)
-			self:SetScript("OnUpdate", nil)
-			bar = nil
-		return
-	end
-
 	end
 end
 
-local addon = CreateFrame("Frame")
-addon:SetScript("OnEvent", OnEvent)
-addon:RegisterEvent("PLAYER_ENTERING_WORLD")
-addon:RegisterEvent("CHALLENGE_MODE_COMPLETED")
-addon:RegisterEvent("CHALLENGE_MODE_START")
-addon:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-addon:RegisterEvent("GROUP_ROSTER_UPDATE")
+--local addon = CreateFrame("Frame")
+RaidCDAnchor:SetScript("OnEvent", OnEvent)
+RaidCDAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
+RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_START")
+RaidCDAnchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+RaidCDAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
 
-addon:RegisterEvent("ENCOUNTER_END")
-addon:RegisterEvent("ENCOUNTER_START")
+RaidCDAnchor:RegisterEvent("ENCOUNTER_END")
+RaidCDAnchor:RegisterEvent("ENCOUNTER_START")
+
+
 --GetInstanceInfo
 --https://wow.gamepedia.com/API_GetInstanceInfo
 --DifficultyID

@@ -94,7 +94,7 @@ function CreateCPpoints( f)
 
 	if not f.classPower then
 		f.classPower = CreateFrame("Frame", nil, f)
-		f.classPower:SetPoint("CENTER", f.healthBar, "BOTTOM", 0, 0)
+		f.classPower:SetPoint("CENTER", f.Health, "BOTTOM", 0, 0)
 		f.classPower:SetSize(60, 13)
 		f.classPower:SetFrameStrata("MEDIUM")
 		f.classPower:SetFrameLevel(100)

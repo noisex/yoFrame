@@ -18,29 +18,6 @@ local UnitSpecific = {
     end,
 }
 
-function OnChangeTarget( self)
-	--if(unit ~= self.unit) then return end
-
-	local unit = self.unit
-	local status = UnitThreatSituation( unit)
-
-	if (status and status > 0) then
-		local r, g, b = GetThreatStatusColor(status)
-		self.shadow:SetBackdropBorderColor(r, g, b)
-	else
-		self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09)
-	end
-
-	if UnitIsUnit( unit, "target") then
-		local _, class = UnitClass(unit)
-		local t = self.colors.class[class]
-		self.shadow:SetBackdropBorderColor( t[1], t[2], t[3])
-		--if yo.Raid.simpeRaid then
-			--self
-		--end
-	end
-end
-
 local PostIconUpdate = function( self, button)
 	if not button.shadow then
 		button.icon:SetTexCoord( unpack( yo.tCoord))
@@ -66,22 +43,6 @@ local funcBlackList = function( self, button, ...)
 	end
 end
 
-local manaBarHider = function( power, event, unit)
-	--print( self:GetName(), unit, event)
-	if event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" then return end
-
-	local role = UnitGroupRolesAssigned( unit)
-	if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) or power:GetName():match( "yo_Tanke") then
-		power.Power:SetAlpha( 1)
-		if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
-			power.Power:SetValue( UnitPowerMax(unit))
-		end
-	else
-		power.Power:SetAlpha(0)
-	end
-end
-
-
 -------------------------------------------------------------------------------------------------------
 --											SHARED
 -------------------------------------------------------------------------------------------------------
@@ -98,6 +59,7 @@ local raidShared = function(self, unit)
 	-- Set our own colors
 	--self.colors = oUF.colors
 	GetColors( self)
+	importAPI( self)
 
 	-- Register click
 	self:RegisterForClicks("AnyUp")
@@ -193,8 +155,8 @@ local raidShared = function(self, unit)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
-	if enableHealPr 		 then self.Health.healPred  = addHealPred( self) end
-	if unit == "tank" 		 then self.Health.AbsorbBar = addAbsorbBar( self) end
+	if enableHealPr 		 then self.Health.healPred  = self:addHealPred( self) end
+	if unit == "tank" 		 then self.Health.AbsorbBar = self:addAbsorbBar( self) end
 
 	if yo.Raid.classcolor == 1 then
 		self.shadowAlpha = 0.5
@@ -206,7 +168,7 @@ local raidShared = function(self, unit)
 		outsideAlpha = 0.3
 
 	else
-		self.colors.disconnected = { 0.4, 0.4, 0.4}
+		--self.colors.disconnected = { 0.4, 0.4, 0.4}
 		self.shadowAlpha = 0.2
 	end
 
@@ -242,8 +204,8 @@ local raidShared = function(self, unit)
 	self.Health.colorSelection 		= true
 	self.Health.colorDisconnected 	= true
 	self.Health.frequentUpdates 	= true
-	self.Health.Override 			= healthUpdate
-	self.Health.UpdateColor 		= healthUpdateColor
+	self.Health.Override 			= self.healthUpdate
+	self.Health.UpdateColor 		= self.healthUpdateColor
 
 	------------------------------------------------------------------------------------------------------
 	---											POWER BAR
@@ -276,7 +238,7 @@ local raidShared = function(self, unit)
 		self.Power.bg.multiplier = 0.2
 		CreateStyle( self.Power, 1)
 
-		self.Power.UpdateColor = manaBarHider
+		self.Power.UpdateColor = self.manaBarHider
 	end
 
 	------------------------------------------------------------------------------------------------------
@@ -285,14 +247,6 @@ local raidShared = function(self, unit)
 	self.Overlay = CreateFrame( 'Frame', nil, self)
 	self.Overlay:SetAllPoints( self)
 	self.Overlay:SetFrameLevel( 100)
-
-	self.bgHlight = self.Overlay:CreateTexture(nil, "OVERLAY")
-	self.bgHlight:SetAllPoints( self)
-	self.bgHlight:SetVertexColor( 0.4,0.4,0.4,0.9)
-	self.bgHlight:SetTexture( texhl)
-	self.bgHlight:SetBlendMode( "ADD")
-	self.bgHlight:SetAlpha( 0.2)
-	self.bgHlight:Hide()
 
 	self.Info = self.Overlay:CreateFontString( nil, "OVERLAY")
 	self.Info:SetPoint( unpack( posInfo))
@@ -398,32 +352,22 @@ local raidShared = function(self, unit)
 	end
 
    	if enableBorder then
-		table.insert(self.__elements, OnChangeTarget)
-		self:RegisterEvent('PLAYER_TARGET_CHANGED', OnChangeTarget, true)
-		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", OnChangeTarget)
-		self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", OnChangeTarget)
+		table.insert(self.__elements, self.onChangeTarget)
+		self:RegisterEvent('PLAYER_TARGET_CHANGED', self.onChangeTarget, true)
+		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", self.onChangeTarget)
+		self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", self.onChangeTarget)
 	end
 
 	------------------------------------------------------------------------------------------------------
 	---										Debuff highlight
 	------------------------------------------------------------------------------------------------------
-	if enableDeHight then
-		self.DebuffHighlightMy = self.Health:CreateTexture(nil, "OVERLAY")
-		self.DebuffHighlightMy:SetAllPoints(self.Health)
-		self.DebuffHighlightMy:SetTexture(texture)
-		self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
-		self.DebuffHighlightMy:SetBlendMode("BLEND")
-		self.DebuffHighlightMyAlpha = 0.35
-		self.DebuffHighlightMyFilter = yo.Raid.filterHighLight
-		--self.DebuffHighlightUseTexture = true
-	end
-
+	if enableDeHight then self.addDebuffHigh( self) end
 
 	if yo.healBotka.enable then
 		N.makeQuiButton(self)
 	else
-		self:SetScript("OnEnter", frameOnEnter)
-		self:SetScript("OnLeave", frameOnLeave)
+		self:SetScript("OnEnter", self.frameOnEnter)
+		self:SetScript("OnLeave", self.frameOnLeave)
 	end
 end
 

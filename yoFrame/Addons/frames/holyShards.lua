@@ -1,5 +1,7 @@
 local L, yo, N = unpack( select( 2, ...))
 
+if not yo.Addons.unitFrames then return end
+
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
@@ -35,7 +37,6 @@ local function pwUpdate( self, powerID)
 	if unitPower == self.idx and myClass ~= "DEATHKNIGHT" then
 		if yo.Raid.classcolor < 3 then
 			local f = 0.7
-			--self.shadow:SetBackdropBorderColor( self:GetParent().colr *f, self:GetParent().colg *f, self:GetParent().colb *f, 0.99)
 			self.shadow:SetBackdropBorderColor( self.cols[1] *f, self.cols[2] *f, self.cols[3] *f, 0.99)
 		else
 			self.shadow:SetBackdropBorderColor( self.cols[1], self.cols[2], self.cols[3], 0.6)
@@ -98,14 +99,11 @@ local function OnEvent( self, event, unit, pToken, ...)
 
 	if event == "RUNE_POWER_UPDATE" then
 
-		for i = 1, self.idx do
-			local start, duration, runeReady = GetRuneCooldown( i)
-			--print( start, runeReady, i)
-			if runeReady then
-				self[i]:SetAlpha(1)
-				self[i]:SetScript("OnUpdate", nil)
-				self[i]:SetValue( 10)
-			elseif start then
+		if unit <= self.idx then
+			local i = unit
+			local start, duration = GetRuneCooldown( i)
+
+			if start then
 				self[i]:SetAlpha( .4)
 				self[i]:SetMinMaxValues( 0, duration)
 				self[i].mini = GetTime() - start
@@ -114,13 +112,15 @@ local function OnEvent( self, event, unit, pToken, ...)
 				self[i].duration = duration
 
 				self[i]:SetScript("OnUpdate", function(self, elapsed)
-					local value = self.mini + elapsed
-					self:SetValue( value)
-					self.mini = value
+					self.mini = self.mini + elapsed
+					self:SetValue( self.mini)
+					if self.mini >= self.duration then
+						self:SetAlpha(1)
+						self:SetScript("OnUpdate", nil)
+						self:SetValue( 10)
+					end
 				end)
 			end
-
-			--self.shadow:SetBackdropBorderColor( 0, 0, 0, 1)
 		end
 
 	elseif event == "UNIT_MAXPOWER" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
@@ -139,9 +139,7 @@ local function OnEvent( self, event, unit, pToken, ...)
 
 	elseif event == "UNIT_EXITED_VEHICLE" then
 		CreateShards( self)
-
 	end
-
  end
 
 local function CreateShardsBar( f)
@@ -186,9 +184,5 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.unitFrames then return end
-	if N.pType[myClass] and N.pType[myClass].powerID then
-		--if not N.pType[myClass].spec or N.pType[myClass].spec == mySpec then
-			CreateShardsBar( plFrame)
-		--end
-	end
+	if N.pType[myClass] and N.pType[myClass].powerID then CreateShardsBar( plFrame) end
 end)

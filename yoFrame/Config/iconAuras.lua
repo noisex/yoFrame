@@ -15,24 +15,23 @@ local posz = {
     [6] =  { [1] = "BOTTOMLEFT",[2] = 3,    [3] = 3},
 }
 
-local function BuffOnEnter( f)
+local function BuffOnEnter( self)
 
-	if true or showToolTip == "cursor" then
-		--GameTooltip:SetOwner( f, "ANCHOR_CURSOR", 0, 10) --"ANCHOR_CURSOR", 0, 0)--  "ANCHOR_BOTTOMRIGHT", 8, -16)
-		GameTooltip:SetOwner( f)--, "ANCHOR_BOTTOMRIGHT", 8, -16)
-		--GameTooltip:SetOwner( f, "ANCHOR_CURSOR", 0, 10)
+if self.showToolTip ~= "none" then
+	if(not pcall(self.GetCenter, self)) then
+			GameTooltip:SetOwner( self, "ANCHOR_CURSOR", 20, 5)
+		else
+			GameTooltip:SetOwner( self, "ANCHOR_BOTTOMRIGHT", 8, -16)
+		end
 	else
-		--print("sdfdsfdsfdsffdsf")
-		GameTooltip:SetOwner( f, "ANCHOR_NONE", 0, 0)
+		GameTooltip:SetOwner( self, "ANCHOR_NONE", 0, 0)
 		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	end
-	print( f.unit, f.id, f.filter, f)
-	GameTooltip:SetUnitAura( f.unit or f:GetParent().unit, f.id, f.filter)
-	--GameTooltip:AddDoubleLine("Caster", f.caster, 1, 1, 0, 1, 1, 1)
+	GameTooltip:SetUnitAura( self.unit or self:GetParent().unit, self.id, self.filter)
 	GameTooltip:Show()
 end
 
-local function BuffOnLeave( f)
+local function BuffOnLeave( self)
 	GameTooltip:Hide()
 end
 
@@ -69,7 +68,7 @@ function CreateAuraIcon( parent, index)
 	end
 
 	button.timer = button:CreateFontString(nil, "OVERLAY")
-	button.timer:SetFont( yo.fontpx, max( 10, size / 1.5), "THINOUTLINE")
+	button.timer:SetFont( yo.fontpx, max( 10, size / 1.7), "THINOUTLINE")
 	button.timer:SetShadowOffset(1, -1)
 	table.insert( N.strings, button.timer)
 
@@ -79,7 +78,8 @@ function CreateAuraIcon( parent, index)
 		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
 	end
 
-	if not parent.noShadow then CreateStyle( button, max( 1, sh - 3)) end
+	if not parent.noShadow then CreateStyle( button, max( 1, sh - 4)) end
+
     if parent.timeSecOnly then
     	button.tFormat = formatTimeSec --formatTimeSec
     else
@@ -107,24 +107,7 @@ function CreateAuraIcon( parent, index)
 
 	if not parent.hideTooltip then
 		button:EnableMouse(true)
-		button:SetScript("OnEnter", function( self)
-
-			--if true or showToolTip == "cursor" then
-				--GameTooltip:SetOwner( f, "ANCHOR_CURSOR", 0, 10) --"ANCHOR_CURSOR", 0, 0)--  "ANCHOR_BOTTOMRIGHT", 8, -16)
-				--GameTooltip:SetOwner( button, "ANCHOR_RIGHT", 0, 0)
-				--GameTooltip:SetOwner( button, "ANCHOR_CURSOR", 0, 0)
-			--else
-
-				--print("sdfdsfdsfdsffdsf")
-				GameTooltip:SetOwner( button, "ANCHOR_NONE", 0, 0)
-				GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-
-			--end
-			--print( button.unit, button.id, button.filter, button)
-			GameTooltip:SetUnitAura( button.unit or button:GetParent().unit, button.id, button.filter)
-			GameTooltip:Show()
-		end)
-
+		button:SetScript("OnEnter", BuffOnEnter)
 		button:SetScript("OnLeave", BuffOnLeave)
 	end
 

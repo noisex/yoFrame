@@ -130,7 +130,6 @@ end
 
 local function tr( path)
 	if not L[path] or L[path] == "" then
-		--print( "|cffff0000UNKNOWN LOCALE : |cff00ffff" .. path)
 		L[path] = "|cffff0000UNKNOWN LOCALE: |r".. path
 	end
 
@@ -426,6 +425,7 @@ function InitOptions()
 					classBackground = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full", disabled = true,},
 					simpeUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full", disabled = true,},
 					showGCD 		= {	order = 30,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					debuffHight		= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 				},
 			},
 
@@ -448,7 +448,7 @@ function InitOptions()
 					manacolorClass 	= {	order = 50, type = "toggle", name = function(info) return tr( info[#info]) end,},
 					manabar 		= {	order = 55, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["MB_ALL"], [2] = L["MB_HEAL"], [3] = L["MB_HIDE"]},},
 					fadeColor		= {	order = 56,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 0.1, max = 1, step = .1,},
-					darkAbsorb		= {	order = 58,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 0  , max = 10,step = .1,},
+					darkAbsorb		= {	order = 58,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 0.1, max = 3, step = .1,},
 					classBackground = {	order = 60, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					hpBarVertical 	= {	order = 62, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", },
 					hpBarRevers	 	= {	order = 65, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
@@ -689,8 +689,9 @@ function InitOptions()
 					label02 = { order = 997, type = "description",
 						name = "|cffffff002020.10.22|r"
 						.."\n - [|cffffff00Рейдфреймы|r] опция осветления/затемнения цвета абсорббара ( меньше 1 темнее, больше - светлее)"
-						.."\n - [|cffffff00Рейдфреймы|r] убрал абсорббар, оставил только на танкофреймах, плеере и таргете\n\n",},
-
+						.."\n - [|cffffff00Рейдфреймы|r] убрал абсорббар, оставил только на танкофреймах, плеере и таргете"
+						.."\n - [|cffffff00Юнитфреймы|r] показывать хайлайтом дебафы на юнитах\n\n",
+					},
 					label01 = { order = 998, type = "description",
 						name = "|cff999999Просто попробовал придумать какую-то херню, куда можно зачем-то что-то писать, хотя это никому вообще нахер не нужно. Буду пытаться писать сюда об новом, добавленном функционале...\n|r"
 						.."\n|cffffff002020.10.19|r |cff999999( с этим мы пришли с ПТРа)|r"
@@ -707,8 +708,8 @@ function InitOptions()
 						.."\n - [|cffffff00Автоматизация|r] галочка для `Скрина при получени нового уровня`"
 						.."\n - [|cffffff00Сумки|r] галочка настройки сортировки и заполенния сумок ( сверху-вниз или наоборот)"
 						.."\n - [|cffffff00Персонаж|r] в окне персонажа, правой кнопкой по надетой вещи показывает возможный лут из подземелий на текущий спек"
-						.."\n - [|cffffff00Кастбары|r] |cff00ff00Время окна очереди заклинания.|r Промежуток времени в конце текущего каста, в течении которого, использованное заклинание встанет в очередь на выполнение, автоматически по окончании каста без задержки по времени. Отображается красной зоной на кастбаре игрока ( не путать с лагометром, которого больше нет! Нет, красное это не лагометр.). Рекомендуется значение 200-250, но если плохо с реакцией на прожание каста в этот период, то задайте больше времени, но не больше 500, это уже вообще какой-то зашквар получится.",},
-
+						.."\n - [|cffffff00Кастбары|r] |cff00ff00Время окна очереди заклинания.|r Промежуток времени в конце текущего каста, в течении которого, использованное заклинание встанет в очередь на выполнение, автоматически по окончании каста без задержки по времени. Отображается красной зоной на кастбаре игрока ( не путать с лагометром, которого больше нет! Нет, красное это не лагометр.). Рекомендуется значение 200-250, но если плохо с реакцией на прожание каста в этот период, то задайте больше времени, но не больше 500, это уже вообще какой-то зашквар получится.",
+					},
 					label00 = { order = 999, type = "description",
 						name = "\n|cff999999ТуДушка:"
 						.."\n - wim"
@@ -718,10 +719,8 @@ function InitOptions()
 						.."\n - потатос"
 						.."\n - хилботка"
 						.."\n - касто-сбивалки не больше 5-6 штук"
-						.."\n - залупа с тултипом на иконках нэймплейтов"
 						.."\n - нужен еще один тпринт"
 						.."\n - новые друзьяшки"
-						.."\n - экзекут текстура"
 						.."\n - что там с СТА..."
 						.."\n - фазаиндикатор"
 					,},

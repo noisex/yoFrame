@@ -1,8 +1,10 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="frameAPI.lua"/>
  	<Script file="actionBars.lua"/>
 	<Script file="tags.lua"/>
 	<Script file="raid.lua"/>
-	<Script file="namePlates.lua"/>
+	<!-- <Script file="namePlates.lua"/> -->
+	<Script file="np.lua"/>
  	<Script file="units.lua"/>
 
  	<Script file="aura.lua"/>

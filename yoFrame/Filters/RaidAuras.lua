@@ -40,6 +40,7 @@ N.blackSpells = {
 	[264689] = true, -- Усталость от БЛа
 	[271571] = true, -- сделай выбор
 	[124013] = true, -- Убийца хозенов
+	[287825] = true, -- конфета какая-то
 }
 
 N.RaidDebuffList = {
@@ -214,59 +215,206 @@ N.RaidDebuffList = {
 
 	-- Uldir
 	-- MOTHER
-	[268277] = true, -- Purifying Flame
-	[268253] = true, -- Surgical Beam
-	[268095] = true, -- Cleansing Purge
-	[267787] = true, -- Sundering Scalpel
-	[268198] = true, -- Clinging Corruption
-	[267821] = true, -- Defense Grid
-	-- Vectis
-	[265127] = true, -- Lingering Infection
-	[265178] = true, -- Mutagenic Pathogen
-	[265206] = true, -- Immunosuppression
-	[265212] = true, -- Gestate
-	[265129] = true, -- Omega Vector
-	[267160] = true, -- Omega Vector
-	[267161] = true, -- Omega Vector
-	[267162] = true, -- Omega Vector
-	[267163] = true, -- Omega Vector
-	[267164] = true, -- Omega Vector
-	-- Mythrax
-	--[272146] = true, -- Annihilation
-	[272536] = true, -- Imminent Ruin
-	[274693] = true, -- Essence Shear
-	[272407] = true, -- Oblivion Sphere
-	-- Fetid Devourer
-	[262313] = true, -- Malodorous Miasma
-	[262292] = true, -- Rotting Regurgitation
-	[262314] = true, -- Deadly Disease
-	-- Taloc
-	[270290] = true, -- Blood Storm
-	[275270] = true, -- Fixate
-	[271224] = true, -- Plasma Discharge
-	[271225] = true, -- Plasma Discharge
-	-- Zul
-	[273365] = true, -- Dark Revelation
-	[273434] = true, -- Pit of Despair
-	[274195] = true, -- Corrupted Blood
-	[272018] = true, -- Absorbed in Darkness
-	-- Zek'voz, Herald of N'zoth
-	[265237] = true, -- Shatter
-	[265264] = true, -- Void Lash
-	[265360] = true, -- Roiling Deceit
-	[265662] = true, -- Corruptor's Pact
-	[265646] = true, -- Will of the Corruptor
-	[272146] = true, -- Аннигиляция
-	-- G'huun
-	[263436] = true, -- Imperfect Physiology
-	[263227] = true, -- Putrid Blood
-	[263372] = true, -- Power Matrix
-	[272506] = true, -- Explosive Corruption
-	[267409] = true, -- Dark Bargain
-	[267430] = true, -- Torment
-	[263235] = true, -- Blood Feast
-	[270287] = true, -- Blighted Ground
-	[270447] = true,  -- growing-corruption
+	--[268277] = true, -- Purifying Flame
+	--[268253] = true, -- Surgical Beam
+	--[268095] = true, -- Cleansing Purge
+	--[267787] = true, -- Sundering Scalpel
+	--[268198] = true, -- Clinging Corruption
+	--[267821] = true, -- Defense Grid
+	---- Vectis
+	--[265127] = true, -- Lingering Infection
+	--[265178] = true, -- Mutagenic Pathogen
+	--[265206] = true, -- Immunosuppression
+	--[265212] = true, -- Gestate
+	--[265129] = true, -- Omega Vector
+	--[267160] = true, -- Omega Vector
+	--[267161] = true, -- Omega Vector
+	--[267162] = true, -- Omega Vector
+	--[267163] = true, -- Omega Vector
+	--[267164] = true, -- Omega Vector
+	---- Mythrax
+	----[272146] = true, -- Annihilation
+	--[272536] = true, -- Imminent Ruin
+	--[274693] = true, -- Essence Shear
+	--[272407] = true, -- Oblivion Sphere
+	---- Fetid Devourer
+	--[262313] = true, -- Malodorous Miasma
+	--[262292] = true, -- Rotting Regurgitation
+	--[262314] = true, -- Deadly Disease
+	---- Taloc
+	--[270290] = true, -- Blood Storm
+	--[275270] = true, -- Fixate
+	--[271224] = true, -- Plasma Discharge
+	--[271225] = true, -- Plasma Discharge
+	---- Zul
+	--[273365] = true, -- Dark Revelation
+	--[273434] = true, -- Pit of Despair
+	--[274195] = true, -- Corrupted Blood
+	--[272018] = true, -- Absorbed in Darkness
+	---- Zek'voz, Herald of N'zoth
+	--[265237] = true, -- Shatter
+	--[265264] = true, -- Void Lash
+	--[265360] = true, -- Roiling Deceit
+	--[265662] = true, -- Corruptor's Pact
+	--[265646] = true, -- Will of the Corruptor
+	--[272146] = true, -- Аннигиляция
+	---- G'huun
+	--[263436] = true, -- Imperfect Physiology
+	--[263227] = true, -- Putrid Blood
+	--[263372] = true, -- Power Matrix
+	--[272506] = true, -- Explosive Corruption
+	--[267409] = true, -- Dark Bargain
+	--[267430] = true, -- Torment
+	--[263235] = true, -- Blood Feast
+	--[270287] = true, -- Blighted Ground
+	--[270447] = true,  -- growing-corruption
 
 	[160029] = true, -- Воскрешение
+
+			-- Lady Ashvane
+	[296693] = true, -- Waterlogged
+	[296725] = true, -- Barnacle Bash
+	[296942] = true, -- Arcing Azerite
+	[296938] = true, -- Arcing Azerite
+	[296941] = true, -- Arcing Azerite
+	[296939] = true, -- Arcing Azerite
+	[296943] = true, -- Arcing Azerite
+	[296940] = true, -- Arcing Azerite
+	[296752] = true, -- Cutting Coral
+	[297333] = true, -- Briny Bubble
+	[297397] = true, -- Briny Bubble
+	-- Abyssal Commander Sivara
+	[300701] = true, -- Rimefrost
+	[300705] = true, -- Septic Taint
+	[294847] = true, -- Unstable Mixture
+	[295850] = true, -- Delirious
+	[295421] = true, -- Overflowing Venom
+	[295348] = true, -- Overflowing Chill
+	[295807] = true, -- Frozen
+	[300883] = true, -- Inversion Sickness
+	[295705] = true, -- Toxic Bolt
+	[295704] = true, -- Frost Bolt
+	[294711] = true, -- Frost Mark
+	[294715] = true, -- Toxic Brand
+	-- The Queens Court
+	[301830] = true, -- Pashmar's Touch
+	[296851] = true, -- Fanatical Verdict
+	[297836] = true, -- Potent Spark
+	[297586] = true, -- Suffering
+	[304410] = true, -- Repeat Performance
+	[299914] = true, -- Frenetic Charge
+	[303306] = true, -- Sphere of Influence
+	[300545] = true, -- Mighty Rupture
+	-- Radiance of Azshara
+	[296566] = true, -- Tide Fist
+	[296737] = true, -- Arcane Bomb
+	[296746] = true, -- Arcane Bomb
+	[295920] = true, -- Ancient Tempest
+	[296462] = true, -- Squall Trap
+	-- Orgozoa
+	[298156] = true, -- Desensitizing Sting
+	[298306] = true, -- Incubation Fluid
+	-- Blackwater Behemoth
+	[292127] = true, -- Darkest Depths
+	[292138] = true, -- Radiant Biomass
+	[292167] = true, -- Toxic Spine
+	[301494] = true, -- Piercing Barb
+	-- Zaqul
+	[295495] = true, -- Mind Tether
+	[295480] = true, -- Mind Tether
+	[295249] = true, -- Delirium Realm
+	[303819] = true, -- Nightmare Pool
+	[293509] = true, -- Manifest Nightmares
+	[295327] = true, -- Shattered Psyche
+	[294545] = true, -- Portal of Madness
+	[298192] = true, -- Dark Beyond
+	[292963] = true, -- Dread
+	[300133] = true, -- Snapped
+	-- Queen Azshara
+	[298781] = true, -- Arcane Orb
+	[297907] = true, -- Cursed Heart
+	[302999] = true, -- Arcane Vulnerability
+	[302141] = true, -- Beckon
+	[299276] = true, -- Sanction
+	[303657] = true, -- Arcane Burst
+	[298756] = true, -- Serrated Edge
+	[301078] = true, -- Charged Spear
+	[298014] = true, -- Cold Blast
+	[298018] = true, -- Frozen
+-- Ny'alotha
+	-- Wrathion
+	[313255] = true, -- Creeping Madness (Slow Effect)
+	[306163] = true, -- Incineration
+	[306015] = true, -- Searing Armor [tank]
+	-- Maut
+	[307805] = true, -- Devour Magic
+	[314337] = true, -- Ancient Curse
+	[306301] = true, -- Forbidden Mana
+	[314992] = true, -- Darin Essence
+	[307399] = true, -- Shadow Claws [tank]
+	-- Prophet Skitra
+	[306387] = true, -- Shadow Shock
+	[313276] = true, -- Shred Psyche
+	-- Dark Inquisitor
+	[306311] = true, -- Soul Flay
+	[312406] = true, -- Void Woken
+	[311551] = true, -- Abyssal Strike [tank]
+	-- Hivemind
+	[313461] = true, -- Corrosion
+	[313672] = true, -- Acid Pool
+	[313460] = true, -- Nullification
+	-- Shadhar
+	[307471] = true, -- Crush [tank]
+	[307472] = true, -- Dissolve [tank]
+	[307358] = true, -- Debilitating Spit
+	[306928] = true, -- Umbral Breath
+	[312530] = true, -- Entropic Breath
+	[306929] = true, -- Bubbling Breath
+	[318078] = true, -- Fixated
+	-- Drest
+	[310406] = true, -- Void Glare
+	[310277] = true, -- Volatile Seed [tank]
+	[310309] = true, -- Volatile Vulnerability
+	[310358] = true, -- Mutterings of Insanity
+	[310552] = true, -- Mind Flay
+	[310478] = true, -- Void Miasma
+	-- Ilgy
+	[309961] = true, -- Eye of Nzoth [tank]
+	[310322] = true, -- Morass of Corruption
+	[311401] = true, -- Touch of the Corruptor
+	[314396] = true, -- Cursed Blood
+	[275269] = true, -- Fixate
+	[312486] = true, -- Recurring Nightmare
+	-- Vexiona
+	[307317] = true, -- Encroaching Shadows
+	[307359] = true, -- Despair
+	[315932] = true, -- Brutal Smash
+	[307218] = true, -- Twilight Decimator
+	[307284] = true, -- Terrifying Presence
+	[307421] = true, -- Annihilation
+	[307019] = true, -- Void Corruption [tank]
+	-- Raden
+	[306819] = true, -- Nullifying Strike [tank]
+	[306279] = true, -- Insanity Exposure
+	[315258] = true, -- Dread Inferno
+	[306257] = true, -- Unstable Vita
+	[313227] = true, -- Decaying Wound
+	[310019] = true, -- Charged Bonds
+	[316065] = true, -- Corrupted Existence
+	-- Carapace
+	[315954] = true, -- Black Scar [tank]
+	[306973] = true, -- Madness
+	[316848] = true, -- Adaptive Membrane
+	[307044] = true, -- Nightmare Antibody
+	[313364] = true, -- Mental Decay
+	[317627] = true, -- Infinite Void
+	-- Nzoth
+	[318442] = true, -- Paranoia
+	[313400] = true, -- Corrupted Mind
+	[313793] = true, -- Flames of Insanity
+	[316771] = true, -- Mindwrack
+	[314889] = true, -- Probe Mind
+	[317112] = true, -- Evoke Anguish
+	[318976] = true, -- Stupefying Glare
+
 }

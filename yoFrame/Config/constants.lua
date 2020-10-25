@@ -1,4 +1,4 @@
-local addon, ns = ...
+local addonName, ns = ...
 local L, yo, N = unpack( ns)
 
 myClass 	= select( 2, UnitClass( "player"))
@@ -23,6 +23,7 @@ N["strings"]		= {}
 N["shadows"]		= {}
 N["spellsBooks"] 	= {}
 
+N.version 	  = GetAddOnMetadata( addonName, "Version")
 N.ScanTooltip = CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', UIParent, 'GameTooltipTemplate')
 
 N.slots = {
@@ -273,7 +274,7 @@ yo["NamePlates"] = {
 	["iconDSize"]		= 20,
 	["iconBSize"]		= 20,
 	["iconDiSize"]		= 30,
-	["iconCastSize"]	= 26,
+	["iconCastSize"]	= 24,
 	["showCastIcon"]	= true,
 	["showCastName"]	= true,
 	["showCastTarget"]	= true,
@@ -332,6 +333,7 @@ yo["UF"] 	= {
 	["classBackground"]	= true,
 	["simpeUF"]			= false,
 	["showGCD"]			= true,
+	["debuffHight"]		= true,
 }
 
 yo["Raid"] = {

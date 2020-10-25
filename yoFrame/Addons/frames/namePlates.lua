@@ -349,6 +349,8 @@ local function UpdateHealthColor(unitFrame, elapsed)
 	unitFrame.healthBar:SetStatusBarColor( cols[1]*fader, cols[2]*fader, cols[3]*fader)
 	--unitFrame.healthBar.shadow:SetBackdropBorderColor( cols[1]*fader, cols[2]*fader, cols[3]*fader)
 	unitFrame.name:SetTextColor( cols[1], cols[2], cols[3])
+
+	unitFrame.healthBar.focusInd:SetShown( UnitIsUnit ( unit, "focus"))
 end
 
 local function UpdateName( unitFrame)
@@ -494,6 +496,12 @@ local function OnNamePlateCreated( frame)
 	f.healthBar.HightLight:SetTexture( texhl)
 	f.healthBar.HightLight:SetAlpha( 0.5)
 	f.healthBar.HightLight:Hide()
+
+	f.healthBar.focusInd = f.healthBar:CreateTexture(nil, "OVERLAY", 2)
+   	f.healthBar.focusInd:SetAllPoints( f.healthBar)
+	f.healthBar.focusInd:SetVertexColor( 0, 0.2, 0.9)
+	f.healthBar.focusInd:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\overlay_indicator_1.blp")
+	f.healthBar.focusInd:SetAlpha( 0.7)
 
 	f.healthBar.perc = f.healthBar:CreateFontString(nil, "OVERLAY")
 	f.healthBar.perc:SetFont( yo.font, yo.fontsize, "THINOUTLINE")

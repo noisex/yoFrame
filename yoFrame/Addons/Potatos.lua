@@ -1,6 +1,7 @@
 local L, yo, N = unpack( select( 2, ...))
 
-if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
+if not yo.Addons.Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL
+	then return end
 
 local timerEnd, timerEst = GetTime(), 0
 local hpInRaid, hpInParty, hpInSolo, howBig = 30, 50, 50, 20
@@ -12,14 +13,13 @@ local SetPosition = function(anch)
 end
 
 local function DrawDefault( self)
-    local start, itemCD = GetItemCooldown( self.itemID)
-	local usableItem, _ = IsUsableItem( self.item)
+    local start, itemCD, enable = GetItemCooldown( self.itemID)
+	--local usableItem, _ = IsUsableItem( self.item)
 	--IsConsumableItem()
 	--Flash( self, 0.5, true)
 
-	if usableItem then
-		self.usableItem = true
-		if itemCD == 0 then
+	if itemCD == 0 then
+			self.usableItem = true
 			self.itemReady = true
 			self.tName:SetText( "ready to use")
 			self.icon:SetVertexColor( 1, 1, 1, 0.5)
@@ -28,15 +28,16 @@ local function DrawDefault( self)
 			self.tName:SetText( "waiting...")
 			self.icon:SetVertexColor( 0, 1, 1, 0.5)
 		end
-	elseif self.buyPots then
+
+	if self.buyPots then
 		self.tName:SetText( "купи потцов")
 		self.tName:SetTextColor( 1,0,0,1)
 		self.icon:SetVertexColor( 1, 0, 0, 0.5)
-	else
-		self.usableItem = false
-		self.itemReady = false
-		self.tName:SetText( "wasted!")
-		self.icon:SetVertexColor( 1, 0.5, 0, 0.5)
+	--else
+	--	self.usableItem = false
+	--	self.itemReady = false
+	--	self.tName:SetText( "wasted!")
+	--	self.icon:SetVertexColor( 1, 0.5, 0, 0.5)
 	end
 
 	self.outerGlow:Hide()
@@ -167,11 +168,10 @@ function blUpdate( self, el)
 end
 
 local function OnEvent( self, event, ...)
-	-----																														CHAT_MSG_ADDON
+	--																										CHAT_MSG_ADDON
 	if event == "CHAT_MSG_ADDON" then
 
 		local addon, text = ...
-
 		if addon == "BigWigs" and string.find( text, "Pull") then
 			pDur  = tonumber( string.match( text, "%d+"))
 			timerEnd = GetTime() + pDur
@@ -180,7 +180,7 @@ local function OnEvent( self, event, ...)
 			self.cd:SetCooldown( timerEnd - pDur, pDur)
 
 			self:SetScript('OnUpdate', pullUpdate)
-			initPotatos( self)
+			--initPotatos( self)
 		--elseif addon == "D4" and string.find( text, "PT") then
 			--pDur = tonumber( string.match( text, "\t(%d+)\t"))
 			--timerEnd = GetTime() + pDur
@@ -190,17 +190,17 @@ local function OnEvent( self, event, ...)
 		local itemCount = ( GetItemCount( self.itemID) or 0)
 		self.tCount:SetText( itemCount)
 		if itemCount <= 10 then self.buyPots = true else self.buyPots = false 	end
-		initPotatos( self)
+		--initPotatos( self)
 
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		self.bigBoss = nil
 		self.bossFight = nil
-		initPotatos( self)
+		--initPotatos( self)
 
 	elseif event == "ENCOUNTER_END" then
 		self.bigBoss = nil
 		self.bossFight = nil
-		initPotatos( self)
+		--initPotatos( self)
 
 	elseif event == "ENCOUNTER_START" then
 		self.bossFight = true
@@ -241,7 +241,7 @@ local function OnEvent( self, event, ...)
 				self.bigBoss = true
 			else self.bigBoss = false end
 		else self.bigBoss = nil end
-		initPotatos( self)
+		--initPotatos( self)
 		--print( "Event: " , event, unit, real_unit, hpChan, uHP)
 
 
@@ -271,9 +271,11 @@ local function OnEvent( self, event, ...)
 			end
 		end
 
-		if self.IsBuffed then initPotatos( self) end
+		if self.IsBuffed then initPotatos( self) else self.buffEnd 	= 0 end
 		if self.IsBL     then initPotatos( self) else self.blframe.bltimerEnd  = 0 end
 	end
+
+	initPotatos( self)
 end
 
 
@@ -374,7 +376,10 @@ local potatos = CreateFrame("Frame", "yo_Potatos", UIParent)
 	potatos:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	potatos:SetScript("OnEvent", function(self, event)
-		if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
+		C_ChatInfo.RegisterAddonMessagePrefix("BigWigs")
+		C_ChatInfo.RegisterAddonMessagePrefix("D4") -- DBM
+
+		--if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
 		CreateAnchor("yo_MovePotatos", 		"Move Potatos", 40, 40, 250, 270, "BOTTOMLEFT", "BOTTOMLEFT")
 		CreatePotatos( self)
 		initPotatos( self)
