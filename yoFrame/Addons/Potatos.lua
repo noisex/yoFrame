@@ -9,7 +9,7 @@ local hpInRaid, hpInParty, hpInSolo, howBig = 30, 50, 50, 20
 local SetPosition = function(anch)
 	local ap, _, rp, x, y = anch:GetPoint()
 	local w, h = anch:GetSize()
-	yo_Position["yo_MovePotatos"] = {ap, "UIParent", rp, x, y, w, h}
+	yo_Position["yoMovePotatos"] = {ap, "UIParent", rp, x, y, w, h}
 end
 
 local function DrawDefault( self)
@@ -287,7 +287,7 @@ local function CreatePotatos( f)
 	f.iconPul 	= 252188
     f.item   	= GetItemInfo( f.itemID)
     f.iconPot 	= GetItemIcon( f.itemID)
-	f:SetAllPoints( "yo_MovePotatos")
+	f:SetAllPoints( "yoMovePotatos")
 
 	f.button = CreateFrame("Button", nil, f, "SecureActionButtonTemplate")
 	f.button:SetAllPoints( f)
@@ -380,7 +380,7 @@ local potatos = CreateFrame("Frame", "yo_Potatos", UIParent)
 		C_ChatInfo.RegisterAddonMessagePrefix("D4") -- DBM
 
 		--if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
-		CreateAnchor("yo_MovePotatos", 		"Move Potatos", 40, 40, 250, 270, "BOTTOMLEFT", "BOTTOMLEFT")
+		CreateAnchor("yoMovePotatos", 		"Move Potatos", 40, 40, 250, 270, "BOTTOMLEFT", "BOTTOMLEFT")
 		CreatePotatos( self)
 		initPotatos( self)
 	end)

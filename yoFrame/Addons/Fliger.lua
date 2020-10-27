@@ -166,7 +166,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pCDEnable then
-		CreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", yo_MoveLeftPanel)
+		CreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", yoMoveLeftPanel)
 		local pCD = CreateFrame("Frame", nil, self)
 		pCD:SetPoint("CENTER", P_CD, "CENTER",  0, 0)
 		pCD:SetWidth( cdSize)

@@ -85,6 +85,8 @@ function N.CreateBorder(self, size, offset, parent, layer)
 	for i = 1, #sections do
 		local x = self:CreateTexture(nil, layer or "ARTWORK")
 		x:SetTexture([[Interface\AddOns\yoFrame\Media\SimpleSquare]])  --.blp
+		--x:SetTexture([[Interface\AddOns\yoFrame\Media\mask2]])  --.blp
+		--x:SetTexture(texglow)
 		t[sections[i]] = x
 	end
 

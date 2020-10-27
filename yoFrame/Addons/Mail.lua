@@ -68,7 +68,7 @@ function stopOpening(msg, ...)
 	if msg then DEFAULT_CHAT_FRAME:AddMessage("OpenAll: "..msg, ...) end
 end
 
-button2 = makeUIButton("yo_OpenAllButton2", MONEY, 80, 25, 15, -398)
+button2 = makeUIButton("yo_OpenAllButton2", InboxFrame, MONEY, 80, 25, 15, -398)
 
 button2:SetScript("OnClick", openAll)
 button2:SetScript("OnLeave", function() GameTooltip:Hide() end)

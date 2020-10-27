@@ -29,7 +29,7 @@ local function unitShared(self, unit)
 	GetColors( self)
 	importAPI( self)
 
-	self:SetSize( _G["yo_Move" .. cunit]:GetSize())
+	self:SetSize( _G["yoMove" .. cunit]:GetSize())
 
 	------------------------------------------------------------------------------------------------------
 	---											HEALTH BAR
@@ -256,28 +256,28 @@ logan:SetScript("OnEvent", function(self, event)
 		oUF:SetActiveStyle("yoFrames")
 
 		plFrame = oUF:Spawn("player", "yo_Player")
-		plFrame:SetPoint( "CENTER", yo_Moveplayer, "CENTER", 0 , 0)
+		plFrame:SetPoint( "CENTER", yoMoveplayer, "CENTER", 0 , 0)
 
 		tarFrame = oUF:Spawn("target", "yo_Target")
-		tarFrame:SetPoint( "CENTER", yo_Movetarget, "CENTER", 0 , 0)
+		tarFrame:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
 
 		totFrame = oUF:Spawn("targettarget", "yo_ToT")
-		totFrame:SetPoint( "TOPLEFT", yo_Movetarget, "TOPRIGHT", 8 , 0)
+		totFrame:SetPoint( "TOPLEFT", yoMovetarget, "TOPRIGHT", 8 , 0)
 
 		fcFrame = oUF:Spawn("focus", "yo_Focus")
-		fcFrame:SetPoint( "CENTER", yo_Movefocus, "CENTER", 0 , 0)
+		fcFrame:SetPoint( "CENTER", yoMovefocus, "CENTER", 0 , 0)
 
 		fctFrame = oUF:Spawn("focustarget", "yo_FocusTarget")
 		fctFrame:SetPoint( "TOPLEFT", fcFrame, "TOPRIGHT", 7 , 0)
 
 		petFrame = oUF:Spawn("pet", "yo_Pet")
-		petFrame:SetPoint( "TOPRIGHT", yo_Moveplayer, "TOPLEFT", -8 , 0)
+		petFrame:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPLEFT", -8 , 0)
 
 		local boses = {}
 		for i = 1, MAX_BOSS_FRAMES do
 			--boses[i] = "boss"..i.."Frame"
 			boses[i] = oUF:Spawn( "boss" .. i, "yo_Boss" .. i)
-			boses[i]:SetPoint( "CENTER", yo_Moveboss, "CENTER", 0 , -(i -1) * 65)
+			boses[i]:SetPoint( "CENTER", yoMoveboss, "CENTER", 0 , -(i -1) * 65)
 
 			updateAllElements( boses[i])
 		end

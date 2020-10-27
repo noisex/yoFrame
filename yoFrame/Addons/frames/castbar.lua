@@ -501,9 +501,9 @@ logan:SetScript("OnEvent", function(self, event)
 
 	if yo.CastBar.player.bigBar then
 		cfg 		= yo.CastBar.player
-		cfg.width 	= yo_MovePlayerCastBar:GetWidth()
-		cfg.height 	= yo_MovePlayerCastBar:GetHeight()
-		cfg.point 	= { "CENTER", yo_MovePlayerCastBar, "CENTER", 0, 0}
+		cfg.width 	= yoMovePlayerCastBar:GetWidth()
+		cfg.height 	= yoMovePlayerCastBar:GetHeight()
+		cfg.point 	= { "CENTER", yoMovePlayerCastBar, "CENTER", 0, 0}
 	else
 		cfg 			= yo.CastBar.target
 		cfg.width		= plFrame:GetWidth()
@@ -527,7 +527,7 @@ logan:SetScript("OnEvent", function(self, event)
 	CreateCastBar( yo_castBig, cfg)
 
 	cfg 		= yo.CastBar.boss
-	cfg.width 	= yo_Moveboss:GetWidth()
+	cfg.width 	= yoMoveboss:GetWidth()
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = _G["yo_Boss"..i]
 		cfg.point	= { "BOTTOM", bFrame, "TOP", 0, 6}

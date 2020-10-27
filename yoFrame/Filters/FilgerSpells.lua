@@ -20,15 +20,15 @@
 
 --C["position"] = {
 --	["filger"] = {
---		["player_buff_icon"] = 		{"BOTTOMRIGHT", "yo_MoveBar1", "TOPRIGHT", 2, 173},	-- "P_BUFF_ICON"
---		["player_proc_icon"] = 		{"BOTTOMLEFT", 	"yo_MoveBar2", "TOPLEFT", -2, 173},	-- "P_PROC_ICON"
---		["special_proc_icon"] = 	{"BOTTOMRIGHT", "yo_MoveBar3", "TOPRIGHT", 2, 213},	-- "SPECIAL_P_BUFF_ICON"
---		["target_debuff_icon"] = 	{"BOTTOMLEFT", 	"yo_MoveBar4", "TOPLEFT", -2, 213},	-- "T_DEBUFF_ICON"
---		["target_buff_icon"] = 		{"BOTTOMLEFT", 	"yo_MoveBar5", "TOPLEFT", -2, 253},	-- "T_BUFF"
---		["pve_debuff"] = 			{"BOTTOMRIGHT", "yo_MoveBar6", "TOPRIGHT", 2, 253},	-- "PVE/PVP_DEBUFF"
---		["pve_cc"] = 				{"TOPLEFT", 	"yo_MoveBar7", "BOTTOMLEFT", -2, -44},-- "PVE/PVP_CC"
---		["cooldown"] = 				{"BOTTOMRIGHT", "yo_MoveBar8", "TOPRIGHT", 63, 29},	-- "COOLDOWN"
---		["target_bar"] = 			{"BOTTOMLEFT", 	"yo_MoveBar9", "BOTTOMRIGHT", 9, -41},	-- "T_DE/BUFF_BAR"
+--		["player_buff_icon"] = 		{"BOTTOMRIGHT", "yoMoveBar1", "TOPRIGHT", 2, 173},	-- "P_BUFF_ICON"
+--		["player_proc_icon"] = 		{"BOTTOMLEFT", 	"yoMoveBar2", "TOPLEFT", -2, 173},	-- "P_PROC_ICON"
+--		["special_proc_icon"] = 	{"BOTTOMRIGHT", "yoMoveBar3", "TOPRIGHT", 2, 213},	-- "SPECIAL_P_BUFF_ICON"
+--		["target_debuff_icon"] = 	{"BOTTOMLEFT", 	"yoMoveBar4", "TOPLEFT", -2, 213},	-- "T_DEBUFF_ICON"
+--		["target_buff_icon"] = 		{"BOTTOMLEFT", 	"yoMoveBar5", "TOPLEFT", -2, 253},	-- "T_BUFF"
+--		["pve_debuff"] = 			{"BOTTOMRIGHT", "yoMoveBar6", "TOPRIGHT", 2, 253},	-- "PVE/PVP_DEBUFF"
+--		["pve_cc"] = 				{"TOPLEFT", 	"yoMoveBar7", "BOTTOMLEFT", -2, -44},-- "PVE/PVP_CC"
+--		["cooldown"] = 				{"BOTTOMRIGHT", "yoMoveBar8", "TOPRIGHT", 63, 29},	-- "COOLDOWN"
+--		["target_bar"] = 			{"BOTTOMLEFT", 	"yoMoveBar9", "BOTTOMRIGHT", 9, -41},	-- "T_DE/BUFF_BAR"
 --	},
 --}
 

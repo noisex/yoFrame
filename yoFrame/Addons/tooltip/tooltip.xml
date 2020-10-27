@@ -2,7 +2,7 @@
 	<Script file="tooltip.lua"/>
 	<Script file="IDTooltip.lua"/>
  	<Script file="ItemLvl.lua"/>
-
+ 	<Script file="lfg.lua"/>
 	<!--
 	<Script file=""/>
  -->

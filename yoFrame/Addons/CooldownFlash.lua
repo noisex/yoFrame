@@ -15,16 +15,16 @@ local filter = {
 	},
 }
 
-CreateAnchor("yo_MoveFlashIcon", 	"Move flash icon", 70, 70, 0, 200)
+CreateAnchor("yoMoveFlashIcon", 	"Move flash icon", 70, 70, 0, 200)
 
 local flash = CreateFrame("Frame", "yo_FlashIcon", UIParent)
-flash:SetPoint("CENTER", yo_MoveFlashIcon)
-flash:SetSize( yo_MoveFlashIcon:GetSize())
+flash:SetPoint("CENTER", yoMoveFlashIcon)
+flash:SetSize( yoMoveFlashIcon:GetSize())
 flash.e = 0
 
 flash.icon = flash:CreateTexture(nil, "OVERLAY")
 flash.icon:SetPoint("CENTER", flash)
-flash.icon:SetSize( yo_MoveFlashIcon:GetSize())
+flash.icon:SetSize( yoMoveFlashIcon:GetSize())
 flash.icon:SetTexCoord(.08, .92, .08, .92)
 flash:Hide()
 

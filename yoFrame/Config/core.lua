@@ -15,7 +15,7 @@ local function enterEvent( self)
 	CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
 	CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
 
-	CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", yo_MoveLeftPanel, "BOTTOMLEFT", 0, 0, 0.5, 0)
+	CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", yoMoveLeftPanel, "BOTTOMLEFT", 0, 0, 0.5, 0)
 	CreateStyle( LeftDataPanel, 3, 0, 0, 0.7)
 
 	SimpleBackground( RightInfoPanel, 440, 15, "BOTTOM", RightDataPanel, "BOTTOM", 0, 0)
@@ -33,7 +33,7 @@ local function enterEvent( self)
 	local function GameTooltipDefault(tooltip, parent)
 		tooltip:SetOwner(parent, "ANCHOR_NONE")
 		tooltip:ClearAllPoints()
-		tooltip:SetPoint("BOTTOMRIGHT", yo_MoveToolTip, "BOTTOMRIGHT", 0, 0)
+		tooltip:SetPoint("BOTTOMRIGHT", yoMoveToolTip, "BOTTOMRIGHT", 0, 0)
 		tooltip.default = 1
 	end
 	hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
@@ -48,9 +48,8 @@ local function OnEvent( self, event, ...)
 		myRole = UnitGroupRolesAssigned( "player")
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		enterEvent( self)
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		--self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-		--buttonsUP( self)
+	elseif event == "ADDON_ACTION_BLOCKED" or event == "ADDON_ACTION_FORBIDDEN" then
+		dprint(event, ...)
 	end
 
 end
@@ -58,7 +57,9 @@ end
 local csf = CreateFrame("Frame")
 csf:RegisterEvent("PLAYER_ENTERING_WORLD")
 csf:RegisterEvent("PLAYER_ROLES_ASSIGNED")
---csf:RegisterEvent("PLAYER_REGEN_ENABLED")
+
+csf:RegisterEvent("ADDON_ACTION_BLOCKED")
+csf:RegisterEvent("ADDON_ACTION_FORBIDDEN")
 
 csf:SetScript("OnEvent", OnEvent)
 

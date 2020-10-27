@@ -112,6 +112,8 @@ end
 
 function L:CreateButtonFrame(cfg,buttonList,delaySetup)
   --create new parent frame for buttons
+--  if InCombatLockdown() then return end
+
   local frame = CreateFrame("Frame", cfg.frameName, cfg.frameParent, cfg.frameTemplate)
   frame:SetPoint(unpack(cfg.framePoint))
   frame:SetScale(cfg.frameScale)

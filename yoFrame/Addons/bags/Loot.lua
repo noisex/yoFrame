@@ -174,7 +174,7 @@ logon:RegisterForClicks"anyup"
 
 logon:SetParent( UIParent)
 --logon:SetUserPlaced(true)
-logon:SetPoint("TOP", yo_MoveLoot, "TOP", 0, 0)
+logon:SetPoint("TOP", yoMoveLoot, "TOP", 0, 0)
 CreateStyle(logon, 2)
 
 logon:SetWidth(200)
@@ -220,7 +220,7 @@ logon.LOOT_OPENED = function(self, event, autoloot)
 	else
 		self:ClearAllPoints()
 		self:SetUserPlaced(false)
-		self:SetPoint("TOP", yo_MoveLoot, "TOP", 0, 0)
+		self:SetPoint("TOP", yoMoveLoot, "TOP", 0, 0)
 	end
 
 	local m, w, t = 0, 0, title:GetStringWidth()

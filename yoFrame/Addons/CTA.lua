@@ -37,7 +37,7 @@ local function CreateLFRFrame( self)
 	frame:SetMovable(true)
 	frame:RegisterForDrag("LeftButton", "RightButton")
 	frame:Hide()
-	CreatePanel( frame, 220, 10, "CENTER", yo_MoveCTA, "CENTER", 0, 0, 0, 0)
+	CreatePanel( frame, 220, 10, "CENTER", yoMoveCTA, "CENTER", 0, 0, 0, 0)
 	CreateStyle( frame, 3, 0, 0.4, 0.6)
 
 	frame.tank = frame:CreateTexture(nil, "OVERLAY")
@@ -178,9 +178,9 @@ local function CreateLFRFrame( self)
 
 	frame:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
-		yo_MoveCTA:ClearAllPoints()
-		yo_MoveCTA:SetPoint( self:GetPoint())
-		SetAnchPosition( yo_MoveCTA, self)
+		yoMoveCTA:ClearAllPoints()
+		yoMoveCTA:SetPoint( self:GetPoint())
+		SetAnchPosition( yoMoveCTA, self)
 	end)
 	self.LFRFrame = frame
 end
@@ -450,7 +450,7 @@ end
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if not yo.CTA.enable then return end
-		CreateAnchor("yo_MoveCTA",	"Move CTA", 220, 25,	-255, -175, "TOPRIGHT", "TOPRIGHT")
+		CreateAnchor("yoMoveCTA",	"Move CTA", 220, 25,	-255, -175, "TOPRIGHT", "TOPRIGHT")
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent("LFG_ROLE_UPDATE");
 		self:RegisterEvent("LFG_UPDATE");

@@ -274,17 +274,17 @@ end)
 --local frame = CreateFrame("Frame", "yo_WatchFrameAnchor", UIParent)
 --frame:ClearAllPoints()
 --frame.ClearAllPoints = function() return end
---frame:SetWidth( yo_MoveQuestFrame:GetWidth())
---frame:SetHeight( yo_MoveQuestFrame:GetHeight())
---frame:SetPoint("TOPRIGHT", yo_MoveQuestFrame, "TOPRIGHT", -5, 0)
+--frame:SetWidth( yoMoveQuestFrame:GetWidth())
+--frame:SetHeight( yoMoveQuestFrame:GetHeight())
+--frame:SetPoint("TOPRIGHT", yoMoveQuestFrame, "TOPRIGHT", -5, 0)
 --frame.SetPoint = function() return end
 
-yo_MoveQuestFrame:SetHeight( yo["Addons"].ObjectiveHeight )
---yo_MoveQuestFrame:SetHeight( 250)
+yoMoveQuestFrame:SetHeight( yo["Addons"].ObjectiveHeight )
+--yoMoveQuestFrame:SetHeight( 250)
 
-ObjectiveTrackerFrame:SetSize( yo_MoveQuestFrame:GetSize())
+ObjectiveTrackerFrame:SetSize( yoMoveQuestFrame:GetSize())
 ObjectiveTrackerFrame:ClearAllPoints()
-ObjectiveTrackerFrame:SetPoint("TOPLEFT", yo_MoveQuestFrame, "TOPLEFT", -2, 2)
+ObjectiveTrackerFrame:SetPoint("TOPLEFT", yoMoveQuestFrame, "TOPLEFT", -2, 2)
 ObjectiveTrackerFrame.ClearAllPoints = dummy
 ObjectiveTrackerFrame.SetPoint = dummy
 
@@ -292,7 +292,7 @@ ObjectiveTrackerFrame.SetPoint = dummy
 --hooksecurefunc(ObjectiveTrackerFrame, "SetPoint", function(_, _, parent)
 --	--if parent ~= frame then
 --		ObjectiveTrackerFrame:ClearAllPoints()
---		ObjectiveTrackerFrame:SetPoint("TOPRIGHT", yo_MoveQuestFrame, "TOPRIGHT", -2, 2)
+--		ObjectiveTrackerFrame:SetPoint("TOPRIGHT", yoMoveQuestFrame, "TOPRIGHT", -2, 2)
 --		--ObjectiveTrackerFrame:SetSize( yo_WatchFrameAnchor:GetSize())
 --	--end
 --end)

@@ -11,16 +11,6 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local filter = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
 local band = bit.band
 local sformat = format
-local timer = 0
-local bars = {}
-local barsFrame = {}
-
-CreateAnchor("yo_MoveRaidCD", "Move RaidCD", 230, 150, 30, 150, "LEFT", "LEFT")
-
-local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
-RaidCDAnchor:SetPoint("BOTTOM", "yo_MoveRaidCD")
-RaidCDAnchor:SetSize(186 + 32, 20)
-RaidCDAnchor.barsFrame = {}
 
 local FormatTime = function(time)
 	if time >= 60 then
@@ -30,48 +20,19 @@ local FormatTime = function(time)
 	end
 end
 
-local CreateFS = function(frame, fsize, fstyle)
+local CreateFS = function(frame, font, fsize, fstyle)
 	local fstring = frame:CreateFontString(nil, "OVERLAY")
-	fstring:SetFont( font, fontsize -1, "OUTLINE")
+	fstring:SetFont( font or yo.font, fsize or fontsize -1, "OUTLINE")
 	fstring:SetShadowOffset(1 and 1 or 0, 1 and -1 or 0)
 	return fstring
 end
 
-local UpdatePositions = function()
-	local index = 1
-	for i = 1, #bars do
-		bars[i]:ClearAllPoints()
-		if i == 1 then
-			bars[i]:SetPoint("BOTTOMRIGHT", RaidCDAnchor, "BOTTOMRIGHT", -2, 2)
-		else
-			if #bars > 5 then
-				if i == 2 or i == 3 or i == #bars -1 or i == #bars then
-					bars[i]:SetPoint("TOPLEFT", bars[index], "BOTTOMLEFT", 0, -5)
-					index = i
-				end
-			else
-				bars[i]:SetPoint("TOPLEFT", bars[i-1], "BOTTOMLEFT", 0, -5)
-			end
-		end
-		bars[i].id = i
-	end
-end
+local StopTimer = function(self, bar)
 
-local StopTimer = function(bar)
 	bar:SetScript("OnUpdate", nil)
-	bar:Hide()
-	tremove(bars, bar.id)
-	UpdatePositions()
-end
+	self.bars[bar.endTime] = nil
+	updatePositions( self)
 
-local BarUpdate = function(self, elapsed)
-	local curTime = GetTime()
-	if self.endTime < curTime then
-		StopTimer(self)
-		return
-	end
-	self:SetValue(100 - (curTime - self.startTime) / (self.endTime - self.startTime) * 100)
-	self.right:SetText(FormatTime(self.endTime - curTime))
 end
 
 local OnEnter = function(self)
@@ -95,18 +56,45 @@ local OnMouseDown = function(self, button)
 			SendChatMessage(sformat("CD: ".." %s: %s", self.left:GetText(), self.right:GetText()), "SAY")
 		end
 	elseif button == "RightButton" then
-		StopTimer(self)
+		StopTimer( self:GetParent(), self)
 	end
 end
 
-local CreateBar = function( self)
-	if self.barsFrame[#bars+1] then return self.barsFrame[#bars+1] end
+local barUpdate = function(self, elapsed)
+	self.tick = self.tick + elapsed
+	if self.tick < 0.07 then return end
+	self.tick = 0
 
-	local bar = CreateFrame("Statusbar", nil, UIParent)
+	local curTime = GetTime()
+	if self.endTime < curTime then
+		StopTimer( self:GetParent(), self)
+		return
+	end
+	self:SetValue(100 - (curTime - self.startTime) / (self.endTime - self.startTime) * 100)
+	self.right:SetText(FormatTime(self.endTime - curTime))
+end
+
+local createBar = function( self, index)
+
+	if self.barsFrame[index] then return self.barsFrame[index] end
+
+	local bar = CreateFrame("Statusbar", nil, self)
+	bar.index = index
 	bar:SetSize(186 + 28, 20)
 	bar:SetStatusBarTexture( texture)
 	bar:SetMinMaxValues(0, 100)
+	bar:Hide()
 	CreateStyle(bar, 3)
+
+	if index == 1 then
+		bar:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 2)
+	else
+		bar:SetPoint("TOPLEFT", self.barsFrame[index -1], "BOTTOMLEFT", 0, -7)
+	end
+
+	bar:SetScript("OnEnter", OnEnter)
+	bar:SetScript("OnLeave", OnLeave)
+	bar:SetScript("OnMouseDown", OnMouseDown)
 
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
 	bar.bg:SetAllPoints( bar)
@@ -117,53 +105,78 @@ local CreateBar = function( self)
 	bar.left:SetJustifyH("LEFT")
 	bar.left:SetSize(186 - 10, 20)
 
-	bar.right = CreateFS(bar)
+	bar.right = CreateFS(bar, yo.fontpx, yo.fontsize + 6)
 	bar.right:SetPoint("RIGHT", 1, 0)
 	bar.right:SetJustifyH("RIGHT")
+	bar.right:SetTextColor( 0.8, 0.8, 0.2, 1)
 
-	bar.icon = CreateFrame("Button", nil, bar)
-	bar.icon:SetWidth(bar:GetHeight())
-	bar.icon:SetHeight(bar.icon:GetWidth())
+	bar.icon = CreateFrame( "Button", nil, bar)
+	bar.icon:SetWidth( bar:GetHeight())
+	bar.icon:SetHeight( bar:GetHeight())
 	bar.icon:SetPoint("BOTTOMRIGHT", bar, "BOTTOMLEFT", -7, 0)
 	CreateStyle(bar.icon, 3)
 
-	self.barsFrame[#bars+1] = bar
-	return bar
+	self.barsFrame[index] = bar
+
+	return self.barsFrame[index]
+end
+
+function updatePositions( self)
+	local index, barSort = 1, {}
+
+	for k in pairs( self.bars) do table.insert( barSort, k) end
+	table.sort( barSort)
+
+	for i, key in pairs( barSort) do
+		if ( #barSort < 6) or (  i <= 3 or i >= #barSort -1 ) then
+			local bars = self.bars[key]
+			local bar = createBar( self, index)
+			bar.tick 		= 1
+			bar.name 		= name
+			bar.endTime 	= bars.endTime
+			bar.startTime 	= bars.startTime
+			bar.spell 		= bars.spell
+			bar.left:SetText( bars.left)
+			bar.right:SetText( bars.right)
+			bar.icon:SetNormalTexture( bars.icon)
+			bar.icon:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
+			bar:SetStatusBarColor(bars.color.r, bars.color.g, bars.color.b)
+			bar.bg:SetVertexColor(bars.color.r, bars.color.g, bars.color.b, 0.25)
+			bar:EnableMouse(true)
+			bar:SetScript("OnUpdate", barUpdate)
+
+			bar:Show()
+			index = index + 1
+		end
+	end
+
+	for i = index, #self.barsFrame do self.barsFrame[i]:Hide() end
 end
 
 local StartTimer = function(self, name, spellId)
-	local bar = CreateBar( self)
-	local spell, rank, icon = GetSpellInfo(spellId)
-	bar.endTime = GetTime() + raid_CD_Spells[spellId]
-	bar.startTime = GetTime()
-	bar.left:SetText( strsplit("-", name) .. " - " .. spell)
-	bar.right:SetText(FormatTime(raid_CD_Spells[spellId]))
-	bar.icon:SetNormalTexture( icon)
-	bar.icon:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
-	bar.spell = spell
-	bar:Show()
+	local spell, _, icon = GetSpellInfo(spellId)
 	local color = RAID_CLASS_COLORS[select(2, UnitClass(name))]
-	if color then
-		--print( color.r, color.g, color.b)
-		bar:SetStatusBarColor(color.r, color.g, color.b)
-		bar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
-	else
-		bar:SetStatusBarColor(0.3, 0.7, 0.3)
-		bar.bg:SetVertexColor(0.3, 0.7, 0.3, 0.25)
-	end
-	bar:SetScript("OnUpdate", BarUpdate)
-	bar:EnableMouse(true)
-	bar:SetScript("OnEnter", OnEnter)
-	bar:SetScript("OnLeave", OnLeave)
-	bar:SetScript("OnMouseDown", OnMouseDown)
-	tinsert(bars, bar)
-	UpdatePositions()
+	local endTime = GetTime() + raid_CD_Spells[spellId]
+
+	if not color then color = { 0.3, 0.7, 0.3} end
+
+	self.bars[endTime] = {
+		["spell"] 	= spell,
+		["endTime"] = endTime,
+		["startTime"] = GetTime(),
+		["icon"] 	= icon,
+		["name"] 	= name,
+		["left"] 	= strsplit("-", name) .. " - " .. spell,
+		["right"] 	= FormatTime(raid_CD_Spells[spellId]),
+		["color"]	= color,
+	}
+
+	updatePositions( self)
 end
 
 local OnEvent = function(self, event, ...)
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		--print( CombatLogGetCurrentEventInfo ())
 		local _, eventType, _, _, sourceName, sourceFlags, _, _, _, _, _, spellId = CombatLogGetCurrentEventInfo ()
 
 		if band(sourceFlags, filter) == 0 then return end
@@ -173,16 +186,16 @@ local OnEvent = function(self, event, ...)
 		end
 
 	elseif event == "CHALLENGE_MODE_START" then
-		for k, v in pairs(bars) do	StopTimer(v)	end
+		for k, bar in pairs(self.bars) do	StopTimer( self, bar)	end
 		--self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-	elseif event == "CHALLENGE_MODE_COMPLETED" then
+	--elseif event == "CHALLENGE_MODE_COMPLETED" then
 		--self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-	elseif event == "ENCOUNTER_END" or event == "ENCOUNTER_START" then
-		if UnitInRaid("player") then
-			for k, bar in pairs( bars) do StopTimer( bar) end
-		end
+	--elseif event == "ENCOUNTER_END" or event == "ENCOUNTER_START" then
+		--if UnitInRaid("player") then
+		--	for k, bar in pairs( self.bars) do StopTimer( self, bar) end
+		--end
 
 	elseif event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
 
@@ -196,24 +209,25 @@ local OnEvent = function(self, event, ...)
 
 		else
 			yo_RaidCD:ClearAllPoints()
-			yo_RaidCD:SetPoint("BOTTOM", yo_MoveRaidCD)
+			yo_RaidCD:SetPoint("BOTTOM", yoMoveRaidCD)
 		end
 	end
 end
 
---local addon = CreateFrame("Frame")
-RaidCDAnchor:SetScript("OnEvent", OnEvent)
+CreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 30, 150, "LEFT", "LEFT")
+
+local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
+RaidCDAnchor:SetPoint("BOTTOM", "yoMoveRaidCD")
+RaidCDAnchor:SetSize(186 + 32, 20)
+RaidCDAnchor.barsFrame = {}
+RaidCDAnchor.bars = {}
 RaidCDAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
-RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+--RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_START")
 RaidCDAnchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 RaidCDAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
 
-RaidCDAnchor:RegisterEvent("ENCOUNTER_END")
-RaidCDAnchor:RegisterEvent("ENCOUNTER_START")
+--RaidCDAnchor:RegisterEvent("ENCOUNTER_END")
+--RaidCDAnchor:RegisterEvent("ENCOUNTER_START")
 
-
---GetInstanceInfo
---https://wow.gamepedia.com/API_GetInstanceInfo
---DifficultyID
---https://wow.gamepedia.com/DifficultyID
+RaidCDAnchor:SetScript("OnEvent", OnEvent)

@@ -71,8 +71,8 @@ local function NamePlates_OnEvent(self, event, ...)
     		--SetCVar("nameplateMaxScale",1)
 			SetCVar("nameplateShowFriendlyNPCs", 0)
 
-			SetCVar("nameplateOverlapH",  1) 	--default is 0.8
-			SetCVar("nameplateOverlapV",  0.8) 	--default is 1.5
+			SetCVar("nameplateOverlapH",  0.8) 	--default is 0.8
+			SetCVar("nameplateOverlapV",  0.6) 	--default is 1.5
 			SetCVar("nameplateTargetRadialPosition", 1)
 			SetCVar("nameplateMotion", 1)
 
@@ -407,7 +407,7 @@ local function updateHealthColor(self, elapsed)
 	elseif UnitPlayerControlled( unit) then 											-- юнит-игрок / цвет класса
 		cols = oUF.colors.class[ select( 2, UnitClass( unit))]
 		fader = yo.Raid.fadeColor - 0.2
-		--self.castBar.spark:Hide()												-- прячем спарку на икроках
+		--self.castBar.spark:Hide()														-- прячем спарку на икроках
 
 	elseif status then
 		cols = treatColor[status]
@@ -439,7 +439,7 @@ local function updateHealthColor(self, elapsed)
 		cols = treatColor.badGood
 
 	else 	--if UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then
-		cols = oUF.colors.reaction[UnitReaction( unit, "player")]			-- цвет реакшн
+		cols = oUF.colors.reaction[UnitReaction( unit, "player")]						-- цвет реакшн
 	end
 
 	self.threat:SetText( treatText)

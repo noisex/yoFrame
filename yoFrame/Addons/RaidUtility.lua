@@ -38,12 +38,12 @@ local function doRUP()
 	local iWidth = 110
 
 	local RUPanel = CreateFrame("Frame", "yo_RaidUtil", UIParent, BackdropTemplateMixin and "BackdropTemplate")
-	CreatePanel(RUPanel, 226, 126, "TOP", yo_MoveRUP, "TOP", 0, 0)
+	CreatePanel(RUPanel, 226, 126, "TOP", yoMoveRUP, "TOP", 0, 0)
 	RUPanel:SetBackdropColor(.05,.05,.05, 0.9)
 	RUPanel:SetFrameLevel(0)
 	RUPanel:SetFrameStrata("HIGH")
 	RUPanel:ClearAllPoints()
-	RUPanel:SetPoint( "TOP", yo_MoveRUP, "TOP", 3, 3)
+	RUPanel:SetPoint( "TOP", yoMoveRUP, "TOP", 3, 3)
 	RUPanel:Hide()
 
 	local function ButtonEnter(self)

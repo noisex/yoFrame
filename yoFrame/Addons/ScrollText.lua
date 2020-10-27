@@ -61,7 +61,7 @@ end
 local function CreateSBT( self)
 
 	local sbtD = CreateFrame("ScrollingMessageFrame", nil, self)
-	sbtD:SetAllPoints( yo_MoveSBT)
+	sbtD:SetAllPoints( yoMoveSBT)
 	sbtD:SetInsertMode( "TOP")
 	sbtD:SetMaxLines( 25)
 	sbtD:SetFading( true)
@@ -72,7 +72,7 @@ local function CreateSBT( self)
 	sbtD:SetJustifyH("LEFT")
 
 	local sbtH = CreateFrame("ScrollingMessageFrame", nil, self)
-	sbtH:SetAllPoints( yo_MoveSBT)
+	sbtH:SetAllPoints( yoMoveSBT)
 	sbtH:SetInsertMode( "TOP")
 	sbtH:SetMaxLines( 25)
 	sbtH:SetFading( true)
@@ -192,7 +192,7 @@ local function OnEvent( self, event, ...)
 
 		if not yo.Addons.stbEnable then return end
 
-		CreateAnchor("yo_MoveSBT",			"Move Combat Text", 150, 205,	300, -100, 	"CENTER", "CENTER")
+		CreateAnchor("yoMoveSBT",			"Move Combat Text", 150, 205,	300, -100, 	"CENTER", "CENTER")
 		CreateSBT( self)
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")

@@ -365,14 +365,14 @@ bars:SetScript("OnEvent", function(self, event)
 
 	if yo.ActionBar.enable == true then
 
-		CreateAnchor("yo_MoveABar1", 		"Move Action Bar #1", 445, 35, 0, 	2, 		"BOTTOM", "BOTTOM")
-		CreateAnchor("yo_MoveABar2", 		"Move Action Bar #2", 445, 35, 0, 	40, 	"BOTTOM", "BOTTOM")
-		CreateAnchor("yo_MoveABar3", 		"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT", "BOTTOMRIGHT")
-		CreateAnchor("yo_MoveABar4", 		"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
-		CreateAnchor("yo_MoveABar5", 		"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
-		CreateAnchor("yo_MoveAMicro", 		"Move MicroMenu Bar", 220, 18, -470,7, 		"BOTTOMRIGHT", "BOTTOMRIGHT")
-		CreateAnchor("yo_MovePetBar", 		"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yo_MoveLeftPanel)
-		CreateAnchor("yo_MoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yo_Moveplayer)
+		CreateAnchor("yoMoveABar1", 		"Move Action Bar #1", 445, 35, 0, 	2, 		"BOTTOM", "BOTTOM")
+		CreateAnchor("yoMoveABar2", 		"Move Action Bar #2", 445, 35, 0, 	40, 	"BOTTOM", "BOTTOM")
+		CreateAnchor("yoMoveABar3", 		"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT", "BOTTOMRIGHT")
+		CreateAnchor("yoMoveABar4", 		"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
+		CreateAnchor("yoMoveABar5", 		"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
+		CreateAnchor("yoMoveAMicro", 		"Move MicroMenu Bar", 220, 18, -470,7, 		"BOTTOMRIGHT", "BOTTOMRIGHT")
+		CreateAnchor("yoMovePetBar", 		"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yoMoveLeftPanel)
+		CreateAnchor("yoMoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yoMoveplayer)
 
 		local fader01 = {
   			fadeInAlpha 	= 1,
@@ -412,27 +412,27 @@ bars:SetScript("OnEvent", function(self, event)
 		}
 
 		cfg = defaultcfg
-		cfg.framePoint	= { "CENTER", yo_MoveABar1, "CENTER", 0, 0}
+		cfg.framePoint	= { "CENTER", yoMoveABar1, "CENTER", 0, 0}
 		rActionBar:CreateActionBar1( "yoFrame", cfg)
 
 		cfg = defaultcfg
-		cfg.framePoint 	= { "CENTER", yo_MoveABar2, "CENTER", 0, 0}
+		cfg.framePoint 	= { "CENTER", yoMoveABar2, "CENTER", 0, 0}
 		rActionBar:CreateActionBar2( "yoFrame", cfg)
 
 		--cfg.fader = fader
 		cfg.numCols 	= yo.ActionBar.panel3Cols
-		cfg.framePoint 	= { "TOPLEFT", yo_MoveABar3, "TOPLEFT", 0, 0}
+		cfg.framePoint 	= { "TOPLEFT", yoMoveABar3, "TOPLEFT", 0, 0}
 		rActionBar:CreateActionBar3( "yoFrame", cfg)
 
 		cfg.numCols 	= 12
 		cfg.buttonWidth = 35
 		cfg.buttonHeight= 35
 		cfg.buttonMargin= 2
-		cfg.framePoint 	= { "CENTER", yo_MoveABar4, "CENTER", 0, 0}
+		cfg.framePoint 	= { "CENTER", yoMoveABar4, "CENTER", 0, 0}
 		rActionBar:CreateActionBar4( "yoFrame", cfg)
 
 		cfg.numCols 	= 1
-		cfg.framePoint 	= { "CENTER", yo_MoveABar5, "CENTER", 0, 0}
+		cfg.framePoint 	= { "CENTER", yoMoveABar5, "CENTER", 0, 0}
 		cfg.buttonWidth = 35
 		cfg.buttonHeight= 35
 		cfg.fader 		= fader00
@@ -444,25 +444,25 @@ bars:SetScript("OnEvent", function(self, event)
 		cfg.buttonHeight= 30
 		cfg.startPoint 	= "TOPRIGHT"
 		cfg.numCols 	= 12
-		cfg.framePoint 	= { "CENTER", yo_MovePetBar, "CENTER", 0, 0}
+		cfg.framePoint 	= { "CENTER", yoMovePetBar, "CENTER", 0, 0}
 		rActionBar:CreateStanceBar( "yoFrame",cfg)
 		rActionBar:CreatePetBar( "yoFrame",cfg)
 
 		cfg.buttonWidth = 40
 		cfg.buttonHeight= 40
 		cfg.startPoint 	= "TOPLEFT"
-		cfg.framePoint 	= { "CENTER", yo_MoveExtr, "CENTER", 0, 0}
+		cfg.framePoint 	= { "CENTER", yoMoveExtr, "CENTER", 0, 0}
 		rActionBar:CreateExtraBar( "yoFrame",cfg)
 
 		cfg.buttonWidth = 35
 		cfg.buttonHeight= 35
-		cfg.framePoint 	= { "CENTER", yo_MoveExtr, "CENTER", 0, -60}
+		cfg.framePoint 	= { "CENTER", yoMoveExtr, "CENTER", 0, -60}
 		cfg.frameVisibility = "[canexitvehicle][target=vehicle,exists] show;hide"
 		rActionBar:CreateVehicleExitBar( "yoFrame",cfg)
 
 		cfg.buttonWidth = 40
 		cfg.buttonHeight = 40
-		cfg.framePoint = { "CENTER", yo_MoveExtr, "CENTER", 0, -50}
+		cfg.framePoint = { "CENTER", yoMoveExtr, "CENTER", 0, -50}
 		cfg.frameVisibility = nil
 		rActionBar:CreatePossessExitBar( "yoFrame",cfg)
 
@@ -470,7 +470,7 @@ bars:SetScript("OnEvent", function(self, event)
 		cfg.buttonHeight = 35
 		cfg.startPoint = "TOPRIGHT"
 		cfg.numCols = 12
-		cfg.framePoint = { "RIGHT", yo_MovePetBar, "RIGHT", 0, 0}
+		cfg.framePoint = { "RIGHT", yoMovePetBar, "RIGHT", 0, 0}
 		rActionBar:CreateTotemBar( "yoFrame",cfg)
 
 		if yo.ActionBar.MicroMenu == true then
@@ -479,17 +479,17 @@ bars:SetScript("OnEvent", function(self, event)
 			cfg.fader = fader01
   			cfg.startPoint = "BOTTOMLEFT"
   			cfg.frameScale =  yo["ActionBar"].MicroScale
-  			cfg.framePoint = { "CENTER", yo_MoveAMicro, "CENTER", 0, 0}
+  			cfg.framePoint = { "CENTER", yoMoveAMicro, "CENTER", 0, 0}
 			rActionBar:CreateMicroMenuBar( "yoFrame", cfg)
 		end
 
 		PlayerPowerBarAlt:ClearAllPoints()
-		PlayerPowerBarAlt:SetPoint('CENTER', yo_MoveAltPower, 'CENTER')
-		PlayerPowerBarAlt:SetParent(yo_MoveAltPower)
+		PlayerPowerBarAlt:SetPoint('CENTER', yoMoveAltPower, 'CENTER')
+		PlayerPowerBarAlt:SetParent(yoMoveAltPower)
 		PlayerPowerBarAlt.ignoreFramePositionManager = true
 
 		local function Position(self)
-			self:SetPoint('CENTER', yo_MoveAltPower, 'CENTER')
+			self:SetPoint('CENTER', yoMoveAltPower, 'CENTER')
 		end
 		hooksecurefunc(PlayerPowerBarAlt, "ClearAllPoints", Position)
 	end

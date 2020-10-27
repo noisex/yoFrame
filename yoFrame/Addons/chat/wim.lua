@@ -4,7 +4,7 @@ local oUF = ns.oUF
 
 local minAlpha 	= 1
 
-CreateAnchor("yo_MoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", LeftDataPanel)
+CreateAnchor("yoMoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", LeftDataPanel)
 ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
 ContainerFrame3:SetPoint("CENTER")
 
@@ -142,9 +142,9 @@ local function CreateTabs(self, ID)
 	textBox:SetScript("OnDragStart", function() yo_WIM:StartMoving() end)
 	textBox:SetScript("OnDragStop", function()
 		yo_WIM:StopMovingOrSizing()
-		yo_MoveWIM:ClearAllPoints()
-		yo_MoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yo_MoveWIM, yo_WIM)
+		yoMoveWIM:ClearAllPoints()
+		yoMoveWIM:SetPoint( self:GetPoint())
+		SetAnchPosition( yoMoveWIM, yo_WIM)
 	end)
 	tab.textBox = textBox
 
@@ -289,9 +289,9 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 end
 
 local function CreateWIM( self)
-	yo_MoveWIM:SetSize( yo.Chat.wimWidth, yo.Chat.winHeight)
+	yoMoveWIM:SetSize( yo.Chat.wimWidth, yo.Chat.winHeight)
 	self:SetSize( yo.Chat.wimWidth, yo.Chat.winHeight)
-	self:SetPoint("TOPLEFT", yo_MoveWIM, "TOPLEFT", 0, 0)
+	self:SetPoint("TOPLEFT", yoMoveWIM, "TOPLEFT", 0, 0)
 	self:Hide()
 	self:SetFrameStrata("HIGH")
 	self:EnableMouse( true)
@@ -305,9 +305,9 @@ local function CreateWIM( self)
 	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) ContainerFrame3:Show() end)
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
-		yo_MoveWIM:ClearAllPoints()
-		yo_MoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yo_MoveWIM, yo_WIM)
+		yoMoveWIM:ClearAllPoints()
+		yoMoveWIM:SetPoint( self:GetPoint())
+		SetAnchPosition( yoMoveWIM, yo_WIM)
 	end)
 	--self:SetScript("OnEscapePressed", function(self) self:Hide() end)
 

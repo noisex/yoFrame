@@ -111,8 +111,10 @@ local function CreateHistoryFrame( self)
 	userMenu.initialize = function()
 		local aUserList = {}
 		for realm, realmArray in pairs( yo_WIMSTER) do
-			table.insert( aUserList, realm)
-			if type( realmArray) == "table" then
+			if not realm:find( "editHistor") then
+				table.insert( aUserList, realm)
+			end
+			if type( realmArray) == "table"  and not realm:find( "editHistor") then
 				for name, nameArray in pairs( realmArray) do
 					table.insert( aUserList, realm .. "/" .. name)
 				end

@@ -119,15 +119,14 @@ local raidShared = function(self, unit)
 		enableHealPr	= yo.Raid.healPrediction
 		enableAuras 	= true
 		enablePower		= false
-		numAuras		= 2
+		numAuras		= 3
 		spacingAuras	= 3
 		sizeInfoFont	= yo.fontsize
 		initialAnchor 	= "RIGHT"
 		growthX 		= 'LEFT'
-		sizeAuras 		= self:GetHeight() * 0.8
+		sizeAuras 		= self:GetHeight() * 0.7
 		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -2, -2}
-		CustomFilter	= funcWhiteList --funcWhiteList
-		outsideAlpha	= 1
+		CustomFilter	= funcBlackList --funcWhiteList
 	end
 
 	if self:GetParent():GetName():match( "yo_TanketsTar") then
@@ -177,21 +176,23 @@ local raidShared = function(self, unit)
 		self.Health.bg.multiplier = .5
 	end
 
-	self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha, }
-	self.Range.PostUpdate = function(object, self, inRange, checkedRange, connected)
-		if connected then
-			if checkedRange and not inRange then
-				self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
-				self.shadow:SetBackdropColor( .075,.075,.086, self.shadowAlpha) --:SetAlpha( self.shadowAlpha)
+	if unit ~= "tank" then
+		self.Range = { insideAlpha = 1, outsideAlpha = outsideAlpha, }
+		self.Range.PostUpdate = function(object, self, inRange, checkedRange, connected)
+			if connected then
+				if checkedRange and not inRange then
+					self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
+					self.shadow:SetBackdropColor( .075,.075,.086, self.shadowAlpha) --:SetAlpha( self.shadowAlpha)
+				else
+					self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
+					self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
+					--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
+				end
 			else
-				self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
+				self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
 				self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
 				--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 			end
-		else
-			self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
-			self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
-			--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 		end
 	end
 
@@ -405,7 +406,7 @@ local function CreateMovier(frame)
 	movePartyFrame:SetMovable(true)
 	movePartyFrame:RegisterForDrag("LeftButton", "RightButton")
 	movePartyFrame:ClearAllPoints()
-	movePartyFrame:SetPoint( yo_MoveRaid:GetPoint())
+	movePartyFrame:SetPoint( yoMoveRaid:GetPoint())
 	movePartyFrame:SetWidth( frame:GetWidth() + delta * 2)
 	movePartyFrame:SetHeight( frame:GetHeight() + delta * 2)
 
@@ -417,23 +418,23 @@ local function CreateMovier(frame)
 
 	movePartyFrame:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
-		yo_MoveRaid:ClearAllPoints()
-		yo_MoveRaid:SetPoint( self:GetPoint())
-		SetAnchPosition( yo_MoveRaid, self)
+		yoMoveRaid:ClearAllPoints()
+		yoMoveRaid:SetPoint( self:GetPoint())
+		SetAnchPosition( yoMoveRaid, self)
 	end)
 
 	movePartyFrame:SetScript("OnShow", function(self)
 		if InCombatLockdown() then return end
 
 		self:ClearAllPoints()
-		self:SetPoint( yo_MoveRaid:GetPoint())
+		self:SetPoint( yoMoveRaid:GetPoint())
 	end)
 
 	movePartyFrame:SetScript("OnHide", function(self)
 		if InCombatLockdown() then return end
 
-		yo_MoveRaid:ClearAllPoints()
-		yo_MoveRaid:SetPoint( self:GetPoint())
+		yoMoveRaid:ClearAllPoints()
+		yoMoveRaid:SetPoint( self:GetPoint())
 	end)
 
 	frame:SetScript("OnSizeChanged", function(self, w, h)
@@ -470,7 +471,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 	if not yo.Raid.enable then return end
 
-	CreateAnchor("yo_MoveRaid", 		"Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
+	CreateAnchor("yoMoveRaid", 		"Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
 
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
 	if yo.healBotka.enable then N.CreateClique( self) end
@@ -525,7 +526,7 @@ logan:SetScript("OnEvent", function(self, event)
 					"columnAnchorPoint", "TOP"
 				)
 				if i == 1 then
-					raidgroup:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0)
+					raidgroup:SetPoint("TOPLEFT", yoMoveRaid, "TOPLEFT", 0, 0)
 				--elseif i == 5 then
 				--	raidgroup:SetPoint("TOPLEFT", raid[1], "TOPRIGHT", 7, 0)
 				else
@@ -571,7 +572,7 @@ logan:SetScript("OnEvent", function(self, event)
 				"point", "TOP",
 				"columnAnchorPoint", "LEFT"
 			)
-			--raid:SetPoint("TOPLEFT", yo_MoveRaid, "TOPLEFT", 0, 0)
+			--raid:SetPoint("TOPLEFT", yoMoveRaid, "TOPLEFT", 0, 0)
 			CreateMovier( yo_Raid)
 		end
 
@@ -602,7 +603,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 		if yo.Raid.showMT then --and not yo.Raid.simpeRaid then
 
-			CreateAnchor("yo_MoveTanks", 		"Move Raid Tanks Frame", 200, 55, 5, 420, 	"TOPLEFT", "BOTTOMLEFT")
+			CreateAnchor("yoMoveTanks", 		"Move Raid Tanks Frame", 200, 55, 5, 420, 	"TOPLEFT", "BOTTOMLEFT")
 
 			local heightMT = yo.Raid.heightMT
 			local widthMT = yo.Raid.widthMT
@@ -635,7 +636,7 @@ logan:SetScript("OnEvent", function(self, event)
             		self:SetScale(%d)
             	]]):format( widthMT, heightMT, 1)
 			)
-			mt:SetPoint("TOPLEFT", yo_MoveTanks, "TOPLEFT", 0, 0)
+			mt:SetPoint("TOPLEFT", yoMoveTanks, "TOPLEFT", 0, 0)
 
 			if yo.Raid.showMTT then
 				local mtt = self:SpawnHeader( 'yo_TanketsTar', nil, 'raid,party',

@@ -16,7 +16,21 @@ myLevel 	= UnitLevel( "player")
 myRace		= select(2, UnitRace('player'))
 mySex		= UnitSex('player')
 
+myDev = {
+	["Нойзекс"] 	= true,
+	["Дэмьер"] 		= true,
+	["Ковальска"] 	= true,
+	["Герсона"] 	= true,
+	["Твитти"] 		= true,
+}
+
 dummy = function() return end
+
+dprint = function(...)
+	if myDev[myName] then
+		print("|cff33ff99yoDev: |cff999999" .. ... )
+	end
+end
 
 N["statusBars"] 	= {}
 N["strings"]		= {}

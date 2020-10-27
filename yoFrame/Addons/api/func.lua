@@ -45,11 +45,11 @@ function Kill(object)
 	object:Hide()
 end
 
-function makeUIButton(id, text, w, h, x, y)
-	local button = CreateFrame("Button", id, InboxFrame, "UIPanelButtonTemplate")
+function makeUIButton(id, frame, text, w, h, x, y)
+	local button = CreateFrame("Button", id, frame, "UIPanelButtonTemplate")
 	button:SetWidth(w)
 	button:SetHeight(h)
-	button:SetPoint("CENTER", InboxFrame, "TOP", x, y)
+	button:SetPoint("CENTER", frame, "TOP", x, y)
 	button:SetText(text)
 	return button
 end
@@ -146,14 +146,14 @@ function CreateStyle(f, size, level, alpha, alphaborder)
 	}
 
     local shadow = CreateFrame("Frame", nil, f, BackdropTemplateMixin and "BackdropTemplate")
-    shadow:SetFrameLevel(level or 0)
-    shadow:SetFrameStrata(f:GetFrameStrata())
-    shadow:SetPoint("TOPLEFT", -size, size)
-    shadow:SetPoint("BOTTOMRIGHT", size, -size)
-    shadow:SetBackdrop(style)
+    shadow:SetFrameLevel( level or 0)
+    shadow:SetFrameStrata( f:GetFrameStrata())
+    shadow:SetPoint("TOPLEFT", f, "TOPLEFT", -size, size)
+    shadow:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", size, -size)
+    shadow:SetBackdrop( style)
     local r, g, b = strsplit( ",", yo.Media.shadowColor)
 
-    shadow:SetBackdropColor(.075,.075,.086, alpha or .9)
+    shadow:SetBackdropColor(.075,.075,.086, alpha or 1)
 	shadow:SetBackdropBorderColor( r, g, b, alphaborder or 1)	--(0, 0, 0, alphaborder or 1)
     f.shadow = shadow
     table.insert( N["shadows"], f.shadow)
