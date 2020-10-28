@@ -160,7 +160,7 @@ end
 oUF.Tags.Events['nameshort'] = 'UNIT_NAME_UPDATE'
 oUF.Tags.Methods['nameshort'] = function(unit)
 	local name = UnitName(unit)
-	return utf8sub(name, 13, false)
+	return utf8sub(name, 10, false)
 end
 
 oUF.Tags.Events['namemedium'] = 'UNIT_NAME_UPDATE UNIT_FLAGS'

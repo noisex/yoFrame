@@ -1,6 +1,6 @@
 local L, yo, N = unpack( select( 2, ...))
 
-if not yo.Addons.unitFrames then return end
+if not yo.Addons.unitFrames or not yo.UF.showShards	then return end
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -144,7 +144,13 @@ local function OnEvent( self, event, unit, pToken, ...)
 
 local function CreateShardsBar( f)
 	local holyShards = f.holyShards or CreateFrame( "Frame", nil, f)
-	holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 7, -4)
+
+	if yo.UF.simpeUF then
+		holyShards:SetPoint('LEFT', f, 'LEFT', 7, -1)
+	else
+		holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 7, -4)
+	end
+
 	holyShards:SetWidth( f:GetWidth() / 2)
 	holyShards:SetHeight( 6)
 	holyShards:SetFrameLevel(9)
@@ -183,6 +189,6 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	if not yo.Addons.unitFrames then return end
+	--if not yo.UF.simpeUF then return end
 	if N.pType[myClass] and N.pType[myClass].powerID then CreateShardsBar( plFrame) end
 end)

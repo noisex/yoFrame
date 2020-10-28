@@ -56,12 +56,9 @@ local raidShared = function(self, unit)
 					( self:GetParent():GetName():match( "yo_Raid")) and "raid" or
 					( self:GetParent():GetName():match( "yo_Tank")) and "tank" or unit
 
-	-- Set our own colors
-	--self.colors = oUF.colors
 	GetColors( self)
 	importAPI( self)
 
-	-- Register click
 	self:RegisterForClicks("AnyUp")
 
 	local posInfo		= {"LEFT", self, "LEFT", 2, 2}

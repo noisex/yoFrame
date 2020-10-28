@@ -348,6 +348,7 @@ yo["UF"] 	= {
 	["simpeUF"]			= false,
 	["showGCD"]			= true,
 	["debuffHight"]		= true,
+	["showShards"]		= true,
 }
 
 yo["Raid"] = {

@@ -25,18 +25,43 @@ local function unitShared(self, unit)
 	if cunit == "boss" then self.isboss = true end
 	self.cunit 	= cunit
 
-	--self.colors = oUF.colors
 	GetColors( self)
 	importAPI( self)
 
-	self:SetSize( _G["yoMove" .. cunit]:GetSize())
+	local height 		= _G["yoMove" .. cunit]:GetHeight()
+	local width 		= _G["yoMove" .. cunit]:GetWidth()
+	local enablePower 	= true
+	local nameLeight	= "namelong"
+	local namePos		= { "BOTTOMLEFT", self, "TOPLEFT", 0, 11}
+	local rtargetPos 	= { "CENTER", self, "TOP", 0, 2}
+	local healthTextPos	= { "TOPRIGHT", self, "TOPRIGHT", 0, -2}
+	local showLeader 	= true
+	local combatPos 	= 6
+
+	if yo.UF.simpeUF then
+		height 			= height / 1.8
+		width 			= width / 1.2
+		enablePower 	= false
+		showLeader 		= false
+		combatPos 		= 0
+		nameLeight		= "namemedium"
+		namePos			= { "LEFT", self, "TOPLEFT", 5, 0}
+		healthTextPos	= { "BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 3}
+		rtargetPos 		= { "CENTER", self, "TOPRIGHT", -15, 0}
+	end
+
+	_G["yoMove" .. cunit]:SetHeight( height)
+	_G["yoMove" .. cunit]:SetWidth( width)
+	self:SetWidth( width)
+	self:SetHeight( height)
 
 	------------------------------------------------------------------------------------------------------
 	---											HEALTH BAR
 	------------------------------------------------------------------------------------------------------
 	self.Health = CreateFrame("StatusBar", nil, self)
 	self.Health:SetAllPoints( self)
-	self.Health:SetWidth( self:GetWidth())
+	self.Health:SetWidth( width)
+	self.Health:SetHeight(height)
 	self.Health:SetStatusBarTexture( yo.texture)
 	self.Health:SetFrameLevel( 1)
 	self.Health:GetStatusBarTexture():SetHorizTile(false)
@@ -45,6 +70,7 @@ local function unitShared(self, unit)
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( yo.texture)
+	table.insert( N.statusBars, self.Health.hbg)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
@@ -68,48 +94,51 @@ local function unitShared(self, unit)
 ---											POWER BAR
 ------------------------------------------------------------------------------------------------------
 
-	self.Power = CreateFrame("StatusBar", nil, self)
-	self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
-	self.Power:SetStatusBarTexture( yo.texture)
-	self.Power:SetFrameLevel( 5)
-	self.Power:SetWidth( self:GetWidth() - 10)
-	self.Power:SetHeight( 4)
-	table.insert( N.statusBars, self.Power)
+	if enablePower then
+		self.Power = CreateFrame("StatusBar", nil, self)
+		self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
+		self.Power:SetStatusBarTexture( yo.texture)
+		self.Power:SetFrameLevel( 5)
+		self.Power:SetWidth( width - 10)
+		self.Power:SetHeight( 4)
+		table.insert( N.statusBars, self.Power)
 
-	self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
-	self.Power.bg:SetAllPoints( self.Power)
-	self.Power.bg:SetVertexColor( 0.4, 0.4, 0.4, 0.5)
-	self.Power.bg:SetAlpha(0.2)
-	self.Power.bg:SetTexture( yo.texture)
+		self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
+		self.Power.bg:SetAllPoints( self.Power)
+		self.Power.bg:SetVertexColor( 0.4, 0.4, 0.4, 0.5)
+		self.Power.bg:SetAlpha(0.2)
+		self.Power.bg:SetTexture( yo.texture)
 
-	if unit == "player" then
-		local powerFlashBar = CreateFrame("StatusBar" , nil, self)
-		powerFlashBar:SetPoint("TOPLEFT", self.Power:GetStatusBarTexture(),"TOPRIGHT", 0, 0);
-		powerFlashBar:SetPoint("BOTTOMLEFT", self.Power:GetStatusBarTexture(),"BOTTOMRIGHT", 0, 0);
-		powerFlashBar:SetStatusBarTexture( yo.texture)
-		powerFlashBar:SetHeight( 4)
-		powerFlashBar:SetWidth( self.Power:GetWidth())
-		powerFlashBar:SetFrameLevel( 4)
-		powerFlashBar:SetMinMaxValues(0, 0)
-		powerFlashBar:SetValue( 0)
-		self.Power.powerFlashBar = powerFlashBar
-		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", self.powerManaCost)
-		table.insert( N.statusBars, powerFlashBar)
+		if unit == "player" then
+			local powerFlashBar = CreateFrame("StatusBar" , nil, self)
+			powerFlashBar:SetPoint("TOPLEFT", self.Power:GetStatusBarTexture(),"TOPRIGHT", 0, 0);
+			powerFlashBar:SetPoint("BOTTOMLEFT", self.Power:GetStatusBarTexture(),"BOTTOMRIGHT", 0, 0);
+			powerFlashBar:SetStatusBarTexture( yo.texture)
+			powerFlashBar:SetHeight( 4)
+			powerFlashBar:SetWidth( self.Power:GetWidth())
+			powerFlashBar:SetFrameLevel( 4)
+			powerFlashBar:SetMinMaxValues(0, 0)
+			powerFlashBar:SetValue( 0)
+			self.Power.powerFlashBar = powerFlashBar
+			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", self.powerManaCost)
+			table.insert( N.statusBars, powerFlashBar)
 
-	elseif unit == "targettarget" then
-		self.Power.pDebuff = CreateFrame("Frame", nil, self)
-		self.Power.pDebuff:SetPoint("TOPLEFT", self, "BOTTOMLEFT",  0, -5)
-		self.Power.pDebuff:SetWidth( 16) -- self:GetWidth())
-		self.Power.pDebuff:SetHeight( 16)
-		self.Power.pDebuff.direction 	= "RIGHT"
-		self.Power.pDebuff.unit 		= "targettarget"
-		self.Power.pDebuff.count 		= self:GetWidth() / self.Power.pDebuff:GetHeight()
-		self.Power.tickTOT 				= GetTime()
-	end
+		elseif unit == "targettarget" then
+			self.Power.pDebuff = CreateFrame("Frame", nil, self)
+			self.Power.pDebuff:SetPoint("TOPLEFT", self, "BOTTOMLEFT",  0, -5)
+			self.Power.pDebuff:SetWidth( 16) -- self:GetWidth())
+			self.Power.pDebuff:SetHeight( 16)
+			self.Power.pDebuff.direction 	= "RIGHT"
+			self.Power.pDebuff.unit 		= "targettarget"
+			self.Power.pDebuff.count 		= self:GetWidth() / self.Power.pDebuff:GetHeight()
+			self.Power.tickTOT 				= GetTime()
+		end
 
-	self.Power.frequentUpdates = false
-    self.Power.UpdateColor = dummy
-    self.Power.PostUpdate = self.powerUpdate
+		self.Power.frequentUpdates = false
+    	self.Power.UpdateColor = dummy
+    	self.Power.PostUpdate = self.powerUpdate
+    	CreateStyle( self.Power, 2, 4, .3, .9)
+    end
 
 ------------------------------------------------------------------------------------------------------
 ---											TEXTS
@@ -120,27 +149,30 @@ local function unitShared(self, unit)
 
 	self.nameText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
 	self.nameText:SetFont( yo.font, yo.fontsize, "OUTLINE")
-	self.nameText:SetPoint("BOTTOMLEFT", self.Power, "TOPLEFT", 0, 3)
+	self.nameText:SetPoint(unpack( namePos))
 	if unit == "targettarget" or unit == "focustarget" or unit == "focus" then
 			self:Tag( self.nameText, "[GetNameColor][unitLevel][nameshort][afk]")
-	else	self:Tag( self.nameText, "[GetNameColor][unitLevel][namelong][afk]")end
+	else	self:Tag( self.nameText, "[GetNameColor][unitLevel][".. nameLeight .."][afk]")end
 	table.insert( N.strings, self.nameText)
 
 	if unit ~= "pet" or unit ~= "targettarget" or unit ~= "focus" or unit ~= "focustarget" then
 		self.Health.healthText =  self.Overlay:CreateFontString(nil ,"OVERLAY", 8)
 		self.Health.healthText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
-		self.Health.healthText:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -2)
+		self.Health.healthText:SetPoint( unpack( healthTextPos))
 		table.insert( N.strings, self.Health.healthText)
 
-		self.Power.powerText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
-		self.Power.powerText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
-		self.Power.powerText:SetPoint("TOPRIGHT", self.Health.healthText, "BOTTOMRIGHT", 0, -3)
-		table.insert( N.strings, self.Power.powerText)
-
-		self.rText =  self:CreateFontString(nil ,"OVERLAY")
-		self.rText:SetFont( yo.Media.fontpx, yo.fontsize, "OUTLINE")
-		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -2)
-		self:Tag( self.rText, "[GetNameColor][group]")
+		if enablePower then
+			self.Power.powerText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
+			self.Power.powerText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
+			self.Power.powerText:SetPoint("TOPRIGHT", self.Health.healthText, "BOTTOMRIGHT", 0, -3)
+			table.insert( N.strings, self.Power.powerText)
+		end
+		if showLeader then
+			self.rText =  self:CreateFontString(nil ,"OVERLAY")
+			self.rText:SetFont( yo.Media.fontpx, yo.fontsize, "OUTLINE")
+			self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -2)
+			self:Tag( self.rText, "[GetNameColor][group]")
+		end
 	end
 
 ------------------------------------------------------------------------------------------------------
@@ -148,20 +180,23 @@ local function unitShared(self, unit)
 ------------------------------------------------------------------------------------------------------
 
 	self.RaidTargetIndicator = self:CreateTexture(nil,'OVERLAY')
-    self.RaidTargetIndicator:SetPoint("CENTER", self, "TOP", 0, 2)
+    self.RaidTargetIndicator:SetPoint( unpack( rtargetPos))
 	self.RaidTargetIndicator:SetTexture("Interface\\AddOns\\yoFrame\\Media\\raidicons")
-    self.RaidTargetIndicator:SetSize(16, 16)
+    self.RaidTargetIndicator:SetSize(18, 18)
 
     if cunit ~= "boss" or unit ~= "focustarget" then
-    	self.LeaderIndicator = CreateFrame("Button", nil, self, BackdropTemplateMixin and "BackdropTemplate")
-    	self.LeaderIndicator:SetPoint("CENTER", self, "TOPLEFT", 15, 2)
-		self.LeaderIndicator:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-LeaderIcon", })
-    	self.LeaderIndicator:SetSize(10, 10)
 
-		self.AssistantIndicator = CreateFrame("Button", nil, self, BackdropTemplateMixin and "BackdropTemplate")
-    	self.AssistantIndicator:SetPoint("CENTER", self.LeaderIndicator, "CENTER", 0, 0)
-		self.AssistantIndicator:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-AssistantIcon"})
-    	self.AssistantIndicator:SetSize(10, 10)
+    	if showLeader then
+    		self.LeaderIndicator = CreateFrame("Button", nil, self, BackdropTemplateMixin and "BackdropTemplate")
+    		self.LeaderIndicator:SetPoint("CENTER", self, "TOPLEFT", 15, 2)
+			self.LeaderIndicator:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-LeaderIcon", })
+    		self.LeaderIndicator:SetSize(10, 10)
+
+			self.AssistantIndicator = CreateFrame("Button", nil, self, BackdropTemplateMixin and "BackdropTemplate")
+    		self.AssistantIndicator:SetPoint("CENTER", self.LeaderIndicator, "CENTER", 0, 0)
+			self.AssistantIndicator:SetBackdrop({ bgFile="Interface\\GroupFrame\\UI-Group-AssistantIcon"})
+    		self.AssistantIndicator:SetSize(10, 10)
+    	end
 
     	self.ResurrectIndicator = self:CreateTexture(nil, 'OVERLAY')
     	self.ResurrectIndicator:SetSize( 20, 20)
@@ -194,7 +229,7 @@ local function unitShared(self, unit)
 
 		self.CombatIndicator = self:CreateTexture(nil, 'OVERLAY')
 		self.CombatIndicator:SetSize( 15, 15)
-		self.CombatIndicator:SetPoint( "CENTER", self, "LEFT", 0, 6)
+		self.CombatIndicator:SetPoint( "CENTER", self, "LEFT", 0, combatPos)
 		self.CombatIndicator:SetTexture('Interface\\CharacterFrame\\UI-StateIcon')
 		self.CombatIndicator:SetTexCoord(0.58, 0.90, 0.08, 0.41)
 		self.CombatIndicator.PostUpdate = function( f, inCombat)
@@ -203,8 +238,8 @@ local function unitShared(self, unit)
 		if yo.UF.showGCD then
 			self.GCD = CreateFrame("StatusBar", nil, self)
 			self.GCD:SetPoint("LEFT", self, "TOPLEFT", 0, 0)
-			self.GCD:SetWidth( self:GetWidth())
-			self.GCD:SetHeight( 1)
+			self.GCD:SetWidth( width)
+			self.GCD:SetHeight( 2)
 			self.GCD:SetFrameLevel( 5)
 			self.GCD:SetStatusBarTexture( texture)
 			self.GCD:SetStatusBarColor( 1, 1, 1, 0)
@@ -235,8 +270,6 @@ local function unitShared(self, unit)
 	self:SetScript("OnEnter", self.frameOnEnter)
 	self:SetScript("OnLeave", self.frameOnLeave)
 	CreateStyle( self, 4)
-	CreateStyle( self.Power, 2, 4, .3, .9)
-
 	--self.updateAllElements( self)
 end
 
@@ -256,13 +289,17 @@ logan:SetScript("OnEvent", function(self, event)
 		oUF:SetActiveStyle("yoFrames")
 
 		plFrame = oUF:Spawn("player", "yo_Player")
-		plFrame:SetPoint( "CENTER", yoMoveplayer, "CENTER", 0 , 0)
+		if yo.UF.simpeUF then 	plFrame:SetPoint( "CENTER", yoMoveplayer, "RIGHT", -10, 50)
+		else 					plFrame:SetPoint( "CENTER", yoMoveplayer, "CENTER", 10 , 0)
+		end
 
 		tarFrame = oUF:Spawn("target", "yo_Target")
-		tarFrame:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
+		if yo.UF.simpeUF then 	tarFrame:SetPoint( "CENTER", yoMovetarget, "LEFT", 0, 50)
+		else					tarFrame:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
+		end
 
 		totFrame = oUF:Spawn("targettarget", "yo_ToT")
-		totFrame:SetPoint( "TOPLEFT", yoMovetarget, "TOPRIGHT", 8 , 0)
+		totFrame:SetPoint( "TOPLEFT", tarFrame, "TOPRIGHT", 8 , 0)
 
 		fcFrame = oUF:Spawn("focus", "yo_Focus")
 		fcFrame:SetPoint( "CENTER", yoMovefocus, "CENTER", 0 , 0)
@@ -271,7 +308,7 @@ logan:SetScript("OnEvent", function(self, event)
 		fctFrame:SetPoint( "TOPLEFT", fcFrame, "TOPRIGHT", 7 , 0)
 
 		petFrame = oUF:Spawn("pet", "yo_Pet")
-		petFrame:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPLEFT", -8 , 0)
+		petFrame:SetPoint( "TOPRIGHT", plFrame, "TOPLEFT", -8 , 0)
 
 		local boses = {}
 		for i = 1, MAX_BOSS_FRAMES do

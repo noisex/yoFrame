@@ -149,7 +149,7 @@ local function createLFGFrame( self)
 		setting.filter = {}
 		self.setting = setting
 
-		self.setting.tankMenu, self.setting.tankPlus = makeDropDown( self,"Tank")
+		self.setting.tankMenu, self.setting.tankPlus = makeDropDown( self, "Tank")
 		self.setting.tankMenu:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, -10)
 
 		self.setting.healMenu, self.setting.healPlus = makeDropDown( self, "Heal")
@@ -189,54 +189,3 @@ end
 LFGListFrame:HookScript("OnShow", createLFGFrame)
 LFGListFrame.SearchPanel:HookScript("OnShow", function(self, ...) LFGListFrame.setting:Show() end)
 LFGListFrame.SearchPanel:HookScript("OnHide", function(self, ...) LFGListFrame.setting:Hide() end)
-
---lfg:RegisterEvent("LFG_LIST_SEARCH_RESULTS_RECEIVED")
---lfg:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED")
---lfg:RegisterEvent("LFG_LIST_SEARCH_FAILED")
---lfg:RegisterEvent("ADDON_LOADED")
-----lfg:RegisterEvent("CHAT_MSG_ADDON")
-----lfg:RegisterEvent("CHAT_MSG_SYSTEM")
-----lfg:RegisterEvent("PLAYER_LOGIN")
---lfg:RegisterEvent("GROUP_ROSTER_UPDATE")
-
---lfg:SetScript("OnEvent", onEvent)
-
-
---function LFGListUtil_FilterSearchResults(results, filteredIDs)
---	print( i, id)
---	for i, id in ipairs(filteredIDs) do
---		print( i, id)
---		for j = #results, 1, -1 do
---			if ( results[j] == id ) then
---				tremove(results, j);
---				break;
---			end
---		end
---	end
---end
-
---    HybridScrollFrame_CreateButtons(self.ScrollFrame, "LFGListSearchEntryTemplate");
-
-
-
---local function onEvent( self, event, ...)
-
---	if event == "LFG_LIST_SEARCH_RESULTS_RECEIVED" then
---		print( event, LFGListFrame.SearchPanel.filters or LFGListFrame.CategorySelection.selectedFilters)
---		local numResults, results = C_LFGList.GetSearchResults()
---		self.LFGListUtil_SortSearchResults(results)
---		for k, v in pairs(results) do
---			local id, activityID, name, comment, PH, voiceChat, iLvl, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers, autoInv = C_LFGList.GetSearchResultInfo(results[k])
---			--tprint( id)
-
---			--print(id, activityID, name, comment, PH, voiceChat, iLvl, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers, autoInv)
---		end
---	elseif event == "LFG_LIST_SEARCH_RESULT_UPDATED" then
-
---	end
---end
-
-
---local function myFunc( self)
---	--print( self.selectedValue)
---end

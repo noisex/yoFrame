@@ -181,12 +181,13 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 	if not f then
 		f = CreateFrame("Frame", nil, uf)
 		f:SetSize(2, 2)
-		local unit = uf.unit
-		f.unit = unit
 
-		uf[name] = f
+		local unit 		= uf.unit
+		local count 	= count or Round( uf:GetWidth() / ( iSize + shiftx))
+		f.unit 			= unit
+		uf[name] 		= f
 		uf[name].lastID = 1
-		uf[name].count = count
+		uf[name].count 	= count
 
 		for j = 1, 2 do
 			for i = 1, count do
@@ -281,9 +282,9 @@ logan:SetScript("OnEvent", function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.unitFrames or not yo_Player then return end
 
-	CreateBuff( plFrame,  "aurabar", 27, 7, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
-	CreateBuff( tarFrame, "aurabar", 21, 8, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
-	CreateBuff( fcFrame, "aurabar", 25, 4, "TOPLEFT", "BOTTOMLEFT", 5, 6, 1, 0)
+	CreateBuff( plFrame,  "aurabar", 27, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
+	CreateBuff( tarFrame, "aurabar", 21, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
+	CreateBuff( fcFrame, "aurabar", 25, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
 
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = _G["yo_Boss"..i]

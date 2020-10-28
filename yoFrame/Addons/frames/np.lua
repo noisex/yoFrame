@@ -384,15 +384,11 @@ end
 
 local function updateHealthColor(self, elapsed)
 
-	if InCombatLockdown() then
-		self:SetScript("OnUpdate", nil)
-	else
-		self.tick = ( self.tick or 1) + elapsed
-		if self.tick <= 0.5 then
-			return
-		end
-		self.tick = 0
-	end
+	self.tick = ( self.tick or 1) + elapsed
+	if self.tick <= 0.5 then return end
+	self.tick = 0
+
+	--if InCombatLockdown() then self:SetScript("OnUpdate", nil) end
 
 	local unit = self.unit
 	local cols = { .6, .6, .6}

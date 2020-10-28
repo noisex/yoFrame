@@ -423,9 +423,10 @@ function InitOptions()
 					enable 			= {	order = 1, 	type = "toggle",	name = L["UFenable"], width = "full", disabled = false,},
 					colorUF 		= {	order = 10, type = "select", 	name = function(info) return tr( info[#info]) end, disabled = true, values = { [0]  = L["HBAR_TS"] ,[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
 					classBackground = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full", disabled = true,},
-					simpeUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full", disabled = true,},
+					simpeUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					showGCD 		= {	order = 30,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
-					debuffHight		= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					showShards 		= {	order = 40,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					debuffHight		= {	order = 50, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 				},
 			},
 
@@ -688,6 +689,8 @@ function InitOptions()
 				args = {
 					label03 = { order = 996, type = "description",
 						name = "|cff00ff002020.10.26|r"
+						.."\n - [|cffff8000Юнитфреймы|r] разблокировалась настройка SimpleTemplate. Тестируем, ловим баги"
+						.."\n - [|cffff8000Юнитфреймы|r] возможность не показывать шардо-холиповер-комбо бар на фрейме игрока"
 						.."\n - [|cffff8000Система|r] проверка версии аддона на устаревание и бесполезность..."
 						.."\n - [|cffff8000Кастосбивалка|r] при более 5 баров с КД-шками на касты показываются только 3 первых и 2 последних"
 						.."\n - [|cffff8000LFG|r] настройки фильтра поиска групп по его членам и их размерам"
