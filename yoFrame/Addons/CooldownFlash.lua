@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
 
 if not yo.Addons.FlashIconCooldown then return end
 
@@ -41,12 +41,16 @@ flash:SetScript("OnUpdate", function(self, e)
 	end
 end)
 
+lib:RegisterCallback("start", function(id, class)
+	--print(id, class)
+	if N.interuptSpells[id] then yo.General.spellDelay = true end
+end)
+
 lib:RegisterCallback("stop", function(id, class)
 	if filter[class]=="all" or filter[class][id] then return end
 	flash.icon:SetTexture(class=="item" and GetItemIcon(id) or select(3, GetSpellInfo(id)))
 	flash.e = 0
 	flash:Show()
+
+	if N.interuptSpells[id] then yo.General.spellDelay = false end
 end)
-
-
-

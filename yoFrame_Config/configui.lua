@@ -278,7 +278,7 @@ function InitOptions()
 					--	set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
 					--	args = {
 					--		CastWatcher = {		order = 20, type = "toggle", name = "Cлежение за установкой еды, котлов, таунт танков.",
-					--			desc = "Установка хавки. \nТаунт других членов рейда. Пока не работает.",	width   = "full",},
+					--			desc = "Установка хавки. \nТаунт других хуйов рейда. Пока не работает.",	width   = "full",},
 					--		CastWatchSound = {	order = 22, type = "select", name = "Звук еды, котлов",	dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
 					--		TauntWatchSound = {	order = 26, type = "select", name = "Звук таунта", 	dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
 					--	},
@@ -446,7 +446,7 @@ function InitOptions()
 					spaicing 		= {	order = 35,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 0, max = 20, step = 1,},
 					partyScale 		= {	order = 40,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 1, max = 3, step = .1,},
 					showHPValue 	= {	order = 45, type = "select", name = function(info) return tr( info[#info]) end,	values = {["[DDG]"] = L["HP_HIDE"], ["[per]"] = L["HP_PROC"], ["[hp]"] = L["HP_HPPROC"]},},
-					manacolorClass 	= {	order = 50, type = "toggle", name = function(info) return tr( info[#info]) end,},
+					--manacolorClass 	= {	order = 50, type = "toggle", name = function(info) return tr( info[#info]) end,},
 					manabar 		= {	order = 55, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["MB_ALL"], [2] = L["MB_HEAL"], [3] = L["MB_HIDE"]},},
 					fadeColor		= {	order = 56,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 0.1, max = 1, step = .1,},
 					darkAbsorb		= {	order = 58,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 0.1, max = 3, step = .1,},
@@ -464,8 +464,12 @@ function InitOptions()
 					filterHighLight	= {	order = 97, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 					showMT 			= {	order =100, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
 					showMTT 		= {	order =102, type = "toggle", name = function(info) return tr( info[#info]) end, width = 1,},
-					heightMT		= {	order =104,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 20, max = 60, step = 1,},
-					widthMT			= {	order =106,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 80, max = 220, step = 1,},
+					showMTTT		= {	order =110, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
+					heightMT		= {	order =115,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 20, max = 60, step = 1,},
+					widthMT			= {	order =120,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 80, max = 220, step = 1,},
+					showValueTreat	= {	order =125, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
+					showPercTreat 	= { order =130, type = "select", name = function(info) return tr( info[#info]) end,	values = { ["none"] = L["NONE"], ["scaledPercent"] = L["scaledPercent"], ["rawPercent"] = L["rawPercent"],}, width = 1.5, disabled = function( info) return not yo.Raid.showValueTreat; end,},
+
 					},
 			},
 
@@ -483,11 +487,14 @@ function InitOptions()
 					CountSize 		= {	order = 5,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 8, max = 16, step = 1,},
 					MicroMenu 		= {	order = 20, type = "toggle", 	name = function(info) return tr( info[#info]) end, },
 					MicroScale 		= {	order = 21,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 0.5, max = 1.5, step = 0.05,},
+					showBar3		= {	order = 25, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full", },
+					showBar5		= {	order = 27, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full", },
 					panel3Nums		= {	order = 34,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 12, step = 1,},
 					panel3Cols		= {	order = 36,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 12, step = 1,},
 					buttonsSize		= {	order = 30,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 25, max = 50, step = 1,},
 					buttonSpace		= {	order = 32,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,},
-					hoverTexture	= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
+					--hoverTexture	= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
+					showNewGlow		= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
 				},
 			},
 
@@ -687,14 +694,20 @@ function InitOptions()
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
 				args = {
+					label04 = { order = 995, type = "description",
+						name = "|cff00ff002020.10.29|r"
+						.."\n - [|cffff8000Рейдфреймы|r] добавил МТТТ ( МэйнТанкТаргетТаргет), он не берется в цель, но зачем-то кому-то он может быть нужен ( отключаемо в настройках)"
+						.."\n - [|cffff8000Рейдфреймы|r] танки наконец-то растут вверх!!!!!!"
+						.."\n - [|cffff8000Рейдфреймы|r] на фрейме МТ показываются число набранного им аго и егойные проценты ( настройки присутствуют в Рейдфремах)\n\n",
+					},
 					label03 = { order = 996, type = "description",
 						name = "|cff00ff002020.10.26|r"
 						.."\n - [|cffff8000Юнитфреймы|r] разблокировалась настройка SimpleTemplate. Тестируем, ловим баги"
 						.."\n - [|cffff8000Юнитфреймы|r] возможность не показывать шардо-холиповер-комбо бар на фрейме игрока"
 						.."\n - [|cffff8000Система|r] проверка версии аддона на устаревание и бесполезность..."
 						.."\n - [|cffff8000Кастосбивалка|r] при более 5 баров с КД-шками на касты показываются только 3 первых и 2 последних"
-						.."\n - [|cffff8000LFG|r] настройки фильтра поиска групп по его членам и их размерам"
-						.."\n - [|cffff8000LFG|r] в тултипе над группой показываются все ихние члены\n\n",
+						.."\n - [|cffff8000LFG|r] настройки фильтра поиска групп по его хуйам и их размерам"
+						.."\n - [|cffff8000LFG|r] в тултипе над группой показываются все ихние хуйы\n\n",
 					},
 					label02 = { order = 997, type = "description",
 						name = "|cff00ff002020.10.22|r"

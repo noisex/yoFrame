@@ -83,7 +83,6 @@ local Private = oUF.Private
 local unitSelectionType = Private.unitSelectionType
 
 local function UpdateColor(self, event, unit)
-	--print(event, unit)
 	if(not unit or self.unit ~= unit) then return end
 	local element = self.Health
 
@@ -114,10 +113,6 @@ local function UpdateColor(self, event, unit)
 	end
 
 	if(b) then
-		if element.colorClass then
-			f = 0.7
-			r, g, b = r*f, g*f, b*f
-		end
 		element:SetStatusBarColor(r, g, b)
 
 		local bg = element.bg

@@ -16,7 +16,6 @@ local currentWeek, designed
 
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 -- 20: Void, 21: "Tides", 22: "Enchanted"
-
 local mythicRewards = {
 --	{"Level","End","Weekly","Azer Weekly"},
 	{2,187,200},

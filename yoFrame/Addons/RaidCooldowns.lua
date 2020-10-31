@@ -156,10 +156,8 @@ end
 local StartTimer = function(self, name, spellId)
 
 	local spell, _, icon = GetSpellInfo(spellId)
-	local color = RAID_CLASS_COLORS[select(2, UnitClass(name))]
+	local color = RAID_CLASS_COLORS[select(2, UnitClass(name))] or { 0.3, 0.7, 0.3}
 	local endTime = GetTime() + raid_CD_Spells[spellId]
-
-	if not color then color = { 0.3, 0.7, 0.3} end
 
 	self.bars[endTime] = {
 		["spell"] 	= spell,
@@ -201,11 +199,11 @@ local OnEvent = function(self, event, ...)
 
 		if UnitInRaid("player") and yo_Raid then
 			yo_RaidCD:ClearAllPoints()
-			yo_RaidCD:SetPoint("TOPLEFT", yo_Raid, "BOTTOMLEFT", 30, -30)
+			yo_RaidCD:SetPoint("TOPLEFT", yo_Raid, "BOTTOMLEFT", 25, -30)
 
 		elseif UnitInParty("player") and yo_Party then
 			yo_RaidCD:ClearAllPoints()
-			yo_RaidCD:SetPoint("TOPLEFT", yo_Party, "BOTTOMLEFT", 30, -40)
+			yo_RaidCD:SetPoint("TOPLEFT", yo_Party, "BOTTOMLEFT", 25, -30)
 
 		else
 			yo_RaidCD:ClearAllPoints()
@@ -214,7 +212,7 @@ local OnEvent = function(self, event, ...)
 	end
 end
 
-CreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 30, 150, "LEFT", "LEFT")
+CreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 27, 150, "LEFT", "LEFT")
 
 local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
 RaidCDAnchor:SetPoint("BOTTOM", "yoMoveRaidCD")

@@ -2,7 +2,6 @@ local L, yo, N = unpack( select( 2, ...))
 
 if not yo.Addons.unitFrames then return end
 
-
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
@@ -36,15 +35,11 @@ local function FadingOut( f)
 	end
 end
 
-function spellDelay( self)
-	for spellID, _ in pairs( N.interuptSpells) do
-		local _, duration = GetSpellCooldown( spellID)
-		if duration ~= 0 then
-			return false
-		end
-	end
-	return true
-end
+--function spellDelay( self, guid, spellID)
+--	if not yo.General.spellDelay then
+
+--	end
+--end
 
 local function UnitColors( f)
 	local cols = {}
@@ -61,10 +56,10 @@ local function UnitColors( f)
 		if f.notInterruptible then
 			cols[1], cols[2], cols[3] = 0.8, 0.15, 0.25
 		else
-			if spellDelay() then
-				cols[1], cols[2], cols[3] = 0.5, 1, 0
-			else
+			if yo.General.spellDelay then
 				cols[1], cols[2], cols[3] = 0, 1, 1
+			else
+				cols[1], cols[2], cols[3] = 0.5, 1, 0
 			end
 		end
 	end
@@ -72,7 +67,11 @@ local function UnitColors( f)
 	f:SetStatusBarColor( cols[1], cols[2], cols[3]	, 1)
 end
 
-local function TimerUpdate( f)
+local function TimerUpdate( f, elapsed)
+	f.tick = f.tick + elapsed
+	if f.tick < 0.02 then return end
+	f.tick = 0
+
 	if f.spellDelay ~= yo.General.spellDelay then UnitColors( f)	end
 
 	local now = GetTime()
@@ -167,6 +166,7 @@ local function startCast( f, unit, ...)
 		end
 	end
 
+	f.tick  		= 1
 	f.fadeDuration 	= 1.0
 	f.spellID 		= spellID
 	f.endTime 		= endTime/1000
@@ -308,8 +308,11 @@ local function OnEvent( f, event, unit, ...)
 			--stopCast( f, unit, ...)
 			--print(GetTime(), f, unit, ...)
 
-		elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-			yo.General.spellDelay = spellDelay()
+		--elseif event == "UNIT_SPELLCAST_SUCCEEDED" then --"UNIT_SPELLCAST_SUCCEEDED" then
+		--	--yo.General.spellDelay =
+		--	spellDelay( f, ...)
+		--elseif event == "ACTIONBAR_UPDATE_COOLDOWN" then
+		--	print(event)
 		end
 	end
 end
@@ -405,7 +408,7 @@ function CreateCastBar( frame, cfg)
 
 		bar.castBar:RegisterEvent("PLAYER_REGEN_ENABLED")
 		bar.castBar:RegisterEvent("PLAYER_REGEN_DISABLED")
-		bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+		--bar.castBar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 
 		bar.castBar.ticks = {}
 	end

@@ -121,6 +121,8 @@ local function CastStart(self, event, unit)
 	endTime = endTime / 1000
 	startTime = startTime / 1000
 
+	element.name = name
+	element.texture = texture
 	element.max = endTime - startTime
 	element.startTime = startTime
 	element.delay = 0
@@ -364,6 +366,9 @@ local function onUpdate(self, elapsed)
 		resetAttributes(self)
 		self:Hide()
 	end
+	if(self.PostCastUpdate) then
+		return self:PostCastUpdate(unit)
+	end
 end
 
 local function Update(...)
@@ -379,7 +384,6 @@ local function Enable(self, unit)
 	if(element and unit and not unit:match('%wtarget$')) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
-
 		self:RegisterEvent('UNIT_SPELLCAST_START', CastStart)
 		self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START', CastStart)
 		self:RegisterEvent('UNIT_SPELLCAST_STOP', CastStop)

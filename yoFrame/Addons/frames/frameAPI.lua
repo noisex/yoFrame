@@ -42,33 +42,32 @@ local function frameOnLeave(f, event)
 	end
 end
 
-local manaBarHider = function( power, event, unit)
-	--print( self:GetName(), unit, event)
+local function updatePowerBar ( power, event, unit)
+
 	if event == "UNIT_POWER_UPDATE" or event == "UNIT_POWER_FREQUENT" then return end
 
 	local role = UnitGroupRolesAssigned( unit)
-	if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) or power:GetName():match( "yo_Tanke") then
+	if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) then --or power:GetName():match( "yo_Tanke")
 		power.Power:SetAlpha( 1)
 		if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
 			power.Power:SetValue( UnitPowerMax(unit))
 		end
 	else
 		power.Power:SetAlpha(0)
+		power.Power.Override = dummy
 	end
 end
 
 local function onChangeTarget( self)
-	--if(unit ~= self.unit) then return end
 
+	local r, g, b, treatText = 0.09, 0.09, 0.09, ""
 	local unit = self.unit
 	local status = UnitThreatSituation( unit)
 
 	if (status and status > 0) then
-		local r, g, b = GetThreatStatusColor(status)
-		self.shadow:SetBackdropBorderColor(r, g, b)
-	else
-		self.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09)
+		r, g, b = GetThreatStatusColor(status)
 	end
+	self.shadow:SetBackdropBorderColor(r, g, b)
 
 	if UnitIsUnit( unit, "target") then
 		local _, class = UnitClass(unit)
@@ -96,7 +95,7 @@ local function updateFlash( self)
 	end
 end
 
-local function powerManaCost(self, event, _, _, spellID) -- 240022
+local function updateManaCost(self, event, _, _, spellID) -- 240022
 	if myClass == "WARLOCK" and mySpec == 3 or spellID == 240022 then return end
 
 	local cost 		= 0;
@@ -123,31 +122,47 @@ local function powerManaCost(self, event, _, _, spellID) -- 240022
 	end
 end
 
-local function updateTOTAuras( self, f, unit)
-	if f.tickTOT - GetTime() > - 0.7 then return end
-	f.tickTOT = GetTime()
-
-	local index, fligerPD = 1, 1
-	local filter = UnitPlayerControlled( unit) and "HARMFUL" or "HELPFUL"
-
-	while true and fligerPD < f.pDebuff.count do
-		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
-		if not name then break end
-
-		if not N.blackSpells[spellID] then
-			local aIcon	= CreateAuraIcon( f.pDebuff, fligerPD, false, "BOTTOM") --end
-			UpdateAuraIcon( aIcon, filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
-			fligerPD = fligerPD + 1
-		end
-
-		index = index + 1
-	end
-
-	for index = fligerPD, #f.pDebuff	do f.pDebuff[index]:Hide()   end
+local function addDebuffHigh( self)
+	self.DebuffHighlightMy = self.Health:CreateTexture(nil, "OVERLAY")
+	self.DebuffHighlightMy:SetAllPoints(self.Health:GetStatusBarTexture())
+	self.DebuffHighlightMy:SetTexture(texture)
+	self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
+	self.DebuffHighlightMy:SetBlendMode("BLEND")
+	self.DebuffHighlightMyAlpha = 0.7
+	self.DebuffHighlightMyFilter = yo.Raid.filterHighLight
 end
 
+local function addAbsorbBar( self)
+	local AbsorbBar = CreateFrame('StatusBar', nil, self.Health)
+   	AbsorbBar:SetPoint('TOP')
+   	AbsorbBar:SetPoint('BOTTOM')
+   	AbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture(), 'RIGHT')
+   	AbsorbBar:SetWidth( self.Health:GetWidth())
+	AbsorbBar:SetStatusBarTexture( yo.texture)
+	AbsorbBar:SetFillStyle( 'REVERSE')
+	AbsorbBar:SetFrameLevel(2)
+	self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", self.updateHealth)
+	table.insert( N.statusBars, AbsorbBar)
+	return AbsorbBar
+end
 
-local function powerUpdate( f, unit, pmin, min, pmax)
+local function addHealPred( self)
+	local healPred = CreateFrame('StatusBar', nil, self.Health)
+    healPred:SetPoint('TOP')
+    healPred:SetPoint('BOTTOM')
+    healPred:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+    healPred:SetWidth( self.Health:GetWidth())
+	healPred:SetStatusBarTexture( yo.texture)
+	healPred:SetStatusBarColor( 0.3, 0.9, 0.3, 0.6)
+	healPred:SetFrameLevel(2)
+	table.insert( N.statusBars, healPred)
+
+	self:RegisterEvent("UNIT_HEAL_PREDICTION", self.updateHealth)
+	self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", self.updateHealth)
+	return healPred
+end
+
+local function updatePower( f, unit, pmin, min, pmax)
 	local uPP, uPText
 
 	if myClass == "WARLOCK" and mySpec == 3 then
@@ -179,78 +194,100 @@ local function powerUpdate( f, unit, pmin, min, pmax)
 	f.powerMax = pmax
 end
 
-local function addDebuffHigh( self)
-	self.DebuffHighlightMy = self.Health:CreateTexture(nil, "OVERLAY")
-	self.DebuffHighlightMy:SetAllPoints(self.Health:GetStatusBarTexture())
-	self.DebuffHighlightMy:SetTexture(texture)
-	self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
-	self.DebuffHighlightMy:SetBlendMode("BLEND")
-	self.DebuffHighlightMyAlpha = 0.7
-	self.DebuffHighlightMyFilter = yo.Raid.filterHighLight
+
+local function updateTOTAuras( self, f, unit)
+
+	if f.tickTOT - GetTime() > - 0.7 then return end
+	f.tickTOT = GetTime()
+
+	local index, fligerPD = 1, 1
+	local filter = UnitPlayerControlled( unit) and "HARMFUL" or "HELPFUL"
+
+	while true and fligerPD < f.pDebuff.count do
+		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
+		if not name then break end
+
+		if not N.blackSpells[spellID] then
+			local aIcon	= CreateAuraIcon( f.pDebuff, fligerPD, false, "BOTTOM") --end
+			UpdateAuraIcon( aIcon, filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
+			fligerPD = fligerPD + 1
+		end
+
+		index = index + 1
+	end
+
+	for index = fligerPD, #f.pDebuff	do f.pDebuff[index]:Hide()   end
 end
 
-local function addAbsorbBar( self)
-	local AbsorbBar = CreateFrame('StatusBar', nil, self.Health)
-   	AbsorbBar:SetPoint('TOP')
-   	AbsorbBar:SetPoint('BOTTOM')
-   	AbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture(), 'RIGHT')
-   	AbsorbBar:SetWidth( self.Health:GetWidth())
-	AbsorbBar:SetStatusBarTexture( yo.texture)
-	AbsorbBar:SetFillStyle( 'REVERSE')
-	AbsorbBar:SetFrameLevel(2)
-	self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", self.healthUpdate)
-	table.insert( N.statusBars, AbsorbBar)
-	return AbsorbBar
+local function updateThreat( f, unit)
+
+	if f.threat and not unit:find( "target")  then
+		local treatText, procText = "", ""
+		local status = UnitThreatSituation( unit)
+		if status then
+			local r, g, b = GetThreatStatusColor(status)
+			local _, _, scaledPercent, rawPercent, threatvalue  = UnitDetailedThreatSituation( unit, unit .. "target")
+
+			if scaledPercent and yo.Raid.showPercTreat == "scaledPercent" then
+				procText = " (" .. Round(scaledPercent) .. "%)"
+			elseif rawPercent and yo.Raid.showPercTreat == "rawPercent" then
+				procText = " (" .. Round(rawPercent) .. "%)"
+			end
+
+			if threatvalue then
+				treatText =  format( "%s%s", ShortValue(threatvalue), procText)
+			end
+
+			f.threat:SetTextColor( r, g, b)
+		end
+
+		f.threat:SetText( treatText)
+	end
 end
 
-local function addHealPred( self)
-	local healPred = CreateFrame('StatusBar', nil, self.Health)
-    healPred:SetPoint('TOP')
-    healPred:SetPoint('BOTTOM')
-    healPred:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-    healPred:SetWidth( self.Health:GetWidth())
-	healPred:SetStatusBarTexture( yo.texture)
-	healPred:SetStatusBarColor( 0.3, 0.9, 0.3, 0.6)
-	healPred:SetFrameLevel(2)
-	table.insert( N.statusBars, healPred)
+local function updateAllTarget( self, elapsed)
+	self.tick = self.tick + elapsed
+	if self.tick > 0.5 then
+		self.tick = 0
 
-	self:RegisterEvent("UNIT_HEAL_PREDICTION", self.healthUpdate)
-	self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", self.healthUpdate)
-	return healPred
+		self.updateAllElements( self)
+		--local unit 		= self.unit
+		--local healthMax = UnitHealthMax( unit)
+		--local healthCur	= UnitHealth( unit)
+
+		--self.Health:SetMinMaxValues( 0, healthMax)
+		--self.Health:SetValue( healthCur)
+	end
 end
 
-local function healthUpdate( f, event, unit)
-	local thText
+local function updateHealth( f, event, unit)
+	local unit 			= unit or f.unit
 	local healthMax 	= UnitHealthMax( unit)
 	local healthCur 	= UnitHealth( unit)
-	local incomingHeal 	= UnitGetIncomingHeals(unit) or 0
 	local absorb 		= UnitGetTotalAbsorbs( unit) or 0
-	local absorbText 	= absorb > 0 and "|cffffff00 " .. nums( absorb).. "|r" or ""
 
-	if not UnitIsConnected( unit) then
-		thText = "Off"
-	elseif UnitIsDead( unit) then
-        thText = "Dead"
-	elseif UnitIsGhost( unit) then
-        thText = "Ghost"
-	else
-		if unit == "targettarget" or unit == "pet"  or unit == "focus" or unit == "focustarget" then
-			--thText = math.ceil( UnitHealth( unit) / UnitHealthMax( unit) * 100) .. "%"
-			thText = ""
+	if f.Health.healthText then
+		local thText = ""
+
+		if not UnitIsConnected( unit) then
+			thText = "Off"
+		elseif UnitIsDead( unit) then
+        	thText = "Dead"
+		elseif UnitIsGhost( unit) then
+        	thText = "Ghost"
 		else
 			if healthCur == healthMax then
 				thText = nums( healthCur)
 			else
+				local absorbText 	= absorb > 0 and "|cffffff00 " .. nums( absorb).. "|r" or ""
 				thText = nums( healthCur) .. absorbText .. " | " .. ceil( healthCur / healthMax * 100) .. "%"
 			end
-		end
-    end
+    	end
 
-	f.Health:SetMinMaxValues( 0, healthMax + absorb)
-
-	if f.Health.healthText then
 		f.Health.healthText:SetText( thText)
 	end
+
+	f.Health:SetMinMaxValues( 0, healthMax + absorb)
 
 	if f.Health.AbsorbBar then
 		f.Health.AbsorbBar:SetMinMaxValues( 0, healthMax)-- + absorb)
@@ -258,6 +295,7 @@ local function healthUpdate( f, event, unit)
 	end
 
 	if f.Health.healPred then
+		local incomingHeal 	= UnitGetIncomingHeals(unit) or 0
 		f.Health.healPred:SetMinMaxValues(0, healthMax)
 		f.Health.healPred:SetValue( min( incomingHeal, healthMax - healthCur))
 		f.Health.healPred:Show()
@@ -268,9 +306,12 @@ local function healthUpdate( f, event, unit)
 	else
 		f.Health:SetValue( healthCur + absorb)
 	end
+
+	updateThreat( f, unit)
 end
 
-local function healthUpdateColor( f, event, unit, ...)
+
+local function updateHealthColor( f, event, unit, ...)
 
 	if f.Power and unit == "targettarget" and event == "OnUpdate" then f:updateTOTAuras( f.Power, unit) end--return
 	if event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" then return end
@@ -335,18 +376,19 @@ local function healthUpdateColor( f, event, unit, ...)
 end
 
 function importAPI( self)
-	self.healthUpdateColor 	= healthUpdateColor
-	self.healthUpdate 		= healthUpdate
+	self.updateHealthColor 	= updateHealthColor
+	self.updateHealth 		= updateHealth
+	self.updateAllTarget 	= updateAllTarget
+	self.updatePower 		= updatePower
+	self.updatePowerBar 	= updatePowerBar
+	self.updateTOTAuras 	= updateTOTAuras
+	self.updateFlash 		= updateFlash
+	self.updateAllElements	= updateAllElements
+	self.updateManaCost 	= updateManaCost
 	self.addHealPred 		= addHealPred
 	self.addAbsorbBar		= addAbsorbBar
-	self.powerUpdate 		= powerUpdate
-	self.updateTOTAuras 	= updateTOTAuras
-	self.powerManaCost 		= powerManaCost
-	self.updateFlash 		= updateFlash
+	self.addDebuffHigh 		= addDebuffHigh
 	self.frameOnLeave 		= frameOnLeave
 	self.frameOnEnter 		= frameOnEnter
-	self.updateAllElements	= updateAllElements
 	self.onChangeTarget 	= onChangeTarget
-	self.manaBarHider 		= manaBarHider
-	self.addDebuffHigh 		= addDebuffHigh
 end

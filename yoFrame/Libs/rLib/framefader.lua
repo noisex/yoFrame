@@ -120,8 +120,20 @@ function rLib:CreateFrameFader(frame, faderConfig)
   FrameHandler(frame)
 end
 
+function GetButtonList(buttonName,numButtons)
+  local buttonList = {}
+  for i=1, numButtons do
+    local button = _G[buttonName..i]
+    if not button then break end
+    table.insert(buttonList, button)
+  end
+  return buttonList
+end
+
 function rLib:CreateButtonFrameFader(frame, buttonList, faderConfig)
   rLib:CreateFrameFader(frame, faderConfig)
+
+  --local buttonList = GetButtonList( buttonName, 12)
   for i, button in next, buttonList do
     if not button.__faderParent then
       button.__faderParent = frame

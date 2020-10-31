@@ -21,7 +21,7 @@ myDev = {
 	["Дэмьер"] 		= true,
 	["Ковальска"] 	= true,
 	["Герсона"] 	= true,
-	["Твитти"] 		= true,
+	--["Твитти"] 		= true,
 }
 
 dummy = function() return end
@@ -102,10 +102,11 @@ N.QuestTypesIndex = {
 }
 
 yo["General"] = {
-	["1st"] 	= true,
-	["cFrame"] 	= 0,
-	["cConfig"] = 0,
+	["1st"] 			= true,
+	["cFrame"] 			= 0,
+	["cConfig"] 		= 0,
 	["scriptErrors"]	= false,
+	["spellDelay"]		= false
 }
 
 yo["Bags"] = {
@@ -197,6 +198,10 @@ yo["ActionBar"] = {
 	["buttonsSize"]	= 35,
 	["buttonSpace"]	= 2,
 	["hoverTexture"]= true,
+	["showBar3"]	= false,
+	["showBar5"]	= false,
+	["showNewGlow"]	= false,
+
 }
 
 yo["CastBar"] = {
@@ -377,11 +382,14 @@ yo["Raid"] = {
 	["filterHighLight"]	= false,
 	["showMT"]			= true,
 	["showMTT"]			= true,
+	["showMTTT"]		= true,
 	["heightMT"]		= 30,
 	["widthMT"]			= 110,
 	["simpeRaid"]		= false,
 	["fadeColor"]		= 0.8,
 	["darkAbsorb"]		= 0.6,
+	["showPercTreat"] 	= "none",
+	["showValueTreat"] 	= true,
 }
 
 yo["Chat"] = {

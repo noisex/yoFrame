@@ -143,7 +143,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		button.style:Hide()
 		button.style.Show = dummy
 
-		button:SetScale( 1.1)
+		button:SetScale( 0.9)
 		button.Count:Hide()
 		button.icon:SetTexCoord(unpack( yo.tCoord))
 		button.cooldown:ClearAllPoints()
@@ -357,191 +357,191 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 end
 
-local bars = CreateFrame("Frame")
-bars:RegisterEvent("PLAYER_ENTERING_WORLD")
-bars:SetScript("OnEvent", function(self, event)
+--local bars = CreateFrame("Frame")
+--bars:RegisterEvent("PLAYER_ENTERING_WORLD")
+--bars:SetScript("OnEvent", function(self, event)
 
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+--	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	if yo.ActionBar.enable == true then
+--	if yo.ActionBar.enable == true then
 
-		CreateAnchor("yoMoveABar1", 		"Move Action Bar #1", 445, 35, 0, 	2, 		"BOTTOM", "BOTTOM")
-		CreateAnchor("yoMoveABar2", 		"Move Action Bar #2", 445, 35, 0, 	40, 	"BOTTOM", "BOTTOM")
-		CreateAnchor("yoMoveABar3", 		"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT", "BOTTOMRIGHT")
-		CreateAnchor("yoMoveABar4", 		"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
-		CreateAnchor("yoMoveABar5", 		"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
-		CreateAnchor("yoMoveAMicro", 		"Move MicroMenu Bar", 220, 18, -470,7, 		"BOTTOMRIGHT", "BOTTOMRIGHT")
-		CreateAnchor("yoMovePetBar", 		"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yoMoveLeftPanel)
-		CreateAnchor("yoMoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yoMoveplayer)
+--		CreateAnchor("yoMoveABar1", 		"Move Action Bar #1", 445, 35, 0, 	2, 		"BOTTOM", "BOTTOM")
+--		CreateAnchor("yoMoveABar2", 		"Move Action Bar #2", 445, 35, 0, 	40, 	"BOTTOM", "BOTTOM")
+--		CreateAnchor("yoMoveABar3", 		"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT", "BOTTOMRIGHT")
+--		CreateAnchor("yoMoveABar4", 		"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
+--		CreateAnchor("yoMoveABar5", 		"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
+--		CreateAnchor("yoMoveAMicro", 		"Move MicroMenu Bar", 220, 18, -470,7, 		"BOTTOMRIGHT", "BOTTOMRIGHT")
+--		CreateAnchor("yoMovePetBar", 		"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yoMoveLeftPanel)
+--		CreateAnchor("yoMoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yoMoveplayer)
 
-		local fader01 = {
-  			fadeInAlpha 	= 1,
-  			fadeInDuration 	= 0.3,
-  			fadeInSmooth 	= "OUT",
-  			fadeOutAlpha 	= 0.1,
-  			fadeOutDuration = 0.9,
-  			fadeOutSmooth 	= "OUT",
-  			fadeOutDelay 	= 1,
-		}
+--		local fader01 = {
+--  			fadeInAlpha 	= 1,
+--  			fadeInDuration 	= 0.3,
+--  			fadeInSmooth 	= "OUT",
+--  			fadeOutAlpha 	= 0.1,
+--  			fadeOutDuration = 0.9,
+--  			fadeOutSmooth 	= "OUT",
+--  			fadeOutDelay 	= 1,
+--		}
 
-		local fader00 = {
-  			fadeInAlpha 	= 1,
-  			fadeInDuration 	= 0.3,
-  			fadeInSmooth 	= "OUT",
-  			fadeOutAlpha 	= 0,
-  			fadeOutDuration = 0.9,
-  			fadeOutSmooth 	= "OUT",
-  			fadeOutDelay 	= 1,
-		}
+--		local fader00 = {
+--  			fadeInAlpha 	= 1,
+--  			fadeInDuration 	= 0.3,
+--  			fadeInSmooth 	= "OUT",
+--  			fadeOutAlpha 	= 0,
+--  			fadeOutDuration = 0.9,
+--  			fadeOutSmooth 	= "OUT",
+--  			fadeOutDelay 	= 1,
+--		}
 
-		local cfg = {}
-		local defaultcfg = {
-			["frameScale"] 		= 1,
-			["framePadding"] 	= 1,
-			["frameParent"] 	= UIParent,
-			["framePoint"] 		= { "CENTER", cfg.frameParent, "CENTER", 0, 0},
-			["buttonWidth"] 	= yo.ActionBar.buttonsSize,
-			["buttonHeight"] 	= yo.ActionBar.buttonsSize,
-			["buttonMargin"] 	= yo.ActionBar.buttonSpace,
-			["numCols"] 		= 12,
-			["startPoint"] 		= "TOPLEFT", --, TOPRIGHT, BOTTOMRIGHT, BOTTOMLEFT)
-			["fader"] 			= nil, --type:TABLE, description: rLib faderConfig, check rLib API for definition
-			["frameVisibility"] = nil,
-			--["frameVisibility"] = (OPTIONAL), type:STRING, description: visibility state handler. define your own or let rActionBar use the default one.
-			--["actionPage"] = (OPTIONAL), type:STRING, description: onstate-page handler. define your own or let rActionBar use the default one. Actionbar1 only.
-		}
+--		local cfg = {}
+--		local defaultcfg = {
+--			["frameScale"] 		= 1,
+--			["framePadding"] 	= 1,
+--			["frameParent"] 	= UIParent,
+--			["framePoint"] 		= { "CENTER", cfg.frameParent, "CENTER", 0, 0},
+--			["buttonWidth"] 	= yo.ActionBar.buttonsSize,
+--			["buttonHeight"] 	= yo.ActionBar.buttonsSize,
+--			["buttonMargin"] 	= yo.ActionBar.buttonSpace,
+--			["numCols"] 		= 12,
+--			["startPoint"] 		= "TOPLEFT", --, TOPRIGHT, BOTTOMRIGHT, BOTTOMLEFT)
+--			["fader"] 			= nil, --type:TABLE, description: rLib faderConfig, check rLib API for definition
+--			["frameVisibility"] = nil,
+--			--["frameVisibility"] = (OPTIONAL), type:STRING, description: visibility state handler. define your own or let rActionBar use the default one.
+--			--["actionPage"] = (OPTIONAL), type:STRING, description: onstate-page handler. define your own or let rActionBar use the default one. Actionbar1 only.
+--		}
 
-		cfg = defaultcfg
-		cfg.framePoint	= { "CENTER", yoMoveABar1, "CENTER", 0, 0}
-		rActionBar:CreateActionBar1( "yoFrame", cfg)
+--		cfg = defaultcfg
+--		cfg.framePoint	= { "CENTER", yoMoveABar1, "CENTER", 0, 0}
+--		rActionBar:CreateActionBar1( "yoFrame", cfg)
 
-		cfg = defaultcfg
-		cfg.framePoint 	= { "CENTER", yoMoveABar2, "CENTER", 0, 0}
-		rActionBar:CreateActionBar2( "yoFrame", cfg)
+--		cfg = defaultcfg
+--		cfg.framePoint 	= { "CENTER", yoMoveABar2, "CENTER", 0, 0}
+--		rActionBar:CreateActionBar2( "yoFrame", cfg)
 
-		--cfg.fader = fader
-		cfg.numCols 	= yo.ActionBar.panel3Cols
-		cfg.framePoint 	= { "TOPLEFT", yoMoveABar3, "TOPLEFT", 0, 0}
-		rActionBar:CreateActionBar3( "yoFrame", cfg)
+--		--cfg.fader = fader
+--		cfg.numCols 	= yo.ActionBar.panel3Cols
+--		cfg.framePoint 	= { "TOPLEFT", yoMoveABar3, "TOPLEFT", 0, 0}
+--		rActionBar:CreateActionBar3( "yoFrame", cfg)
 
-		cfg.numCols 	= 12
-		cfg.buttonWidth = 35
-		cfg.buttonHeight= 35
-		cfg.buttonMargin= 2
-		cfg.framePoint 	= { "CENTER", yoMoveABar4, "CENTER", 0, 0}
-		rActionBar:CreateActionBar4( "yoFrame", cfg)
+--		cfg.numCols 	= 12
+--		cfg.buttonWidth = 35
+--		cfg.buttonHeight= 35
+--		cfg.buttonMargin= 2
+--		cfg.framePoint 	= { "CENTER", yoMoveABar4, "CENTER", 0, 0}
+--		rActionBar:CreateActionBar4( "yoFrame", cfg)
 
-		cfg.numCols 	= 1
-		cfg.framePoint 	= { "CENTER", yoMoveABar5, "CENTER", 0, 0}
-		cfg.buttonWidth = 35
-		cfg.buttonHeight= 35
-		cfg.fader 		= fader00
-		cfg.direction 	= "LEFT"
-		rActionBar:CreateActionBar5( "yoFrame", cfg)
+--		cfg.numCols 	= 1
+--		cfg.framePoint 	= { "CENTER", yoMoveABar5, "CENTER", 0, 0}
+--		cfg.buttonWidth = 35
+--		cfg.buttonHeight= 35
+--		cfg.fader 		= fader00
+--		cfg.direction 	= "LEFT"
+--		rActionBar:CreateActionBar5( "yoFrame", cfg)
 
-		cfg.fader 		= nill
-		cfg.buttonWidth = 30
-		cfg.buttonHeight= 30
-		cfg.startPoint 	= "TOPRIGHT"
-		cfg.numCols 	= 12
-		cfg.framePoint 	= { "CENTER", yoMovePetBar, "CENTER", 0, 0}
-		rActionBar:CreateStanceBar( "yoFrame",cfg)
-		rActionBar:CreatePetBar( "yoFrame",cfg)
+--		cfg.fader 		= nill
+--		cfg.buttonWidth = 30
+--		cfg.buttonHeight= 30
+--		cfg.startPoint 	= "TOPRIGHT"
+--		cfg.numCols 	= 12
+--		cfg.framePoint 	= { "CENTER", yoMovePetBar, "CENTER", 0, 0}
+--		rActionBar:CreateStanceBar( "yoFrame",cfg)
+--		rActionBar:CreatePetBar( "yoFrame",cfg)
 
-		cfg.buttonWidth = 40
-		cfg.buttonHeight= 40
-		cfg.startPoint 	= "TOPLEFT"
-		cfg.framePoint 	= { "CENTER", yoMoveExtr, "CENTER", 0, 0}
-		rActionBar:CreateExtraBar( "yoFrame",cfg)
+--		cfg.buttonWidth = 40
+--		cfg.buttonHeight= 40
+--		cfg.startPoint 	= "TOPLEFT"
+--		cfg.framePoint 	= { "CENTER", yoMoveExtr, "CENTER", 0, 0}
+--		rActionBar:CreateExtraBar( "yoFrame",cfg)
 
-		cfg.buttonWidth = 35
-		cfg.buttonHeight= 35
-		cfg.framePoint 	= { "CENTER", yoMoveExtr, "CENTER", 0, -60}
-		cfg.frameVisibility = "[canexitvehicle][target=vehicle,exists] show;hide"
-		rActionBar:CreateVehicleExitBar( "yoFrame",cfg)
+--		cfg.buttonWidth = 35
+--		cfg.buttonHeight= 35
+--		cfg.framePoint 	= { "CENTER", yoMoveExtr, "CENTER", 0, -60}
+--		cfg.frameVisibility = "[canexitvehicle][target=vehicle,exists] show;hide"
+--		rActionBar:CreateVehicleExitBar( "yoFrame",cfg)
 
-		cfg.buttonWidth = 40
-		cfg.buttonHeight = 40
-		cfg.framePoint = { "CENTER", yoMoveExtr, "CENTER", 0, -50}
-		cfg.frameVisibility = nil
-		rActionBar:CreatePossessExitBar( "yoFrame",cfg)
+--		cfg.buttonWidth = 40
+--		cfg.buttonHeight = 40
+--		cfg.framePoint = { "CENTER", yoMoveExtr, "CENTER", 0, -50}
+--		cfg.frameVisibility = nil
+--		rActionBar:CreatePossessExitBar( "yoFrame",cfg)
 
-		cfg.buttonWidth = 30
-		cfg.buttonHeight = 35
-		cfg.startPoint = "TOPRIGHT"
-		cfg.numCols = 12
-		cfg.framePoint = { "RIGHT", yoMovePetBar, "RIGHT", 0, 0}
-		rActionBar:CreateTotemBar( "yoFrame",cfg)
+--		cfg.buttonWidth = 30
+--		cfg.buttonHeight = 35
+--		cfg.startPoint = "TOPRIGHT"
+--		cfg.numCols = 12
+--		cfg.framePoint = { "RIGHT", yoMovePetBar, "RIGHT", 0, 0}
+--		rActionBar:CreateTotemBar( "yoFrame",cfg)
 
-		if yo.ActionBar.MicroMenu == true then
-			cfg = defaultcfg
-			cfg.buttonMargin = -4
-			cfg.fader = fader01
-  			cfg.startPoint = "BOTTOMLEFT"
-  			cfg.frameScale =  yo["ActionBar"].MicroScale
-  			cfg.framePoint = { "CENTER", yoMoveAMicro, "CENTER", 0, 0}
-			rActionBar:CreateMicroMenuBar( "yoFrame", cfg)
-		end
+--		if yo.ActionBar.MicroMenu == true then
+--			cfg = defaultcfg
+--			cfg.buttonMargin = -4
+--			cfg.fader = fader01
+--  			cfg.startPoint = "BOTTOMLEFT"
+--  			cfg.frameScale =  yo["ActionBar"].MicroScale
+--  			cfg.framePoint = { "CENTER", yoMoveAMicro, "CENTER", 0, 0}
+--			rActionBar:CreateMicroMenuBar( "yoFrame", cfg)
+--		end
 
-		PlayerPowerBarAlt:ClearAllPoints()
-		PlayerPowerBarAlt:SetPoint('CENTER', yoMoveAltPower, 'CENTER')
-		PlayerPowerBarAlt:SetParent(yoMoveAltPower)
-		PlayerPowerBarAlt.ignoreFramePositionManager = true
+--		PlayerPowerBarAlt:ClearAllPoints()
+--		PlayerPowerBarAlt:SetPoint('CENTER', yoMoveAltPower, 'CENTER')
+--		PlayerPowerBarAlt:SetParent(yoMoveAltPower)
+--		PlayerPowerBarAlt.ignoreFramePositionManager = true
 
-		local function Position(self)
-			self:SetPoint('CENTER', yoMoveAltPower, 'CENTER')
-		end
-		hooksecurefunc(PlayerPowerBarAlt, "ClearAllPoints", Position)
-	end
+--		local function Position(self)
+--			self:SetPoint('CENTER', yoMoveAltPower, 'CENTER')
+--		end
+--		hooksecurefunc(PlayerPowerBarAlt, "ClearAllPoints", Position)
+--	end
 
-	if yo.ActionBar.ShowGrid == true then
-		ActionButton_HideGrid = dummy
-		for i = 1, 12 do
-			local button = _G[format("ActionButton%d", i)]
-			button:SetAttribute("showgrid", 1)
-			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+--	if yo.ActionBar.ShowGrid == true then
+--		ActionButton_HideGrid = dummy
+--		for i = 1, 12 do
+--			local button = _G[format("ActionButton%d", i)]
+--			button:SetAttribute("showgrid", 1)
+--			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
-			button = _G[format("MultiBarRightButton%d", i)]
-			button:SetAttribute("showgrid", 1)
-			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+--			button = _G[format("MultiBarRightButton%d", i)]
+--			button:SetAttribute("showgrid", 1)
+--			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
-			button = _G[format("MultiBarBottomRightButton%d", i)]
-			button:SetAttribute("showgrid", 1)
-			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+--			button = _G[format("MultiBarBottomRightButton%d", i)]
+--			button:SetAttribute("showgrid", 1)
+--			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
-			button = _G[format("MultiBarLeftButton%d", i)]
-			button:SetAttribute("showgrid", 1)
-			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+--			button = _G[format("MultiBarLeftButton%d", i)]
+--			button:SetAttribute("showgrid", 1)
+--			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 
-			button = _G[format("MultiBarBottomLeftButton%d", i)]
-			button:SetAttribute("showgrid", 1)
-			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-		end
-	end
+--			button = _G[format("MultiBarBottomLeftButton%d", i)]
+--			button:SetAttribute("showgrid", 1)
+--			button:ShowGrid( ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+--		end
+--	end
 
-	ZoneAbilityFrame:SetParent(UIParent)
-	ZoneAbilityFrame:SetScale( 0.6)
-	ZoneAbilityFrame:ClearAllPoints()
-	ZoneAbilityFrame:SetPoint('LEFT', LeftDataPanel, 'RIGHT', 170, 20)
-	--DraenorZoneAbilityFrame:SetScript("OnShow", DraenorZoneAbilityFrame.Hide)
-	ZoneAbilityFrame.ignoreFramePositionManager = true
+--	ZoneAbilityFrame:SetParent(UIParent)
+--	ZoneAbilityFrame:SetScale( 0.6)
+--	ZoneAbilityFrame:ClearAllPoints()
+--	ZoneAbilityFrame:SetPoint('LEFT', LeftDataPanel, 'RIGHT', 170, 20)
+--	--DraenorZoneAbilityFrame:SetScript("OnShow", DraenorZoneAbilityFrame.Hide)
+--	ZoneAbilityFrame.ignoreFramePositionManager = true
 
-	--buttonsUP( self)
-	C_Timer.After( 2, function() buttonsUP(self) end )
-end)
+--	--buttonsUP( self)
+--	C_Timer.After( 2, function() buttonsUP(self) end )
+--end)
 
 
---------------------------------------------------------------------------------------------
----- 		update OverrideBar new buttons
---------------------------------------------------------------------------------------------
-hooksecurefunc("ActionBarController_UpdateAll", function(self, ...)
-	if ( HasBonusActionBar() or HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() ) then
-		--print("ПОПАЛИ: ", CURRENT_ACTION_BAR_STATE, LE_ACTIONBAR_STATE_OVERRIDE, HasVehicleActionBar(), HasOverrideActionBar(), HasTempShapeshiftActionBar(), C_PetBattles.IsInBattle())
-		for i = 1, 6 do
-			if ActionBarButtonEventsFrame.frames[i] then ActionBarButtonEventsFrame.frames[i]:Update() end
-		end
-	end
-end)
+----------------------------------------------------------------------------------------------
+------ 		update OverrideBar new buttons
+----------------------------------------------------------------------------------------------
+--hooksecurefunc("ActionBarController_UpdateAll", function(self, ...)
+--	if ( HasBonusActionBar() or HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() ) then
+--		--print("ПОПАЛИ: ", CURRENT_ACTION_BAR_STATE, LE_ACTIONBAR_STATE_OVERRIDE, HasVehicleActionBar(), HasOverrideActionBar(), HasTempShapeshiftActionBar(), C_PetBattles.IsInBattle())
+--		for i = 1, 6 do
+--			if ActionBarButtonEventsFrame.frames[i] then ActionBarButtonEventsFrame.frames[i]:Update() end
+--		end
+--	end
+--end)
 
 --------------------------------------------------------------------------------------------
 --		Fix MicroMenu

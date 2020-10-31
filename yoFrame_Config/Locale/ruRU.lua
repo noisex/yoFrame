@@ -196,8 +196,10 @@ L["debuffHight"]	= "Подсвечивать дебафы на рамках иг
 L["classBackground"]= "В темной схеме рисовать подложку в цвет класса"
 L["filterHighLight"]= "Показывать только дебафы, которые могу сдиспелить"
 
-L["showMT"]			= "Show Main Tanks"
-L["showMTT"]		= "Show Main Tanks targets"
+L["showMT"]			= "Show Main Tank"
+L["showMTT"]		= "Show Main Tank Target"
+L["showMTTT"]		= "Show Main Tank Target-Target ( о, да, детка, ты хочешь этого)"
+L["showValueTreat"] = "Показывать на фрейме Main Tank значение набранного им агро"
 L["heightMT"]		= "Main Tanks Height"
 L["widthMT"]		= "Main Tanks Width"
 L["fadeColor"]		= "Изменить яркость классового цвета"
@@ -233,6 +235,9 @@ L["panel3Cols"]		= "Панель:3 Кол-во столбцов"
 L["buttonsSize"]	= "Размер иконок панелей №1-3"
 L["buttonSpace"]	= "Растояние между кнопками"
 L["hoverTexture"]	= "Рамка при подсветке кнопки"
+L["showNewGlow"] 	= "Показывать вместо свечения готовности спела анимашку"
+L["showBar3"]		= "Показать Панель:3"
+L["showBar5"]		= "Показать Панель:5, кторый вертикально сбоку "
 
 ---------------------------------------------
 -----		NamePlates

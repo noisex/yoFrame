@@ -32,7 +32,7 @@ local function unitShared(self, unit)
 	local width 		= _G["yoMove" .. cunit]:GetWidth()
 	local enablePower 	= true
 	local nameLeight	= "namelong"
-	local namePos		= { "BOTTOMLEFT", self, "TOPLEFT", 0, 11}
+	local namePos		= { "BOTTOMLEFT", self, "BOTTOMLEFT", 4, 13}
 	local rtargetPos 	= { "CENTER", self, "TOP", 0, 2}
 	local healthTextPos	= { "TOPRIGHT", self, "TOPRIGHT", 0, -2}
 	local showLeader 	= true
@@ -40,7 +40,7 @@ local function unitShared(self, unit)
 
 	if yo.UF.simpeUF then
 		height 			= height / 1.8
-		width 			= width / 1.2
+		width 			= width / 1.1
 		enablePower 	= false
 		showLeader 		= false
 		combatPos 		= 0
@@ -78,7 +78,7 @@ local function unitShared(self, unit)
 	if unit == "player" or unit == "target" or unit == "pet" then
 		self.Health.AbsorbBar = self:addAbsorbBar( self)
 		self.Health.healPred  = self:addHealPred( self)
-		self.Health.Override  = self.healthUpdate
+		self.Health.Override  = self.updateHealth
 	end
 
 	self.fader 						= yo.Raid.fadeColor
@@ -88,7 +88,7 @@ local function unitShared(self, unit)
 	self.Health.colorSelection 		= true
 	self.Health.colorDisconnected 	= true
 	self.Health.frequentUpdates 	= true
-	self.Health.UpdateColor 		= self.healthUpdateColor
+	self.Health.UpdateColor 		= self.updateHealthColor
 
 ------------------------------------------------------------------------------------------------------
 ---											POWER BAR
@@ -120,7 +120,7 @@ local function unitShared(self, unit)
 			powerFlashBar:SetMinMaxValues(0, 0)
 			powerFlashBar:SetValue( 0)
 			self.Power.powerFlashBar = powerFlashBar
-			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", self.powerManaCost)
+			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", self.updateManaCost)
 			table.insert( N.statusBars, powerFlashBar)
 
 		elseif unit == "targettarget" then
@@ -136,7 +136,7 @@ local function unitShared(self, unit)
 
 		self.Power.frequentUpdates = false
     	self.Power.UpdateColor = dummy
-    	self.Power.PostUpdate = self.powerUpdate
+    	self.Power.PostUpdate = self.updatePower
     	CreateStyle( self.Power, 2, 4, .3, .9)
     end
 
@@ -156,6 +156,7 @@ local function unitShared(self, unit)
 	table.insert( N.strings, self.nameText)
 
 	if unit ~= "pet" or unit ~= "targettarget" or unit ~= "focus" or unit ~= "focustarget" then
+
 		self.Health.healthText =  self.Overlay:CreateFontString(nil ,"OVERLAY", 8)
 		self.Health.healthText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
 		self.Health.healthText:SetPoint( unpack( healthTextPos))
@@ -218,6 +219,7 @@ local function unitShared(self, unit)
     	self.ReadyCheckIndicator:SetSize( 17, 17)
     	self.ReadyCheckIndicator:SetPoint('LEFT', self.Overlay, "CENTER", 40, 5)
     	self.ReadyCheckIndicator.finishedTime = 5
+    	--	oUF ReadyCheckIndicator.lua at 123: if(element and (unit == 'party' or unit == 'raid' or unit == 'player' or unit == 'target')) then
 	end
 
 	if unit == "player" then
@@ -262,6 +264,8 @@ local function unitShared(self, unit)
 ------------------------------------------------------------------------------------------------------
 	if yo.UF.debuffHight then self.addDebuffHigh( self) end
 
+	--makeCastBar( self)
+
 	--self:HookScript("OnShow", UpdateAllElements)
 	self:UpdateTags()
 	self:SetAlpha(1)
@@ -289,12 +293,12 @@ logan:SetScript("OnEvent", function(self, event)
 		oUF:SetActiveStyle("yoFrames")
 
 		plFrame = oUF:Spawn("player", "yo_Player")
-		if yo.UF.simpeUF then 	plFrame:SetPoint( "CENTER", yoMoveplayer, "RIGHT", -10, 50)
-		else 					plFrame:SetPoint( "CENTER", yoMoveplayer, "CENTER", 10 , 0)
+		if yo.UF.simpeUF then 	plFrame:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPRIGHT", 15, 40)
+		else 					plFrame:SetPoint( "CENTER", yoMoveplayer, "CENTER", 0 , 0)
 		end
 
 		tarFrame = oUF:Spawn("target", "yo_Target")
-		if yo.UF.simpeUF then 	tarFrame:SetPoint( "CENTER", yoMovetarget, "LEFT", 0, 50)
+		if yo.UF.simpeUF then 	tarFrame:SetPoint( "TOPLEFT", yoMovetarget, "TOPLEFT", -15, 40)
 		else					tarFrame:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
 		end
 

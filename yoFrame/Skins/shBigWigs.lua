@@ -191,14 +191,14 @@ f:SetScript("OnEvent", function(self, event, addon)
 
 	if event == "ADDON_LOADED" then
 		if addon == "BigWigs_Plugins" then
-			registerStyle()
+			--registerStyle()
 			--print("sdfsdfsdfd")
 			f:UnregisterEvent("ADDON_LOADED")
 		end
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		local loaded, reason = LoadAddOn( "BigWigs_Plugins")
-		--registerStyle()
+		registerStyle()
 		f:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 end)

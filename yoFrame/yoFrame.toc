@@ -1,5 +1,5 @@
 ## Interface: 90001
-## Version: 9.0102
+## Version: 9.0103
 ## Title: |cff00ffffyoFrame|r
 ## Author: NoiseX
 ## Notes: Foo frames... Based on ElvUI, Qulight, ShestakUI and more code and design ideas. Thanks.

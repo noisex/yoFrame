@@ -398,4 +398,3 @@ hooksecurefunc( "AutoQuestPopupTracker_Update", function(self, ...)
 		end
 	end
 end)
-

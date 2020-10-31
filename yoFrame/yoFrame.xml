@@ -18,6 +18,7 @@
  	<Include file="Infotext\infotexts.xml"/>
  	<Include file="addons\frames\frames.xml"/>
 
+ 	<Include file="addons\actionBars\actionBars.xml"/>
 	<Include file="addons\bags\bags.xml"/>
 	<Include file="addons\chat\chat.xml"/>
 	<Include file="addons\maps\maps.xml"/>
