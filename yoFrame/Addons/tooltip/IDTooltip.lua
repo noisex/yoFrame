@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+if not yo.ToolTip.enable then return end
+
 local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount
 	= hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount
 
@@ -22,7 +24,7 @@ local types = {
 }
 
 local function addLine(tooltip, id, type)
-	if not yo.Addons.IDInToolTip then return end
+	if not yo.ToolTip.IDInToolTip then return end
 
 	local found = false
 

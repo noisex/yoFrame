@@ -109,6 +109,18 @@ yo["General"] = {
 	["spellDelay"]		= false
 }
 
+yo["ToolTip"] = {
+	["enable"]			= true,
+	["IDInToolTip"]		= false,
+	["ladyMod"]			= true,
+	["ladyModShift"]	= false,
+	["showSpells"]		= true,
+	["showSpellShift"] 	= false,
+	["showSpellsVert"]	= false,
+	["showBorder"]		= true,
+	["borderClass"]= true,
+}
+
 yo["Bags"] = {
 	["enable"] 				= true,
 	["numContainerColumns"] = 11,
@@ -119,8 +131,6 @@ yo["Bags"] = {
 	["newIconAnimation"]	= true,
 	["autoReagent"]			= true,
 	["newAnimationLoop"]	= true,
-	["ladyMod"]				= true,
-	["ladyModShift"]		= false,
 	["showAltBags"]			= true,
 	["showGuilBank"]		= true,
 	["countAltBags"]		= true,
@@ -155,7 +165,6 @@ yo["Addons"] = {
 	["MMCoordSize"] 				= 9,
 	["InfoPanels"] 					= true,
 	["BlackPanels"] 				= true,
-	["IDInToolTip"] 				= false,		--
 	["ActionsBars"] 				= true,
 	["RaidCoolDowns"] 				= true,
 	["RaidFrames"] 					= true,

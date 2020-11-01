@@ -69,7 +69,7 @@ end
 
 local function TimerUpdate( f, elapsed)
 	f.tick = f.tick + elapsed
-	if f.tick < 0.02 then return end
+	if f.tick < 0.01 then return end
 	f.tick = 0
 
 	if f.spellDelay ~= yo.General.spellDelay then UnitColors( f)	end

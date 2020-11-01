@@ -106,12 +106,47 @@ local function ShowQuestLevelInLog()
 	--end
 end
 
+local function designItemButton( itemButton)
+
+	local _, f1 = itemButton:GetPoint()
+	itemButton:ClearAllPoints()
+	itemButton:SetPoint("TOPRIGHT", f1, "TOPLEFT", -35, 5)
+
+	if not itemButton.shadow then
+
+		if itemButton.SetPushedTexture and not itemButton.pushed then
+			local pushed = itemButton:CreateTexture("frame", nil, self)
+			pushed:SetTexture( texture)
+			pushed:SetVertexColor( 0, 1, 1, 1)
+			pushed:SetPoint("TOPLEFT", 1, -1)
+			pushed:SetPoint("BOTTOMRIGHT", -1, 1)
+			pushed:SetAlpha( 0.7)
+			itemButton.pushed = pushed
+			itemButton:SetPushedTexture(pushed)
+		end
+
+		itemButton.NormalTexture = nil
+		itemButton:SetNormalTexture( nil)
+		if itemButton.icon then itemButton.icon:SetTexCoord(unpack( yo.tCoord))
+			itemButton:SetSize( 30, 30)
+			CreateStyle( itemButton, 4, 0, 0)
+			itemButton.shadow:SetBackdropBorderColor( 0, 1, 0.8)--( 1, 0.7, 0, 1)
+			end
+		if itemButton.Icon then
+			itemButton.Icon:ClearAllPoints()
+			itemButton.Icon:SetPoint("TOPLEFT", itemButton, "TOPLEFT", 3, -3)
+			itemButton.Icon:SetPoint("BOTTOMRIGHT", itemButton, "BOTTOMRIGHT", -3, 3)
+			CreateStyle( itemButton, 1, 0, 0, 0)
+		end
+	end
+end
+
 local function ShowQuestLevelInWatchFrame()
 	local tracker = ObjectiveTrackerFrame
 	if ( not tracker.initialized )then 	return end
 
 	for i = 1, #tracker.MODULES do
-		local xxx = tracker.MODULES[i].usedBlocks.ObjectiveTrackerBlockTemplate
+		local xxx =  tracker.MODULES[i].usedBlocks.ObjectiveTrackerBlockTemplate --tracker.MODULES[i].usedBlocks.BonusObjectiveTrackerBlockTemplate --
 		if xxx then
 			for i, block in pairs(xxx) do
 				if block.id and block.HeaderText and block.HeaderText:GetText() and (not string.find(block.HeaderText:GetText(), "^%[.*%].*")) then
@@ -135,35 +170,26 @@ local function ShowQuestLevelInWatchFrame()
 
 						-- Icon Quest Item resize
 						if block.itemButton then
-							local _, f1 = block.itemButton:GetPoint()
-							block.itemButton:ClearAllPoints()
-							block.itemButton:SetPoint("TOPRIGHT", f1, "TOPLEFT", -35, 5)
-							block.itemButton:SetSize( 30, 30)
-							block.HeaderText:SetTextColor( 1, 1, 0, 1)
-							if block.itemButton.SetPushedTexture and not block.itemButton.pushed then
-								local pushed = block.itemButton:CreateTexture("frame", nil, self)
-								pushed:SetTexture( texture)
-								pushed:SetVertexColor( 0, 1, 1, 1)
-								pushed:SetPoint("TOPLEFT", 2, -2)
-								pushed:SetPoint("BOTTOMRIGHT", -2, 2)
-								pushed:SetAlpha( 0.7)
-								block.itemButton.pushed = pushed
-								block.itemButton:SetPushedTexture(pushed)
-							end
-
-							block.itemButton.NormalTexture = nil
-							block.itemButton:SetNormalTexture( nil)
-							block.itemButton.icon:SetTexCoord(unpack( yo.tCoord))
-							CreateStyle( block.itemButton, 4, 0, 0)
-			--				--block.itemButton.shadow:SetBackdropColor( 0, 0, 0, 0)
-							block.itemButton.shadow:SetBackdropBorderColor( 0, 1, 0.8)--( 1, 0.7, 0, 1)
+							designItemButton( block.itemButton)
 						end
 					end
 				end
 			end
 		end
 	end
+	local xxx =  tracker.MODULES[4].usedBlocks.BonusObjectiveTrackerBlockTemplate
+	if xxx then
+		for i, block in pairs(xxx) do
+			if block.itemButton then
+				designItemButton( block.itemButton)
+			end
+			if block.rightButton then
+				designItemButton( block.rightButton)
+			end
+		end
+	end
 end
+
 hooksecurefunc("ObjectiveTracker_Update", ShowQuestLevelInWatchFrame)
 --hooksecurefunc("QuestLogQuests_Update", ShowQuestLevelInLog)
 hooksecurefunc("QuestObjectiveItem_OnUpdate", function(self, elapsed) 		-- Rahge Check ItemButtom

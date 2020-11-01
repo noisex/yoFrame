@@ -27,17 +27,6 @@ local function enterEvent( self)
 	if not yo.Addons.BlackPanels then RightDataPanel:Hide() LeftDataPanel:Hide() end
 	if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
 
-	----------------------------------------------------------------------------------------
-	--	Tooltip replace
-	----------------------------------------------------------------------------------------
-	local function GameTooltipDefault(tooltip, parent)
-		tooltip:SetOwner(parent, "ANCHOR_NONE")
-		tooltip:ClearAllPoints()
-		tooltip:SetPoint("BOTTOMRIGHT", yoMoveToolTip, "BOTTOMRIGHT", 0, 0)
-		tooltip.default = 1
-	end
-	hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
-
 	hooksecurefunc( "CloseAllWindows", checkToClose)
 	--C_Timer.After( 2, function() buttonsUP(self) end )
 end

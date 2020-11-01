@@ -1,4 +1,7 @@
+local L, yo, N = unpack( select( 2, ...))
 local F, Events, A, T = CreateFrame('frame'), {}, ...
+
+if not yo.ToolTip.enable then return end
 
 local function Raise(_, event, ...)
 	if Events[event] then
@@ -162,14 +165,14 @@ end
 local function IsCached(itemLink) -- we can't get the correct level of an artifact until all of its relics have been cached
 	local cached = true
 	local _, itemID, _, relic1, relic2, relic3 = strsplit(':', itemLink)
-	print(strsplit(':', itemLink))
+	--print(strsplit(':', itemLink))
 	if not GetDetailedItemLevelInfo(itemID) then cached = false end
 	if IsArtifact(itemLink) then
 		if relic1 and relic1 ~= '' and not GetDetailedItemLevelInfo(relic1) then cached = false end
 		if relic2 and relic2 ~= '' and not GetDetailedItemLevelInfo(relic2) then cached = false end
 		if relic3 and relic3 ~= '' and not GetDetailedItemLevelInfo(relic3) then cached = false end
 	end
-	print(cached)
+	--print(cached)
 	return cached
 end
 
@@ -396,6 +399,9 @@ local function DoInspect()
 end
 
 
+local ICON_FORMAT 		=  ' |T%s:28:28:0:0:64:64:4:60:4:60|t'
+local ICON_FORMAT_VERT 	=  '   |T%s:18:18:0:0:64:64:4:60:4:60|t %s'
+
 local function DecorateTooltip(guid)
 	local cache = GuidCache[guid]
 	if not cache then print('no cache?') return end
@@ -428,26 +434,51 @@ local function DecorateTooltip(guid)
 		end
 		--]]
 		local r2, g2, b2 = ColorDiff(ourNeckLevel, neckLevel)
-
 		--local function AddLine(sekret, leftText, rightText, r1, g1, b1, r2, g2, b2, dontShow)
-
 		--local levelText = format('|cff%2x%2x%2x%.1f|r |cff%2x%2x%2x(%s)|r', r1 * 255, g1 * 255, b1 * 255, averageItemLevel, r2 * 255, g2 * 255, b2 * 255, neckLevel)
 		local levelText = format('|cff%2x%2x%2x%.1f|r', r1 * 255, g1 * 255, b1 * 255, averageItemLevel, r2 * 255, g2 * 255, b2 * 255)
 
-		AddLine( CLUB_FINDER_SPEC, ":", cache.specName, 1, 1, 0)
+		if GameTooltipStatusBar and GameTooltipStatusBar.icon and ( cache.specID and N.class_specs_coords[cache.specID]) then
+			print("CASHGE ", cache.specID)
+			GameTooltipStatusBar.icon:SetTexCoord( unpack( N.class_specs_coords[cache.specID]))
+			GameTooltipStatusBar.icon:Show()
+		end
+
+		if ( yo.ToolTip.showSpells and not yo.ToolTip.showSpellShift) or ( yo.ToolTip.showSpells and yo.ToolTip.showSpellShift and IsShiftKeyDown()) then
+			AddLine( CLUB_FINDER_SPEC, ":", cache.specName, 1, 1, 0)
+			if cache.unitID then
+				AddLine(TALENTS, ":") --0.69, 0.31, 0.31)
+				local talents = ""
+				for i = 1, _G.MAX_TALENT_TIERS do
+					for j = 1, 3 do
+						local _, name, icon, selected = GetTalentInfo( i, j, 1, true, cache.unitID)
+						if selected then
+							if yo.ToolTip.showSpellsVert then
+								AddLine( format( ICON_FORMAT_VERT, icon, name), "", nil, 1, 1, 1)
+							else
+								talents = talents .. format( ICON_FORMAT, icon)
+							end
+						end
+					end
+				end
+				if not yo.ToolTip.showSpellsVert then  AddLine( talents, "") end
+			end
+		end
+
 		AddLine( STAT_AVERAGE_ITEM_LEVEL, ":", levelText, 1, 1, 0, r1, g1, b1)
 
 		for i, lego in ipairs(cache.legos) do
 			AddLine('|Hlego' .. i .. '|h', lego, ' ', 1, 1, 1, 1, 1, 1)
 		end
 		--AddLine(STAT_AVERAGE_ITEM_LEVEL, cache.ilevel, 1, 1, 0, 1, 1, 1, true)
+
 	else
 		print('tooltip GUID does not match expected guid')
 	end
 end
 
 local function ScanUnit(unitID)
-	print('SCANNING UNIT', unitID)
+	--print('SCANNING UNIT', unitID)
 	ScannedGUID = UnitGUID(unitID)
 	wipe(SlotCache)
 	wipe(ItemCache)
@@ -456,7 +487,7 @@ local function ScanUnit(unitID)
 	for i, slot in pairs(InventorySlots) do
 		if GetInventoryItemTexture(unitID, slot) then -- we have an item in this slot
 			SlotCache[slot] = false
-			print('GetInventoryItemTexture', slot, GetInventoryItemTexture(unitID, slot))
+			--print('GetInventoryItemTexture', slot, GetInventoryItemTexture(unitID, slot))
 			numEquipped = numEquipped + 1
 		end
 	end
@@ -494,14 +525,14 @@ function E:INSPECT_READY(guid)
 				specName = '|c' .. colors.colorStr .. specName .. '|r'
 			end
 		end
-
 		if not GuidCache[ guid ] then
 			GuidCache[ guid ] = { ilevel = 0, weaponLevel = 0, timestamp = 0, legos = {} }
 		end
-		local cache = GuidCache[ guid ]
-		cache.specID = specID
-		cache.class = class
-		cache.specName = specName
+		local cache 	= GuidCache[ guid ]
+		cache.specID 	= specID
+		cache.class 	= class
+		cache.specName 	= specName
+		cache.unitID 	= unitID
 
 		ScanUnit(unitID)
 	--else
@@ -517,6 +548,11 @@ end
 
 GameTooltip:HookScript('OnTooltipSetUnit', function(self) -- this fires before the tooltip is visible
 	print('OnTooltipSetUnit')
+
+	if GameTooltipStatusBar and GameTooltipStatusBar.icon then
+		GameTooltipStatusBar.icon:Hide()
+	end
+
 	local _, unitID = self:GetUnit()
 	local guid = unitID and UnitGUID(unitID)
 	if guid and UnitIsPlayer(unitID) then

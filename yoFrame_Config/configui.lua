@@ -259,7 +259,6 @@ function InitOptions()
 				args = {
 					RaidUtilityPanel= {	order = 1, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["RUP_DESC"],},
 					Potatos 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["POT_DESC"], hidden = false,},
-					IDInToolTip 	= {	order = 3, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					mythicProcents 	= {	order = 4, type = "toggle", name = function(info) return tr( info[#info]) end,  width = "full",	},
 					InfoPanels	 	= {	order = 5, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					BlackPanels	 	= {	order = 6, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
@@ -404,8 +403,6 @@ function InitOptions()
 					containerWidth 	= {	order = 8, type = "range", 	name = function(info) return tr( info[#info]) end, min = 350, max = 800, step = 1,	desc = L["DEFAULT"] .. 438,},
 					newIconAnimation= { order = 10, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", },
 					newAnimationLoop= { order = 12, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full",},
-					ladyMod			= {	order = 32, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					ladyModShift	= {	order = 34, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",	disabled = function( info) return not yo[info[1]].ladyMod end,},
 					showAltBags		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					countAltBags	= {	order = 42, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
 					showGuilBank	= {	order = 44, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showAltBags end,},
@@ -617,6 +614,25 @@ function InitOptions()
 					--chatBubbleShift	= {	order = 46,	type = "range", 	name = "Уменьшить размер", min = 0, max = 15, step = 1, disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
 					--chatBubbleShadow= {	order = 42,  type = "toggle",	name = "Добавить тень у шрифта чат-бабла", 				disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
 
+				},
+			},
+
+			ToolTip = {
+				order = 85,	name = L["ToolTip"], type = "group",
+				get = function(info) return yo["ToolTip"][info[#info]] end,
+				set = function(info,val) Setlers( "ToolTip#" .. info[#info], val) end,
+				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				args = {
+
+					enable 			= {	order = 1, 	type = "toggle",	name = L["TTenable"], width = "full", disabled = false,},
+					IDInToolTip 	= {	order = 5,  type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					ladyMod			= {	order = 15, type = "toggle",name = function(info) return tr( info[#info]) end,width= 1.4},
+					ladyModShift	= {	order = 20, type = "toggle",name = function(info) return tr( info[#info]) end, disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].ladyMod end,},
+					showSpells 		= {	order = 25, type = "toggle",name = function(info) return tr( info[#info]) end,width= 1.4},
+					showSpellShift 	= {	order = 30, type = "toggle",name = function(info) return tr( info[#info]) end, disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showSpells end,},
+					showSpellsVert 	= {	order = 35, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showSpells end,},
+					showBorder 		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					borderClass		= {	order = 45, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 				},
 			},
 

@@ -1,6 +1,25 @@
+local addon, ns = ...
 
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( ns)
+local oUF = ns.oUF
 
+----------------------------------------------------------------------------------------
+--	Tooltip replace
+----------------------------------------------------------------------------------------
+local function GameTooltipDefault(tooltip, parent)
+	tooltip:SetOwner(parent, "ANCHOR_NONE")
+	tooltip:ClearAllPoints()
+	tooltip:SetPoint("BOTTOMRIGHT", yoMoveToolTip, "BOTTOMRIGHT", 0, 0)
+	tooltip.default = 1
+end
+hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
+
+function GameTooltipOnLeave()
+	GameTooltip:Hide()
+end
+
+
+if not yo.ToolTip.enable then return end
 
 ----------------------------------------------------------------------------------------
 --	Show source of mount
@@ -41,165 +60,14 @@ end)
 ----------------------------------------------------------------------------------------
 --	Based on aTooltip(by ALZA)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
-local oUF = ns.oUF or oUF
-
-if not oUF then return end
-
-local blank = "Interface\\AddOns\\yoFrame\\Media\\blank"
-local glow = "Interface\\AddOns\\yoFrame\\Media\\glowTex"
-
-oUF_colors = setmetatable({
-	tapped = {0.6, 0.6, 0.6},
-	disconnected = {0.84, 0.75, 0.65},
-	power = setmetatable({
-		["MANA"] = {0.31, 0.45, 0.63},
-		["RAGE"] = {0.69, 0.31, 0.31},
-		["FOCUS"] = {0.71, 0.43, 0.27},
-		["ENERGY"] = {0.65, 0.63, 0.35},
-		["POWER_TYPE_FEL_ENERGY"] = {0.65, 0.63, 0.35},
-		["RUNES"] = {0.55, 0.57, 0.61},
-		["RUNIC_POWER"] = {0, 0.82, 1},
-		["AMMOSLOT"] = {0.8, 0.6, 0},
-		["FUEL"] = {0, 0.55, 0.5},
-	}, {__index = oUF.colors.power}),
-	runes = setmetatable({
-		[1] = {0.69, 0.31, 0.31},
-		[2] = {0.33, 0.59, 0.33},
-		[3] = {0.31, 0.45, 0.63},
-		[4] = {0.84, 0.75, 0.65},
-	}, {__index = oUF.colors.runes}),
-	reaction = setmetatable({
-		[1] = {0.85, 0.27, 0.27}, -- Hated
-		[2] = {0.85, 0.27, 0.27}, -- Hostile
-		[3] = {0.85, 0.27, 0.27}, -- Unfriendly
-		[4] = {0.85, 0.77, 0.36}, -- Neutral
-		[5] = {0.33, 0.59, 0.33}, -- Friendly
-		[6] = {0.33, 0.59, 0.33}, -- Honored
-		[7] = {0.33, 0.59, 0.33}, -- Revered
-		[8] = {0.33, 0.59, 0.33}, -- Exalted
-	}, {__index = oUF.colors.reaction}),
-}, {__index = oUF.colors})
-
-
-local StoryTooltip = QuestScrollFrame.StoryTooltip
-StoryTooltip:SetFrameLevel(4)
-
-local tooltips = {
-	GameTooltip,
-	ItemRefTooltip,
-	ShoppingTooltip1,
-	ShoppingTooltip2,
-	WorldMapTooltip,
-	WorldMapCompareTooltip1,
-	WorldMapCompareTooltip2,
-	FriendsTooltip,
-	ItemRefShoppingTooltip1,
-	ItemRefShoppingTooltip2,
-	AtlasLootTooltip,
-	QuestHelperTooltip,
-	QuestGuru_QuestWatchTooltip,
-	StoryTooltip
-}
-
-local backdrop = {
-	bgFile = blank, edgeFile = blank, edgeSize = 1,
-	insets = {left = -1, right = -1, top = -1, bottom = -1}
-}
-
-local style = {
-	bgFile =  texture,
-	edgeFile = glow,
-	edgeSize = 4,
-	insets = { left = 3, right = 3, top = 3, bottom = 3 }
-}
-
-function CreateStyleTT(f, size, level, alpha, alphaborder)
-	if f.shadow then return end
-	local shadow = CreateFrame("Frame", nil, f)
-	shadow:SetFrameLevel(level or 0)
-	shadow:SetFrameStrata(f:GetFrameStrata())
-	shadow:SetPoint("TOPLEFT", -2, 2)
-	shadow:SetPoint("BOTTOMRIGHT", 2, -9)
-	shadow:SetBackdrop(style)
-	shadow:SetBackdropColor(.08,.08,.08, alpha or .9)
-	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
-	f.shadow = shadow
-	return shadow
-end
-
-for _, tt in pairs(tooltips) do
-	if IsAddOnLoaded("Aurora") then
-		tt:SetBackdrop(nil)
-		if tt.BackdropFrame then
-			tt.BackdropFrame:SetBackdrop(nil)
-		end
-		local bg = CreateFrame("Frame", nil, tt)
-		bg:SetPoint("TOPLEFT")
-		bg:SetPoint("BOTTOMRIGHT")
-		bg:SetFrameLevel(tt:GetFrameLevel() - 1)
-
-		CreateStyleTT(bg, 1)
-
-
-		tt.GetBackdrop = function() return backdrop end
-		tt.GetBackdropColor = function() return 0, 0, 0, 0.7 end
-		tt.GetBackdropBorderColor = function() return 0.37, 0.3, 0.3, 1 end
-	end
-end
-
-
-
--- Hide PVP text
-PVP_ENABLED = ""
-
--- Statusbar
-local healthBar = GameTooltipStatusBar
-healthBar:ClearAllPoints()
-healthBar:SetHeight(6)
-healthBar:SetPoint("TOPLEFT", healthBar:GetParent(), "BOTTOMLEFT", 5, 5)
-healthBar:SetPoint("TOPRIGHT", healthBar:GetParent(), "BOTTOMRIGHT", -5, 5)
-healthBar:SetStatusBarTexture( texture)
 
 -- Raid icon
 local ricon = GameTooltip:CreateTexture("GameTooltipRaidIcon", "OVERLAY")
-ricon:SetHeight(18)
-ricon:SetWidth(18)
-ricon:SetPoint("BOTTOM", GameTooltip, "TOP", 0, 5)
+ricon:SetHeight(30)
+ricon:SetWidth(30)
+ricon:SetPoint("BOTTOMLEFT", GameTooltip, "TOPLEFT", 0, 15)
 
 GameTooltip:HookScript("OnHide", function(self) ricon:SetTexture(nil) end)
-
--- Add "Targeted By" line
---local targetedList = {}
---local ClassColors = {}
---local token
-
---for class, color in next, RAID_CLASS_COLORS do
---	ClassColors[class] = ("|cff%.2x%.2x%.2x"):format(color.r * 255, color.g * 255, color.b * 255)
---end
-
---local function AddTargetedBy()
---	local numParty, numRaid = GetNumSubgroupMembers(), GetNumGroupMembers()
---	if numParty > 0 or numRaid > 0 then
---		for i = 1, (numRaid > 0 and numRaid or numParty) do
---			local unit = (numRaid > 0 and "raid"..i or "party"..i)
---			if UnitIsUnit(unit.."target", token) and not UnitIsUnit(unit, "player") then
---				local _, class = UnitClass(unit)
---				targetedList[#targetedList + 1] = ClassColors[class]
---				targetedList[#targetedList + 1] = UnitName(unit)
---				targetedList[#targetedList + 1] = "|r, "
---			end
---		end
---		if #targetedList > 0 then
---			targetedList[#targetedList] = nil
---			GameTooltip:AddLine(" ", nil, nil, nil, 1)
---			local line = _G["GameTooltipTextLeft"..GameTooltip:NumLines()]
---			if not line then return end
---			line:SetFormattedText("Targeted By".." (|cffffffff%d|r): %s", (#targetedList + 1) / 3, table.concat(targetedList))
---			wipe(targetedList)
---		end
---	end
---end
 
 ----------------------------------------------------------------------------------------
 --	Unit tooltip styling
@@ -219,7 +87,7 @@ function GameTooltip_UnitColor(unit)
 	elseif UnitIsTapDenied(unit) or UnitIsDead(unit) then
 		r, g, b = 0.6, 0.6, 0.6
 	else
-		local reaction = oUF_colors.reaction[UnitReaction(unit, "player")]
+		local reaction = oUF.colors.reaction[UnitReaction(unit, "player")]
 		if reaction then
 			r, g, b = reaction[1], reaction[2], reaction[3]
 		else
@@ -230,14 +98,19 @@ function GameTooltip_UnitColor(unit)
 	return r, g, b
 end
 
-local function GameTooltipDefault(tooltip, parent)
-	tooltip:SetOwner(parent, "ANCHOR_NONE")
-	tooltip:ClearAllPoints()
-	tooltip:SetPoint("BOTTOMRIGHT", TooltipAnchor, "BOTTOMRIGHT", 0, 0)
-	tooltip.default = 1
-end
-hooksecurefunc("GameTooltip_SetDefaultAnchor", GameTooltipDefault)
+local function GetLFDRole(unit)
+	local role = UnitGroupRolesAssigned(unit)
 
+	if role == "NONE" then
+		return "|cFFB5B5B5"..NO_ROLE.."|r"
+	elseif role == "TANK" then
+		return "|cFF0070DE"..TANK.."|r"
+	elseif role == "HEALER" then
+		return "|cFF00CC12"..HEALER.."|r"
+	else
+		return "|cFFFF3030"..DAMAGER.."|r"
+	end
+end
 
 local OnTooltipSetUnit = function(self)
 	local lines = self:NumLines()
@@ -269,17 +142,13 @@ local OnTooltipSetUnit = function(self)
 	elseif classification == "elite" then classification = "+"
 	else classification = "" end
 
-
-	-- if UnitPVPName(unit) and Qulight["tooltip"].title then
-		-- name = UnitPVPName(unit)
-	-- end
+	 --if UnitPVPName(unit) then name = UnitPVPName(unit) end
 
 	_G["GameTooltipTextLeft1"]:SetText(name)
 	if realm and realm ~= "" then
 		--self:AddLine(FRIENDS_LIST_REALM.."|cffffffff"..realm.."|r")
 		self:AddDoubleLine(FRIENDS_LIST_REALM.. ":", realm, 1, 1, 0, 0, 1, 1)
 	end
-
 
 	if UnitIsPlayer(unit) then
 		if UnitIsAFK(unit) then
@@ -296,19 +165,23 @@ local OnTooltipSetUnit = function(self)
 			self:AppendText((" [|%s%s|r]"):format(hex, faction:sub(1, 2)))
 		end
 
-		if GetGuildInfo(unit) then
-			_G["GameTooltipTextLeft2"]:SetFormattedText("%s", GetGuildInfo(unit))
+		local guildName, guildRank = GetGuildInfo(unit)
+		if guildName then
+			_G["GameTooltipTextLeft2"]:SetFormattedText("\n|cffffff00Гильдия: |r%s \n|cffffff00%s: |cffffffff%s\n\n", guildName, RANK, guildRank)
 			if UnitIsInMyGuild(unit) then
 				_G["GameTooltipTextLeft2"]:SetTextColor(1, 1, 0)
 			else
 				_G["GameTooltipTextLeft2"]:SetTextColor(0, 1, 1)
 			end
+			--self:AddDoubleLine(RANK..":", "|cffffffff" .. guildRank.."|r")
 		end
 
-		local n = GetGuildInfo(unit) and 3 or 2
+
+		local n = guildName and 3 or 2
 		-- thx TipTac for the fix above with color blind enabled
 		if GetCVar("colorblindMode") == "1" then n = n + 1 end
 		_G["GameTooltipTextLeft"..n]:SetFormattedText("|cff%02x%02x%02x%s|r %s", levelColor.r * 255, levelColor.g * 255, levelColor.b * 255, level, race or UNKNOWN)
+
 
 		for i = 2, lines do
 			local line = _G["GameTooltipTextLeft"..i]
@@ -335,192 +208,34 @@ local OnTooltipSetUnit = function(self)
 		local text = ""
 
 		if UnitIsEnemy("player", unit.."target") then
-			r, g, b = unpack(oUF_colors.reaction[1])
+			r, g, b = unpack(oUF.colors.reaction[1])
 		elseif not UnitIsFriend("player", unit.."target") then
-			r, g, b = unpack(oUF_colors.reaction[4])
+			r, g, b = unpack(oUF.colors.reaction[4])
 		end
 
 		if UnitName(unit.."target") == UnitName("player") then
-			--text = "|cfffed100"..STATUS_TEXT_TARGET..":|r ".."|cffff0000> "..UNIT_YOU.." <|r"
 			self:AddDoubleLine( STATUS_TEXT_TARGET..":", UNIT_YOU, 1, 1, 0, 1, 0, 0)
 		else
-			--text = "|cfffed100"..STATUS_TEXT_TARGET..":|r "..UnitName(unit.."target")
 			self:AddDoubleLine( STATUS_TEXT_TARGET..":", UnitName(unit.."target"), 1, 1, 0, r, g, b)
 		end
-
-		--self:AddLine(text, r, g, b)
 	end
 
-	if true then
-		local raidIndex = GetRaidTargetIndex(unit)
-		if raidIndex then
-			ricon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..raidIndex)
+	local raidIndex = GetRaidTargetIndex(unit)
+	if raidIndex then
+		ricon:SetTexture("Interface\\AddOns\\yoFrame\\Media\\raidicons")
+		SetRaidTargetIconTexture( ricon, raidIndex)
+	end
+
+	local _, instanceType = IsInInstance()
+	if instanceType ~= "scenario" then
+		if unit and UnitIsPlayer(unit) and ((UnitInParty(unit) or UnitInRaid(unit)) and GetNumGroupMembers() > 0) then
+			GameTooltip:AddDoubleLine(ROLE..":", GetLFDRole(unit), 1, 1, 0)
 		end
 	end
-
 	-----------------token = unit AddTargetedBy()
 end
 
 GameTooltip:HookScript("OnTooltipSetUnit", OnTooltipSetUnit)
-
-----------------------------------------------------------------------------------------
---	Adds guild rank to tooltips(GuildRank by Meurtcriss)
-----------------------------------------------------------------------------------------
-if true then
-	GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
-		-- Get the unit
-		local _, unit = self:GetUnit()
-		if not unit then
-			local mFocus = GetMouseFocus()
-			if mFocus and mFocus.unit then
-				unit = mFocus.unit
-			end
-		end
-		-- Get and display guild rank
-		if UnitIsPlayer(unit) then
-			local guildName, guildRank = GetGuildInfo(unit)
-			if guildName then
-				self:AddDoubleLine(RANK..":", "|cffffffff" .. guildRank.."|r")
-			end
-		end
-	end)
-end
-
-
-----------------------------------------------------------------------------------------
---	Fix compare tooltips(by Blizzard)(../FrameXML/GameTooltip.lua)
-----------------------------------------------------------------------------------------
-hooksecurefunc("GameTooltip_ShowCompareItem", function(self, shift)
-	if not self then
-		self = GameTooltip
-	end
-
-	-- Find correct side
-	local shoppingTooltip1, shoppingTooltip2 = unpack(self.shoppingTooltips)
-	local primaryItemShown, secondaryItemShown = shoppingTooltip1:SetCompareItem(shoppingTooltip2, self)
-	local side = "left"
-	local rightDist = 0
-	local leftPos = self:GetLeft()
-	local rightPos = self:GetRight()
-
-	if not rightPos then
-		rightPos = 0
-	end
-	if not leftPos then
-		leftPos = 0
-	end
-
-	rightDist = GetScreenWidth() - rightPos
-
-	if leftPos and (rightDist < leftPos) then
-		side = "left"
-	else
-		side = "right"
-	end
-
-	-- See if we should slide the tooltip
-	if self:GetAnchorType() and self:GetAnchorType() ~= "ANCHOR_PRESERVE" then
-		local totalWidth = 0
-		if primaryItemShown then
-			totalWidth = totalWidth + shoppingTooltip1:GetWidth()
-		end
-		if secondaryItemShown then
-			totalWidth = totalWidth + shoppingTooltip2:GetWidth()
-		end
-
-		if side == "left" and totalWidth > leftPos then
-			self:SetAnchorType(self:GetAnchorType(), totalWidth - leftPos, 0)
-		elseif side == "right" and (rightPos + totalWidth) > GetScreenWidth() then
-			self:SetAnchorType(self:GetAnchorType(), -((rightPos + totalWidth) - GetScreenWidth()), 0)
-		end
-	end
-
-	-- Anchor the compare tooltips
-	if secondaryItemShown then
-		shoppingTooltip2:SetOwner(self, "ANCHOR_NONE")
-		shoppingTooltip2:ClearAllPoints()
-		if side and side == "left" then
-			shoppingTooltip2:SetPoint("TOPRIGHT", self, "TOPLEFT", -3, -10)
-		else
-			shoppingTooltip2:SetPoint("TOPLEFT", self, "TOPRIGHT", 3, -10)
-		end
-
-		shoppingTooltip1:SetOwner(self, "ANCHOR_NONE")
-		shoppingTooltip1:ClearAllPoints()
-
-		if side and side == "left" then
-			shoppingTooltip1:SetPoint("TOPRIGHT", shoppingTooltip2, "TOPLEFT", -3, 0)
-		else
-			shoppingTooltip1:SetPoint("TOPLEFT", shoppingTooltip2, "TOPRIGHT", 3, 0)
-		end
-	else
-		shoppingTooltip1:SetOwner(self, "ANCHOR_NONE")
-		shoppingTooltip1:ClearAllPoints()
-
-		if side and side == "left" then
-			shoppingTooltip1:SetPoint("TOPRIGHT", self, "TOPLEFT", -3, -10)
-		else
-			shoppingTooltip1:SetPoint("TOPLEFT", self, "TOPRIGHT", 3, -10)
-		end
-
-		shoppingTooltip2:Hide()
-	end
-
-	shoppingTooltip1:SetCompareItem(shoppingTooltip2, self)
-	shoppingTooltip1:Show()
-end)
-
-----------------------------------------------------------------------------------------
---	Fix GameTooltipMoneyFrame font size
-----------------------------------------------------------------------------------------
-local function FixFont(self)
-	for i = 1, 2 do
-		if _G["GameTooltipMoneyFrame"..i] then
-			_G["GameTooltipMoneyFrame"..i.."PrefixText"]:SetFontObject("GameTooltipText")
-			_G["GameTooltipMoneyFrame"..i.."SuffixText"]:SetFontObject("GameTooltipText")
-			_G["GameTooltipMoneyFrame"..i.."GoldButton"]:SetNormalFontObject("GameTooltipText")
-			_G["GameTooltipMoneyFrame"..i.."SilverButton"]:SetNormalFontObject("GameTooltipText")
-			_G["GameTooltipMoneyFrame"..i.."CopperButton"]:SetNormalFontObject("GameTooltipText")
-		end
-	end
-	for i = 1, 2 do
-		if _G["ItemRefTooltipMoneyFrame"..i] then
-			_G["ItemRefTooltipMoneyFrame"..i.."PrefixText"]:SetFontObject("GameTooltipText")
-			_G["ItemRefTooltipMoneyFrame"..i.."SuffixText"]:SetFontObject("GameTooltipText")
-			_G["ItemRefTooltipMoneyFrame"..i.."GoldButton"]:SetNormalFontObject("GameTooltipText")
-			_G["ItemRefTooltipMoneyFrame"..i.."SilverButton"]:SetNormalFontObject("GameTooltipText")
-			_G["ItemRefTooltipMoneyFrame"..i.."CopperButton"]:SetNormalFontObject("GameTooltipText")
-		end
-	end
-end
-
-GameTooltip:HookScript("OnTooltipSetItem", FixFont)
-ItemRefTooltip:HookScript("OnTooltipSetItem", FixFont)
-
-
-local function GetLFDRole(unit)
-local role = UnitGroupRolesAssigned(unit)
-
-	if role == "NONE" then
-		return "|cFFB5B5B5"..NO_ROLE.."|r"
-	elseif role == "TANK" then
-		return "|cFF0070DE"..TANK.."|r"
-	elseif role == "HEALER" then
-		return "|cFF00CC12"..HEALER.."|r"
-	else
-		return "|cFFFF3030"..DAMAGER.."|r"
-	end
-end
-
-GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
-	local _, instanceType = IsInInstance()
-	if instanceType == "scenario" then return end
-	local _, unit = GameTooltip:GetUnit()
-	if unit and UnitIsPlayer(unit) and ((UnitInParty(unit) or UnitInRaid(unit)) and GetNumGroupMembers() > 0) then
-		GameTooltip:AddDoubleLine(ROLE..":", GetLFDRole(unit), 1, 1, 0)
-	end
-end)
-
 
 
 -----------------------------------------------------------------------
@@ -616,134 +331,12 @@ hooksecurefunc(ItemRefTooltip, "SetHyperlink", SetHyperlink)
 
 
 ----------------------------------------------------------------------------------------
---	Based on tekKompare(by Tekkub)
-----------------------------------------------------------------------------------------
-local orig1, orig2, GameTooltip = {}, {}, GameTooltip
-local linktypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true, instancelock = true, currency = true}
-
-local function OnHyperlinkEnter(frame, link, ...)
-	local linktype = link:match("^([^:]+)")
-	if linktype and linktype == "battlepet" then
-		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT", -3, 50)
-		GameTooltip:Show()
-		local _, speciesID, level, breedQuality, maxHealth, power, speed = strsplit(":", link)
-		BattlePetToolTip_Show(tonumber(speciesID), tonumber(level), tonumber(breedQuality), tonumber(maxHealth), tonumber(power), tonumber(speed))
-	elseif linktype and linktypes[linktype] then
-		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT", -3, 50)
-		GameTooltip:SetHyperlink(link)
-		GameTooltip:Show()
-	end
-
-	if orig1[frame] then return orig1[frame](frame, link, ...) end
-end
-
-----------------------------------------------------------------------------------------
---	Your instance lock status in tooltip(Instance Lock Compare by Dridzt)
-----------------------------------------------------------------------------------------
-local myTip = CreateFrame("GameTooltip", "InstanceLockTooltip", nil, "GameTooltipTemplate")
-
-local function ILockCompare(frame, link, ...)
-	if not frame or not link then return end
-
-	local linkType = string.match(link, "(instancelock):")
-	if linkType == "instancelock" then
-		local mylink, templink
-		local myguid = UnitGUID("player")
-		local guid = string.match(link, "instancelock:([^:]+)")
-
-		if guid ~= myguid then
-			local instanceguid = string.match(link, "instancelock:[^:]+:(%d+):")
-			local numsaved = GetNumSavedInstances()
-			if numsaved > 0 then
-				for i = 1, numsaved do
-					local locked, extended = select(5, GetSavedInstanceInfo(i))
-					if extended or locked then
-						templink = GetSavedInstanceChatLink(i)
-						local myinstanceguid = string.match(templink, "instancelock:[^:]+:(%d+):")
-						if myinstanceguid == instanceguid then
-							mylink = string.match(templink, "(instancelock:[^:]+:%d+:%d+:%d+)")
-							break
-						end
-					end
-				end
-				mylink = mylink or string.gsub(link, "(instancelock:)([^:]+)(:%d+:%d+:)(%d+)", function(a, g, b, k) g = myguid; k = "0"; return a..g..b..k end)
-			else
-				mylink = string.gsub(link, "(instancelock:)([^:]+)(:%d+:%d+:)(%d+)", function(a, g, b, k) g = myguid; k = "0"; return a..g..b..k end)
-			end
-		end
-
-		if mylink then
-			if not myTip:IsVisible() and frame:IsVisible() then
-				myTip:SetParent(frame)
-				myTip:SetOwner(frame, "ANCHOR_NONE")
-				CreateStyle(myTip, 2)
-
-				local side = "left"
-				local rightDist = 0
-				local leftPos = frame:GetLeft()
-				local rightPos = frame:GetRight()
-				if not rightPos then
-					rightPos = 0
-				end
-				if not leftPos then
-					leftPos = 0
-				end
-				rightDist = GetScreenWidth() - rightPos
-				if leftPos and (rightDist < leftPos) then
-					side = "left"
-				else
-					side = "right"
-				end
-				myTip:ClearAllPoints()
-				if side == "left" then
-					myTip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -3, -10)
-				elseif side == "right" then
-					myTip:SetPoint("TOPLEFT", frame, "TOPRIGHT", 3, -10)
-				end
-				myTip:SetHyperlink(mylink)
-				myTip:Show()
-			end
-		end
-	end
-end
-
-ItemRefTooltip:HookScript("OnDragStop", function(self, button)
-	if myTip:IsVisible() and (myTip:GetParent():GetName() == self:GetName()) then
-		local side = "left"
-		local rightDist = 0
-		local leftPos = self:GetLeft()
-		local rightPos = self:GetRight()
-		if not rightPos then
-			rightPos = 0
-		end
-		if not leftPos then
-			leftPos = 0
-		end
-		rightDist = GetScreenWidth() - rightPos
-		if leftPos and (rightDist < leftPos) then
-			side = "left"
-		else
-			side = "right"
-		end
-		myTip:ClearAllPoints()
-		if side == "left" then
-			myTip:SetPoint("TOPRIGHT", self, "TOPLEFT", -3, -10)
-		elseif side == "right" then
-			myTip:SetPoint("TOPLEFT", self, "TOPRIGHT", 3, -10)
-		end
-	end
-end)
-
-hooksecurefunc(GameTooltip, "SetHyperlink", ILockCompare)
-hooksecurefunc(ItemRefTooltip,"SetHyperlink", ILockCompare)
-
-----------------------------------------------------------------------------------------
 --	Adds item icons to tooltips(Tipachu by Tuller)
 ----------------------------------------------------------------------------------------
 local function setTooltipIcon(self, icon)
 	local title = icon and _G[self:GetName().."TextLeft1"]
 	if title then
-		title:SetFormattedText("|T%s:20:20:0:0:64:64:5:59:5:59:%d|t %s", icon, 20, title:GetText())
+		title:SetFormattedText("|T%s:22:22:0:0:64:64:5:59:5:59:%d|t %s", icon, 20, title:GetText())
 	end
 end
 
@@ -787,158 +380,173 @@ end
 ----------------------------------------------------------------------------------------
 --	Multi ItemRefTooltip
 ----------------------------------------------------------------------------------------
-local tips = {[1] = _G["ItemRefTooltip"]}
-local types = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true, instancelock = true, currency = true}
+--local tips = {[1] = _G["ItemRefTooltip"]}
+--local types = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true, instancelock = true, currency = true}
 
-local CreateTip = function(link)
-	for k, v in ipairs(tips) do
-		for i, tip in ipairs(tips) do
-			if tip:IsShown() and tip.link == link then
-				tip.link = nil
-				HideUIPanel(tip)
-				return
-			end
-		end
-		if not v:IsShown() then
-			v.link = link
-			return v
-		end
-	end
+--local CreateTip = function(link)
+--	for k, v in ipairs(tips) do
+--		for i, tip in ipairs(tips) do
+--			if tip:IsShown() and tip.link == link then
+--				tip.link = nil
+--				HideUIPanel(tip)
+--				return
+--			end
+--		end
+--		if not v:IsShown() then
+--			v.link = link
+--			return v
+--		end
+--	end
 
-	local num = #tips + 1
-	local tip = CreateFrame("GameTooltip", "ItemRefTooltip"..num, UIParent, "GameTooltipTemplate")
-	--tip:SetTemplate("Transparent")
-	tip:SetPoint("BOTTOM", 0, 80)
-	tip:SetSize(128, 64)
-	tip:EnableMouse(true)
-	tip:SetMovable(true)
-	tip:SetClampedToScreen(true)
-	tip:RegisterForDrag("LeftButton")
-	tip:SetScript("OnDragStart", function(self) self:StartMoving() end)
-	tip:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-	tip:HookScript("OnShow", function(self)
-		self:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
-		self:SetBackdropBorderColor( 1, 1, 1, 0.9)
-	end)
+--	local num = #tips + 1
+--	local tip = CreateFrame("GameTooltip", "ItemRefTooltip"..num, UIParent, "GameTooltipTemplate")
+--	--tip:SetTemplate("Transparent")
+--	tip:SetPoint("BOTTOM", 0, 80)
+--	tip:SetSize(128, 64)
+--	tip:EnableMouse(true)
+--	tip:SetMovable(true)
+--	tip:SetClampedToScreen(true)
+--	tip:RegisterForDrag("LeftButton")
+--	tip:SetScript("OnDragStart", function(self) self:StartMoving() end)
+--	tip:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+--	tip:HookScript("OnShow", function(self)
+--		self:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
+--		self:SetBackdropBorderColor( 1, 1, 1, 0.9)
+--	end)
 
-	--local close = CreateFrame("Button", "ItemRefTooltip"..num.."CloseButton", tip)
-	--close:SetScript("OnClick", function(self) HideUIPanel(tip) end)
-	--CreateStyle( close, 3)
-	----T.SkinCloseButton(close)
+--	table.insert(UISpecialFrames, tip:GetName())
 
-	table.insert(UISpecialFrames, tip:GetName())
+--	tip.link = link
+--	tips[num] = tip
 
-	tip.link = link
-	tips[num] = tip
+--	return tip
+--end
 
-	return tip
-end
+--local ShowTip = function(tip, link)
+--	ShowUIPanel(tip)
+--	if not tip:IsShown() then
+--		tip:SetOwner(UIParent, "ANCHOR_PRESERVE")
+--	end
+--	tip:SetHyperlink(link)
+--end
 
-local ShowTip = function(tip, link)
-	ShowUIPanel(tip)
-	if not tip:IsShown() then
-		tip:SetOwner(UIParent, "ANCHOR_PRESERVE")
-	end
-	tip:SetHyperlink(link)
-end
+--local _SetItemRef = SetItemRef
+--function SetItemRef(...)
+--	local link, text, button = ...
+--	local handled = strsplit(":", link)
+--	if not IsModifiedClick() and handled and types[handled] then
+--		local tip = CreateTip(link)
+--		if tip then
+--			ShowTip(tip, link)
+--		end
+--	else
+--		return _SetItemRef(...)
+--	end
+--end
 
-local _SetItemRef = SetItemRef
-function SetItemRef(...)
-	local link, text, button = ...
-	local handled = strsplit(":", link)
-	if not IsModifiedClick() and handled and types[handled] then
-		local tip = CreateTip(link)
-		if tip then
-			ShowTip(tip, link)
-		end
-	else
-		return _SetItemRef(...)
-	end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ----------------------------------------------------------------------------------------
 --	Clean ruRU tooltip(snt_rufix by Don Kaban, edited by ALZA)
 ----------------------------------------------------------------------------------------
---ITEM_CREATED_BY = ""	-- No creator name
---ITEM_SOCKETABLE = ""	-- No gem info line
-EMPTY_SOCKET_RED = "|cffFF4040"..EMPTY_SOCKET_RED.."|r"
-EMPTY_SOCKET_YELLOW = "|cffffff40"..EMPTY_SOCKET_YELLOW.."|r"
-EMPTY_SOCKET_BLUE = "|cff6060ff"..EMPTY_SOCKET_BLUE.."|r"
+----ITEM_CREATED_BY = ""	-- No creator name
+----ITEM_SOCKETABLE = ""	-- No gem info line
+--EMPTY_SOCKET_RED = "|cffFF4040"..EMPTY_SOCKET_RED.."|r"
+--EMPTY_SOCKET_YELLOW = "|cffffff40"..EMPTY_SOCKET_YELLOW.."|r"
+--EMPTY_SOCKET_BLUE = "|cff6060ff"..EMPTY_SOCKET_BLUE.."|r"
 
---GUILD_ACHIEVEMENT = "Уведомл. для гильдии"
+----GUILD_ACHIEVEMENT = "Уведомл. для гильдии"
 
-local ttext
-local replace = {
-	["красного цвета"] = "|cffFF4040красного цвета|r",
-	["синего цвета"] = "|cff6060ffсинего цвета|r",
-	["желтого цвета"] = "|cffffff40желтого цвета|r",
-	["Требуется хотя бы"] = "Требуется",
-}
+--local ttext
+--local replace = {
+--	["красного цвета"] = "|cffFF4040красного цвета|r",
+--	["синего цвета"] = "|cff6060ffсинего цвета|r",
+--	["желтого цвета"] = "|cffffff40желтого цвета|r",
+--	["Требуется хотя бы"] = "Требуется",
+--}
 
-local replaceclass = {
-	["Воин"] = "|cffC79C6EВоин|r",
-	["Друид"] = "|cffFF7D0AДруид|r",
-	["Жрец"] = "|cffFFFFFFЖрец|r",
-	["Маг"] = "|cff69CCF0Маг|r",
-	["Монах"] = "|cff00FF96Монах|r",
-	["Охотник"] = "|cffABD473Охотник|r",
-	["Охотник на демонов"] = "|cffA330C9Охотник на демонов|r",
-	["Паладин"] = "|cffF58CBAПаладин|r",
-	["Разбойник"] = "|cffFFF569Разбойник|r",
-	["Рыцарь смерти"] = "|cffC41F3BРыцарь смерти|r",
-	["Чернокнижник"] = "|cff9482C9Чернокнижник|r",
-	["Шаман"] = "|cff0070DEШаман|r",
+--local replaceclass = {
+--	["Воин"] = "|cffC79C6EВоин|r",
+--	["Друид"] = "|cffFF7D0AДруид|r",
+--	["Жрец"] = "|cffFFFFFFЖрец|r",
+--	["Маг"] = "|cff69CCF0Маг|r",
+--	["Монах"] = "|cff00FF96Монах|r",
+--	["Охотник"] = "|cffABD473Охотник|r",
+--	["Охотник на демонов"] = "|cffA330C9Охотник на демонов|r",
+--	["Паладин"] = "|cffF58CBAПаладин|r",
+--	["Разбойник"] = "|cffFFF569Разбойник|r",
+--	["Рыцарь смерти"] = "|cffC41F3BРыцарь смерти|r",
+--	["Чернокнижник"] = "|cff9482C9Чернокнижник|r",
+--	["Шаман"] = "|cff0070DEШаман|r",
 
-	["Warrior"] = "|cffC79C6EWarrior|r",
-	["Druid"] = "|cffFF7D0ADruid|r",
-	["Priest"] = "|cffFFFFFFPriest|r",
-	["Mage"] = "|cff69CCF0Mage|r",
-	["Monk"] = "|cff00FF96Monk|r",
-	["Hunter"] = "|cffABD473Hunter|r",
-	["Demon hunter"] = "|cffA330C9Demon hunter|r",
-	["Paladin"] = "|cffF58CBAPaladin|r",
-	["Rogue"] = "|cffFFF569Rogue|r",
-	["Death knight"] = "|cffC41F3BDeath knight|r",
-	["Warlock"] = "|cff9482C9Warlock|r",
-	["Shaman"] = "|cff0070DEShaman|r",
-}
+--	["Warrior"] = "|cffC79C6EWarrior|r",
+--	["Druid"] = "|cffFF7D0ADruid|r",
+--	["Priest"] = "|cffFFFFFFPriest|r",
+--	["Mage"] = "|cff69CCF0Mage|r",
+--	["Monk"] = "|cff00FF96Monk|r",
+--	["Hunter"] = "|cffABD473Hunter|r",
+--	["Demon hunter"] = "|cffA330C9Demon hunter|r",
+--	["Paladin"] = "|cffF58CBAPaladin|r",
+--	["Rogue"] = "|cffFFF569Rogue|r",
+--	["Death knight"] = "|cffC41F3BDeath knight|r",
+--	["Warlock"] = "|cff9482C9Warlock|r",
+--	["Shaman"] = "|cff0070DEShaman|r",
+--}
 
-local function Translate(text)
-	if text then
-		for rus, replace in next, replace do
-			text = text:gsub(rus, replace)
-		end
-		return text
-	end
-end
+--local function Translate(text)
+--	if text then
+--		for rus, replace in next, replace do
+--			text = text:gsub(rus, replace)
+--		end
+--		return text
+--	end
+--end
 
-local function TranslateClass(text)
-	if text then
-		for rus, replaceclass in next, replaceclass do
-			text = text:gsub(rus, replaceclass)
-		end
-		return text
-	end
-end
+--local function TranslateClass(text)
+--	if text then
+--		for rus, replaceclass in next, replaceclass do
+--			text = text:gsub(rus, replaceclass)
+--		end
+--		return text
+--	end
+--end
 
-local function UpdateTooltip(self)
-	if not self:GetItem() then return end
-	local tname = self:GetName()
-	for i = 3, self:NumLines() do
-		ttext = _G[tname.."TextLeft"..i]
-		local class = ttext:GetText() and (string.find(ttext:GetText(), L["CLASS"]) or string.find(ttext:GetText(), "Требуется"))
-		if ttext then ttext:SetText(Translate(ttext:GetText())) end
-		if ttext and class then ttext:SetText(TranslateClass(ttext:GetText())) end
-		ttext = _G[tname.."TextRight"..i]
-		if ttext then ttext:SetText(Translate(ttext:GetText())) end
-	end
-	ttext = nil
-end
+--local function UpdateTooltip(self)
+--	if not self:GetItem() then return end
+--	local tname = self:GetName()
+--	for i = 3, self:NumLines() do
+--		ttext = _G[tname.."TextLeft"..i]
+--		local class = ttext:GetText() and (string.find(ttext:GetText(), L["CLASS"]) or string.find(ttext:GetText(), "Требуется"))
+--		if ttext then ttext:SetText(Translate(ttext:GetText())) end
+--		if ttext and class then ttext:SetText(TranslateClass(ttext:GetText())) end
+--		ttext = _G[tname.."TextRight"..i]
+--		if ttext then ttext:SetText(Translate(ttext:GetText())) end
+--	end
+--	ttext = nil
+--end
 
-GameTooltip:HookScript("OnTooltipSetItem", UpdateTooltip)
-ItemRefTooltip:HookScript("OnTooltipSetItem", UpdateTooltip)
-ShoppingTooltip1:HookScript("OnTooltipSetItem", UpdateTooltip)
-ShoppingTooltip2:HookScript("OnTooltipSetItem", UpdateTooltip)
+--GameTooltip:HookScript("OnTooltipSetItem", UpdateTooltip)
+--ItemRefTooltip:HookScript("OnTooltipSetItem", UpdateTooltip)
+--ShoppingTooltip1:HookScript("OnTooltipSetItem", UpdateTooltip)
+--ShoppingTooltip2:HookScript("OnTooltipSetItem", UpdateTooltip)
 
 ----------------------------------------------------------------------------------------
 --	Item count in tooltip(by Tukz)
@@ -1444,3 +1052,383 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 end)
 
 ]]
+
+----------------------------------------------------------------------------------------
+--	Adds guild rank to tooltips(GuildRank by Meurtcriss)
+----------------------------------------------------------------------------------------
+--if true then
+--	GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
+--		-- Get the unit
+--		local _, unit = self:GetUnit()
+--		if not unit then
+--			local mFocus = GetMouseFocus()
+--			if mFocus and mFocus.unit then
+--				unit = mFocus.unit
+--			end
+--		end
+--		-- Get and display guild rank
+--		if UnitIsPlayer(unit) then
+--			local guildName, guildRank = GetGuildInfo(unit)
+--			if guildName then
+--				self:AddDoubleLine(RANK..":", "|cffffffff" .. guildRank.."|r")
+--			end
+--		end
+--	end)
+--end
+
+
+--------------------------------------------------------------------------------------
+--	Fix compare tooltips(by Blizzard)(../FrameXML/GameTooltip.lua)
+--------------------------------------------------------------------------------------
+--hooksecurefunc("GameTooltip_ShowCompareItem", function(self, shift)
+--	if not self then
+--		self = GameTooltip
+--	end
+
+--	-- Find correct side
+--	local shoppingTooltip1, shoppingTooltip2 = unpack(self.shoppingTooltips)
+--	local primaryItemShown, secondaryItemShown = shoppingTooltip1:SetCompareItem(shoppingTooltip2, self)
+--	local side = "left"
+--	local rightDist = 0
+--	local leftPos = self:GetLeft()
+--	local rightPos = self:GetRight()
+
+--	if not rightPos then
+--		rightPos = 0
+--	end
+--	if not leftPos then
+--		leftPos = 0
+--	end
+
+--	rightDist = GetScreenWidth() - rightPos
+
+--	if leftPos and (rightDist < leftPos) then
+--		side = "left"
+--	else
+--		side = "right"
+--	end
+
+--	-- See if we should slide the tooltip
+--	if self:GetAnchorType() and self:GetAnchorType() ~= "ANCHOR_PRESERVE" then
+--		local totalWidth = 0
+--		if primaryItemShown then
+--			totalWidth = totalWidth + shoppingTooltip1:GetWidth()
+--		end
+--		if secondaryItemShown then
+--			totalWidth = totalWidth + shoppingTooltip2:GetWidth()
+--		end
+
+--		if side == "left" and totalWidth > leftPos then
+--			self:SetAnchorType(self:GetAnchorType(), totalWidth - leftPos, 0)
+--		elseif side == "right" and (rightPos + totalWidth) > GetScreenWidth() then
+--			self:SetAnchorType(self:GetAnchorType(), -((rightPos + totalWidth) - GetScreenWidth()), 0)
+--		end
+--	end
+
+--	-- Anchor the compare tooltips
+--	if secondaryItemShown then
+--		shoppingTooltip2:SetOwner(self, "ANCHOR_NONE")
+--		shoppingTooltip2:ClearAllPoints()
+--		if side and side == "left" then
+--			shoppingTooltip2:SetPoint("TOPRIGHT", self, "TOPLEFT", -3, -10)
+--		else
+--			shoppingTooltip2:SetPoint("TOPLEFT", self, "TOPRIGHT", 3, -10)
+--		end
+
+--		shoppingTooltip1:SetOwner(self, "ANCHOR_NONE")
+--		shoppingTooltip1:ClearAllPoints()
+
+--		if side and side == "left" then
+--			shoppingTooltip1:SetPoint("TOPRIGHT", shoppingTooltip2, "TOPLEFT", -3, 0)
+--		else
+--			shoppingTooltip1:SetPoint("TOPLEFT", shoppingTooltip2, "TOPRIGHT", 3, 0)
+--		end
+--	else
+--		shoppingTooltip1:SetOwner(self, "ANCHOR_NONE")
+--		shoppingTooltip1:ClearAllPoints()
+
+--		if side and side == "left" then
+--			shoppingTooltip1:SetPoint("TOPRIGHT", self, "TOPLEFT", -3, -10)
+--		else
+--			shoppingTooltip1:SetPoint("TOPLEFT", self, "TOPRIGHT", 3, -10)
+--		end
+
+--		shoppingTooltip2:Hide()
+--	end
+
+--	shoppingTooltip1:SetCompareItem(shoppingTooltip2, self)
+--	shoppingTooltip1:Show()
+--end)
+
+
+
+--local StoryTooltip = QuestScrollFrame.StoryTooltip
+--StoryTooltip:SetFrameLevel(4)
+
+--local tooltips = {
+--	GameTooltip,
+--	ItemRefTooltip,
+--	ShoppingTooltip1,
+--	ShoppingTooltip2,
+--	WorldMapTooltip,
+--	WorldMapCompareTooltip1,
+--	WorldMapCompareTooltip2,
+--	FriendsTooltip,
+--	ItemRefShoppingTooltip1,
+--	ItemRefShoppingTooltip2,
+--	AtlasLootTooltip,
+--	QuestHelperTooltip,
+--	QuestGuru_QuestWatchTooltip,
+--	StoryTooltip
+--}
+
+--local backdrop = {
+--	bgFile = blank, edgeFile = blank, edgeSize = 1,
+--	insets = {left = -1, right = -1, top = -1, bottom = -1}
+--}
+
+--local style = {
+--	bgFile =  texture,
+--	edgeFile = glow,
+--	edgeSize = 4,
+--	insets = { left = 3, right = 3, top = 3, bottom = 3 }
+--}
+
+--function CreateStyleTT(f, size, level, alpha, alphaborder)
+--	if f.shadow then return end
+--	local shadow = CreateFrame("Frame", nil, f)
+--	shadow:SetFrameLevel(level or 0)
+--	shadow:SetFrameStrata(f:GetFrameStrata())
+--	shadow:SetPoint("TOPLEFT", -2, 2)
+--	shadow:SetPoint("BOTTOMRIGHT", 2, -9)
+--	shadow:SetBackdrop(style)
+--	shadow:SetBackdropColor(.08,.08,.08, alpha or .9)
+--	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
+--	f.shadow = shadow
+--	return shadow
+--end
+
+--for _, tt in pairs(tooltips) do
+--	if IsAddOnLoaded("Aurora") then
+--		tt:SetBackdrop(nil)
+--		if tt.BackdropFrame then
+--			tt.BackdropFrame:SetBackdrop(nil)
+--		end
+--		local bg = CreateFrame("Frame", nil, tt)
+--		bg:SetPoint("TOPLEFT")
+--		bg:SetPoint("BOTTOMRIGHT")
+--		bg:SetFrameLevel(tt:GetFrameLevel() - 1)
+
+--		CreateStyleTT(bg, 1)
+
+
+--		tt.GetBackdrop = function() return backdrop end
+--		tt.GetBackdropColor = function() return 0, 0, 0, 0.7 end
+--		tt.GetBackdropBorderColor = function() return 0.37, 0.3, 0.3, 1 end
+--	end
+--end
+
+
+
+---- Hide PVP text
+--PVP_ENABLED = ""
+
+---- Statusbar
+--local healthBar = GameTooltipStatusBar
+--healthBar:ClearAllPoints()
+--healthBar:SetHeight(6)
+--healthBar:SetPoint("TOPLEFT", healthBar:GetParent(), "BOTTOMLEFT", 5, 5)
+--healthBar:SetPoint("TOPRIGHT", healthBar:GetParent(), "BOTTOMRIGHT", -5, 5)
+--healthBar:SetStatusBarTexture( texture)
+
+-- Add "Targeted By" line
+--local targetedList = {}
+--local ClassColors = {}
+--local token
+
+--for class, color in next, RAID_CLASS_COLORS do
+--	ClassColors[class] = ("|cff%.2x%.2x%.2x"):format(color.r * 255, color.g * 255, color.b * 255)
+--end
+
+--local function AddTargetedBy()
+--	local numParty, numRaid = GetNumSubgroupMembers(), GetNumGroupMembers()
+--	if numParty > 0 or numRaid > 0 then
+--		for i = 1, (numRaid > 0 and numRaid or numParty) do
+--			local unit = (numRaid > 0 and "raid"..i or "party"..i)
+--			if UnitIsUnit(unit.."target", token) and not UnitIsUnit(unit, "player") then
+--				local _, class = UnitClass(unit)
+--				targetedList[#targetedList + 1] = ClassColors[class]
+--				targetedList[#targetedList + 1] = UnitName(unit)
+--				targetedList[#targetedList + 1] = "|r, "
+--			end
+--		end
+--		if #targetedList > 0 then
+--			targetedList[#targetedList] = nil
+--			GameTooltip:AddLine(" ", nil, nil, nil, 1)
+--			local line = _G["GameTooltipTextLeft"..GameTooltip:NumLines()]
+--			if not line then return end
+--			line:SetFormattedText("Targeted By".." (|cffffffff%d|r): %s", (#targetedList + 1) / 3, table.concat(targetedList))
+--			wipe(targetedList)
+--		end
+--	end
+--end
+
+----------------------------------------------------------------------------------------
+--	Your instance lock status in tooltip(Instance Lock Compare by Dridzt)
+	------------------------------------------------------------------------------------------
+	--local myTip = CreateFrame("GameTooltip", "InstanceLockTooltip", nil, "GameTooltipTemplate")
+
+	--local function ILockCompare(frame, link, ...)
+	--	if not frame or not link then return end
+
+	--	local linkType = string.match(link, "(instancelock):")
+	--	if linkType == "instancelock" then
+	--		local mylink, templink
+	--		local myguid = UnitGUID("player")
+	--		local guid = string.match(link, "instancelock:([^:]+)")
+
+	--		if guid ~= myguid then
+	--			local instanceguid = string.match(link, "instancelock:[^:]+:(%d+):")
+	--			local numsaved = GetNumSavedInstances()
+	--			if numsaved > 0 then
+	--				for i = 1, numsaved do
+	--					local locked, extended = select(5, GetSavedInstanceInfo(i))
+	--					if extended or locked then
+	--						templink = GetSavedInstanceChatLink(i)
+	--						local myinstanceguid = string.match(templink, "instancelock:[^:]+:(%d+):")
+	--						if myinstanceguid == instanceguid then
+	--							mylink = string.match(templink, "(instancelock:[^:]+:%d+:%d+:%d+)")
+	--							break
+	--						end
+	--					end
+	--				end
+	--				mylink = mylink or string.gsub(link, "(instancelock:)([^:]+)(:%d+:%d+:)(%d+)", function(a, g, b, k) g = myguid; k = "0"; return a..g..b..k end)
+	--			else
+	--				mylink = string.gsub(link, "(instancelock:)([^:]+)(:%d+:%d+:)(%d+)", function(a, g, b, k) g = myguid; k = "0"; return a..g..b..k end)
+	--			end
+	--		end
+
+	--		if mylink then
+	--			if not myTip:IsVisible() and frame:IsVisible() then
+	--				myTip:SetParent(frame)
+	--				myTip:SetOwner(frame, "ANCHOR_NONE")
+	--				CreateStyle(myTip, 2)
+
+	--				local side = "left"
+	--				local rightDist = 0
+	--				local leftPos = frame:GetLeft()
+	--				local rightPos = frame:GetRight()
+	--				if not rightPos then
+	--					rightPos = 0
+	--				end
+	--				if not leftPos then
+	--					leftPos = 0
+	--				end
+	--				rightDist = GetScreenWidth() - rightPos
+	--				if leftPos and (rightDist < leftPos) then
+	--					side = "left"
+	--				else
+	--					side = "right"
+	--				end
+	--				myTip:ClearAllPoints()
+	--				if side == "left" then
+	--					myTip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -3, -10)
+	--				elseif side == "right" then
+	--					myTip:SetPoint("TOPLEFT", frame, "TOPRIGHT", 3, -10)
+	--				end
+	--				myTip:SetHyperlink(mylink)
+	--				myTip:Show()
+	--			end
+	--		end
+	--	end
+	--end
+
+	--ItemRefTooltip:HookScript("OnDragStop", function(self, button)
+	--	if myTip:IsVisible() and (myTip:GetParent():GetName() == self:GetName()) then
+	--		local side = "left"
+	--		local rightDist = 0
+	--		local leftPos = self:GetLeft()
+	--		local rightPos = self:GetRight()
+	--		if not rightPos then
+	--			rightPos = 0
+	--		end
+	--		if not leftPos then
+	--			leftPos = 0
+	--		end
+	--		rightDist = GetScreenWidth() - rightPos
+	--		if leftPos and (rightDist < leftPos) then
+	--			side = "left"
+	--		else
+	--			side = "right"
+	--		end
+	--		myTip:ClearAllPoints()
+	--		if side == "left" then
+	--			myTip:SetPoint("TOPRIGHT", self, "TOPLEFT", -3, -10)
+	--		elseif side == "right" then
+	--			myTip:SetPoint("TOPLEFT", self, "TOPRIGHT", 3, -10)
+	--		end
+	--	end
+	--end)
+
+	--hooksecurefunc(GameTooltip, "SetHyperlink", ILockCompare)
+	--hooksecurefunc(ItemRefTooltip,"SetHyperlink", ILockCompare)
+
+
+----------------------------------------------------------------------------------------
+--	Based on tekKompare(by Tekkub)
+----------------------------------------------------------------------------------------
+--local orig1, orig2, GameTooltip = {}, {}, GameTooltip
+--local linktypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true, instancelock = true, currency = true}
+
+--local function OnHyperlinkEnter(frame, link, ...)
+--	local linktype = link:match("^([^:]+)")
+--	if linktype and linktype == "battlepet" then
+--		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT", -3, 50)
+--		GameTooltip:Show()
+--		local _, speciesID, level, breedQuality, maxHealth, power, speed = strsplit(":", link)
+--		BattlePetToolTip_Show(tonumber(speciesID), tonumber(level), tonumber(breedQuality), tonumber(maxHealth), tonumber(power), tonumber(speed))
+--	elseif linktype and linktypes[linktype] then
+--		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT", -3, 50)
+--		GameTooltip:SetHyperlink(link)
+--		GameTooltip:Show()
+--	end
+
+--	if orig1[frame] then return orig1[frame](frame, link, ...) end
+--end
+
+--GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
+--	local _, instanceType = IsInInstance()
+--	if instanceType == "scenario" then return end
+--	local _, unit = GameTooltip:GetUnit()
+--	if unit and UnitIsPlayer(unit) and ((UnitInParty(unit) or UnitInRaid(unit)) and GetNumGroupMembers() > 0) then
+--		GameTooltip:AddDoubleLine(ROLE..":", GetLFDRole(unit), 1, 1, 0)
+--	end
+--end)
+
+
+----------------------------------------------------------------------------------------
+--	Fix GameTooltipMoneyFrame font size
+----------------------------------------------------------------------------------------
+--local function FixFont(self)
+--	for i = 1, 2 do
+--		if _G["GameTooltipMoneyFrame"..i] then
+--			_G["GameTooltipMoneyFrame"..i.."PrefixText"]:SetFontObject("GameTooltipText")
+--			_G["GameTooltipMoneyFrame"..i.."SuffixText"]:SetFontObject("GameTooltipText")
+--			_G["GameTooltipMoneyFrame"..i.."GoldButton"]:SetNormalFontObject("GameTooltipText")
+--			_G["GameTooltipMoneyFrame"..i.."SilverButton"]:SetNormalFontObject("GameTooltipText")
+--			_G["GameTooltipMoneyFrame"..i.."CopperButton"]:SetNormalFontObject("GameTooltipText")
+--		end
+--	end
+--	for i = 1, 2 do
+--		if _G["ItemRefTooltipMoneyFrame"..i] then
+--			_G["ItemRefTooltipMoneyFrame"..i.."PrefixText"]:SetFontObject("GameTooltipText")
+--			_G["ItemRefTooltipMoneyFrame"..i.."SuffixText"]:SetFontObject("GameTooltipText")
+--			_G["ItemRefTooltipMoneyFrame"..i.."GoldButton"]:SetNormalFontObject("GameTooltipText")
+--			_G["ItemRefTooltipMoneyFrame"..i.."SilverButton"]:SetNormalFontObject("GameTooltipText")
+--			_G["ItemRefTooltipMoneyFrame"..i.."CopperButton"]:SetNormalFontObject("GameTooltipText")
+--		end
+--	end
+--end
+
+--GameTooltip:HookScript("OnTooltipSetItem", FixFont)
+--ItemRefTooltip:HookScript("OnTooltipSetItem", FixFont)

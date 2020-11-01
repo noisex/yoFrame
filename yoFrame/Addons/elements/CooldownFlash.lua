@@ -42,15 +42,18 @@ flash:SetScript("OnUpdate", function(self, e)
 end)
 
 lib:RegisterCallback("start", function(id, class)
-	--print(id, class)
+	--print("start: ", id, class, N.interuptSpells[id])
 	if N.interuptSpells[id] then yo.General.spellDelay = true end
+	--print("started", yo.General.spellDelay)
 end)
 
 lib:RegisterCallback("stop", function(id, class)
+	--print( "stop: ", id, class)
+	if N.interuptSpells[id] then yo.General.spellDelay = false end
+	--print("stoped", N.interuptSpells[id], yo.General.spellDelay)
+
 	if filter[class]=="all" or filter[class][id] then return end
 	flash.icon:SetTexture(class=="item" and GetItemIcon(id) or select(3, GetSpellInfo(id)))
 	flash.e = 0
 	flash:Show()
-
-	if N.interuptSpells[id] then yo.General.spellDelay = false end
 end)

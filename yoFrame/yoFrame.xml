@@ -13,41 +13,17 @@
 	<Include file="addons\api\api.xml"/>
 	<Script file="Config\core.lua"/>
 	<Script file="Config\iconAuras.lua"/>
+	<Script file="Config\antiTaint.lua"/>
 
 	<Include file="Filters\filters.xml"/>
  	<Include file="Infotext\infotexts.xml"/>
  	<Include file="addons\frames\frames.xml"/>
-
  	<Include file="addons\actionBars\actionBars.xml"/>
 	<Include file="addons\bags\bags.xml"/>
 	<Include file="addons\chat\chat.xml"/>
 	<Include file="addons\maps\maps.xml"/>
 	<Include file="addons\tooltip\tooltip.xml"/>
-
-	<Script file="Addons\AzeritPower.lua"/>
-	<Script file="Addons\Challenges.lua"/>
-	<Script file="Addons\ChallengeFrame.lua"/>
-	<Script file="Addons\ChallengeProc.lua"/>
-	<Script file="Addons\Cooldown.lua"/>
-	<Script file="Addons\CooldownFlash.lua"/>
-	<Script file="Addons\CTA.lua"/>
-	<Script file="Addons\DoLoot.lua"/>
-	<Script file="Addons\Inspect.lua"/>
-	<Script file="Addons\Fliger.lua"/>
-	<Script file="Addons\Experience.lua"/>
-	<Script file="Addons\Mail.lua"/>
-	<Script file="Addons\Mirror.lua"/>
-	<Script file="Addons\MoveBlizzFrames.lua"/>
-	<Script file="Addons\ObjectiveTrack.lua"/>
-	<Script file="Addons\Potatos.lua"/>
-	<Script file="Addons\QuestAuto.lua"/>
-	<Script file="Addons\RaidCooldowns.lua"/>
-	<Script file="Addons\RaidUtility.lua"/>
-	<Script file="Addons\Reputation.lua"/>
-	<Script file="Addons\ScrollText.lua"/>
-	<Script file="Addons\Scripts.lua"/>
-	<Script file="Addons\TalkingHead.lua"/>
-
-	<Include file="Skins\skins.xml"/>
+	<Include file="addons\elements\elements.xml"/>
+	<Include file="skins\skins.xml"/>
  -->
  </Ui>
