@@ -18,7 +18,7 @@ local function buttonsUP( self)
 	end
 end
 
-local function myButtonBorder( self, name, shift, alpha, cols)
+function myButtonBorder( self, name, shift, alpha, cols)
 	local shift = shift or 5
 	local alpha = alpha or 1
 	local cols  = cols 	or { 1, 1, 1}

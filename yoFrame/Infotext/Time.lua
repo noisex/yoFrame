@@ -1,33 +1,16 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
+
+-- if not yo.InfoTexts.enable then return end
+
+local infoText = N.InfoTexts
+local Stat = CreateFrame("Frame", nil, UIParent)
 
 --------------------------------------------------------------------
 -- TIME
 --------------------------------------------------------------------
-
-local Text  = RightInfoPanel:CreateFontString(nil, "OVERLAY")
---Text:SetFont( font, ( fontsize or 10), "OVERLAY")
-Text:SetHeight( RightInfoPanel:GetHeight())
-Text:SetPoint("RIGHT", RightInfoPanel, "RIGHT", -5, 0)
-Text:SetShadowColor(0,0,0,1)
-Text:SetShadowOffset(0.5,-0.5)
-RightInfoPanel.timeText = Text
-
 local int = 0
 
-local function Update(self, t)
-	if not yo.Addons.InfoPanels then
-		self:UnregisterAllEvents()
-		self:SetScript("OnMouseDown", nil)
-		self:SetScript("OnEnter", nil)
-		self:SetScript("OnLeave", nil)
-		self:SetScript("OnEvent", nil)
-		self:SetScript("OnUpdate", nil)
-		Text = nil
-		self = nil
-		RightInfoPanel.timeText = nil
-		return
-	end
-
+function Stat:update(t)
 	int = int - t
 	if int < 0 then
 		int = 10
@@ -41,22 +24,18 @@ local function Update(self, t)
 		-- BFA
 		local pendingCalendarInvites = C_Calendar.GetNumPendingInvites()
 		if pendingCalendarInvites and pendingCalendarInvites > 0 then
-			Text:SetText( "|cffFF0000NEW "..Hr24..":"..Min)
+			self.Text:SetText( "|cffFF0000NEW "..Hr24..":"..Min)
 		else
-			Text:SetText( myColorStr..Hr24..":"..myColorStr..Min)
+			self.Text:SetText( myColorStr..Hr24..":"..myColorStr..Min)
 		end
-		self:SetAllPoints(Text)
+		--self:SetWidth( self.Text:GetWidth())
 	end
 end
 
-local function OnEnter( self)
-	OnLoad = function(self) RequestRaidInfo() end
+function Stat:onEnter()
+	--OnLoad = function(self) RequestRaidInfo() end
 
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
-	GameTooltip:ClearLines()
-	GameTooltip:SetBackdropColor( 0, 0, 0, 1)
-	GameTooltip:SetAlpha(1)
-
 	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - myLogin))
 
 	if yo_AllData[myRealm][myName].PlayedLvl then
@@ -160,27 +139,47 @@ local function OnEnter( self)
 	GameTooltip:Show()
 end
 
-local Stat = CreateFrame("Frame")
-Stat:EnableMouse(true)
-Stat:SetFrameStrata("BACKGROUND")
-Stat:SetFrameLevel(3)
---Stat:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
---Stat:SetScript("OnEvent", OnEvent)
---Stat:RegisterEvent("UPDATE_INSTANCE_INFO")
 
-Stat:SetScript("OnEnter", OnEnter)
-Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
-Stat:SetScript("OnMouseDown", function(self, btn)
-	if btn == 'RightButton'  then
-		ToggleTimeManager()
-	else
-		GameTimeFrame:Click()
-	end
-end)
+function Stat:Enable()
+	if not self.index or ( self.index and self.index <= 0) then self:Disable() return end
 
-Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
-Stat:SetScript("OnEvent", function(self, ...)
-	Text:SetFont( yo.font, yo.Media.fontsize, "OVERLAY")
-	Stat:SetScript("OnUpdate", Update)
-	Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
-end)
+	--print( self.parent, self.parentCount, self.parent:GetWidth(), self.index, self.shift)
+
+	self:SetFrameStrata("BACKGROUND")
+	self:SetFrameLevel(3)
+	self:EnableMouse(true)
+	self:SetSize( 1, 15)
+	self:ClearAllPoints()
+	self:SetPoint("LEFT", self.parent, "LEFT", self.parent:GetWidth()/self.parentCount*( self.index - 1) + self.shift, 0)
+	self:RegisterEvent( 'PLAYER_ENTERING_WORLD')
+
+	self:SetScript("OnEnter", function( ) self:onEnter( self) end )
+	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	self:SetScript("OnUpdate", self.update)
+	self:SetScript("OnMouseDown", function( f, btn)
+		if btn == 'RightButton'  then ToggleTimeManager()
+		else GameTimeFrame:Click() end
+	end)
+
+	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
+	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self:SetWidth( self.parent:GetWidth() / self.parentCount)
+
+	--CreateStyle( self, 2)
+	self:Show()
+end
+
+function Stat:Disable()
+	self:SetScript("OnUpdate", nil)
+	self:SetScript("OnEnter", nil)
+	self:SetScript("OnLeave", nil)
+	self:SetScript("OnMouseDown", nil)
+	self:UnregisterAllEvents()
+	self:Hide()
+end
+
+infoText.infos.time 	= Stat
+infoText.infos.time.name= "Time"
+
+infoText.texts.time 	= "Time"

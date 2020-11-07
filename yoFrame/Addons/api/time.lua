@@ -49,6 +49,22 @@ function formatTimeSec( s, noSec)
 	return format("%d%s", s, sec), (s * 100 - floor(s * 100))/100
 end
 
+function SecondsToClocks(seconds, noSec, noMin)
+  local seconds = tonumber(seconds)
+
+  if seconds <= 0 then   --return "00:00:00";
+    return " ";
+  else
+  	local mins 	= noMin and 0 or floor(mod(seconds,3600)/60)
+  	local secs 	= noSec and 0 or floor(mod(seconds,60))
+
+	mins 	= mins  == 0 and "" or ( format( "%dм", mins) .. " ")
+	secs 	= secs  == 0 and "" or ( format( "%dс", secs))
+
+    return "/" ..mins..secs
+  end
+end
+
 function SecondsToClock(seconds, noSec, noMin)
   local seconds = tonumber(seconds)
 

@@ -4,6 +4,8 @@ local oUF = ns.oUF
 
 local minAlpha 	= 1
 
+--https://wowwiki.fandom.com/wiki/UI_escape_sequences
+
 CreateAnchor("yoMoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", LeftDataPanel)
 ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
 ContainerFrame3:SetPoint("CENTER")
@@ -353,7 +355,13 @@ local function CreateWIM( self)
 	friends:SetNormalTexture( 	"Interface\\Addons\\yoFrame\\Media\\Friedns-UI-SquareButton-Up")
 	friends:SetPushedTexture( 	"Interface\\Addons\\yoFrame\\Media\\Friedns-UI-SquareButton-Down")
 	friends:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-	friends:SetScript("OnMouseDown", function(self, button) N.InfoFriend:ShowFiends( button) end)
+	friends:SetScript("OnMouseDown", function( f, button)
+		self.menuWIM = { { text = "Дружеский шептун", isTitle = true,notCheckable=true}, }
+		N.InfoTexts.infos.Friends:onEnter( nil, "fomWIM")
+		EasyMenu( self.menuWIM, N.menuFrame, f, 5, -5, "MENU", 2)
+	end)
+	--friends:SetScript("OnMouseDown", function(self, button) N.InfoFriend:ShowFiends( button)
+
 	friends:SetScript("OnEnter", self.tooltipShow)
 	friends:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.friends = friends

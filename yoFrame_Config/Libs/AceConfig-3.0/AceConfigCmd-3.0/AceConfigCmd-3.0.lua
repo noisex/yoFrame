@@ -471,7 +471,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			return
 		end
 		if type(info.step)=="number" then
-			val = val- (val  %info.step)
+			val = val- (val % info.step)
 		end
 		if type(info.min)=="number" and val<info.min then
 			usererr(info, inputpos, val.." - "..format(L["must be equal to or higher than %s"], tostring(info.min)) )

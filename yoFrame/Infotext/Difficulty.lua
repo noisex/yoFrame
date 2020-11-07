@@ -1,6 +1,8 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local DT = E:GetModule('DataTexts')
 
+if not yo.InfoTexts.enable then return end
+
 local _G = _G
 local format = format
 local pairs = pairs

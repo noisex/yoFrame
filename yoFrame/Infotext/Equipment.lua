@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+if not yo.InfoTexts.enable then return end
+
 local menuFrame = CreateFrame("Frame", "ExampleMenuFrame", UIParent, "UIDropDownMenuTemplate")
 local eText  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 

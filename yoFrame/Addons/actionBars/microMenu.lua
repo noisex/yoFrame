@@ -23,10 +23,13 @@ function ActionBars:CreateMicroBar()
 
 	local PreviousButton
 	local buttonList = {}
+
+	table.remove( MICRO_BUTTONS, 11) --HelpMicroButton
+
 	for i, buttonName in next, MICRO_BUTTONS do
     	local Button = _G[buttonName]
-
 		Button:ClearAllPoints()
+
 		if (i == 1) then
 			Button:SetPoint("TOPLEFT", MicroMenu, "TOPLEFT", Spacing, 0)
 		else

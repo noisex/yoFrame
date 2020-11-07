@@ -167,7 +167,6 @@ local raidShared = function(self, unit)
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( texture)
-	table.insert( N.statusBars, self.Health.hbg)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end

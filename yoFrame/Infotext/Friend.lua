@@ -1,5 +1,6 @@
-
 local L, yo, N = unpack( select( 2, ...))
+
+if not yo.InfoTexts.enable then return end
 
 StaticPopupDialogs.SET_BN_BROADCAST = {
 	text = BN_BROADCAST_TOOLTIP,
@@ -541,13 +542,13 @@ Stat:SetScript("OnEnter", function(self)
 								levelc = RAID_CLASS_COLORS["PRIEST"]
 								classc = RAID_CLASS_COLORS["PRIEST"]
 							end
-
+							local iLevel = info[15]
 							if info[21] and info[21] >= 2 then
-								info[15] = info[15] .. "|cffffff00(c)|r"
+								iLevel = info[15] .. "|cffffff00(c)|r"
 							end
 
 							if UnitInParty(info[4]) or UnitInRaid(info[4]) then grouped = 1 else grouped = 2 end
-								GameTooltip:AddDoubleLine(format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[15],classc.r*255,classc.g*255,classc.b*255,info[3] .. gstatusTable[gstatus], groupedTable[grouped], 255, 0, 0), statusTable[status] .. bnetColor .. info[2],238,238,238,238,238,238)
+								GameTooltip:AddDoubleLine(format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,iLevel,classc.r*255,classc.g*255,classc.b*255,info[3] .. gstatusTable[gstatus], groupedTable[grouped], 255, 0, 0), statusTable[status] .. bnetColor .. info[2],238,238,238,238,238,238)
 							if IsShiftKeyDown() then
 								if GetZoneText( C_Map.GetBestMapForUnit("player")) == info[14] then zonec = activezone else zonec = inactivezone end
 								if GetRealmName() == info[10] then realmc = activezone else realmc = inactivezone end

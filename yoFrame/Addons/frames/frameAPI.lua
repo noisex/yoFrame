@@ -266,6 +266,9 @@ local function updateHealth( f, event, unit)
 	local healthCur 	= UnitHealth( unit)
 	local absorb 		= UnitGetTotalAbsorbs( unit) or 0
 
+	local stoperc 		= f:GetWidth() / ( healthMax + absorb + 0.01)
+	local perc 			= stoperc * absorb --healthMax
+
 	if f.Health.healthText then
 		local thText = ""
 
@@ -276,22 +279,35 @@ local function updateHealth( f, event, unit)
 		elseif UnitIsGhost( unit) then
         	thText = "Ghost"
 		else
-			if healthCur == healthMax then
+			if healthCur == healthMax 	then
 				thText = nums( healthCur)
+			elseif f.simpleUF then
+				thText = Round( healthCur / healthMax * 100) .. "%"
+				--thText = nums( healthCur)
 			else
 				local absorbText 	= absorb > 0 and "|cffffff00 " .. nums( absorb).. "|r" or ""
-				thText = nums( healthCur) .. absorbText .. " | " .. ceil( healthCur / healthMax * 100) .. "%"
+				thText = nums( healthCur) .. absorbText .. " | " .. Round( healthCur / healthMax * 100) .. "%"
 			end
     	end
 
 		f.Health.healthText:SetText( thText)
 	end
 
+	if yo.UF.hideOldAbsorb then
+		absorb 	= 0
+	end
+
 	f.Health:SetMinMaxValues( 0, healthMax + absorb)
 
 	if f.Health.AbsorbBar then
-		f.Health.AbsorbBar:SetMinMaxValues( 0, healthMax)-- + absorb)
+		f.Health.AbsorbBar:SetMinMaxValues( 0, healthMax + absorb)
 		f.Health.AbsorbBar:SetValue( absorb)
+	end
+
+	if f.Health.stoper then
+		--f.Health.stoper:ClearAllPoints()
+		--f.Health.stoper:SetPoint("LEFT", f, "LEFT", perc, 0)
+		f.Health.stoper:SetWidth(perc)
 	end
 
 	if f.Health.healPred then
@@ -372,6 +388,9 @@ local function updateHealthColor( f, event, unit, ...)
 		if f.Health.AbsorbBar then
 			f.Health.AbsorbBar:SetStatusBarColor( 0.3, 0.3, 0.3, 0.9)
 		end
+	end
+	if f.Health.stoper then
+		f.Health.stoper:SetStatusBarColor( f.colr * f.darkAbsorb, f.colg * f.darkAbsorb, f.colb * f.darkAbsorb , 0.9)
 	end
 end
 

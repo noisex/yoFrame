@@ -6,6 +6,9 @@ ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|c
 
 LOOT_ITEM_PUSHED_SELF = "Получено: %s."
 LOOT_ITEM_PUSHED_SELF_MULTIPLE = "Получено: %sx%d."
+--https://wowwiki.fandom.com/wiki/UI_escape_sequences
+--|Hquest:QuestID:QuestLevel|hLinktext|h
+local strQuestObjectives = "|cffffff00"..QUESTS_COLON.." |r|cff00ffff |Hquest:%s:%d|h%s|h"
 
 local WeaponTypes = {
 	["INVTYPE_WEAPON"]			=	true,
@@ -289,12 +292,13 @@ local function OnEvent( self, event, ...)
 		local _, questObjectives = GetQuestLogQuestText();
 		local questTitle	= C_QuestLog.GetTitleForQuestID( questID)
 		local watchType 	= C_QuestLog.GetQuestWatchType( questID)
+		--local questLevel 	=
 
 		if questTitle == nil or C_QuestLog.IsWorldQuest(questID) then return end
 
 		if questObjectives and #questObjectives > 5 then
 			if watchType then
-				print( "|cffffff00"..QUESTS_COLON.." |r|cff00ffff" .. questObjectives) --, "|cff333333 Dev: ", watchType)
+				print( format( strQuestObjectives, questID, myLevel, questObjectives))
 			elseif yo.Addons.showToday then
 				print( "|cffffff00Тудейки: |cff0080ff" .. questObjectives)
 			end

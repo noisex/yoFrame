@@ -37,17 +37,20 @@ local function unitShared(self, unit)
 	local healthTextPos	= { "TOPRIGHT", self, "TOPRIGHT", 0, -2}
 	local showLeader 	= true
 	local combatPos 	= 6
+	local nameTextSize	= fontsize
 
-	if yo.UF.simpeUF then
+	if yo.UF.simpleUF then
 		height 			= height / 1.8
 		width 			= width / 1.1
 		enablePower 	= false
 		showLeader 		= false
+		nameTextSize	= fontsize + 0
 		combatPos 		= 0
 		nameLeight		= "namemedium"
-		namePos			= { "LEFT", self, "TOPLEFT", 5, 0}
+		namePos			= { "LEFT", self, "TOPLEFT", 5, 2}
 		healthTextPos	= { "BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 3}
 		rtargetPos 		= { "CENTER", self, "TOPRIGHT", -15, 0}
+		self.simpleUF	= true
 	end
 
 	_G["yoMove" .. cunit]:SetHeight( height)
@@ -70,7 +73,6 @@ local function unitShared(self, unit)
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( yo.texture)
-	table.insert( N.statusBars, self.Health.hbg)
 
 	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
@@ -79,6 +81,33 @@ local function unitShared(self, unit)
 		self.Health.AbsorbBar = self:addAbsorbBar( self)
 		self.Health.healPred  = self:addHealPred( self)
 		self.Health.Override  = self.updateHealth
+	end
+	if unit == "player" then
+		--self.Health.stoper = self.Health.AbsorbBar:CreateTexture(nil, "OVERLAY")
+		--self.Health.stoper:SetSize( 3, self:GetHeight() +5)
+		--self.Health.stoper:SetTexture(texture)
+		--self.Health.stoper:SetVertexColor(0, 1, 0, 1)
+
+		self.Health.stoper = CreateFrame("StatusBar", nil, self)
+
+		if yo.UF.rightAbsorb then
+			self.Health.stoper:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 4)
+		else
+			self.Health.stoper:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
+		end
+
+		self.Health.stoper:SetStatusBarTexture( yo.texture)
+		self.Health.stoper:SetFrameLevel( 5)
+		self.Health.stoper:SetWidth( 1)
+		self.Health.stoper:SetHeight( 4)
+		table.insert( N.statusBars, self.Health.stoper)
+		CreateStyle( self.Health.stoper, 2, 4, .3, .9)
+
+		--self.Health.stoper.bg = self.Health.stoper:CreateTexture(nil, 'BORDER')
+		--self.Health.stoper.bg:SetAllPoints( self.Health.stoper)
+		--self.Health.stoper.bg:SetVertexColor( 0.4, 0.4, 0.4, 0.5)
+		--self.Health.stoper.bg:SetAlpha(0.2)
+		--self.Health.stoper.bg:SetTexture( yo.texture)
 	end
 
 	self.fader 						= yo.Raid.fadeColor
@@ -121,7 +150,7 @@ local function unitShared(self, unit)
 			powerFlashBar:SetValue( 0)
 			self.Power.powerFlashBar = powerFlashBar
 			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", self.updateManaCost)
-			table.insert( N.statusBars, powerFlashBar)
+			table.insert( N.statusBars, self.Power.powerFlashBar)
 
 		elseif unit == "targettarget" then
 			self.Power.pDebuff = CreateFrame("Frame", nil, self)
@@ -148,9 +177,9 @@ local function unitShared(self, unit)
 	self.Overlay:SetFrameLevel( 10)
 
 	self.nameText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
-	self.nameText:SetFont( yo.font, yo.fontsize, "OUTLINE")
+	self.nameText:SetFont( font, nameTextSize, "OUTLINE")
 	self.nameText:SetPoint(unpack( namePos))
-	if unit == "targettarget" or unit == "focustarget" or unit == "focus" then
+	if unit == "targettarget" or unit == "focustarget" or unit == "focus" or unit == "pet" then
 			self:Tag( self.nameText, "[GetNameColor][unitLevel][nameshort][afk]")
 	else	self:Tag( self.nameText, "[GetNameColor][unitLevel][".. nameLeight .."][afk]")end
 	table.insert( N.strings, self.nameText)
@@ -158,7 +187,7 @@ local function unitShared(self, unit)
 	if unit ~= "pet" or unit ~= "targettarget" or unit ~= "focus" or unit ~= "focustarget" then
 
 		self.Health.healthText =  self.Overlay:CreateFontString(nil ,"OVERLAY", 8)
-		self.Health.healthText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
+		self.Health.healthText:SetFont( font, fontsize -1, "OUTLINE")
 		self.Health.healthText:SetPoint( unpack( healthTextPos))
 		table.insert( N.strings, self.Health.healthText)
 
@@ -288,17 +317,17 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	if yo.Addons.unitFrames then
+	if yo.UF.unitFrames then
 		oUF:RegisterStyle("yoFrames", unitShared)
 		oUF:SetActiveStyle("yoFrames")
 
 		plFrame = oUF:Spawn("player", "yo_Player")
-		if yo.UF.simpeUF then 	plFrame:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPRIGHT", 15, 40)
+		if yo.UF.simpleUF then 	plFrame:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPRIGHT", 15, 40)
 		else 					plFrame:SetPoint( "CENTER", yoMoveplayer, "CENTER", 0 , 0)
 		end
 
 		tarFrame = oUF:Spawn("target", "yo_Target")
-		if yo.UF.simpeUF then 	tarFrame:SetPoint( "TOPLEFT", yoMovetarget, "TOPLEFT", -15, 40)
+		if yo.UF.simpleUF then 	tarFrame:SetPoint( "TOPLEFT", yoMovetarget, "TOPLEFT", -15, 40)
 		else					tarFrame:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
 		end
 

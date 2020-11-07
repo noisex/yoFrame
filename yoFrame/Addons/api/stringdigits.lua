@@ -5,7 +5,7 @@ local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.f
 local texture, texglow = yo.texture, yo.texglow
 
 
-function formatMoney(money, noColor)
+function formatMoney(money, noColor, noCooper, noSilver)
 	local goldColor, silverColor, copperColor, back = "|cffffaa00", "|cffbbbbbb", "|cffff6600", "|r"
 	if noColor then
 		goldColor, silverColor, copperColor, back = "", "", "", ""
@@ -14,8 +14,8 @@ function formatMoney(money, noColor)
 	if money == 0 then return format( copperColor .. COPPER_AMOUNT_TEXTURE, money) end
 
 	local gold   = commav( floor(math.abs(money) / 10000))
-	local silver = mod(floor(math.abs(money) / 100), 100)
-	local copper = mod(floor(math.abs(money)), 100)
+	local silver = noSilver and 0 or mod(floor(math.abs(money) / 100), 100)
+	local copper = noCooper and 0 or mod(floor(math.abs(money)), 100)
 
 	gold = tonumber(gold) ~= 0 and 	goldColor   .. format( GOLD_AMOUNT_TEXTURE_STRING, gold) .. back .. " "	or ""
 	silver = 	silver ~= 0 and 	silverColor .. format( SILVER_AMOUNT_TEXTURE, silver) 	 .. back .. " "	or ""

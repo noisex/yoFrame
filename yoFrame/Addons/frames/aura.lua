@@ -1,6 +1,6 @@
 local L, yo, N = unpack( select( 2, ...))
 
-if not yo.Addons.unitFrames then return end
+if not yo.UF.unitFrames then return end
 
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
@@ -263,7 +263,7 @@ function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, p
 			end
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 			--f:RegisterUnitEvent( "INSTANCE_ENCOUNTER_ENGAGE_UNIT", unit)
-		elseif unit == "target" or unit == "focus" then
+		elseif unit == "target" or unit == "focus" or unit == "vehicle" then
 			f.filter = {"HELPFUL" , "HARMFUL"}
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 			f:RegisterEvent("PLAYER_FOCUS_CHANGED")
@@ -280,7 +280,7 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	if not yo.Addons.unitFrames or not yo_Player then return end
+	if not yo.UF.unitFrames or not yo_Player then return end
 
 	CreateBuff( plFrame,  "aurabar", 27, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
 	CreateBuff( tarFrame, "aurabar", 21, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)

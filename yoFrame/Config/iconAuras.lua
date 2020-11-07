@@ -78,7 +78,7 @@ function CreateAuraIcon( parent, index)
 		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
 	end
 
-	if not parent.noShadow then CreateStyle( button, max( 1, sh - 4)) end
+	if not parent.noShadow then CreateStyleSmall( button, max( 1, sh - 4)) end
 
     if parent.timeSecOnly then
     	button.tFormat = formatTimeSec --formatTimeSec

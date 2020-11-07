@@ -1,17 +1,19 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, N = unpack( select( 2, ...))
+
+-- if not yo.InfoTexts.enable then return end
+
+N.InfoTexts["infos"] = {}
 
 --------------------------------------------------------------------
 -- System Stats
 --------------------------------------------------------------------
-
-local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
-	Text:SetHeight( LeftInfoPanel:GetHeight())
-	Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 5, 0)
-LeftInfoPanel.systemText = Text
+local infoText = N.InfoTexts
+local Stat = CreateFrame("Frame", nil, UIParent)
 
 local colorme = string.format("%02x%02x%02x", 1*255, 1*255, 1*255)
+local Total, Mem, MEMORY_TEXT, LATENCY_TEXT, Memory
 
-local function formatMem(memory, color)
+function Stat:formatMem(memory, color)
 	if color then
 		statColor = { "|cff"..colorme, "|r" }
 	else
@@ -36,9 +38,7 @@ local function formatMem(memory, color)
 	end
 end
 
-local Total, Mem, MEMORY_TEXT, LATENCY_TEXT, Memory
-
-local function RefreshMem(self)
+function Stat:RefreshMem()
 	Memory = {}
 	UpdateAddOnMemoryUsage()
 	Total = 0
@@ -48,40 +48,28 @@ local function RefreshMem(self)
 		Total = Total + Mem
 	end
 
-	MEMORY_TEXT = formatMem(Total, true)
+	MEMORY_TEXT = self:formatMem(Total, true)
 	table.sort(Memory, function(a, b)
 		if a and b then
 			return a[2] > b[2]
 		end
 	end)
-	self:SetAllPoints(Text)
+	--self:SetAllPoints(self.Text)
 end
 
-local int, int2 = 10, 1
+function Stat:update(t)
 
-local function Update(self, t)
-	if not yo.Addons.InfoPanels then
-		self:UnregisterAllEvents()
-		self:SetScript("OnMouseDown", nil)
-		self:SetScript("OnEnter", nil)
-		self:SetScript("OnLeave", nil)
-		self:SetScript("OnEvent", nil)
-		self:SetScript("OnUpdate", nil)
-		Text = nil
-		self = nil
-		LeftInfoPanel.systemText = nil
-		return
-	end
-	int = int - t
-	int2 = int2 - t
-	local fpscolor
-	local latencycolor
+	self.int = self.int - t
+	self.int2 = self.int2 - t
 
-	if int < 0 then
-		RefreshMem(self)
-		int = 10
+	if self.int < 0 then
+		self:RefreshMem()
+		self.int = 10
 	end
-	if int2 < 0 then
+	if self.int2 < 0 then
+		local fpscolor
+		local latencycolor
+
 		if select(3, GetNetStats()) < 300 then
 			latencycolor = "|cff0CD809"
 		elseif (select(3, GetNetStats()) > 300 and select(3, GetNetStats()) < 500) then
@@ -96,44 +84,66 @@ local function Update(self, t)
 		else
 			fpscolor = "|cffD80909"
 		end
-		Text:SetText(fpscolor..floor(GetFramerate()).."|r".."fps "..latencycolor..select(3, GetNetStats()).."|r".."ms")
-		int2 = 0.8
+		self.Text:SetText(fpscolor..floor(GetFramerate()).."|r".."fps "..latencycolor..select(3, GetNetStats()).."|r".."ms")
+		self.int2 = 1
 	end
 end
 
-local Stat = CreateFrame("Frame")
-	Stat:SetFrameStrata("BACKGROUND")
-	Stat:SetFrameLevel(3)
-	Stat:EnableMouse(true)
-	Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-	Stat:SetScript("OnMouseDown", function () collectgarbage("collect") Update(Stat, 20) end)
-	Stat:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
-		GameTooltip:ClearAllPoints()
-		GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
-		GameTooltip:ClearLines()
-		local _, _, latencyHome, latencyWorld = GetNetStats()
-		local latency = format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld)
-		GameTooltip:AddLine(myColorStr..latency)
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine("Total Memory Usage:",formatMem(Total), 0, 0.6, 1, 1, 1, 1)
-		GameTooltip:AddLine(" ")
-		for i = 1, #Memory do
-			if Memory[i][3] then
-				local red = Memory[i][2]/Total*2
-				local green = 1 - red
-				GameTooltip:AddDoubleLine(Memory[i][1], formatMem(Memory[i][2], false), 1, 1, 1, red, green+1, 0)
-			end
+function Stat:onEnter()
+	GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
+	GameTooltip:ClearLines()
+	local _, _, latencyHome, latencyWorld = GetNetStats()
+	local latency = format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld)
+	GameTooltip:AddLine(myColorStr..latency)
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddDoubleLine("Total Memory Usage:", Stat:formatMem(Total), 0, 0.6, 1, 1, 1, 1)
+	GameTooltip:AddLine(" ")
+	for i = 1, #Memory do
+		if Memory[i][3] then
+			local red = Memory[i][2]/Total*2
+			local green = 1 - red
+			GameTooltip:AddDoubleLine(Memory[i][1], Stat:formatMem(Memory[i][2], false), 1, 1, 1, red, green+1, 0)
 		end
-		GameTooltip:Show()
-	end)
+	end
+	GameTooltip:Show()
+end
 
-	Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
-	Stat:SetScript("OnEvent", function(self, ...)
-		Text:SetFont( yo.font, ( yo.fontsize or 10), "OVERLAY")
-		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		Stat:SetScript("OnUpdate", Update)
-	end)
+function Stat:Enable()
+	if not self.index or ( self.index and self.index <= 0) then self:Disable() return end
 
---Update(Stat, 20)
+	self.int = 0
+	self.int2 = 0
+	self:SetFrameStrata("BACKGROUND")
+	self:SetFrameLevel(3)
+	self:EnableMouse(true)
+	self:SetSize( 1, 15)
+	self:ClearAllPoints()
+	self:SetPoint("LEFT", LeftInfoPanel, "LEFT", LeftInfoPanel:GetWidth()/infoText.parentCount*( self.index - 1) + infoText.shift, 0)
+	self:SetScript("OnUpdate", self.update)
+	self:SetScript("OnEnter", self.onEnter)
+	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	self:SetScript("OnMouseDown", function () collectgarbage("collect") self:update( 20) end)
+
+	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
+	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self:SetWidth( self.parent:GetWidth() / self.parentCount)
+
+	self:Show()
+end
+
+function Stat:Disable()
+	self:SetScript("OnUpdate", nil)
+	self:SetScript("OnEnter", nil)
+	self:SetScript("OnLeave", nil)
+	self:SetScript("OnMouseDown", nil)
+	--self.Text:SetText( "")
+	self:Hide()
+end
+
+infoText.infos.system 		= Stat
+infoText.infos.system.name 	= "Система (FPS, Net Lag)"
+
+infoText.texts.system = "System"
+--Stat.index = 1
+--Stat:Enable()

@@ -844,10 +844,10 @@ function addon:CreateLayout( isBank)
 	local f = self:GetContainerFrame(isBank);
 	if not f then return; end
 
-	local buttonSize 			= yo["Bags"]["buttonSize"]
-	local buttonSpacing 		= yo["Bags"]["buttonSpacing"]
-	local containerWidth 		= yo["Bags"]["containerWidth"]
-	local numMaxRow 			= yo["Bags"]["numMaxRow"]
+	local buttonSize 			= yo.Bags.buttonSize
+	local buttonSpacing 		= yo.Bags.buttonSpacing
+	local containerWidth 		= yo.Bags.containerWidth
+	local numMaxRow 			= yo.Bags.numMaxRow
 
 	local numContainerColumns, numContainerRows, holderWidth = 0, 0, 0
 	local maxSlots = GetMaxSlots( f)
@@ -895,7 +895,7 @@ function addon:CreateLayout( isBank)
 						end
 					end)
 				else
-					f.ContainerHolder[i] = CreateFrame("ItemButton", "ElvUIMainBag" .. bagID .. "Slot", f.ContainerHolder, "BagSlotButtonTemplate")   --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					f.ContainerHolder[i] = CreateFrame("ItemButton", "ElvUIMainBag" .. bagID .. "Slot", f.ContainerHolder, "ContainerFrameItemButtonTemplate")-- "BagSlotButtonTemplate")   --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 					f.ContainerHolder[i]:RegisterForClicks("AnyUp");
 					f.ContainerHolder[i]:SetScript('OnClick', function(holder, button)
 						if button == "RightButton" and holder.id then

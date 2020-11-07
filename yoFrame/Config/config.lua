@@ -22,13 +22,15 @@ if not IsAddOnLoaded("yoFrame_Config") then
 	return
 end
 
-if yo_AllData 		== nil then yo_AllData = {} end
-if yo_AllConfig 	== nil then yo_AllConfig = {} end
-if yo_PersonalConfig== nil then yo_PersonalConfig = {} end
-
 local yo_tCfg = {}
 
-if yo_AllData[myRealm] and yo_AllData[myRealm][myName] and yo_AllData[myRealm][myName].PersonalConfig then
+if yo_AllData 			== nil			then yo_AllData = {} end
+if yo_AllConfig 		== nil			then yo_AllConfig = {} end
+if yo_PersonalConfig	== nil			then yo_PersonalConfig = {} end
+if yo_AllData[myRealm] 	== nil 			then yo_AllData[myRealm] = {} end
+if yo_AllData[myRealm][myName] == nil 	then yo_AllData[myRealm][myName] = {} end
+
+if yo_AllData[myRealm][myName].PersonalConfig then
 	yo_tCfg = yo_PersonalConfig
 else
 	yo_tCfg = yo_AllConfig
@@ -121,7 +123,6 @@ yo.tCoord 		= {0.07, 0.93, 0.07, 0.93}
 --yo.tCoord 		= {0,1,0,1}
 yo.tCoordBig 	= {0.22, 0.78, 0.22, 0.78}
 yo.tCoordSmall 	= {0.07, 0.93, 0.07, 0.93}
-
 
 ---- Apply or remove saved settings as needed
 --for group, options in pairs(yo_tCfg) do

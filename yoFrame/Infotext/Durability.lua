@@ -1,9 +1,16 @@
-
 local L, yo, N = unpack( select( 2, ...))
+
+-- if not yo.InfoTexts.enable then return end
 
 --------------------------------------------------------------------
 -- DURABILITY
 --------------------------------------------------------------------
+local 	GetInventorySlotInfo, GetInventoryItemID, GetItemInfo, UnitLevel, GetDodgeChance, abs, GetBonusBarOffset, GetInventoryItemLink, GetInventoryItemDurability, floor, strjoin, format, select, CanGuildBankRepair =
+	    GetInventorySlotInfo, GetInventoryItemID, GetItemInfo, UnitLevel, GetDodgeChance, abs, GetBonusBarOffset, GetInventoryItemLink, GetInventoryItemDurability, floor, strjoin, format, select, CanGuildBankRepair
+
+local infoText = N.InfoTexts
+local Stat = CreateFrame("Frame", nil, UIParent)
+
 local AVD_DECAY_RATE, chanceString = 1.5, '%.2f%%'
 local displayString, lastPanel, targetlv, playerlv
 local basemisschance, leveldifference, dodge, parry, block, unhittable, avoidance
@@ -22,7 +29,7 @@ local localSlots = {
 	--[11] = {18, RANGEDSLOT, 1000}
 }
 
-local function IsWearingShield()
+function Stat:isWearingShield()
 	local slotID = GetInventorySlotInfo('SecondaryHandSlot')
 	local itemID = GetInventoryItemID('player', slotID)
 
@@ -32,7 +39,7 @@ local function IsWearingShield()
 	end
 end
 
-local function AvoidCheck(self)
+function Stat:avoidCheck()
 	targetlv, playerlv = UnitLevel('target'), myLevel
 
 	basemisschance = myRace == 'NightElf' and 7 or 5
@@ -69,7 +76,7 @@ local function AvoidCheck(self)
 		numAvoidances = numAvoidances - 1
 	end
 
-	if not IsWearingShield() then
+	if not Stat:isWearingShield() then
 		block = 0
 		numAvoidances = numAvoidances - 1
 	end
@@ -82,25 +89,7 @@ local function AvoidCheck(self)
 	unhittable = avoidance - unhittableMax
 end
 
-local function OnEvent(self, event)
-	if not yo.Addons.InfoPanels then
-		self:UnregisterAllEvents()
-		self:SetScript("OnUpdate", nil)
-		Text = nil
-		LeftInfoPanel.durText = nil
-		return
-	end
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-
-	if not LeftInfoPanel.durText then
-		Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
-		Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
-		Text:SetHeight(LeftInfoPanel:GetHeight())
-		Text:SetPoint("LEFT", LeftInfoPanel, "LEFT", 120, 0)
-		LeftInfoPanel.durText = Text
-	end
+function Stat:onEvent( event)
 
 	local Total = 0
 	local current, cmax
@@ -119,27 +108,22 @@ local function OnEvent(self, event)
 
 	if Total > 0 then
 		if localSlots[1][3] <= 0.1 then
-			Text:SetText("Armor: ".. "|cffff0000" ..floor(localSlots[1][3]*100).."%" )
+			self.Text:SetText("Armor: ".. "|cffff0000" ..floor(localSlots[1][3]*100).."%" )
 		elseif localSlots[1][3] <= 0.3 then
-			Text:SetText("Armor: ".. "|cffff1000" ..floor(localSlots[1][3]*100).."%" )
+			self.Text:SetText("Armor: ".. "|cffff1000" ..floor(localSlots[1][3]*100).."%" )
 		else
-			Text:SetText("Armor: ".. myColorStr ..floor(localSlots[1][3]*100).."%" )
+			self.Text:SetText("Armor: ".. myColorStr ..floor(localSlots[1][3]*100).."%" )
 		end
 	else
-		Text:SetText("Armor: ".. myColorStr..": 100%")
+		self.Text:SetText("Armor: ".. myColorStr..": 100%")
 	end
-		-- Setup Durability Tooltip
-	self:SetAllPoints( Text)
-	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-	AvoidCheck( self)
+	self:avoidCheck()
 	Total = 0
 end
 
-local function OnEnter( self)
-	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6);
-	GameTooltip:ClearAllPoints()
-	GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 1)
+function Stat:onEnter( )
+	GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
 	GameTooltip:ClearLines()
 
 	--Avoidence
@@ -180,21 +164,53 @@ local function OnEnter( self)
 	GameTooltip:Show()
 end
 
-local Stat = CreateFrame("Frame")
-Stat:EnableMouse(true)
-Stat:SetFrameStrata("BACKGROUND")
-Stat:SetFrameLevel(3)
-Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
-Stat:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-Stat:RegisterEvent("MERCHANT_SHOW")
+function Stat:Enable()
+	if not self.index or ( self.index and self.index <= 0) then self:Disable() return end
 
-Stat:RegisterEvent('UNIT_TARGET')
-Stat:RegisterEvent('UNIT_STATS')
-Stat:RegisterEvent('UNIT_AURA')
-Stat:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
-Stat:RegisterEvent('PLAYER_TALENT_UPDATE')
-Stat:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+	self:SetFrameStrata("BACKGROUND")
+	self:SetFrameLevel(3)
+	self:EnableMouse(true)
+	self:SetSize( 1, 15)
+	self:ClearAllPoints()
+	self:SetPoint("LEFT", self.parent, "LEFT", self.parent:GetWidth()/self.parentCount*( self.index - 1) + self.shift, 0)
 
-Stat:SetScript("OnMouseDown", function() ToggleCharacter("PaperDollFrame") end)
-Stat:SetScript("OnEvent", OnEvent)
-Stat:SetScript("OnEnter", OnEnter)
+	--self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	--Stat:RegisterEvent("MERCHANT_SHOW")
+	--Stat:RegisterEvent('UNIT_AURA')
+	self:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+	self:RegisterEvent('UNIT_TARGET')
+	self:RegisterEvent('UNIT_STATS')
+	self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
+	self:RegisterEvent('PLAYER_TALENT_UPDATE')
+	self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+
+	self:SetScript("OnMouseDown", function() ToggleCharacter("PaperDollFrame") end)
+	self:SetScript("OnEvent", self.onEvent)
+	self:SetScript("OnEnter", self.onEnter)
+	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
+	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self:SetWidth( self.parent:GetWidth() / self.parentCount)
+
+	self:onEvent()
+	self:Show()
+end
+
+function Stat:Disable()
+	self:SetScript("OnUpdate", nil)
+	self:SetScript("OnEnter", nil)
+	self:SetScript("OnLeave", nil)
+	self:SetScript("OnMouseDown", nil)
+	self:UnregisterAllEvents()
+	self:Hide()
+end
+
+infoText.infos.dura 	= Stat
+infoText.infos.dura.name= "Durability"
+
+infoText.texts.dura = "Durability"
+
+--Stat.index = 2
+--Stat:Enable()

@@ -6,6 +6,7 @@ if not yo.Addons.ArtifactPowerbar then return end
 ----------------------------------------------------------------------------------------
 --	Based on oUF_ArtifactPower(by Rainrider)
 ----------------------------------------------------------------------------------------
+CreateAnchor("yoMoveArtifact", 	"Move Artifact", 7, 173, 5, -1, "TOPLEFT", "TOPRIGHT", LeftDataPanel)
 
 local function ShowTooltip(element)
 	element:SetAlpha(element.onAlpha)

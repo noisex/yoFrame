@@ -1,8 +1,11 @@
 local addonName, ns = ...
 local L, yo, N = unpack( ns)
 
+-- название школы по индексу  _G.CombatLog_String_SchoolString(key))
+
 myClass 	= select( 2, UnitClass( "player"))
 mySpec 		= GetSpecialization()
+myGUID		= UnitGUID('player')
 --mySpeClass	= myClass .. mySpec
 myColor 	= RAID_CLASS_COLORS[myClass]
 myColorStr 	= "|c" .. RAID_CLASS_COLORS[myClass].colorStr
@@ -37,8 +40,9 @@ N["strings"]		= {}
 N["shadows"]		= {}
 N["spellsBooks"] 	= {}
 
-N.version 	  = GetAddOnMetadata( addonName, "Version")
-N.ScanTooltip = CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', UIParent, 'GameTooltipTemplate')
+N.version 	  	= GetAddOnMetadata( addonName, "Version")
+N.ScanTooltip 	= CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', UIParent, 'GameTooltipTemplate')
+N.menuFrame 	= CreateFrame("Frame", "FriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
 
 N.slots = {
 	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot",
@@ -101,6 +105,39 @@ N.QuestTypesIndex = {
 	[226]= " |cff0080ffCombat|r", 							-- Combat Ally
 }
 
+N.conFunc = function( var, ...)
+	if N.conFuncs[var] then
+		local conFunc = N.conFuncs[var]
+		conFunc( var, ...)
+	end
+end
+
+N.noReboot = {
+	"texture", "fontsize", "sysfontsize", "AutoScale", "ScaleRate", "scriptErrors"
+}
+
+N.conFuncs = {
+	--["texture"] =
+}
+
+yo["InfoTexts"] = {
+	["enable"] 			= true,
+	["countLeft"] 		= 4,
+	["countRight"]		= 4,
+	["left1"]			= "system",
+	["left2"]			= "dura",
+	["left3"]			= "guild",
+	["left4"]			= "friend",
+	["left5"]			= "",
+	["left6"]			= "",
+	["right1"]			= "gold",
+	["right2"]			= "spec",
+	["right3"]			= "bags",
+	["right4"]			= "time",
+	["right5"]			= "",
+	["right6"]			= "",
+}
+
 yo["General"] = {
 	["1st"] 			= true,
 	["cFrame"] 			= 0,
@@ -157,7 +194,6 @@ yo["Addons"] = {
 	["MiniMap"] 					= true,
 	["MiniMapCoord"] 				= true,
 	["MMColectIcons"]				= true,
-	["unitFrames"]					= true,
 	["MiniMapHideText"]				= false,
 	["MiniMapSize"]					= 150,
 	["MMFogOfWar"]					= true,
@@ -357,12 +393,15 @@ yo["Media"] = {
 
 yo["UF"] 	= {
 	["enable"] 			= true,
+	["unitFrames"]		= true,
 	["colorUF"]			= 0,
 	["classBackground"]	= true,
-	["simpeUF"]			= false,
+	["simpleUF"]			= false,
 	["showGCD"]			= true,
 	["debuffHight"]		= true,
 	["showShards"]		= true,
+	["rightAbsorb"]		= true,
+	["hideOldAbsorb"]	= true,
 }
 
 yo["Raid"] = {

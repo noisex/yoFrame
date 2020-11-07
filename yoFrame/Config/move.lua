@@ -113,7 +113,7 @@ function ySlashCmd(cmd)
 	if (cmd:match"reset") then
 		AnchorsReset()
 	else
-		if t_unlock == false then
+		if not t_unlock then
 			AnchorsUnlock()
 			isAligning = true
 		elseif t_unlock == true then
@@ -153,17 +153,16 @@ CreateAnchor("yoMoveplayer", 		"Move Player", 		200, 40, 500, 270, 	"BOTTOMLEFT"
 CreateAnchor("yoMovetarget", 		"Move Target", 		200, 40, -500, 270, "BOTTOMRIGHT", "BOTTOMRIGHT")
 CreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 5, 0, 		"LEFT","LEFT")
 CreateAnchor("yoMovefocustarget", 	"Move FocusTarget", 110, 25, 5, -1000)
-CreateAnchor("yoMovetargettarget", "Move Tar-Tar", 	100, 25, 0, -1000)
-CreateAnchor("yoMovepet", 			"Move Tar-Tar", 	100, 25, 00, -1000)
-CreateAnchor("yoMoveboss", 		"Move Boss", 		180, 35, -370, -200, "TOPRIGHT", "TOPRIGHT")
+CreateAnchor("yoMovetargettarget", 	"Move Tar-Tar", 	100, 25, 0, -1000)
+CreateAnchor("yoMovepet", 			"Move Pet", 		100, 25, 00, -1000)
+CreateAnchor("yoMoveboss", 			"Move Boss", 		180, 35, -370, -200, "TOPRIGHT", "TOPRIGHT")
 
-CreateAnchor("yoMoveLeftPanel", 	"Move Left DataPanel", 440, 175, 3, 3, "BOTTOMLEFT","BOTTOMLEFT")
+--CreateAnchor("yoMoveLeftPanel", 	"Move Left DataPanel", 440, 175, 3, 3, "BOTTOMLEFT","BOTTOMLEFT")
 CreateAnchor("yoMoveQuestFrame", 	"Move Quest Frame", 230, 500, -5, -175, "TOPRIGHT", "TOPRIGHT")
-CreateAnchor("yoMoveArtifact", 	"Move Artifact", 7, 173, 5, -1, "TOPLEFT", "TOPRIGHT", yoMoveLeftPanel)
 CreateAnchor("yoMoveExperience", 	"Move Experience", 7, 173, -452, 4, "BOTTOM", "BOTTOMRIGHT")
-CreateAnchor("yoMovePlayerCastBar","Move Player CastBar", 436, 20, 0, 91, "CENTER", "BOTTOM")
+CreateAnchor("yoMovePlayerCastBar",	"Move Player CastBar", 436, 20, 0, 91, "CENTER", "BOTTOM")
 CreateAnchor("yoMoveRUP", 			"Move Utility Panel", 226, 18, 0, -10, "TOP", "TOP")
 CreateAnchor("yoMoveToolTip",		"Move ToolTips", 150, 100, -5, 230, "BOTTOMRIGHT", "BOTTOMRIGHT")
-CreateAnchor("yoMoveLoot", 		"Move Loot", 250, 50, 10, -270, "TOPLEFT","TOPLEFT")
+CreateAnchor("yoMoveLoot", 			"Move Loot", 250, 50, 10, -270, "TOPLEFT","TOPLEFT")
 
-CreateAnchor("yoMoveAltPower", 	"Move Power Alt Bar", 250, 70, 0, -150, 	"CENTER", "TOP")
+CreateAnchor("yoMoveAltPower", 		"Move Power Alt Bar", 250, 70, 0, -150, 	"CENTER", "TOP")

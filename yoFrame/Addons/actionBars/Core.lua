@@ -381,7 +381,7 @@ CreateAnchor("yoMoveABar3", 	"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT
 CreateAnchor("yoMoveABar4", 	"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
 CreateAnchor("yoMoveABar5", 	"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
 CreateAnchor("yoMoveAMicro", 	"Move MicroMenu Bar", 220, 18, 350,5, 		"BOTTOM", "BOTTOM")
-CreateAnchor("yoMovePetBar", 	"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yoMoveLeftPanel)
+CreateAnchor("yoMovePetBar", 	"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", LeftDataPanel)
 CreateAnchor("yoMoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yoMoveplayer)
 
 PlayerPowerBarAlt:ClearAllPoints()

@@ -14,6 +14,35 @@ function isDruid( self)
 	end
 end
 
+-------------------------------------------------------------------------------------------
+local function updateStatusBars()
+	for k, bar in pairs( N.statusBars) do
+
+		if bar and bar:GetStatusBarTexture() then
+			bar:SetStatusBarTexture( yo.Media.texture)
+		end
+	end
+end
+N.conFuncs["texture"] = updateStatusBars
+
+local function updateStrings( var, newVal, curVal)
+	for k, string in pairs( N.strings) do
+		if string then
+			local fn, fs, fc = string:GetFont()
+			string:SetFont( fn, fs - curVal + newVal, fc)
+		end
+	end
+end
+N.conFuncs["fontsize"] = updateStrings
+
+function UpdateShadows( r, g, b)
+	for k, bar in pairs( N.shadows) do
+		bar:SetBackdropBorderColor(r, g, b, 0.9)
+	end
+end
+
+
+-----------------------------------------------------------------------------------------------
 
 function checkToClose(...)
 

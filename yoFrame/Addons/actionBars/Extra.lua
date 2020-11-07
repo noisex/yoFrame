@@ -20,16 +20,14 @@ end
 function ActionBars:SkinZoneAbilities()
 	for SpellButton in ZoneAbilities.SpellButtonContainer:EnumerateActive() do
 		if not SpellButton.IsSkinned then
-			SpellButton:CreateBackdrop()
-			SpellButton:StyleButton()
-			SpellButton:CreateShadow()
+			local button = SpellButton
+			local shift, alpfa = 7, 0.9
 
-			SpellButton.Backdrop:SetFrameLevel(SpellButton:GetFrameLevel() - 1)
+			if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa,   { 1, 1, 0})) end
+			if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "normal", shift, alpfa,  { 0, 1, 0})) 	end
+			if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa, { 1, 0, 0})) end
 
-			SpellButton.Icon:SetTexCoord(unpack(T.IconCoord))
-			SpellButton.Icon:ClearAllPoints()
-			SpellButton.Icon:SetInside(SpellButton.Backdrop)
-
+			SpellButton.Icon:SetTexCoord(unpack( yo.tCoord))
 			SpellButton.NormalTexture:SetAlpha(0)
 
 			SpellButton.IsSkinned = true
@@ -53,6 +51,7 @@ function ActionBars:SetupExtraButton()
 	ActionButtonDesign( Holder, Button, 32, 32)
 
 	ZoneAbilities.Style:SetAlpha(0)
+	ZoneAbilities:SetScale(0.75)
 
 	hooksecurefunc("ExtraActionBar_Update", self.DisableExtraButtonTexture)
 	hooksecurefunc(ZoneAbilities, "UpdateDisplayedZoneAbilities", ActionBars.SkinZoneAbilities)

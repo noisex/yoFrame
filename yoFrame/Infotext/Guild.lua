@@ -1,6 +1,9 @@
-
 local L, yo, N = unpack( select( 2, ...))
 
+-- if not yo.InfoTexts.enable then return end
+
+local infoText = N.InfoTexts
+local Stat = CreateFrame("Frame", nil, UIParent)
 --------------------------------------------------------------------
 -- GUILD ROSTER
 --------------------------------------------------------------------
@@ -48,18 +51,6 @@ local friendOnline, friendOffline = gsub(ERR_FRIEND_ONLINE_SS,"\124Hplayer:%%s\1
 local guildTable, guildXP, guildMotD = {}, {}, ""
 local totalOnline = 0
 
-local Stat = CreateFrame("Frame")
-Stat:EnableMouse(true)
-Stat:SetFrameStrata("MEDIUM")
-Stat:SetFrameLevel(3)
-
-local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
---Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
-Text:SetHeight(LeftInfoPanel:GetHeight())
-Text:SetPoint("RIGHT", LeftInfoPanel, "RIGHT", -150, 0)
-Stat:SetAllPoints(Text)
-Stat:SetParent(Text:GetParent())
-LeftInfoPanel.guildText = Text
 
 local function BuildGuildTable()
 	totalOnline = 0
@@ -120,20 +111,13 @@ local function whisperClick(self,arg1,arg2,checked)
 	SetItemRef( "player:"..arg1, ("|Hplayer:%1$s|h[%1$s]|h"):format(arg1), "LeftButton" )
 end
 
---local function ToggleGuildFrame()
---	if IsInGuild() then
---		if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end
---		ToggleCommunitiesFrame()
---		--GuildFrame_Toggle()
---		--GuildFrame_TabClicked(GuildFrameTab2)
---	else
---		if not LookingForGuildFrame then LoadAddOn("Blizzard_LookingForGuildUI") end
---		LookingForGuildFrame_Toggle()
---	end
---end
+function Stat:onMouseDown( btn)
+ 	if btn == "LeftButton" then
+ 		ToggleGuildFrame()
+ 		return
+ 	end
 
-Stat:SetScript("OnMouseUp", function(self, btn)
-	if btn ~= "RightButton" or not IsInGuild() then return end
+	if not IsInGuild() then return end
 	if InCombatLockdown() then return end
 
 	GameTooltip:Hide()
@@ -163,8 +147,8 @@ Stat:SetScript("OnMouseUp", function(self, btn)
 		end
 	end
 
-	EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 2)
-end)
+	EasyMenu(menuList, menuFrame, "cursor", -50, 100, "MENU", 2)
+end
 
 Stat.ShowGuild = function(self, btn)
 	local menuWIM = {
@@ -197,13 +181,9 @@ Stat.ShowGuild = function(self, btn)
 end
 
 
-Stat:SetScript("OnMouseDown", function(self, btn)
-	if btn ~= "LeftButton" then return end
-	ToggleGuildFrame()
-end)
+function Stat:onEnter()
 
-Stat:SetScript("OnEnter", function(self)
-	if not IsInGuild() then return end
+ 	if not IsInGuild() then return end
 
 	C_GuildInfo.GuildRoster()
 	UpdateGuildMessage()
@@ -214,7 +194,7 @@ Stat:SetScript("OnEnter", function(self)
 	local online = totalOnline
 	local GuildInfo, GuildRank, GuildLevel = GetGuildInfo("player")
 
-	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
+	GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6)
 	GameTooltip:ClearLines()
 	GameTooltip:AddDoubleLine(format(guildInfoString, GuildInfo, GuildLevel), format(guildInfoString2, online, #guildTable),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
 	GameTooltip:AddLine(GuildRank, unpack(tthead))
@@ -275,52 +255,70 @@ Stat:SetScript("OnEnter", function(self)
 	end
 
 	GameTooltip:Show()
-end)
+end
 
-local function Update(self, event, ...)
-	if not yo.Addons.InfoPanels then
-		self:UnregisterAllEvents()
-		self:SetScript("OnMouseDown", nil)
-		self:SetScript("OnEnter", nil)
-		self:SetScript("OnLeave", nil)
-		self:SetScript("OnEvent", nil)
-		self:SetScript("OnUpdate", nil)
-		Text = nil
-		self = nil
-		LeftInfoPanel.guildText = nil
-		return
-	end
-	if event == "PLAYER_ENTERING_WORLD" then
-		Text:SetFont( yo.font, ( yo.Media.fontsize), "OVERLAY")
-		--BFA
-		Stat:RegisterEvent("GUILD_ROSTER_UPDATE")
-		--Stat:RegisterEvent("GUILD_ROSTER_SHOW")
-		--Stat:RegisterEvent("GUILD_XP_UPDATE")
-		Stat:RegisterEvent("PLAYER_GUILD_UPDATE")
-		Stat:RegisterEvent("GUILD_MOTD")
-		Stat:RegisterEvent("CHAT_MSG_SYSTEM")
-		Stat:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		if not GuildFrame and IsInGuild() then
-			LoadAddOn("Blizzard_GuildUI")
-			C_GuildInfo.GuildRoster()
-		end
+function Stat:onEvent( event, ...)
+
+	if not GuildFrame and IsInGuild() then
+		LoadAddOn("Blizzard_GuildUI")
+		C_GuildInfo.GuildRoster()
 	end
 
 	if (not IsInGuild()) then
-		Text:SetText(noGuildString) -- I need a string :(
+		self.Text:SetText(noGuildString) -- I need a string :(
 
 		return
 	end
 
 	C_GuildInfo.GuildRoster() -- Bux Fix on 5.4.
 	local _, online = GetNumGuildMembers()
-	Text:SetFormattedText(displayString, online)
+	self.Text:SetFormattedText(displayString, online)
 end
 
 
-Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
-Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
-Stat:SetScript("OnEvent", Update)
---end
+function Stat:Enable()
+	if not self.index or ( self.index and self.index <= 0) then self:Disable() return end
 
-N.InfoGuild = Stat
+	self:SetFrameStrata("BACKGROUND")
+	self:SetFrameLevel(3)
+	self:EnableMouse(true)
+	self:SetSize( 1, 15)
+	self:ClearAllPoints()
+	self:SetPoint("LEFT", self.parent, "LEFT", self.parent:GetWidth()/self.parentCount*( self.index - 1) + self.shift, 0)
+
+	self:RegisterEvent("GUILD_ROSTER_UPDATE")
+	--Stat:RegisterEvent("GUILD_ROSTER_SHOW")
+	--Stat:RegisterEvent("GUILD_XP_UPDATE")
+	self:RegisterEvent("PLAYER_GUILD_UPDATE")
+	self:RegisterEvent("GUILD_MOTD")
+	self:RegisterEvent("CHAT_MSG_SYSTEM")
+
+	self:SetScript("OnEvent", self.onEvent)
+	self:SetScript("OnEnter", self.onEnter)
+	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	self:SetScript("OnMouseDown", self.onMouseDown)
+
+	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
+	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	--self.Text:SetFormattedText( infoText.displayString, "dps", 0,  SecondsToClocks( self.combatTime))
+	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self:SetWidth( self.parent:GetWidth() / self.parentCount)
+
+	self:Show()
+end
+
+function Stat:Disable()
+	self:SetScript("OnUpdate", nil)
+	self:SetScript("OnEnter", nil)
+	self:SetScript("OnLeave", nil)
+	self:SetScript("OnMouseDown", nil)
+	self:UnregisterAllEvents()
+	self:Hide()
+end
+
+infoText.infos.guild 		= Stat
+infoText.infos.guild.name 	= "Guild"
+
+infoText.texts.guild = "Guild"
+--Stat.index = 3
+--Stat:Enable()

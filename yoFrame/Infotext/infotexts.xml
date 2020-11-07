@@ -1,10 +1,15 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="infoAPI.lua"/>
+	<Script file="System.lua"/>
 	<Script file="Bags.lua"/>
 	<Script file="Durability.lua"/>
-	<Script file="Friend.lua"/>
+	<!-- <Script file="Friend.lua"/> -->
 	<Script file="Gold.lua"/>
 	<Script file="Guild.lua"/>
 	<Script file="SpecLoot.lua"/>
-	<Script file="System.lua"/>
 	<Script file="Time.lua"/>
+	<Script file="dps.lua"/>
+	<Script file="heal.lua"/>
+	<Script file="newFriends.lua"/>
+	<Script file="infoLauncher.lua"/>
 </Ui>

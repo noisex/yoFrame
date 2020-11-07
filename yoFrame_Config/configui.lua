@@ -6,7 +6,7 @@ local needReload = false
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-N = {}
+--N = {}
 
 LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
 
@@ -35,80 +35,26 @@ LSM:Register("font", "yoMagistral", "Interface\\Addons\\yoFrame\\Media\\qFont.tt
 LSM:Register("font", "yoSansNarrow","Interface\\Addons\\yoFrame\\Media\\qSans.ttf", 130)
 LSM:Register("font", "yoPixelFont", "Interface\\AddOns\\yoFrame\\Media\\pxFont.ttf", 130)
 
---LSM:Register("font", "yoOswald-ExtraLight",	"Interface\\Addons\\yoFrame\\Media\\Oswald-ExtraLight.ttf", 130)
---LSM:Register("font", "yoOswald-Light",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Light.ttf", 130)
---LSM:Register("font", "yoOswald-Regular",	"Interface\\Addons\\yoFrame\\Media\\Oswald-Regular.ttf", 130)
---LSM:Register("font", "yoOswald-Medium",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Medium.ttf", 130)
---LSM:Register("font", "yoOswald-Bold",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Bold.ttf", 130)
 
-local function UpdateShadowEdge( scale)
-	for k, shadow in pairs( N.shadows) do
-		local drop = shadow:GetBackdrop()
-		local esize = max( 1, drop.edgeSize + ( scale or 0)) --yo.Media.edgeSize
-		local dropCr, dropCg, dropCb, dropCa = shadow:GetBackdropColor()
-		local dropBCr, dropBCg, dropBCb, dropBCa = shadow:GetBackdropBorderColor()
-
-		if yo.Media.classBorder then
-			dropBCr, dropBCg, dropBCb = myColor.r, myColor.g, myColor.b
-		end
-
-		drop.edgeSize = esize
-		drop.insets = { left = esize, right = esize, top = esize, bottom = esize}
-
-		shadow:SetBackdrop( drop)
-		shadow:SetBackdropColor( dropCr, dropCg, dropCb, dropCa)
-		shadow:SetBackdropBorderColor( dropBCr, dropBCg, dropBCb, dropBCa)
-
-		--if shadow:GetPoint(1) then
-		--	local _, p = shadow:GetPoint(1)
-		--end
-		--if p then
-		--	shadow:ClearAllPoints()
-		--	shadow:SetPoint( "TOPLEFT", p, "TOPLEFT", -esize, esize)
-		--	shadow:SetPoint( "BOTTOMRIGHT", p, "BOTTOMRIGHT", esize, -esize)
-		--end
-	end
-end
-
-local function UpdateShadows( r, g, b)
-	--local r, g, b = strsplit( ",", yo.Media.shadowColor)
-	for k, bar in pairs( N.shadows) do
-		bar:SetBackdropBorderColor(r, g, b, 0.9)
-	end
-end
-
-local function UpdateStatusBars()
-	for k, bar in pairs( N.statusBars) do
-		if bar:GetStatusBarTexture() then
-			bar:SetStatusBarTexture( yo.Media.texture)
+local function checkToReboot( var, ...)
+	local noReboot
+	for k, v in pairs( N.noReboot) do
+		if v == var then
+			noReboot = true
+			break
 		end
 	end
-end
 
-local function UpdateStrings( newVal, curVal)
-	for k, string in pairs( N.strings) do
-		if string then
-			local fn, fs, fc = string:GetFont()
-			string:SetFont( fn, fs - curVal + newVal, fc)
-		end
+	if N.conFuncs[var] then
+		N.conFunc( var, ...)
 	end
-end
-
-local function UpdateStringScale( scale)
-	for k, strings in pairs( N.strings) do
-		if strings then
-			local font, fs, fd = strings:GetFont()
-			fs = fs + scale
-			strings:SetFont( font, fs, fd)
-		end
-	end
-end
-
-function Setlers( path, val, noReboot)
-	local aConf = {}
-	local p1, p2, p3, p4 = strsplit("#", path)
 
 	if not noReboot then needReload = true end
+end
+
+function Setlers( path, val, ...)
+	local aConf = {}
+	local p1, p2, p3, p4 = strsplit("#", path)
 
 	if yo_AllData[myRealm][myName].PersonalConfig then 	aConf = yo_PersonalConfig
 	else												aConf = yo_AllConfig	end
@@ -116,21 +62,25 @@ function Setlers( path, val, noReboot)
 	if p4 then
 		aConf[p1][p2][p3][p4] = val
 		yo[p1][p2][p3][p4] = val
+		checkToReboot( p4, val, ...)
 	elseif p3 then
 		aConf[p1][p2][p3] = val
 		yo[p1][p2][p3] = val
+		checkToReboot( p3, val, ...)
 	elseif p2 then
 		aConf[p1][p2] = val
 		yo[p1][p2] = val
+		checkToReboot( p2, val, ...)
 	else
 		aConf[p1] = val
 		yo[p1] = val
+		checkToReboot( val, ...)
 	end
 end
 
 local function tr( path)
 	if not L[path] or L[path] == "" then
-		L[path] = "|cffff0000UNKNOWN LOCALE: |r".. path
+		L[path] = "|cffff0000NO LOCALE: |r".. path
 	end
 
 	return L[path]
@@ -187,14 +137,15 @@ function InitOptions()
 						desc = L["SYSFONT_DESC"], min = 9, max = 16, step = 1, width = "full",
 						disabled = function() return not yo["Addons"].ChangeSystemFonts; end,
 						get = function(info) return yo["Media"].sysfontsize end,
-						set = function(info,val) Setlers( "Media#sysfontsize", val, true) ChangeSystemFonts( val) end,},
-			        FontSize = {
+						set = function(info,val) Setlers( "Media#sysfontsize", val) ChangeSystemFonts( val) end,},
+			        fontsize = {
 			   			name = function(info) return tr( info[#info]) end,
 						order = 15,	type = "range",
 						desc = L["DEFAULT"] .. 10,
 						min = 9, max = 16, step = 1, width = "full",
-						get = function(info) return yo["Media"].fontsize end,
-						set = function(info,val) UpdateStrings( val, yo.Media.fontsize) Setlers( "Media#fontsize", val, true) end,},
+						get = function(info) return yo.Media.fontsize end,
+						set = function(info,val) Setlers( "Media#fontsize", val, yo.Media.fontsize) end,},
+						--UpdateStrings( val, yo.Media.fontsize)
 					texture = {
 						name = function(info) return tr( info[#info]) end,
 						order = 30,	type = "select",	width = "full",
@@ -204,7 +155,7 @@ function InitOptions()
 							for k, val in pairs( LSM:List("statusbar")) do
 								if yo["Media"][info[#info]] == LSM:Fetch("statusbar", val) then return val end
 							end	end,
-						set = function(info, val) Setlers( "Media#" .. info[#info], LSM:Fetch("statusbar", val), true) UpdateStatusBars() end,},
+						set = function(info, val) Setlers( "Media#" .. info[#info], LSM:Fetch("statusbar", val)) end,},
 
 					AutoScale = {
 						name = function(info) return tr( info[#info]) end, 	order = 40, type = "select",
@@ -217,23 +168,24 @@ function InitOptions()
 						disabled = function() if yo.Media.AutoScale ~= "manual" then return true end end	,
 						get = function(info) return yo["Media"][info[#info]] end,
 						set = function(info,val) Setlers( "Media#" .. info[#info], val)
-							SetCVar("useUiScale", 1)	SetCVar("uiScale", val) UIParent:SetScale( val)	end, },
+						--	SetCVar("useUiScale", 1)	SetCVar("uiScale", val) UIParent:SetScale( val)
+						end, },
 
 					set00	= {	order = 50, type = "description", name = " ", width = "full"},
-					fontSizeMinus = { hidden = true,
-           				order = 51,	type = "execute", width = 0.5, name = "Font -",
-           				func = function() Setlers( "Media#fontsize", yo.Media.fontsize - 1) UpdateStringScale( -1) end,},
-           			fontSizePlus = { hidden = true,
-           				order = 52,	type = "execute", width = 0.5, name = "Font +",
-           				func = function() Setlers( "Media#fontsize", yo.Media.fontsize + 1) UpdateStringScale( 1) end,},
+					--fontSizeMinus = { hidden = true,
+     --      				order = 51,	type = "execute", width = 0.5, name = "Font -",
+     --      				func = function() Setlers( "Media#fontsize", yo.Media.fontsize - 1) UpdateStringScale( -1) end,},
+     --      			fontSizePlus = { hidden = true,
+     --      				order = 52,	type = "execute", width = 0.5, name = "Font +",
+     --      				func = function() Setlers( "Media#fontsize", yo.Media.fontsize + 1) UpdateStringScale( 1) end,},
 
-           			set01	= {	order = 60, type = "description", name = " ", width = "full",  hidden = true,},
-           			edgeSizeMinus = {  hidden = true,
-           				order = 61,	type = "execute", width = 0.5, name = "Edge -", desc = "JUST FOR FUN",
-           				func = function() --[[Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize - 1))]] UpdateShadowEdge( -1) end,},
-           			edgeizePlus = {  hidden = true,
-           				order = 62,	type = "execute", width = 0.5, name = "Edge +", desc = "JUST FOR FUN",
-           				func = function() --[[Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize + 1)) ]] UpdateShadowEdge( 1) end,},
+           			--set01	= {	order = 60, type = "description", name = " ", width = "full",  hidden = true,},
+           			--edgeSizeMinus = {  hidden = true,
+           			--	order = 61,	type = "execute", width = 0.5, name = "Edge -", desc = "JUST FOR FUN",
+           			--	func = function() --[[Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize - 1))]] UpdateShadowEdge( -1) end,},
+           			--edgeizePlus = {  hidden = true,
+           			--	order = 62,	type = "execute", width = 0.5, name = "Edge +", desc = "JUST FOR FUN",
+           			--	func = function() --[[Setlers( "Media#edgeSize", max( -1, yo.Media.edgeSize + 1)) ]] UpdateShadowEdge( 1) end,},
 
            			--edgeSize = { order = 62, type = "range", name = "Shadow edgeSize", min = 1, max = 10, step = 1,
            			--	get = function(info) return yo["Media"][info[#info]] end,
@@ -260,11 +212,10 @@ function InitOptions()
 					RaidUtilityPanel= {	order = 1, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["RUP_DESC"],},
 					Potatos 		= {	order = 2, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["POT_DESC"], hidden = false,},
 					mythicProcents 	= {	order = 4, type = "toggle", name = function(info) return tr( info[#info]) end,  width = "full",	},
-					InfoPanels	 	= {	order = 5, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
+					--InfoPanels	 	= {	order = 5, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					BlackPanels	 	= {	order = 6, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					FlashIconCooldown={ order = 7, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					ArtifactPowerbar= {	order = 8, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
-					unitFrames		= {	order = 9, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					afk				= {	order =10, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					MoveBlizzFrames = {	order =13, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
@@ -415,15 +366,18 @@ function InitOptions()
 				order = 37,	name = L["UF"], type = "group",
 				get = function(info) return yo["UF"][info[#info]] end,
 				set = function(info,val) Setlers( "UF#" .. info[#info], val) end,
-				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				disabled = function( info) if #info > 1 then return not yo[info[1]].unitFrames; end end,
 				args = {
-					enable 			= {	order = 1, 	type = "toggle",	name = L["UFenable"], width = "full", disabled = false,},
+					--enable 			= {	order = 1, 	type = "toggle",	name = L["UFenable"], width = "full", disabled = false,},
+					unitFrames		= {	order = 1,  type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full", disabled = false,},
 					colorUF 		= {	order = 10, type = "select", 	name = function(info) return tr( info[#info]) end, disabled = true, values = { [0]  = L["HBAR_TS"] ,[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
 					classBackground = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full", disabled = true,},
-					simpeUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					simpleUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					showGCD 		= {	order = 30,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					showShards 		= {	order = 40,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					debuffHight		= {	order = 50, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					rightAbsorb		= {	order = 55, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					hideOldAbsorb	= {	order = 60, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 				},
 			},
 
@@ -623,7 +577,6 @@ function InitOptions()
 				set = function(info,val) Setlers( "ToolTip#" .. info[#info], val) end,
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
-
 					enable 			= {	order = 1, 	type = "toggle",	name = L["TTenable"], width = "full", disabled = false,},
 					IDInToolTip 	= {	order = 5,  type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					ladyMod			= {	order = 15, type = "toggle",name = function(info) return tr( info[#info]) end,width= 1.4},
@@ -633,6 +586,35 @@ function InitOptions()
 					showSpellsVert 	= {	order = 35, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not yo[info[1]].enable or not yo[info[1]].showSpells end,},
 					showBorder 		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					borderClass		= {	order = 45, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+				},
+			},
+
+			InfoTexts = {
+				order = 87,	name = "Инфотексты", type = "group",
+				get = function(info) return yo["InfoTexts"][info[#info]] end,
+				set = function(info,val) Setlers( "InfoTexts#" .. info[#info], val) N.InfoTexts:infoLauncher() end,
+				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				args = {
+					enable 		= {	order = 01, type = "toggle", name = L["ITenable"], width = "full", disabled = false,},
+
+					countLeft 	= {	order = 10, width = 0.7, type = "select", name = function(info) return tr( info[#info]) end,	values = { [0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,},},
+					set01		= {	order = 11, type = "description", name = " ", width = 1.5},
+					left1 		= {	order = 22, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 1 or not yo[info[1]].enable; end,},
+					left2 		= {	order = 32, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 2 or not yo[info[1]].enable; end,},
+					left3 		= {	order = 42, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 3 or not yo[info[1]].enable; end,},
+					left4 		= {	order = 52, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 4 or not yo[info[1]].enable; end,},
+					left5 		= {	order = 62, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 5 or not yo[info[1]].enable; end,},
+					left6 		= {	order = 72, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 6 or not yo[info[1]].enable; end,},
+
+					set02		= {	order = 090, type = "description", name = " ", width = "full"},
+					countRight 	= {	order = 110, width = 0.7, type = "select", name = function(info) return tr( info[#info]) end, values = { [0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,},},
+					set00		= {	order = 111, type = "description", name = " ", width = 1.5},
+					right1		= {	order = 120, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 1 or not yo[info[1]].enable; end,},
+					right2		= {	order = 130, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 2 or not yo[info[1]].enable; end,},
+					right3		= {	order = 140, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 3 or not yo[info[1]].enable; end,},
+					right4		= {	order = 150, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 4 or not yo[info[1]].enable; end,},
+					right5		= {	order = 160, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 5 or not yo[info[1]].enable; end,},
+					right6		= {	order = 170, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 6 or not yo[info[1]].enable; end,},
 				},
 			},
 
@@ -710,10 +692,22 @@ function InitOptions()
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
 				args = {
+					label06 = { order = 993, type = "description",
+						name = "|cff00ff002020.11.07|r"
+						.."\n - [|cffff8000Инфотексты|r] почти полностью почти всё почти переписал почти заново... местами стало даже лучше"
+						.."\n - [|cffff8000Инфотексты|r] для особо упоротых написал инфотексты DPS und HPS ( Details MUST DIE!)"
+						.."\n - [|cffff8000Инфотексты|r] они обзавелись персональным настройками, но там творится какая-то дикая дичь"
+						.."\n - [|cffff8000Автоквесты|r] о, теперь при автопринятии квеста, если в чатике над ним мышкой поелозить, то показывается ихняя инфа о квесте\n\n",
+					},
+					label05 = { order = 994, type = "description",
+						name = "|cff00ff002020.11.01|r"
+						.."\n - [|cffff8000Ситема|r] Олдам, которые скучали по командам /move (+reset), /yo и /cfg, починил их взад "
+						.."\n - [|cffff8000Тултипсы|r] Царские рамочки, иконки спеков, таланты, море информации и прочие пепеги для тултипов в тематических настройках этого богом забытого аддона\n\n",
+					},
 					label04 = { order = 995, type = "description",
 						name = "|cff00ff002020.10.29|r"
 						.."\n - [|cffff8000Рейдфреймы|r] добавил МТТТ ( МэйнТанкТаргетТаргет), он не берется в цель, но зачем-то кому-то он может быть нужен ( отключаемо в настройках)"
-						.."\n - [|cffff8000Рейдфреймы|r] танки наконец-то растут вверх!!!!!!"
+						.."\n - [|cffff8000Рейдфреймы|r] танки наконец-то растут вверх... Просто заябись!"
 						.."\n - [|cffff8000Рейдфреймы|r] на фрейме МТ показываются число набранного им аго и егойные проценты ( настройки присутствуют в Рейдфремах)\n\n",
 					},
 					label03 = { order = 996, type = "description",
@@ -722,8 +716,8 @@ function InitOptions()
 						.."\n - [|cffff8000Юнитфреймы|r] возможность не показывать шардо-холиповер-комбо бар на фрейме игрока"
 						.."\n - [|cffff8000Система|r] проверка версии аддона на устаревание и бесполезность..."
 						.."\n - [|cffff8000Кастосбивалка|r] при более 5 баров с КД-шками на касты показываются только 3 первых и 2 последних"
-						.."\n - [|cffff8000LFG|r] настройки фильтра поиска групп по его хуйам и их размерам"
-						.."\n - [|cffff8000LFG|r] в тултипе над группой показываются все ихние хуйы\n\n",
+						.."\n - [|cffff8000LFG|r] настройки фильтра поиска групп по его членам и их размерам"
+						.."\n - [|cffff8000LFG|r] в тултипе над группой показываются все ихние члены\n\n",
 					},
 					label02 = { order = 997, type = "description",
 						name = "|cff00ff002020.10.22|r"
@@ -736,7 +730,7 @@ function InitOptions()
 						.."\n|cff00ff002020.10.19|r |cff999999( с этим мы пришли с ПТРа)|r"
 						.."\n - [|cffff8000Система|r] две осветленные версии текстурки Smooth ( ну вот нравится она мне)"
 						.."\n - [|cffff8000Юнитфреймы|r] ГКДшка над фреймом игрока"
-						.."\n - [|cffff8000Юнитфреймы|r] в тултипе таргета, при наведении на баф маунта, показывает информацию он его доступности у вас и способ его получения"
+						.."\n - [|cffff8000Юнитфреймы|r] в тултипе таргета, при наведении на баф маунта, показывает информацию о его доступности у вас и способ его получения"
 						.."\n - [|cffff8000Рейдфреймы|r] ползунок для затемнения/осветления классовых цветов на фреймах"
 						.."\n - [|cffff8000Рейдфреймы|r] Средняя кнопка мыши по игроку = массрес/баттрес/просторес ( лок - налаживает свой камень)"
 						.."\n - [|cffff8000Неймплайты|r] показывать таунты от других игроков"
@@ -746,7 +740,7 @@ function InitOptions()
 						.."\n - [|cffff8000Задания|r] показывать ежедневные квесты, которые выдаются при входе в игру"
 						.."\n - [|cffff8000Автоматизация|r] галочка для `Скрина при получени нового уровня`"
 						.."\n - [|cffff8000Сумки|r] галочка настройки сортировки и заполенния сумок ( сверху-вниз или наоборот)"
-						.."\n - [|cffff8000Персонаж|r] в окне персонажа, правой кнопкой по надетой вещи показывает возможный лут из подземелий на текущий спек"
+						.."\n - [|cffff8000Персонаж|r] в окне персонажа, правой кнопкой по надетой вещи показывает возможный лут из подземелий на текущий спек, в правом верхнем углу есть настройки фильтра шмота, если понять как оно работает, то очень полезная штука."
 						.."\n - [|cffff8000Кастбары|r] |cff00ff00Время окна очереди заклинания.|r Промежуток времени в конце текущего каста, в течении которого, использованное заклинание встанет в очередь на выполнение, автоматически по окончании каста без задержки по времени. Отображается красной зоной на кастбаре игрока ( не путать с лагометром, которого больше нет! Нет, красное это не лагометр.). Рекомендуется значение 200-250, но если плохо с реакцией на прожание каста в этот период, то задайте больше времени, но не больше 500, это уже вообще какой-то зашквар получится.",
 					},
 					label00 = { order = 999, type = "description",
@@ -757,7 +751,6 @@ function InitOptions()
 						.."\n - опасные касты"
 						.."\n - потатос"
 						.."\n - хилботка"
-						.."\n - касто-сбивалки не больше 5-6 штук"
 						.."\n - нужен еще один тпринт"
 						.."\n - новые друзьяшки"
 						.."\n - что там с СТА..."
@@ -874,5 +867,70 @@ init:RegisterEvent("PLAYER_LOGIN")
 init:SetScript("OnEvent", function()
 	if not yoFrame then return end
 
-	T, yo = unpack( yoFrame)
+	T, yo, N = unpack( yoFrame)
 end)
+
+
+
+--LSM:Register("font", "yoOswald-ExtraLight",	"Interface\\Addons\\yoFrame\\Media\\Oswald-ExtraLight.ttf", 130)
+--LSM:Register("font", "yoOswald-Light",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Light.ttf", 130)
+--LSM:Register("font", "yoOswald-Regular",	"Interface\\Addons\\yoFrame\\Media\\Oswald-Regular.ttf", 130)
+--LSM:Register("font", "yoOswald-Medium",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Medium.ttf", 130)
+--LSM:Register("font", "yoOswald-Bold",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Bold.ttf", 130)
+
+--local function UpdateShadowEdge( scale)
+	--for k, shadow in pairs( N.shadows) do
+	--	local drop = shadow:GetBackdrop()
+	--	local esize = max( 1, drop.edgeSize + ( scale or 0)) --yo.Media.edgeSize
+	--	local dropCr, dropCg, dropCb, dropCa = shadow:GetBackdropColor()
+	--	local dropBCr, dropBCg, dropBCb, dropBCa = shadow:GetBackdropBorderColor()
+
+	--	if yo.Media.classBorder then
+	--		dropBCr, dropBCg, dropBCb = myColor.r, myColor.g, myColor.b
+	--	end
+
+	--	drop.edgeSize = esize
+	--	drop.insets = { left = esize, right = esize, top = esize, bottom = esize}
+
+	--	shadow:SetBackdrop( drop)
+	--	shadow:SetBackdropColor( dropCr, dropCg, dropCb, dropCa)
+	--	shadow:SetBackdropBorderColor( dropBCr, dropBCg, dropBCb, dropBCa)
+
+	--	--if shadow:GetPoint(1) then
+	--	--	local _, p = shadow:GetPoint(1)
+	--	--end
+	--	--if p then
+	--	--	shadow:ClearAllPoints()
+	--	--	shadow:SetPoint( "TOPLEFT", p, "TOPLEFT", -esize, esize)
+	--	--	shadow:SetPoint( "BOTTOMRIGHT", p, "BOTTOMRIGHT", esize, -esize)
+	--	--end
+	--end
+--end
+
+--local function UpdateStatusBars()
+	--for k, bar in pairs( N.statusBars) do
+
+	--	if bar and bar:GetStatusBarTexture() then
+	--		bar:SetStatusBarTexture( yo.Media.texture)
+	--	end
+	--end
+--end
+
+--local function UpdateStrings( newVal, curVal)
+	--for k, string in pairs( N.strings) do
+	--	if string then
+	--		local fn, fs, fc = string:GetFont()
+	--		string:SetFont( fn, fs - curVal + newVal, fc)
+	--	end
+	--end
+--end
+
+--local function UpdateStringScale( scale)
+	--for k, strings in pairs( N.strings) do
+	--	if strings then
+	--		local font, fs, fd = strings:GetFont()
+	--		fs = fs + scale
+	--		strings:SetFont( font, fs, fd)
+	--	end
+	--end
+--end

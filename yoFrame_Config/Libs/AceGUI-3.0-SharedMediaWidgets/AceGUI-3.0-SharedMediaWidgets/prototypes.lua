@@ -1,5 +1,5 @@
 -- Widget created by Yssaril
-local DataVersion = 9003
+local DataVersion = 9004
 local AGSMW = LibStub:NewLibrary("AceGUISharedMediaWidgets-1.0", DataVersion)
 
 if not AGSMW then
@@ -256,8 +256,6 @@ do
 
 	function AGSMW:ReturnDropDownFrame(frame)
 		ClearFrames(frame)
-		local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
-		if (wowtocversion > 90000) then Mixin( frame, BackdropTemplateMixin) end
 		frame:ClearAllPoints()
 		frame:Hide()
 		frame:SetBackdrop(frameBackdrop)

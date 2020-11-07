@@ -57,6 +57,25 @@ local hyperlinkTypes = {
 }
 local hyperLinkEntered
 
+function doEnote( enote, ...)
+	local emote = {
+		[13] = "LICK",
+		[14] = "WAVE",
+	}
+	--print(self, enote:GetText(), enote:GetID())
+	local ID = enote:GetID()
+	if emote[ID] then
+		DoEmote( enote:GetText()) --emote[ID]);
+	end
+	ChatMenu:Hide();
+end
+UIMenu_AddButton( ChatMenu, "LICK", nil, doEnote)
+UIMenu_AddButton( ChatMenu, "WAVE", nil, doEnote)
+
+--UIMenu_AddButton( ChatMenu, EMOTE117_CMD1, nil, doEnote)
+--UIMenu_AddButton( ChatMenu, EMOTE102_CMD1, nil, doEnote)
+
+
 function OnHyperlinkEnter(frame, refString)
 	if InCombatLockdown() then return; end
 	local linkToken = strmatch(refString, "^([^:]+)")

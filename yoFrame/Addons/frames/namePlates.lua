@@ -312,7 +312,7 @@ local function updateName( self)
 			r, g, b = color.r, color.g, color.b
 		end
 
-		if level == myLevel then
+		if level == UnitLevel( "player") then --myLevel then
 			level = ""
 		end
 
@@ -507,7 +507,7 @@ end
 local function onEvent( self, event, unit)
 
 	if event == "PLAYER_REGEN_DISABLED" then
-		self:SetScript("OnUpdate", nil)
+		--self:SetScript("OnUpdate", nil)
 
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		self.tick = 1

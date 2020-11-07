@@ -2,7 +2,7 @@
 TabGroup Container
 Container that uses tabs on top to switch between groups.
 -------------------------------------------------------------------------------]]
-local Type, Version = "TabGroup", 36
+local Type, Version = "TabGroup", 37
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -246,7 +246,7 @@ local methods = {
 			end
 
 			-- equal padding for each tab to fill the available width,
-			-- if the used space is above 75 %already
+			-- if the used space is above 75% already
 			-- the 18 pixel is the typical width of a scrollbar, so we can have a tab group inside a scrolling frame,
 			-- and not have the tabs jump around funny when switching between tabs that need scrolling and those that don't
 			local padding = 0
@@ -316,7 +316,7 @@ local function Constructor()
 	titletext:SetHeight(18)
 	titletext:SetText("")
 
-	local border = CreateFrame("Frame", nil, frame)
+	local border = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	border:SetPoint("TOPLEFT", 1, -27)
 	border:SetPoint("BOTTOMRIGHT", -1, 3)
 	border:SetBackdrop(PaneBackdrop)
