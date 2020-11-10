@@ -215,52 +215,92 @@ function addon:AssignBagFlagMenu()
 	local holder = ElvUIAssignBagDropdown.holder
 	ElvUIAssignBagDropdown.holder = nil
 
-	if not (holder and holder.id and holder.id > 0) then return end
-
-	local inventoryID = ContainerIDToInventoryID(holder.id)
-	if IsInventoryItemProfessionBag("player", inventoryID) then return end
+	if not (holder and holder.id) then return end
 
 	local info = UIDropDownMenu_CreateInfo()
-    info.text = BAG_FILTER_ASSIGN_TO
-    info.isTitle = 1
-    info.notCheckable = 1
-    UIDropDownMenu_AddButton(info)
+	if holder.id > 0 and not IsInventoryItemProfessionBag('player', ContainerIDToInventoryID(holder.id)) then -- The actual bank has ID -1, backpack has ID 0, we want to make sure we're looking at a regular or bank bag
+		info.text = BAG_FILTER_ASSIGN_TO
+		info.isTitle = 1
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info)
 
-    info.isTitle = nil
-    info.notCheckable = nil
-    info.tooltipWhileDisabled = 1
-    info.tooltipOnButton = 1
+		info.isTitle = nil
+		info.notCheckable = nil
+		info.tooltipWhileDisabled = 1
+		info.tooltipOnButton = 1
 
-	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
-		if i ~= LE_BAG_FILTER_FLAG_JUNK then
-			info.text = BAG_FILTER_LABELS[i]
-			info.func = function(_, _, _, value)
-				value = not value
+		for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
+			if i ~= LE_BAG_FILTER_FLAG_JUNK then
+				info.text = BAG_FILTER_LABELS[i]
+				info.func = function(_, _, _, value)
+					value = not value
 
-				if holder.id > NUM_BAG_SLOTS then
-					SetBankBagSlotFlag(holder.id - NUM_BAG_SLOTS, i, value)
-				else
-					SetBagSlotFlag(holder.id, i, value)
+					if holder.id > NUM_BAG_SLOTS then
+						SetBankBagSlotFlag(holder.id - NUM_BAG_SLOTS, i, value)
+					else
+						SetBagSlotFlag(holder.id, i, value)
+					end
+
+					if value then
+						holder.tempflag = i
+						holder.ElvUIFilterIcon:SetTexture(BAG_FILTER_ICONS[i])
+						holder.ElvUIFilterIcon:Show()
+					else
+						holder.ElvUIFilterIcon:Hide()
+						holder.tempflag = -1
+					end
 				end
 
-				holder.tempflag = (value and i) or -1
-			end
-
-			if holder.tempflag then
-				info.checked = holder.tempflag == i
-			else
-				if holder.id > NUM_BAG_SLOTS then
-					info.checked = GetBankBagSlotFlag(holder.id - NUM_BAG_SLOTS, i)
+				if holder.tempflag then
+					info.checked = holder.tempflag == i
 				else
-					info.checked = GetBagSlotFlag(holder.id, i)
+					if holder.id > NUM_BAG_SLOTS then
+						info.checked = GetBankBagSlotFlag(holder.id - NUM_BAG_SLOTS, i)
+					else
+						info.checked = GetBagSlotFlag(holder.id, i)
+					end
 				end
-			end
 
-			info.disabled = nil
-			info.tooltipTitle = nil
-			UIDropDownMenu_AddButton(info)
+				info.disabled = nil
+				info.tooltipTitle = nil
+				UIDropDownMenu_AddButton(info)
+			end
 		end
 	end
+
+	info.text = BAG_FILTER_CLEANUP
+	info.isTitle = 1
+	info.notCheckable = 1
+	UIDropDownMenu_AddButton(info)
+
+	info.isTitle = nil
+	info.notCheckable = nil
+	info.isNotRadio = true
+	info.disabled = nil
+
+	info.text = BAG_FILTER_IGNORE
+	info.func = function(_, _, _, value)
+		if holder.id == -1 then
+			SetBankAutosortDisabled(not value)
+		elseif holder.id == 0 then
+			SetBackpackAutosortDisabled(not value)
+		elseif holder.id > NUM_BAG_SLOTS then
+			SetBankBagSlotFlag(holder.id - NUM_BAG_SLOTS, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, not value)
+		else
+			SetBagSlotFlag(holder.id, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, not value)
+		end
+	end
+	if holder.id == -1 then
+		info.checked = GetBankAutosortDisabled()
+	elseif holder.id == 0 then
+		info.checked = GetBackpackAutosortDisabled()
+	elseif holder.id > NUM_BAG_SLOTS then
+		info.checked = GetBankBagSlotFlag(holder.id - NUM_BAG_SLOTS, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP)
+	else
+		info.checked = GetBagSlotFlag(holder.id, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP)
+	end
+
+	UIDropDownMenu_AddButton(info)
 end
 
 function addon:Tooltip_Show()
@@ -453,6 +493,7 @@ end
 local doEquip
 local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 	-- body
+	--dprint("doEquip = ", doEquip)
 	if doEquip then return	end
 
 	local itemRarity = select( 3, GetItemInfo( clink))
@@ -469,6 +510,8 @@ local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquip
 	end
 
 	local text = hexColor .. " [" ..  iLvl .. "] > " .. loclhexColor .. "[".. locLvl  .. "] " .. clink .. "|r" .. L["instead"].. locLink
+
+	--dprint( "EQuipItem ", bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 
 	--print(clink, locLink, itemEquipLoc, iLvl, locLvl, bagID, slotID, text)
 	if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and locitemRarity ~= 7 then
@@ -516,30 +559,33 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 					end
 				end
 			end
-
+			--dprint( "11111 ", bagID, slotID, itemEquipLoc, locEquipLocation, itemSubType, clink, canWear, locLvl, iLvl, C_NewItems.IsNewItem(bagID, slotID))
 			if item:IsItemEmpty() and locSlotID < 16 and C_NewItems.IsNewItem(bagID, slotID) == true then
 
 				if locSlotID >= 11 and locSlotID <= 15 then 				-- ring and trinkets slots
 					equipItem( bagID, slotID, clink, iLvl)
 				elseif locSlotID >= 1 and locSlotID <= 10 and canWear then 	-- armor slots
 					equipItem( bagID, slotID, clink, iLvl)
-				else 														-- reserv for weapon slots
+				else 														-- reserv for weapon slots, look down
 				end
 
 			elseif canWear and locLvl and iLvl > locLvl then
-
 				local locLink = item:GetItemLink()
+				--dprint("прошли 1й чек")
 				--local locItemSutType = select( 7, GetItemInfo( locLink))
 				local locEquipLocation = select( 9, GetItemInfo( locLink))
-				ret = true
+				ret = true 																	-- чекать что в майнхэнде двуручка и не чекать 2й слот на канвеар
 				if locSlotID <= 16 and itemEquipLoc == locEquipLocation then
+					--dprint("прошли 2й чек")
 					if ( C_NewItems.IsNewItem(bagID, slotID) == true) then
+						--dprint("прошли 3й чек")
 						equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 					end
 				elseif locSlotID >= 16 then
 
 				end
-			elseif canWear and item:IsItemEmpty() then
+
+			elseif item:IsItemEmpty() and canWear then
 				ret = true
 			end
 		end
@@ -608,6 +654,7 @@ function UpdateSlot( self, bagID, slotID)
 		end
 
 		if slot.UpgradeIcon then
+			--dprint( "CheckUpdateIcon: ", bagID, slotID, slot)
 			checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)  --- C_NewItems_IsNewItem(bagID, slotID))
 		end
 
@@ -666,6 +713,8 @@ function UpdateSlot( self, bagID, slotID)
 end
 
 function addon:UpdateBagSlots(bagID)
+	--dprint( "UpdateBagSlot: ", bagID, GetContainerNumSlots(bagID), self.UpdateSlot)
+
 	if(bagID == REAGENTBANK_CONTAINER) then
 		for i=1, 98 do
 			self:UpdateReagentSlot(i);
@@ -874,85 +923,127 @@ function addon:CreateLayout( isBank)
 
 	for i, bagID in ipairs(f.BagIDs) do
 		local assignedBag
-		--print( i, bagID, isBank, numContainerSlots, f:GetName(), GetContainerNumSlots(bagID))
-
 ----------------------------------------------------------------------------
 --				CONTAINER SLOTS
 ----------------------------------------------------------------------------
-		if (not isBank and bagID <= 3 ) or (isBank and bagID ~= -1 and numContainerSlots >= 1 and not (i - 1 > numContainerSlots)) then
-			if not f.ContainerHolder[i] then
-				--print( 'PutOUT - 1')
-				if(isBank) then
-					f.ContainerHolder[i] = CreateFrame("ItemButton", "ElvUIBankBag" .. (bagID-4), f.ContainerHolder, "BankItemButtonBagTemplate")
-					f.ContainerHolder[i]:RegisterForClicks("AnyUp");
-					f.ContainerHolder[i]:SetScript('OnClick', function( holder, button)
-						if button == "RightButton" and holder.id then
-							ElvUIAssignBagDropdown.holder = holder
-							ToggleDropDownMenu(1, nil, ElvUIAssignBagDropdown, "cursor")
-						else
-							local inventoryID = holder:GetInventorySlot();
-							PutItemInBag(inventoryID);--Put bag on empty slot, or drop item in this bag
-						end
-					end)
-				else
-					f.ContainerHolder[i] = CreateFrame("ItemButton", "ElvUIMainBag" .. bagID .. "Slot", f.ContainerHolder, "ContainerFrameItemButtonTemplate")-- "BagSlotButtonTemplate")   --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-					f.ContainerHolder[i]:RegisterForClicks("AnyUp");
-					f.ContainerHolder[i]:SetScript('OnClick', function(holder, button)
-						if button == "RightButton" and holder.id then
-							ElvUIAssignBagDropdown.holder = holder
-							ToggleDropDownMenu(1, nil, ElvUIAssignBagDropdown, "cursor")
-						else
-							local id = holder:GetID();
-							PutItemInBag(id);--Put bag on empty slot, or drop item in this bag
-						end
-					end)
-				end
+		--print( i, bagID, isBank, numContainerSlots, f:GetName(), GetContainerNumSlots(bagID))
+		local bagName = isBank and format('ElvUIBankBag%d', bagID-4) or bagID == 0 and 'ElvUIMainBagBackpack' or format('ElvUIMainBag%dSlot', bagID-1)
+		local inherit = isBank and 'BackdropTemplate, BankItemButtonBagTemplate' or bagID == 0 and 'BackdropTemplate, ItemAnimTemplate' or 'BackdropTemplate, BagSlotButtonTemplate'
 
-				if not f.ContainerHolder[i].shadow then
-					CreateStyle( f.ContainerHolder[i], 2, nil, 0.5)
-					StyleButton( f.ContainerHolder[i])
-				end
+		--f.ContainerHolder:SetSize(((buttonSize + buttonSpacing) * numContainerSlots) + buttonSpacing, buttonSize + (buttonSpacing * 2))
+		f.ContainerHolder:SetSize(((buttonSize) * i) + 10, buttonSize + (buttonSpacing * 2))
 
-				f.ContainerHolder[i]:SetNormalTexture("")
-				f.ContainerHolder[i]:SetPushedTexture("")
+		f.ContainerHolder[i] = CreateFrame("ItemButton", bagName, f.ContainerHolder, inherit) --"BagSlotButtonTemplate") --"ContainerFrameItemButtonTemplate")-- "BagSlotButtonTemplate")   --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		f.ContainerHolder[i].id = bagID
+		f.ContainerHolder[i]:HookScript('OnEnter', function(ch) addon.SetSlotAlphaForBag(ch, f) end)
+		f.ContainerHolder[i]:HookScript('OnLeave', function(ch) addon.ResetSlotAlphaForBags(ch, f) end)
 
-				f.ContainerHolder[i].id = isBank and bagID or bagID + 1
-				f.ContainerHolder[i]:HookScript("OnEnter", function(self) addon.SetSlotAlphaForBag(self, f) end)
-				f.ContainerHolder[i]:HookScript("OnLeave", function(self) addon.ResetSlotAlphaForBags(self, f) end)
-
-				if isBank then
-					f.ContainerHolder[i]:SetID(bagID - 4)
-					if not f.ContainerHolder[i].tooltipText then
-						f.ContainerHolder[i].tooltipText = ""
-					end
-				end
-				f.ContainerHolder[i].IconBorder:SetAlpha(0)
-				f.ContainerHolder[i].icon:ClearAllPoints()
-				f.ContainerHolder[i].icon:SetPoint("CENTER", f.ContainerHolder[i])
-				f.ContainerHolder[i].icon:SetSize(buttonSize -5, buttonSize -5)
-				f.ContainerHolder[i].icon:SetTexCoord( unpack( f.texCoord))
-			end
-
-			f.ContainerHolder:SetSize(((buttonSize) * (isBank and i - 1 or i)) + 10, buttonSize + (buttonSpacing * 2))
-
-			if isBank then
-				--print( "erroe")
-				BankFrameItemButton_Update( f.ContainerHolder[i])
-				BankFrameItemButton_UpdateLocked( f.ContainerHolder[i])
-			end
-
-			assignedBag = addon:GetBagAssignedInfo(f.ContainerHolder[i])
-
-			f.ContainerHolder[i]:SetSize( buttonSize, buttonSize)
-			f.ContainerHolder[i]:ClearAllPoints()
-			if (isBank and i == 2) or (not isBank and i == 1) then
-				f.ContainerHolder[i]:SetPoint('BOTTOMLEFT', f.ContainerHolder, 'BOTTOMLEFT', buttonSpacing, buttonSpacing)
-			else
-				f.ContainerHolder[i]:SetPoint('LEFT', lastContainerButton, 'RIGHT', 0, 0)
-			end
-
-			lastContainerButton = f.ContainerHolder[i];
+		if not f.ContainerHolder[i].shadow then
+			CreateStyle( f.ContainerHolder[i], 2, nil, 0.5, 0)
+			StyleButton( f.ContainerHolder[i])
 		end
+		f.ContainerHolder[i]:SetNormalTexture("")
+		f.ContainerHolder[i]:SetPushedTexture("")
+
+		if isBank then
+			f.ContainerHolder[i]:SetID(bagID - 4)
+			f.ContainerHolder[i].icon:SetTexture('Interface/Buttons/Button-Backpack-Up')
+			f.ContainerHolder[i]:SetScript('OnClick', function(holder, button)
+				if button == 'RightButton' and holder.id then
+					ElvUIAssignBagDropdown.holder = holder
+					ToggleDropDownMenu(1, nil, ElvUIAssignBagDropdown, 'cursor')
+				else
+					local inventoryID = holder:GetInventorySlot()
+					PutItemInBag(inventoryID);--Put bag on empty slot, or drop item in this bag
+				end
+			end)
+		else
+			if bagID == 0 then --Backpack needs different setup
+				f.ContainerHolder[i]:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
+				f.ContainerHolder[i]:SetScript('OnClick', function(holder, button)
+					if button == 'RightButton' and holder.id then
+						ElvUIAssignBagDropdown.holder = holder
+						ToggleDropDownMenu(1, nil, ElvUIAssignBagDropdown, 'cursor')
+					else
+						PutItemInBackpack()
+					end
+				end)
+				f.ContainerHolder[i]:SetScript('OnReceiveDrag', PutItemInBackpack)
+				f.ContainerHolder[i].icon:SetTexture('Interface/Buttons/Button-Backpack-Up')
+			else
+				f.ContainerHolder[i]:SetScript('OnClick', function(holder, button)
+					if button == 'RightButton' and holder.id then
+						ElvUIAssignBagDropdown.holder = holder
+						ToggleDropDownMenu(1, nil, ElvUIAssignBagDropdown, 'cursor')
+					else
+						local id = holder:GetID()
+						PutItemInBag(id)
+					end
+				end)
+			end
+		end
+
+		f.ContainerHolder[i].IconBorder:SetAlpha(0)
+		f.ContainerHolder[i].icon:ClearAllPoints()
+		f.ContainerHolder[i].icon:SetPoint("CENTER", f.ContainerHolder[i])
+		f.ContainerHolder[i].icon:SetSize(buttonSize -3, buttonSize -3)
+		f.ContainerHolder[i].icon:SetTexCoord( unpack( f.texCoord))
+		f.ContainerHolder[i]:SetSize( buttonSize, buttonSize)
+
+		if i == 1 then
+			f.ContainerHolder[i]:SetPoint('BOTTOMLEFT', f.ContainerHolder, 'BOTTOMLEFT',  2, 2)
+		else
+			f.ContainerHolder[i]:SetPoint('LEFT', f.ContainerHolder[i - 1], 'RIGHT', 0, 0)
+		end
+
+		f.Bags[bagID] = CreateFrame('Frame', f:GetName()..'Bag'..bagID, f.holderFrame)
+		f.Bags[bagID]:SetID(bagID)
+
+		assignedBag = addon:GetBagAssignedInfo(f.ContainerHolder[i])
+
+		--for slotID = 1, MAX_CONTAINER_ITEMS do
+			--f.Bags[bagID][slotID] = B:ConstructContainerButton(f, slotID, bagID)
+		--end
+
+		--		f.ContainerHolder[i].id = isBank and bagID or bagID -- + 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		--		f.ContainerHolder[i]:HookScript("OnEnter", function(self) addon.SetSlotAlphaForBag(self, f) end)
+		--		f.ContainerHolder[i]:HookScript("OnLeave", function(self) addon.ResetSlotAlphaForBags(self, f) end)
+
+		--		if isBank then
+		--			f.ContainerHolder[i]:SetID(bagID - 4)
+		--			if not f.ContainerHolder[i].tooltipText then
+		--				f.ContainerHolder[i].tooltipText = ""
+		--			end
+		--		end
+		--		f.ContainerHolder[i].IconBorder:SetAlpha(0)
+		--		f.ContainerHolder[i].icon:ClearAllPoints()
+		--		f.ContainerHolder[i].icon:SetPoint("CENTER", f.ContainerHolder[i])
+		--		f.ContainerHolder[i].icon:SetSize(buttonSize -5, buttonSize -5)
+		--		f.ContainerHolder[i].icon:SetTexCoord( unpack( f.texCoord))
+		--	end
+
+		--	f.ContainerHolder:SetSize(((buttonSize) * (isBank and i - 1 or i)) + 10, buttonSize + (buttonSpacing * 2))
+
+		--	if isBank then
+		--		--print( "erroe")
+		--		BankFrameItemButton_Update( f.ContainerHolder[i])
+		--		BankFrameItemButton_UpdateLocked( f.ContainerHolder[i])
+		--	end
+
+		--	assignedBag = addon:GetBagAssignedInfo(f.ContainerHolder[i])
+
+		--	f.ContainerHolder[i]:SetSize( buttonSize, buttonSize)
+		--	f.ContainerHolder[i]:ClearAllPoints()
+		--	if (isBank and i == 2) or (not isBank and i == 1) then
+		--		f.ContainerHolder[i]:SetPoint('BOTTOMLEFT', f.ContainerHolder, 'BOTTOMLEFT', buttonSpacing, buttonSpacing)
+		--	else
+		--		f.ContainerHolder[i]:SetPoint('LEFT', lastContainerButton, 'RIGHT', 0, 0)
+		--	end
+
+		--	lastContainerButton = f.ContainerHolder[i];
+
+		--	f.ContainerHolder[i]:Show()
+		--end
 
 ----------------------------------------------------------------------------
 --				BAG/BANK SLOTS
@@ -1206,6 +1297,7 @@ function addon:CreateBagFrame( Bag, isBank)
 	f:RegisterEvent("QUEST_ACCEPTED");
 	f:RegisterEvent("QUEST_REMOVED");
 	f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	f:RegisterEvent("USE_BIND_CONFIRM")
 	f:SetScript("OnEvent", OnEvent)
 
 	f.BagIDs = isBank and {-1, 5, 6, 7, 8, 9, 10, 11} or {0, 1, 2, 3, 4};
@@ -1252,9 +1344,14 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsButton:GetPushedTexture():SetTexCoord( unpack( f.texCoord))
 		f.bagsButton.ttText = BAGSLOTTEXT
 		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", BAG_SETTINGS_TOOLTIP)
+		f.bagsButton:RegisterForClicks('anyUp')
 		f.bagsButton:SetScript("OnEnter", addon.Tooltip_Show)
 		f.bagsButton:SetScript("OnLeave", addon.Tooltip_Hide)
-		f.bagsButton:SetScript('OnClick', function() ToggleFrame(f.ContainerHolder) end)
+		f.bagsButton:SetScript('OnClick', function()
+			ToggleFrame(f.ContainerHolder)
+			PlaySound(852) --IG_MAINMENU_OPTION
+			--f.ContainerHolder:SetShown( f.ContainerHolder:IsShown())
+		end)
 
 		--Banks Sort Button
 		f.bagsSortButton = CreateFrame("Button", Bag..'bagsSortButton', f);
@@ -1408,6 +1505,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsButton:SetSize( 17, 17)
 		CreateStyleSmall( f.bagsButton, 2)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", 0, 0)
+		f.bagsButton:RegisterForClicks('anyUp')
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
 		f.bagsButton:SetPushedTexture("Interface\\Buttons\\Button-Backpack-Up")
@@ -1416,7 +1514,11 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bagsButton.ttText2 = format("|cffFFFFFF%s|r", BAG_SETTINGS_TOOLTIP)
 		f.bagsButton:SetScript("OnEnter", addon.Tooltip_Show)
 		f.bagsButton:SetScript("OnLeave", addon.Tooltip_Hide)
-		f.bagsButton:SetScript('OnClick', function() ToggleFrame(f.ContainerHolder) end)
+		f.bagsButton:SetScript('OnClick', function()
+			PlaySound(852) --IG_MAINMENU_OPTION
+			--ToggleFrame(f.ContainerHolder)
+			f.ContainerHolder:SetShown( not f.ContainerHolder:IsShown())
+		end)
 
 		--Bags Sort Button
 		f.bagsSortButton = CreateFrame("Button", Bag..'BankSortButton', f);
@@ -1552,7 +1654,7 @@ function OnEvent( self, event, ...)
 			end
 		end
 
-		--print( "BAG_UPDATE: ", self, self.BagIDs, bagID, ...)
+		--dprint( event, ": ", ...)
 		addon.UpdateBagSlots( self, ...);
 
 		--Refresh search in case we moved items around
@@ -1560,6 +1662,7 @@ function OnEvent( self, event, ...)
 			addon:SetSearch(SEARCH_STRING);
 		 end
 	elseif event == 'ITEM_LOCK_CHANGED' or event == 'ITEM_UNLOCKED' then
+		--dprint( event,  ": ", ...)
 		local bag, slot = ...
 		if bag == REAGENTBANK_CONTAINER then
 			addon:UpdateReagentSlot(slot);
@@ -1569,6 +1672,7 @@ function OnEvent( self, event, ...)
 	elseif event == "PLAYERBANKSLOTS_CHANGED" or event == "PLAYER_EQUIPMENT_CHANGED" then
 		UpdateAllSlots( self, ...)
 		doEquip = false
+		--dprint( "event =", event, doEquip)
 	elseif event == "PLAYERREAGENTBANKSLOTS_CHANGED" then
 		addon.UpdateReagentSlot( self, ...)
 	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED") and self:IsShown() then
@@ -1577,6 +1681,8 @@ function OnEvent( self, event, ...)
 		addon:CreateLayout( true);
 	elseif event == "BAG_SLOT_FLAGS_UPDATED" then
 		addon:CreateLayout()
+	elseif event == "USE_BIND_CONFIRM" then
+		--dprint( "event =", event, doEquip)
 	-- else
 		-- print( "|cffff0000Unknow:|r ", event, ...)
 	end

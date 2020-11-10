@@ -256,7 +256,6 @@ function Stat:Enable()
 	self:SetScript("OnMouseDown", self.onClick)
 
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
-	--self.Text:SetPoint("LEFT", self, "LEFT", 0, 0)
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self:SetWidth( self.Text:GetWidth())
 
@@ -265,7 +264,7 @@ function Stat:Enable()
 	local ofunc = ChatFrame_DisplayTimePlayed
 	function ChatFrame_DisplayTimePlayed() ChatFrame_DisplayTimePlayed = ofunc end
 	RequestTimePlayed()
-
+	self.Text:ClearAllPoints()
 	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 	--CreateStyle( self, 2)

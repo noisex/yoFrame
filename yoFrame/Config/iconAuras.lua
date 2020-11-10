@@ -6,6 +6,8 @@ local L, yo, N = unpack( ns)
 --	AURAS
 -----------------------------------------------------------------------------------------------
 
+local aGlow = LibStub("LibCustomGlow-1.0", true)
+
 local posz = {
     [1] =  { [1] = "TOPLEFT",   [2] = 3,    [3] = -3},
     [2] =  { [1] = "TOP",       [2] = 0,    [3] = -3},
@@ -35,7 +37,64 @@ local function BuffOnLeave( self)
 	GameTooltip:Hide()
 end
 
-function CreateAuraIcon( parent, index)
+local function checkForFilter( button)
+
+	if button.countFilter[button.name] then
+		local checkForShow = button.countCount >= button.countFilter[button.name]
+
+		if button.countGlow then
+			if checkForShow then
+				if not button.glowing then
+					--aGlow.PixelGlow_Start( button, {0.95, 0.95, 0.32, 1}, 7, 0.5, 8, 4, 2, 2, false, 1 )
+					aGlow.PixelGlow_Start( button, { 1, 1, 0, 1}, 7, 0.5, 6, 3, 4, 4, false, 1 )
+					button.glowing = true
+				end
+			else
+				aGlow.PixelGlow_Stop( button, 1)
+				button.glowing = false
+			end
+		end
+
+		if button.countAnim then
+			if checkForShow then
+				if not button.anim.playing then
+					button.anim:Play()
+					button.anim.playing = true
+				end
+			else
+				button.anim:Stop()
+				button.anim.playing = nil;
+			end
+		end
+
+		if button.countColor then
+			if checkForShow then
+				if not button.countColor.anim.playing then
+					button.countColor.anim:Play()
+					button.countColor.anim.playing = true
+				end
+			else
+				button.countColor.anim:Stop()
+				button.countColor.anim.playing = nil;
+			end
+		end
+	else
+		if button.countAnim then
+			button.anim:Stop()
+			button.anim.playing = nil;
+		end
+		if button.countColor then
+			button.countColor.anim:Stop()
+			button.countColor.anim.playing = nil;
+		end
+		if button.countGlow then
+			aGlow.PixelGlow_Stop( button, 1)
+			button.glowing = false
+		end
+	end
+end
+
+function N.createAuraIcon( parent, index)
 	if parent[index] then return parent[index] end
 
 	local size = parent:GetHeight()
@@ -46,7 +105,41 @@ function CreateAuraIcon( parent, index)
 	button:SetWidth( size)
 	button:SetHeight( size)
 
-	button.icon = button:CreateTexture(nil, "OVERLAY")
+	button.unit 		= parent.unit
+	button.countGlow 	= parent.countGlow
+	button.countFilter 	= parent.countFilter
+	button.countAnim	= parent.countAnim
+	button.countColor	= parent.countColor
+	button.showBorder	= parent.showBorder 	-- по-дефолту = фэлс, что бы рисовать смолстайл
+
+	if not button.showBorder then
+		CreateStyleSmall( button, max( 1, sh - 4))
+
+	elseif button.showBorder == "border" then
+		N.CreateBorder( button, size / 3)
+		N.SetBorderColor( button, 0.19, 0.19, 0.19, 0.9)
+	end
+
+	if button.countAnim then
+		SetUpAnimGroup( button, "FlashLoop", 1, 0.1)
+		button.anim.fadein:SetDuration( 1 * .5)
+		button.anim.fadeout:SetDuration( 1)
+	end
+
+	if button.countColor then
+		button.countColor = button:CreateTexture(nil, "OVERLAY")
+		button.countColor:SetAllPoints( button)
+		button.countColor:SetTexture( texture)  --texhl
+		button.countColor:SetBlendMode("ADD")
+		button.countColor:SetVertexColor( 0.8, 0.1, 0.1, 1)
+		button.countColor:SetAlpha( 0)
+
+		SetUpAnimGroup( button.countColor, "FlashLoop", 1, 0)
+		button.countColor.anim.fadein:SetDuration( 1 * .4)
+		button.countColor.anim.fadeout:SetDuration( 1.3)
+	end
+
+	button.icon = button:CreateTexture(nil, "BORDER")
 	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
 	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
 	button.icon:SetTexCoord( unpack( yo.tCoord))
@@ -77,8 +170,6 @@ function CreateAuraIcon( parent, index)
 	else
 		button.timer:SetPoint("CENTER", button, "CENTER", 0, 0)
 	end
-
-	if not parent.noShadow then CreateStyleSmall( button, max( 1, sh - 4)) end
 
     if parent.timeSecOnly then
     	button.tFormat = formatTimeSec --formatTimeSec
@@ -117,15 +208,16 @@ function CreateAuraIcon( parent, index)
 end
 
 
-function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
+function N.updateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 	button.icon:SetTexture(icon)
-	button.expirationTime = expirationTime
-	button.duration = duration
-	button.spellID = spellID
-	button.filter = filter
-	button.unit = unit
-	button.id = index
-	button.tick = 1
+	button.expirationTime 	= expirationTime
+	button.duration 		= duration
+	button.countCount 		= count
+	button.spellID 			= spellID
+	button.name 			= name
+	button.filter 			= filter
+	button.id 				= index
+	button.tick 			= 1
 
 	button.timer:SetTextColor( 1, 1, 0)
 
@@ -139,6 +231,8 @@ function UpdateAuraIcon(button, filter, icon, count, debuffType, duration, expir
 	else
 		button.count:SetText( "")
 	end
+
+	if button.countFilter then checkForFilter( button) end
 
 	button:SetScript("OnUpdate", function(self, el)
 		button.tick = button.tick + el

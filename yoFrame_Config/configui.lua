@@ -609,12 +609,12 @@ function InitOptions()
 					set02		= {	order = 090, type = "description", name = " ", width = "full"},
 					countRight 	= {	order = 110, width = 0.7, type = "select", name = function(info) return tr( info[#info]) end, values = { [0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,},},
 					set00		= {	order = 111, type = "description", name = " ", width = 1.5},
-					right1		= {	order = 120, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 1 or not yo[info[1]].enable; end,},
-					right2		= {	order = 130, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 2 or not yo[info[1]].enable; end,},
-					right3		= {	order = 140, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 3 or not yo[info[1]].enable; end,},
-					right4		= {	order = 150, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 4 or not yo[info[1]].enable; end,},
-					right5		= {	order = 160, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 5 or not yo[info[1]].enable; end,},
-					right6		= {	order = 170, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 6 or not yo[info[1]].enable; end,},
+					right1		= {	order = 120, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 1 or not yo[info[1]].enable; end,},
+					right2		= {	order = 130, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 2 or not yo[info[1]].enable; end,},
+					right3		= {	order = 140, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 3 or not yo[info[1]].enable; end,},
+					right4		= {	order = 150, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 4 or not yo[info[1]].enable; end,},
+					right5		= {	order = 160, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 5 or not yo[info[1]].enable; end,},
+					right6		= {	order = 170, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 6 or not yo[info[1]].enable; end,},
 				},
 			},
 
@@ -627,7 +627,12 @@ function InitOptions()
 					enable 			= { width = "full",	order = 1, type = "toggle",	name = L["FLGenable"], disabled = false, },
 					--desc01			= {	order = 2, type = "description", name = L["DESC_FILGER"], width = "full"},
 
-					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
+					fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					fligerBuffAnim	= {	order = 05, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					fligerBuffCount	= { order = 07, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
+					fligerBuffSpell = { order = 10, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.8,},
+
+					tDebuffEnable	= {	order = 18, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
 					pBuffEnable		= {	order = 30, type = "toggle",name = "Player Buff", 		width = 0.75},
 					pDebuffEnable	= {	order = 40, type = "toggle",name = "Player Debuff", 	width = 0.75},
@@ -802,7 +807,7 @@ function InitOptions()
 			ResetConfig = {
            		order = 1, type = "execute", confirm  = true, width = 0.75,	name = L["ResetConfig"],
            		desc = L["RESET_DESC"],
-           		func = function() yo_PersonalConfig = nil yo_AllConfig = nil ReloadUI() end,},
+           		func = function() yo_PersonalConfig = {} yo_AllConfig = {} yo_BB = {}  yo_BBCount = {} yo_WIMSTER = {} yo_ChatHistory = {} yo_AllData = {} ReloadUI() end,},
 
 			MovingFrames = {
            		order = 10,	type = "execute", width = 0.7,

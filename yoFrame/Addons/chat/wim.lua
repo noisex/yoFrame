@@ -357,7 +357,7 @@ local function CreateWIM( self)
 	friends:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	friends:SetScript("OnMouseDown", function( f, button)
 		self.menuWIM = { { text = "Дружеский шептун", isTitle = true,notCheckable=true}, }
-		N.InfoTexts.infos.Friends:onEnter( nil, "fomWIM")
+		N.InfoTexts.infos.friend:onEnter( nil, "fomWIM")
 		EasyMenu( self.menuWIM, N.menuFrame, f, 5, -5, "MENU", 2)
 	end)
 	--friends:SetScript("OnMouseDown", function(self, button) N.InfoFriend:ShowFiends( button)

@@ -4,9 +4,9 @@ local L, yo, N = unpack( ns)
 if not yo.ActionBar.enable then return end
 
 local ActionBars = N["ActionBars"]
-local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
+local MAX_TOTEMS = MAX_TOTEMS
 
-function ActionBars:CreatePetBar()
+function ActionBars:CreateTotemBar()
 
 	--if (not C.ActionBars.Pet) then
 	--	return
@@ -20,7 +20,7 @@ function ActionBars:CreatePetBar()
 	local ButtonsPerRow = 10
 	local NumRow = ceil(10 / ButtonsPerRow)
 
-	local Bar = CreateFrame("Frame", "yoPetActionBar", N.PetHider, "SecureHandlerStateTemplate")
+	local Bar = CreateFrame("Frame", "yoTotemBar", N.PetHider, "SecureHandlerStateTemplate")
 	Bar:SetPoint("RIGHT", yoMovePetBar, "RIGHT")
 	Bar:SetFrameStrata("LOW")
 	Bar:SetFrameLevel(10)
@@ -37,11 +37,11 @@ function ActionBars:CreatePetBar()
 	PetActionBarFrame:SetParent( N.Hider)
 
 	local NumPerRows = ButtonsPerRow
-	local NextRowButtonAnchor = _G["PetActionButton1"]
+	local NextRowButtonAnchor = _G["TotemFrameTotem1"]
 
-	for i = 1, NUM_PET_ACTION_SLOTS do
-		local Button = _G["PetActionButton"..i]
-		local PreviousButton = _G["PetActionButton"..i-1]
+	for i = 1, MAX_TOTEMS do
+		local Button = _G["TotemFrameTotem"..i]
+		local PreviousButton = _G["TotemFrameTotem"..i-1]
 
 		Button:SetParent(Bar)
 		Button:ClearAllPoints()
@@ -49,6 +49,7 @@ function ActionBars:CreatePetBar()
 		Button:SetNormalTexture("")
 		ActionButtonDesign( Bar, Button, Size, Size)
 		Button:Show()
+		Button:SetAttribute("flyoutDirection", "")
 
 		if (i == 1) then
 			Button:SetPoint("TOPRIGHT", Bar, "TOPRIGHT", -Spacing, 0)
@@ -56,7 +57,7 @@ function ActionBars:CreatePetBar()
 			Button:SetPoint("TOPLEFT", NextRowButtonAnchor, "BOTTOMLEFT", 0, -Spacing)
 
 			NumPerRows = NumPerRows + ButtonsPerRow
-			NextRowButtonAnchor = _G["PetActionButton"..i]
+			NextRowButtonAnchor = _G["TotemFrameTotem"..i]
 		else
 			Button:SetPoint("RIGHT", PreviousButton, "LEFT", Spacing, 0)
 		end
@@ -65,12 +66,12 @@ function ActionBars:CreatePetBar()
 		Bar["Button"..i] = Button
 	end
 
-	hooksecurefunc("PetActionBar_Update", ActionBars.UpdatePetBar)
+	--hooksecurefunc("PetActionBar_Update", ActionBars.UpdatePetBar)
 	--hooksecurefunc("PetActionBar_UpdateCooldowns", ActionBars.UpdatePetBarCooldownText)
 
 	--ActionBars:SkinPetButtons()
 
-	RegisterStateDriver(Bar, "visibility", "[@pet,exists,nopossessbar] show; hide")
+	RegisterStateDriver(Bar, "visibility", "[petbattle][overridebar][vehicleui][possessbar][shapeshift] hide; show") --[pet]
 
 	self.Bars.Pet = Bar
 end

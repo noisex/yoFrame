@@ -11,7 +11,7 @@ infoText.pets = {}
 infoText.texts = {}
 infoText.spellsSchool 	= {}
 infoText.pet_blacklist 	= {}
-infoText.strIcon 		= " |T%s:14:14:0:0:64:64:10:54:10:54|t %s"
+infoText.strIcon 		= "|cff888888%-3s|r|T%s:14:14:0:0:64:64:10:54:10:54|t %s"
 infoText.damag 			= "%s (%.1f%%)"
 infoText.displayString 	= "%s: ".. myColorStr .. "%s%s|r"
 infoText.parentCount 	= yo.InfoTexts.countLeft
@@ -59,6 +59,7 @@ function infoText:reset( infos)
 	--infos.timeBegin = 0
 	infos.combatTime, infos.amountTotal, infos.newFight = 0, 0, false
 	wipe( infos.spellCount)
+	wipe( infos.spellDamage)
 end
 
 function infoText:start( infos)
@@ -86,11 +87,15 @@ function infoText.checkNewSpell( infos, spellID, spellDMG, over, school)
 
 	if infos.newFight then infoText:reset( infos) end
 
-	if not infos.spellCount[spellID] then
-		infos.spellCount[spellID] = 0
+	if not infos.spellDamage[spellID] then
+		infos.spellDamage[spellID]	= 0
 		infoText.spellsSchool[spellID] = school
+		infos.spellCount[spellID] 	= 0
 	end
-	infos.spellCount[spellID] = infos.spellCount[spellID] + spellDMG - ( over or 0)
+	--if not infos.spellCount[spellID] then end
+
+	infos.spellCount[spellID]  = infos.spellCount[spellID] + 1
+	infos.spellDamage[spellID] = infos.spellDamage[spellID] + spellDMG - ( over or 0)
 	infos.amountTotal = infos.amountTotal + spellDMG - ( over or 0)
 end
 
@@ -147,17 +152,20 @@ function infoText:onEnter( infos)
 	local ind = 1
 	local shift = 2.7
 	local stoPerc
-	for spellID, dmg in spairs( infos.spellCount, function(t,a,b) return t[b] < t[a] end) do
+	for spellID, data in spairs( infos.spellDamage, function(t,a,b) return t[b] < t[a] end) do
 
     	local spellName, _, icon = GetSpellInfo( spellID)
 		local col  = self.spells_school[ self.spellsSchool[spellID]].decimals		-- CombatLog_Color_ColorArrayBySchool( self.spellsSchool[spellID]) --COMBATLOG_DEFAULT_COLORS.schoolColoring[self.spellsSchool[spellID]
-		local perc = infos.amountTotal * dmg == 0 and 0 or 100 / infos.amountTotal * dmg
+		local perc = infos.amountTotal * data == 0 and 0 or 100 / infos.amountTotal * data
     	if ind == 1 then
     		stoPerc = 100 / perc * shift
 			GameTooltip:AddLine(" ")
 			ind = nil
 		end
-    	GameTooltip:AddDoubleLine( format( self.strIcon, icon, spellName) , format( self.damag, nums( dmg), perc), col[1], col[2], col[3], col[1], col[2], col[3])
+
+		local count = IsShiftKeyDown() and infos.spellCount[spellID] or " "
+
+		GameTooltip:AddDoubleLine( format( self.strIcon, count, icon, spellName) , format( self.damag, nums( data), perc), col[1], col[2], col[3], col[1], col[2], col[3])
 
     	if IsShiftKeyDown() then
     		local strPerc = ""
@@ -182,30 +190,30 @@ function infoText:onEnter( infos)
 end
 
 
-local function GetUnitInfoByUnitFlag(unitFlag,infoType)
-	--> TYPE
-	if infoType == 1 then
-		return bit_band(unitFlag,COMBATLOG_OBJECT_TYPE_MASK)
-		--[1024]="player", [2048]="NPC", [4096]="pet", [8192]="GUARDIAN", [16384]="OBJECT"
+--local function GetUnitInfoByUnitFlag(unitFlag,infoType)
+--	--> TYPE
+--	if infoType == 1 then
+--		return bit_band(unitFlag,COMBATLOG_OBJECT_TYPE_MASK)
+--		--[1024]="player", [2048]="NPC", [4096]="pet", [8192]="GUARDIAN", [16384]="OBJECT"
 
-	--> CONTROL
-	elseif infoType == 2 then
-		return bit_band(unitFlag,COMBATLOG_OBJECT_CONTROL_MASK)
-		--[256]="by players", [512]="by NPC",
+--	--> CONTROL
+--	elseif infoType == 2 then
+--		return bit_band(unitFlag,COMBATLOG_OBJECT_CONTROL_MASK)
+--		--[256]="by players", [512]="by NPC",
 
-	--> REACTION
-	elseif infoType == 3 then
-		return bit_band(unitFlag,COMBATLOG_OBJECT_REACTION_MASK)
-		--[16]="FRIENDLY", [32]="NEUTRAL", [64]="HOSTILE"
+--	--> REACTION
+--	elseif infoType == 3 then
+--		return bit_band(unitFlag,COMBATLOG_OBJECT_REACTION_MASK)
+--		--[16]="FRIENDLY", [32]="NEUTRAL", [64]="HOSTILE"
 
-	--> Controller affiliation
-	elseif infoType == 4 then
-		return bit_band(unitFlag,COMBATLOG_OBJECT_AFFILIATION_MASK)
-		--[1]="player", [2]="PARTY", [4]="RAID", [8]="OUTSIDER"
+--	--> Controller affiliation
+--	elseif infoType == 4 then
+--		return bit_band(unitFlag,COMBATLOG_OBJECT_AFFILIATION_MASK)
+--		--[1]="player", [2]="PARTY", [4]="RAID", [8]="OUTSIDER"
 
-	--> Special
-	elseif infoType == 5 then
-		return bit_band(unitFlag,COMBATLOG_OBJECT_SPECIAL_MASK)
-		--Not all !  [65536]="TARGET", [131072]="FOCUS", [262144]="MAINTANK", [524288]="MAINASSIST"
-	end
-end
+--	--> Special
+--	elseif infoType == 5 then
+--		return bit_band(unitFlag,COMBATLOG_OBJECT_SPECIAL_MASK)
+--		--Not all !  [65536]="TARGET", [131072]="FOCUS", [262144]="MAINTANK", [524288]="MAINASSIST"
+--	end
+--end

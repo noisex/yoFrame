@@ -37,7 +37,9 @@ function Stat:onEvent( event, ...)
 
 		if not self.inCombat then return end
 		if not events[Event] then return end
-		if sourceMask == 4369 and not infoText.pet_blacklist[sourceGUID] then infoText:checkPets( sourceGUID)	end
+		--print(Event, sourceGUID, name, sourceMask)
+		--8465 = guardian
+		if ( sourceMask == 4369 or sourceMask == 8465) and not infoText.pet_blacklist[sourceGUID] then infoText:checkPets( sourceGUID)	end
 
 		if sourceGUID == myGUID or infoText.pets[sourceGUID] then
 
@@ -72,6 +74,7 @@ function Stat:Enable()
 	self.combatTime 	= 0
 	self.amountTotal 	= 0
 	self.spellCount		= {}
+	self.spellDamage 	= {}
 
 	self:SetFrameStrata("BACKGROUND")
 	self:SetFrameLevel(3)
@@ -93,9 +96,9 @@ function Stat:Enable()
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self.Text:SetFormattedText( infoText.displayString, "dps", 0, "") --,  SecondsToClocks( self.combatTime))
+	self.Text:ClearAllPoints()
 	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
-
 	infoText:reset( self)
 	self:Show()
 end

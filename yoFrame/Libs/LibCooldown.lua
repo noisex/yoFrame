@@ -70,9 +70,43 @@ end
 
 local numTabs, totalspellnum
 local spells = {}
+local bugsSpells = {
+	[1953] 	= 15, -- Скачок кд = 0 вместо 15
+}
+
 --local function compare(a,b)
 --  return a[1] < b[1]
 --end
+
+local CD_BAS = gsub( SPELL_RECHARGE_TIME_SEC, "(:.+)", "") 			-- Восстановление
+local CD_SEC = SPELL_RECHARGE_TIME_SEC 								-- Восстановление: %d сек.
+local CD_MIN = string.match( SPELL_RECHARGE_TIME_MIN, "%%d+(%D+)" ) -- 'min.' -- Восстановление: %d мин.
+
+--print(CD_BAS, CD_MIN)
+
+local function checkTooltip( slot)
+	local cd = 0
+	local tt = N.ScanTooltip
+	tt:SetOwner (WorldFrame, "ANCHOR_NONE")
+	tt:SetSpellBookItem ( slot, "spell")
+	tt:Show()
+	--for index = 1, tt:NumLines() do
+	local tl = _G["yoFrame_ScanTooltipTextRight3"]
+	if not tl then return 0 end
+
+	local info = tl:GetText()
+	if info and info:find( CD_BAS) then
+		info = gsub( info, ",", ".")   	-- меняем запятую на точку
+		cd = tonumber( string.match( info, '%d+.?%d?'))
+		if info:find( CD_MIN) then 		-- ищем "минуту"
+			cd = cd * 60
+		end
+		--print( info, cd)
+	end
+	--end
+	tt:Hide()
+	return cd 	--* 1000
+end
 
 local function parsespellbook(spellbook)
 	N.spellsBooks = {}
@@ -86,13 +120,17 @@ local function parsespellbook(spellbook)
       		local isPassive = IsPassiveSpell( i, "spell");
 
    			if spellID and not isPassive and spellID ~= 125439 and spellID ~= 83958 then
-   				local cd = GetSpellBaseCooldown( spellID)
+   				local cd = GetSpellBaseCooldown( spellID) / 1000
+   				if cd == 0 then
+   					cd = checkTooltip( i)
+   				end
+
    				N.spellsBooks[spellID] = spellName
    				N.spellsBooksName[spellName] = spellID
-   				if cd > 5000 then
-   					spells[spellID] = spellName
-   				end
-   	    		--print( i, spellID, spellName, floor( cd / 1000))
+   				if cd > 5 then
+   					spells[spellID] = cd
+   					--print( i, spellID, spellName, cd)
+  				end
    			end
    		end
 	end
@@ -124,11 +162,11 @@ function addon:SPELL_UPDATE_COOLDOWN()
 			stop(id, "spell")
 		elseif starttime ~= 0 then
 			local timeleft = starttime + duration - now
-
+			--print(id, timeleft, starttime, duration, enabled)
 			if enabled == 1 and timeleft > 1.51 then --> 1.51 then
 				if not watched[id] or watched[id].start ~= starttime then
-					local cd = GetSpellBaseCooldown( id)/1000
-					if duration == cd then
+					--local cd = GetSpellBaseCooldown( id)/1000
+					if duration == spells[id] then
 						--if id == 50977  or id == 48707 then print( format( "%d - %s - %d - %s", id, duration, cd/1000, enabled)) end
 						start(id, starttime, timeleft, "spell", duration)
 					end

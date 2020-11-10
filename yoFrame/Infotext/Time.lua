@@ -162,6 +162,7 @@ function Stat:Enable()
 	end)
 
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
+	self.Text:ClearAllPoints()
 	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)

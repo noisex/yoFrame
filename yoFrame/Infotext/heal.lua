@@ -73,6 +73,7 @@ function Stat:Enable()
 	self.combatTime 	= 0
 	self.amountTotal 	= 0
 	self.spellCount		= {}
+	self.spellDamage 	= {}
 
 	self:SetFrameStrata("BACKGROUND")
 	self:SetFrameLevel(3)
@@ -94,6 +95,7 @@ function Stat:Enable()
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self.Text:SetFormattedText( infoText.displayString, "hps", 0, "") --,  SecondsToClocks(self.combatTime))
+	self.Text:ClearAllPoints()
 	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 

@@ -9,7 +9,7 @@ local spells = {
 }
 
 local function onAuras( self, event, unit, ...)
-	if event == "UNIT_AURA" and self:GetParent().unit  == unit then
+	if event == "UNIT_AURA" and self.unit  == unit then --- remover GetParent().unit
 		index = 0
 		while true do
 			index = index + 1
@@ -21,7 +21,7 @@ local function onAuras( self, event, unit, ...)
 					local spell = spells[i]
 					if spell and spell == spellID then
 						self[i]:Show()
-						UpdateAuraIcon( self[i], "HELPFUL", icon, count, nil, duration, expirationTime, spellID, i, unit)
+						N.updateAuraIcon( self[i], "HELPFUL", icon, count, nil, duration, expirationTime, spellID, i, name)
 					end
 				end
 			end
@@ -169,12 +169,13 @@ N.makeQuiButton = function ( self )
 	buffHots.noShadow   	= true
 	buffHots.hideTooltip    = true
 	buffHots.timeSecOnly    = true
-	buffHots:RegisterEvent("UNIT_AURA")
+	buffHots:RegisterEvent("UNIT_AURA", buffHots:GetParent().unit)
+	print("buffHots from clique unit = ", buffHots:GetParent().unit)
 	buffHots:SetScript("OnEvent", onAuras)
 	self.buffHots        	= buffHots
 
 	for i = 1, 6 do
-		self.buffHots[i] = CreateAuraIcon( self.buffHots, i)
+		self.buffHots[i] = N.createAuraIcon( self.buffHots, i)
 		self.buffHots[i]:Hide()
 	end
 end

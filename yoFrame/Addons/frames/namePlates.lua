@@ -198,8 +198,9 @@ local function UpdateBuffs(self)
 
 				debuffType = blueDebuff and debuffType or nil
 
-				local aIcon = CreateAuraIcon( self.debuffIcons, idebuff)
-				UpdateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
+				local aIcon = N.createAuraIcon( self.debuffIcons, idebuff)
+				aIcon.unit = unit
+				N.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 				idebuff = idebuff + 1
 
 			--elseif spellID == 277242 then showGuune = true
@@ -210,8 +211,9 @@ local function UpdateBuffs(self)
 					if ( dissIcons == "dispell" and badClassTypes[myClass][debuffType])
 						or ( dissIcons == "all" and debuffType) then
 
-						local aIcon = CreateAuraIcon( self.disIcons, iDisp)
-						UpdateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
+						local aIcon = N.createAuraIcon( self.disIcons, iDisp)
+						aIcon.unit = unit
+						N.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 						iDisp = iDisp + 1
 					end
 				end
@@ -221,8 +223,9 @@ local function UpdateBuffs(self)
 						or ( buffIcons == "dispell" and badTypes[debuffType])
 						or ( buffIcons == "buff" and not badTypes[debuffType]) then
 
-						local aIcon = CreateAuraIcon( self.buffIcons, ibuff)
-						UpdateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, unit)
+						local aIcon = N.createAuraIcon( self.buffIcons, ibuff)
+						aIcon.unit = unit
+						N.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 						ibuff = ibuff + 1
 					end
 				end

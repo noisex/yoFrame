@@ -61,6 +61,7 @@ function doEnote( enote, ...)
 	local emote = {
 		[13] = "LICK",
 		[14] = "WAVE",
+		[15] = "SPIT"
 	}
 	--print(self, enote:GetText(), enote:GetID())
 	local ID = enote:GetID()
@@ -71,6 +72,7 @@ function doEnote( enote, ...)
 end
 UIMenu_AddButton( ChatMenu, "LICK", nil, doEnote)
 UIMenu_AddButton( ChatMenu, "WAVE", nil, doEnote)
+UIMenu_AddButton( ChatMenu, "SPIT", nil, doEnote)
 
 --UIMenu_AddButton( ChatMenu, EMOTE117_CMD1, nil, doEnote)
 --UIMenu_AddButton( ChatMenu, EMOTE102_CMD1, nil, doEnote)

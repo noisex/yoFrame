@@ -1,7 +1,5 @@
 local L, yo, N = unpack( select( 2, ...))
 
-N["InfoTexts"] = CreateFrame("Frame")
-
 LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")

@@ -371,6 +371,7 @@ function ActionBars:Enable( event, ...)
 		self:CreateMicroBar()
 		self:SetupExtraButton()
 		self:CreateExitButton()
+		--self:CreateTotemBar()
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 end

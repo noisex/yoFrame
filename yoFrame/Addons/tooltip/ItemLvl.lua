@@ -46,7 +46,7 @@ local Module = {
 	},
 }
 
-T.Eve = setmetatable({}, {
+N.Eve = setmetatable({}, {
 	__call = function(eve)
 		local module = setmetatable({}, Module)
 		eve[ #eve + 1 ] = module
@@ -56,9 +56,7 @@ T.Eve = setmetatable({}, {
 
 F:SetScript('OnEvent', Raise)
 
-local addonName, addon = ...
-local E = addon:Eve()
-
+local E = N:Eve()
 local CACHE_TIMEOUT = 5 -- seconds to keep stale information before issuing a new inspect
 
 local print = function() end -- lazy debug print

@@ -1,24 +1,5 @@
 local L, yo, N = unpack( select( 2, ...))
 
--- List of spells to display ticks
-N.channelTicks = {
-	-- Warlock
-	[198590] = 5,	-- Drain Soul
-	[755]    = 6,	-- Health Funnel
-	[234153] = 6,	-- Drain Life
-	-- Priest
-	[64843]  = 4,	-- Divine Hymn
-	[15407]  = 4,	-- Mind Flay
-	[48045]  = 5,	-- Mind Sear
-	[47757]  = 5,	-- Penance
-	-- Mage
-	[5143]   = 5,	-- Arcane Missiles
-	[12051]  = 3,	-- Evocation
-	[205021] = 10,	-- Ray of Frost
-	-- Druid
-	[740]    = 4,	-- Tranquility
-}
-
 bls = {
  	--[774] = true,     	-- "for esting..."   омоложение
     --[8936] = true,    	-- "for esting..." восстановление
@@ -31,28 +12,6 @@ bls = {
     [178207] = true,    -- "Drums of Fury",
     [35475] = true,     -- "Drums of War",
     [230935] = true   	-- "Drums of the Mountain"
-}
-
---- в найплейты для синей полосы НАДО ЧТо-то ДЕАЛТЬ С ЭТИМ!!!
-N.interuptSpells = {
-	-- Speck Knock
-	[47528]  = 15, --Mind Freeze
-    [106839] = 15, --Skull Bash
-    [78675]  = 60, --Solar Beam
-    [183752] = 15, --Consume Magic
-    [147362] = 24, --Counter Shot
-    [187707] = 15, --Muzzle
-    [2139]   = 24, --Counter Spell
-    [116705] = 15, --Spear Hand Strike
-    [96231]  = 15, --Rebuke
-    [15487]  = 45, --Silence
-    [1766]   = 15, --Kick
-    [57994]  = 12, --Wind Shear
-    [6552]   = 15, --Pummel
-    [171140] = 24, --Shadow прист
-	[171138] = 24, --Shadow прист if used from pet bar
-	[119910] = 24, -- warloc new pet
-	[19647]	 = 24, -- Запрет чар
 }
 
 -- в кастопалку кэдешку

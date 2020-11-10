@@ -1,7 +1,8 @@
 local addon, ns = ...
 local L, yo, N = unpack( ns)
 
-local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
+local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs
+	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs
 local texture, texglow = yo.texture, yo.texglow
 
 function isDruid( self)
@@ -11,6 +12,23 @@ function isDruid( self)
 	else
 		--self:Show()
 		return true
+	end
+end
+
+myDev = {
+	["Нойзекс"] 	= true,
+	["Дэмьер"] 		= true,
+	["Ковальска"] 	= true,
+	["Герсона"] 	= true,
+	["Ыож"]			= true,
+	--["Твитти"] 		= true,
+}
+
+dummy = function() return end
+
+dprint = function(...)
+	if myDev[myName] then
+		print( time(), "|cff33ff99yoDev:|cff999999", ... )
 	end
 end
 

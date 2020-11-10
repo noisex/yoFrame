@@ -208,8 +208,9 @@ local function updateTOTAuras( self, f, unit)
 		if not name then break end
 
 		if not N.blackSpells[spellID] then
-			local aIcon	= CreateAuraIcon( f.pDebuff, fligerPD, false, "BOTTOM") --end
-			UpdateAuraIcon( aIcon, filter, icon, count, nil, duration, expirationTime, spellID, index, unit)
+			local aIcon	= N.createAuraIcon( f.pDebuff, fligerPD, false, "BOTTOM") --end
+			aIcon.unit = unit
+			N.updateAuraIcon( aIcon, filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 			fligerPD = fligerPD + 1
 		end
 

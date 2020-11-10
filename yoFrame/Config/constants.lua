@@ -19,116 +19,16 @@ myLevel 	= UnitLevel( "player")
 myRace		= select(2, UnitRace('player'))
 mySex		= UnitSex('player')
 
-myDev = {
-	["Нойзекс"] 	= true,
-	["Дэмьер"] 		= true,
-	["Ковальска"] 	= true,
-	["Герсона"] 	= true,
-	--["Твитти"] 		= true,
-}
-
-dummy = function() return end
-
-dprint = function(...)
-	if myDev[myName] then
-		print("|cff33ff99yoDev: |cff999999" .. ... )
-	end
-end
-
-N["statusBars"] 	= {}
-N["strings"]		= {}
-N["shadows"]		= {}
-N["spellsBooks"] 	= {}
-
-N.version 	  	= GetAddOnMetadata( addonName, "Version")
-N.ScanTooltip 	= CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', UIParent, 'GameTooltipTemplate')
-N.menuFrame 	= CreateFrame("Frame", "FriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
-
-N.slots = {
-	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot",
-	"WristSlot", "MainHandSlot", "SecondaryHandSlot", "HandsSlot", "WaistSlot",
-	"LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"
-}
-
-N.classEquipMap = {
-	["WARRIOR"] 	= 4,
-	["PALADIN"] 	= 4,
-	["HUNTER"] 		= 3,
-	["ROGUE"]	 	= 2,
-	["PRIEST"] 		= 1,
-	["DEATHKNIGHT"] = 4,
-	["SHAMAN"] 		= 3,
-	["MAGE"] 		= 1,
-	["WARLOCK"] 	= 1,
-	["MONK"] 		= 2,
-	["DRUID"] 		= 2,
-	["DEMONHUNTER"] = 2,
-};
-
-N.slotEquipType = {
-	["INVTYPE_HEAD"]	=	{1},
-	["INVTYPE_NECK"]	=	{2},
-	["INVTYPE_SHOULDER"]=	{3},
-	--["INVTYPE_BODY"]	=	4,
-	["INVTYPE_CHEST"]	=	{5},
-	["INVTYPE_ROBE"]	=	{5},
-	["INVTYPE_WAIST"]	=	{6},
-	["INVTYPE_LEGS"]	=	{7},
-	["INVTYPE_FEET"]	=	{8},
-	["INVTYPE_WRIST"]	=	{9},
-	["INVTYPE_HAND"]	=	{10},
-	["INVTYPE_FINGER"]	= 	{11, 12},
-	["INVTYPE_TRINKET"]	=	{13, 14},
-	["INVTYPE_CLOAK"]	=	{15},
-	["INVTYPE_WEAPON"]	=	{16, 17},
-	["INVTYPE_SHIELD"]	=	{17},
-	["INVTYPE_2HWEAPON"]=	{16},
-	["INVTYPE_WEAPONMAINHAND"]	=	{16},
-	["INVTYPE_WEAPONOFFHAND"]	=	{17},
-	--["INVTYPE_HOLDABLE"]=	{17,},
-	["INVTYPE_RANGED"]	=	{16},
-	--["INVTYPE_THROWN"]	=	{18,},
-	["INVTYPE_RANGEDRIGHT"]={16,},
-	--["INVTYPE_RELIC"]	=	{18,},
-}
-
-N.QuestTypesIndex = {
-	[0]  = "",           									--default
-	[1]  = " |cff00ff00"..PARTY.."|r",						--Group
-	[41] = " |cffff0000PvP|r",								--PvP
-	[62] = " |cff00ff00"..LFG_TYPE_RAID.."|r",				--Raid
-	[81] = " |cff0080ff" ..LFG_TYPE_DUNGEON.. "|r",
-	[83] = " |cffff7000"..LOOT_JOURNAL_LEGENDARIES.."|r",	--Legendary
-	[85] = " |cff8000ff"..ITEM_HEROIC.."|r",				--Heroic
-	[98] = " |cffff8000"..TRACKER_HEADER_SCENARIO.."|r", 	--Scenario QUEST_TYPE_SCENARIO
-	[102]= " |cff0080ffAccount|r", 							-- Account
-	[226]= " |cff0080ffCombat|r", 							-- Combat Ally
-}
-
-N.conFunc = function( var, ...)
-	if N.conFuncs[var] then
-		local conFunc = N.conFuncs[var]
-		conFunc( var, ...)
-	end
-end
-
-N.noReboot = {
-	"texture", "fontsize", "sysfontsize", "AutoScale", "ScaleRate", "scriptErrors"
-}
-
-N.conFuncs = {
-	--["texture"] =
-}
 
 yo["InfoTexts"] = {
 	["enable"] 			= true,
-	["countLeft"] 		= 4,
+	["countLeft"] 		= 6,
 	["countRight"]		= 4,
 	["left1"]			= "system",
 	["left2"]			= "dura",
 	["left3"]			= "guild",
 	["left4"]			= "friend",
-	["left5"]			= "",
+	["left5"]			= "dps",
 	["left6"]			= "",
 	["right1"]			= "gold",
 	["right2"]			= "spec",
@@ -493,6 +393,10 @@ yo["fliger"] = {
 	["pCDTimer"]		= 15,
 	["checkBags"]		= false,
 	["gAzerit"]			= true,
+	["fligerBuffSpell"] = "",
+	["fligerBuffCount"] = "",
+	["fligerBuffGlow"]	= true,
+	["fligerBuffAnim"]  = true,
 }
 
 yo["CTA"] = {

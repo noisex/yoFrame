@@ -47,7 +47,7 @@ local function unitShared(self, unit)
 		nameTextSize	= fontsize + 0
 		combatPos 		= 0
 		nameLeight		= "namemedium"
-		namePos			= { "LEFT", self, "TOPLEFT", 5, 2}
+		namePos			= { "LEFT", self, "TOPLEFT", 5, 1}
 		healthTextPos	= { "BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 3}
 		rtargetPos 		= { "CENTER", self, "TOPRIGHT", -15, 0}
 		self.simpleUF	= true
