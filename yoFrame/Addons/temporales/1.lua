@@ -1,24 +1,57 @@
-local str = "1111.222 .3333;\n44444,455555"
-
---s = "from=world, to=Lua"
-for k, v in string.gmatch( str, "(%d+)" ) do
-    print( tonumber(k), v)
+foo = {}
+mt  = {}
+function mt.__newindex(self, key, value)
+	--foo[key] = value
+	table.insert( foo, key)
+	rawset( self, key, value)
 end
 
-print("-----")
-local str = "asdsadsad sadsad as   .\n     fsd fsdfpdsf.33333; werewrwer  wer,    rrew r rwe 23423                             "
-local f = "-%s-%s-"
+bar = setmetatable({a = 10}, mt)
+bar.key6 = 'value11'
+bar.key1 = 'value11'
+bar.key2 = 'value22'
+bar.key1 = 'value333'
+bar.key5 = 'value11'
+bar.key1 = 'value11'
 
-str = string.gsub( str, "\n", ",")
---print(str)
+--print(foo, mt, bar)
+print('bar.key', bar.key1) --> nil
+print('foo.key', foo.key1) --> 'value'
 
---t = {}
---s = "from=world, to=Lua"
-for k, v in string.gmatch( str, "%s*(%P+)" ) do
-    --t[k] = v
-    k = string.gsub( k, "%s+$", "" )
-    print( string.format( f, k, " "))
+print("---------------")
+
+for i,v in pairs(bar) do
+	print(i,v)
 end
+
+table.sort( foo)
+
+print("---------------")
+for i,v in pairs(foo) do
+	print(i,v)
+end
+
+--local str = "1111.222 .3333;\n44444,455555"
+
+----s = "from=world, to=Lua"
+--for k, v in string.gmatch( str, "(%d+)" ) do
+--    print( tonumber(k), v)
+--end
+
+--print("-----")
+--local str = "asdsadsad sadsad as   .\n     fsd fsdfpdsf.33333; werewrwer  wer,    rrew r rwe 23423                             "
+--local f = "-%s-%s-"
+
+--str = string.gsub( str, "\n", ",")
+----print(str)
+
+----t = {}
+----s = "from=world, to=Lua"
+--for k, v in string.gmatch( str, "%s*(%P+)" ) do
+--    --t[k] = v
+--    k = string.gsub( k, "%s+$", "" )
+--    print( string.format( f, k, " "))
+--end
 
 --tprint(t)
 --local bars = {
@@ -43,18 +76,19 @@ end
 --for _, k in ipairs(tkeys) do print(k, t[k]) end
 
 --local a = false
---local b = false
---local a = true
-----local b = true
+local b = false
+local a = true
+--local b = true
 
 --local n = "name"
 --local t = ""
 
---local afk = " |cffFF0000[AFK]|r "
---local dnd = " |cff0000ff[DND] |r"
+local afk = " |cffFF0000[AFK]|r "
+local dnd = " |cff0000ff[DND] |r"
 
---t = ( b and dnd) or (a and afk) or  "----"
+t = ( b and dnd) or (a and afk) or  "----"
 
+print(t)
 --function hex(r, g, b)
 --	if r then
 --		if (type(r) == 'table') then

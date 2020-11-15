@@ -257,7 +257,7 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 
 		self:CreateBagIconButton( self.bag, self.bag)
-		CreateStyle( self.bag, 3, nil, 0.5)
+		CreateStyle( self.bag, 3, nil, 0.8)
 	end
 
 	local buttonSize 		= yo.Bags.buttonSize
@@ -471,6 +471,13 @@ function bagBro:CreateBagIconButton( self, parent)
 		parent.editBox:SetPoint( a1, p, a2, x + 25, y)
 	end
 
+	self.bagButton:SetScript("OnEnter", function(self, ...)
+		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 5)
+		GameTooltip:AddLine("Big Brother")
+		GameTooltip:AddLine("Посмотри, что у других в сумках!")
+		GameTooltip:Show()
+	end)
+	self.bagButton:SetScript("OnLeave", function(self, ...) GameTooltip:Hide() end )
 	self.bagButton:SetScript("OnClick", function(self, ...)
 		local index = 2
 
@@ -570,11 +577,13 @@ local function SaveGuilds( self)
 end
 
 function bagBro:CheckForClean( self)
-	for bagID, val in pairs( self.needUpBag) do
 
+	for bagID, val in pairs( self.needUpBag) do
 		for itemID, bag in pairs( self.tempBags[bagID]) do
 			local count = GetItemCount( itemID, true)
+			--print(itemID, count)
 			if count > 0 then
+
 				yo_BBCount[myRealm][myName][itemID] = count
 			else
 				if itemID and yo_BBCount[myRealm][myName][itemID] then

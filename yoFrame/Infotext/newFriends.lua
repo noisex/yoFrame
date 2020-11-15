@@ -3,7 +3,7 @@ local L, yo, N = unpack( select( 2, ...))
 -- if not yo.InfoTexts.enable then return end
 
 -- собрать таблицу бнет, выловить ключи вмелто флист, сорт и по ней вывод. вов в топ
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local displayString = "%s: ".. myColorStr .. "%d|r"
@@ -80,20 +80,24 @@ local function inviteClick(self, name)
 end
 
 local function makeWOWName( accTable, fdTable)
-	local wowID, invFunc, myRealmID, realmID, realmName, richPres, gInfo = " ", "", GetRealmID()
-	local uName 	= accTable.gameAccountInfo.characterName 	or fdTable.name
-	local uLevel 	= accTable.gameAccountInfo.characterLevel 	or fdTable.level
-	local areaName	= accTable.gameAccountInfo.areaName 		or fdTable.area
-	local className	= accTable.gameAccountInfo.className 		or fdTable.className
+	local wowID, invFunc, myRealmID, realmID, realmName, richPres, gInfo, uName, uLevel, areaName, className = " ", "", GetRealmID()
 
 	if not fdTable then
 		gInfo 		= accTable.gameAccountInfo
+		uName 		= gInfo.characterName
+		uLevel 		= gInfo.characterLevel
+		areaName	= gInfo.areaName
+		className	= gInfo.className
 		wowID 		= gInfo.wowProjectID == 2 and gold .. "(c) " or " "
 		realmID 	= gInfo.realmID
 		realmName 	= gInfo.realmDisplayName
 		richPres 	= gold .. gInfo.richPresence
 		invFunc 	= " |cff2ba1ff(" .. accTable.accountName .. ")|r"
 	else
+		uName 		= fdTable.name
+		uLevel 		= fdTable.level
+		areaName	= fdTable.area
+		className	= fdTable.className
 		accTable 	= fdTable
 	end
 
@@ -255,7 +259,7 @@ function Stat:Enable()
 	self.Text = self.Text or self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetFont( font, fontsize, "OVERLAY")
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 
 	self:onEvent()

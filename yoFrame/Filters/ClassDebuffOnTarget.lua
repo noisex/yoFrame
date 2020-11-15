@@ -265,6 +265,7 @@ N.PlayerBuffWhiteList = {
 		[SpellName(33206)]  = true, -- Pain Suppression
 		[SpellName(116849)] = true, -- Life Cocoon
 		[SpellName(22812)]  = true, -- Barkskin
+		[SpellName(264667)] = true, -- Hunter Pet
 	-- Азерит
 		--[SpellName(273842)]  = true, -- Тайны глубин белая
 		--[SpellName(273843)]  = true, -- Тайны глубин черная

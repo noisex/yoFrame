@@ -1,4 +1,5 @@
-local L, yo = unpack( select( 2, ...))
+local addon, ns = ...
+local L, yo, N = unpack( ns)
 
 yo_AnchorFrames = {}
 yo_Position = {}
@@ -106,6 +107,21 @@ end
 function AnchorsReset()
 	if( yo_Position) then yo_Position = nil end
 	ReloadUI()
+end
+
+ns.toggleMove = function ()
+	if InCombatLockdown() then print("No, not in comabt only...") return end
+	--PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
+
+	if not t_unlock then
+		AnchorsUnlock()
+		isAligning = true
+		PlaySound(SOUNDKIT.IG_QUEST_LOG_OPEN);
+	elseif t_unlock == true then
+		AnchorsLock()
+		isAligning = false
+		PlaySound(SOUNDKIT.IG_QUEST_LOG_CLOSE);
+	end
 end
 
 function ySlashCmd(cmd)

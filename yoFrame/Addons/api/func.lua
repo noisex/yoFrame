@@ -32,6 +32,79 @@ dprint = function(...)
 	end
 end
 
+
+-------------------------------------------------------------------------------------------
+-- 						Where are my point
+-------------------------------------------------------------------------------------------
+function whereAreYouAre( self, vert, fullSelf)
+	local cX, cY = self:GetCenter()
+	local getscreenwidth, getscreenheight = GetPhysicalScreenSize()
+	local shX = getscreenwidth /2 - cX
+	local shY = getscreenheight /2 - cY
+
+	if vert then
+		if shY < 0 then
+			if fullSelf then 	return -1, "TOPLEFT", self, "BOTTOMLEFT", "TOPRIGHT", self, "BOTTOMRIGHT"
+			else				return -1, "TOP", self, "BOTTOM" end
+		else
+			if fullSelf then 	return 1, "BOTTOMLEFT", self, "TOPLEFT", "BOTTOMRIGHT", self, "TOPRIGHT"
+			else 				return 1, "BOTTOM", self, "TOP" end
+		end
+	else
+		if shX < 0 then
+			if fullSelf then 	return -1, "TOPRIGHT", self, "TOPLEFT", "BOTTOMRIGHT", self, "BOTTOMLEFT"
+			else 				return -1, "RIGHT", self, "LEFT" end
+		else
+			if fullSelf then 	return 1, "TOPLEFT", self, "TOPRIGHT", "BOTTOMLEFT", self, "BOTTOMRIGHT"
+			else 				return 1, "LEFT", self, "RIGHT" end
+		end
+	end
+end
+
+-------------------------------------------------------------------------------------------
+-- 						Delay from ElvUI
+-------------------------------------------------------------------------------------------
+
+WaitTable = {}
+local C_Timer_After = C_Timer.After
+local WaitFrame = CreateFrame('Frame', 'yo_WaitFrame', UIParent)
+
+WaitFrame:SetScript('OnUpdate', function( self, elapse)
+	local i, el = 1, elapse
+	while i <= #WaitTable do
+		local data = WaitTable[i]
+		if data[1] > elapse then
+			data[1], i = data[1] - elapse, i + 1
+		else
+			tremove( WaitTable, i)
+			data[2](unpack(data[3]))
+
+			if #WaitTable == 0 then
+				WaitFrame:Hide()
+			end
+		end
+	end
+end)
+
+--Add time before calling a function
+function yoDelay(delay, func, ...)
+	if type(delay) ~= 'number' or type(func) ~= 'function' then
+		return false
+	end
+
+	-- Restrict to the lowest time that the C_Timer API allows us
+	if delay < 0.01 then delay = 0.01 end
+
+	if select('#', ...) <= 0 then
+		C_Timer_After(delay, func)
+	else
+		tinsert( WaitTable,{delay,func,{...}})
+		WaitFrame:Show()
+	end
+
+	return true
+end
+
 -------------------------------------------------------------------------------------------
 local function updateStatusBars()
 	for k, bar in pairs( N.statusBars) do
@@ -44,6 +117,7 @@ end
 N.conFuncs["texture"] = updateStatusBars
 
 local function updateStrings( var, newVal, curVal)
+	curVal = curVal or 0
 	for k, string in pairs( N.strings) do
 		if string then
 			local fn, fs, fc = string:GetFont()

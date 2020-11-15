@@ -8,7 +8,7 @@ local L, yo, N = unpack( select( 2, ...))
 local 	GetInventorySlotInfo, GetInventoryItemID, GetItemInfo, UnitLevel, GetDodgeChance, abs, GetBonusBarOffset, GetInventoryItemLink, GetInventoryItemDurability, floor, strjoin, format, select, CanGuildBankRepair =
 	    GetInventorySlotInfo, GetInventoryItemID, GetItemInfo, UnitLevel, GetDodgeChance, abs, GetBonusBarOffset, GetInventoryItemLink, GetInventoryItemDurability, floor, strjoin, format, select, CanGuildBankRepair
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local AVD_DECAY_RATE, chanceString = 1.5, '%.2f%%'
@@ -143,7 +143,7 @@ function Stat:onEnter( )
 	GameTooltip:AddLine("Прочность")
 	local costTotal = 0
 	for i = 1, 10 do
-		local cost = select(3, N.ScanTooltip:SetInventoryItem( "player", localSlots[i][1]))
+		local cost = select(3, N.scanTooltip:SetInventoryItem( "player", localSlots[i][1]))
 		costTotal = costTotal + cost
 		--print(i, localSlots[i][2], cost, costTotal)
 
@@ -192,7 +192,7 @@ function Stat:Enable()
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 
 	self:onEvent()

@@ -6,6 +6,54 @@ local L, yo, N = unpack( ns)
 --	AURAS
 -----------------------------------------------------------------------------------------------
 
+--String (optional) - list of filters, separated by spaces or pipes. "HELPFUL" by default. The following filters are available:
+--	HELPFUL - buffs.
+--	HARMFUL - debuffs.
+--	PLAYER - auras that were applied by the player.
+--	RAID - auras that can be applied (if HELPFUL) or dispelled (if HARMFUL) by the player.
+--	CANCELABLE - buffs that can be removed (such as by right-clicking or using the /cancelaura command)
+--	NOT_CANCELABLE - buffs that cannot be removed
+
+-- ( self, unit, filter, customFilter, func)
+
+--N.AurasFrame = CreateFrame("Frame")
+
+--local auras = N.AurasFrame
+--local spells = {
+--	[48025] 	= true,
+--	[186403]	= true,
+--	--["Водные ноги Рыболовов"] = true,
+--}
+--local filters = { "HELPFUL", "HARMFUL" }
+
+--auras.modules = {}
+--tinsert( auras.modules, { self, "player", "HELPFUL", spells, anyFunc })
+
+
+--function auras:onEvent( event, spellUnit)
+--	for i = 1, 2 do
+--		local index = 1
+--		while true do
+--			local spellName, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura( spellUnit, index, filters[i]) --[, "filter"])
+--			if not spellName then break end
+--			index = index + 1
+--			for ind, data in pairs( self.modules) do
+
+--				local unit, spellFilter  = data[2], data[4]
+
+--				if unit == spellUnit and ( spellFilter[spellId] or spellFilter[spellName]) then
+--					print( ind, spellName, unit, spellId, filters[i])
+--				end
+
+--			end
+--			--print( unit, name)
+--		end
+--	end
+--end
+
+--auras:RegisterEvent("UNIT_AURA")
+--auras:SetScript("OnEvent", auras.onEvent)
+
 local aGlow = LibStub("LibCustomGlow-1.0", true)
 
 local posz = {
@@ -36,7 +84,7 @@ end
 local function BuffOnLeave( self)
 	GameTooltip:Hide()
 end
-
+--math.mod(number, 2) == 0
 local function checkForFilter( button)
 
 	if button.countFilter[button.name] then
@@ -57,13 +105,13 @@ local function checkForFilter( button)
 
 		if button.countAnim then
 			if checkForShow then
-				if not button.anim.playing then
-					button.anim:Play()
-					button.anim.playing = true
+				if not button.icon.anim.playing then
+					button.icon.anim:Play()
+					button.icon.anim.playing = true
 				end
 			else
-				button.anim:Stop()
-				button.anim.playing = nil;
+				button.icon.anim:Stop()
+				button.icon.anim.playing = nil;
 			end
 		end
 
@@ -80,8 +128,8 @@ local function checkForFilter( button)
 		end
 	else
 		if button.countAnim then
-			button.anim:Stop()
-			button.anim.playing = nil;
+			button.icon.anim:Stop()
+			button.icon.anim.playing = nil;
 		end
 		if button.countColor then
 			button.countColor.anim:Stop()
@@ -112,8 +160,15 @@ function N.createAuraIcon( parent, index)
 	button.countColor	= parent.countColor
 	button.showBorder	= parent.showBorder 	-- по-дефолту = фэлс, что бы рисовать смолстайл
 
+	button.icon = button:CreateTexture(nil, "BORDER")
+	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
+	--button.icon:SetGradient("VERTICAL", 1, 1, 1, 1, 0, 0);
+
+	button.icon:SetTexCoord( unpack( yo.tCoord))
+
 	if not button.showBorder then
-		CreateStyleSmall( button, max( 1, sh - 4))
+		CreateStyleSmall( button, max( 1, sh - 5))
 
 	elseif button.showBorder == "border" then
 		N.CreateBorder( button, size / 3)
@@ -121,9 +176,9 @@ function N.createAuraIcon( parent, index)
 	end
 
 	if button.countAnim then
-		SetUpAnimGroup( button, "FlashLoop", 1, 0.1)
-		button.anim.fadein:SetDuration( 1 * .5)
-		button.anim.fadeout:SetDuration( 1)
+		SetUpAnimGroup( button.icon, "FlashLoop", 1, 0.2)
+		button.icon.anim.fadein:SetDuration( 1 * .5)
+		button.icon.anim.fadeout:SetDuration( 1)
 	end
 
 	if button.countColor then
@@ -131,18 +186,13 @@ function N.createAuraIcon( parent, index)
 		button.countColor:SetAllPoints( button)
 		button.countColor:SetTexture( texture)  --texhl
 		button.countColor:SetBlendMode("ADD")
-		button.countColor:SetVertexColor( 0.8, 0.1, 0.1, 1)
+		button.countColor:SetColorTexture( 1, 0, 0, 1) -- SetColorTexture SetVertexColor
 		button.countColor:SetAlpha( 0)
 
 		SetUpAnimGroup( button.countColor, "FlashLoop", 1, 0)
 		button.countColor.anim.fadein:SetDuration( 1 * .4)
 		button.countColor.anim.fadeout:SetDuration( 1.3)
 	end
-
-	button.icon = button:CreateTexture(nil, "BORDER")
-	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
-	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
-	button.icon:SetTexCoord( unpack( yo.tCoord))
 
 	--button.cd = CreateFrame("Cooldown", nil, button)
 	--button.cd:SetAllPoints(button)

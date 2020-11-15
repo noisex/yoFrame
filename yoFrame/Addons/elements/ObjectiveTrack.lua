@@ -158,7 +158,7 @@ local function ShowQuestLevelInWatchFrame()
 
 					if ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then
 						local questTypeIndex = GetQuestLogQuestType(questLogIndex)
-						local tagString = N.QuestTypesIndex[questTypeIndex] or ""
+						local tagString = N.questTypesIndex[questTypeIndex] or ""
 						local dailyMod = ( questInfo.frequency == 1 or questInfo.frequency == 2) and "|cff0080ff*!*|r" or ""
 
 						--resizing the block if new line requires more spaces.

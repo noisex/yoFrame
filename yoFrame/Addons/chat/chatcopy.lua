@@ -74,7 +74,7 @@ local function Copy(cf)
 	editBox:SetText("")
 
 	for i = 1, cf:GetNumMessages() do
-		local text = cf:GetMessageInfo(i) .. "\n"
+		local text = cf:GetMessageInfo(i) .. "|r|r\n"
 		text = text:gsub("|[Tt]Interface\\TargetingFrame\\UI%-RaidTargetingIcon_(%d):0|[Tt]", "{rt%1}")
 		text = text:gsub("|[Tt][^|]+|[Tt]", "")
 		editBox:Insert( text)
@@ -90,8 +90,8 @@ for i = 1, NUM_CHAT_WINDOWS do
 	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -21, -27)
 	button:SetSize( 30, 30)
 	button:SetAlpha(0.1)
-	CreateStyle(button, 2)
-	button:SetBackdropBorderColor(1, 1, 1)
+	--CreateStyle(button, 2)
+	--button:SetBackdropBorderColor(1, 1, 1)
 
 	local buttontexture = button:CreateTexture(nil, "BORDER")
 	buttontexture:SetPoint("CENTER")

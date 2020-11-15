@@ -9,6 +9,9 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization
 	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization
 
+------------------------------------------------------------------------------------------------------------
+---								Buf Icons Anime
+------------------------------------------------------------------------------------------------------------
 N.PlayerProcWhiteList = {}
 N.DebuffPlayerTargetList = {}
 
@@ -16,28 +19,36 @@ N.filgerBuffSpells = {
 	--[205473] 	= 5,
 }
 local pStr = "Дано: |cffffff00%s,|r А получилось: |cff00ffff%s|r >= |cff00ffff%d|r стаков"
+local pStrErr = "Дано: |cffff0000%s,|r А получилось: |cffff0000%s|r >= |cffff0000%d|r стаков"
 
-local atemp = {}
-for buffCount in string.gmatch( yo.fliger.fligerBuffCount, "(%d+)" ) do
-    table.insert( atemp, tonumber(buffCount) or 1)
-    --print( tonumber(buffCount))
+local function checkAnimeSpells()
+	local atemp = {}
+	for buffCount in string.gmatch( yo.fliger.fligerBuffCount, "(%d+)" ) do
+    	table.insert( atemp, tonumber(buffCount) or 1)
+    	--print( tonumber(buffCount))
+	end
+
+	local str = string.gsub( yo.fliger.fligerBuffSpell, "\n", ",")  -- чистим перенос строки
+	local index = 1
+	for buffSpell in string.gmatch( str, "%s*(%P+)" ) do   			-- без пробелов впереди по знакам препинания
+    	buffSpell = string.gsub( buffSpell, "%s+$", "" ) 			-- чистим пробелы сзади
+    	local spellName = select( 1, GetSpellInfo( buffSpell))
+    	local spellCount = atemp[index]
+
+    	if spellName and spellCount and not N.filgerBuffSpells[spellName] then
+    		N.filgerBuffSpells[spellName] = spellCount
+    		print( format( pStr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--N.filgerBuffSpells
+    	else
+    		print( format( pStrErr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--N.filgerBuffSpells
+    	end
+
+    	index = index + 1
+	end
 end
 
-local str = string.gsub( yo.fliger.fligerBuffSpell, "\n", ",")  -- чистим перенос строки
-local index = 1
-for buffSpell in string.gmatch( str, "%s*(%P+)" ) do   			-- без пробелов впереди по знакам препинания
-    buffSpell = string.gsub( buffSpell, "%s+$", "" ) 			-- чистим пробелы сзади
-    local spellName = select( 1, GetSpellInfo( buffSpell))
-    local spellCount = atemp[index]
-
-    if spellName and spellCount then
-    	N.filgerBuffSpells[spellName] = spellCount
-    end
-
-    print( format( pStr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--N.filgerBuffSpells
-    index = index + 1
-end
-
+------------------------------------------------------------------------------------------------------------
+---
+------------------------------------------------------------------------------------------------------------
 local function UpdateAura( self, unit)
 	local fligerTD, fligerTB, fligerPB, fligerPD, fligerProc = 1, 1, 1, 1, 1
 
@@ -179,7 +190,7 @@ local function MakeFligerFrame( self)
 		pBuff.unit 			= "player"
 		pBuff.countGlow 	= yo.fliger.fligerBuffGlow
 		pBuff.countAnim 	= yo.fliger.fligerBuffAnim
-		pBuff.countColor	= true
+		pBuff.countColor	= yo.fliger.fligerBuffColr
 		pBuff.showBorder	= nil--"border"
 		pBuff.countFilter 	= N.filgerBuffSpells
 		self.pBuff 			= pBuff
@@ -281,6 +292,7 @@ local function OnEvent( self, event, ...)
 
 		MakeFligerFrame( self)
 		CheckTemplates( myClass, GetSpecialization())
+		checkAnimeSpells()
 
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterUnitEvent("UNIT_AURA", "player", "target")

@@ -113,7 +113,7 @@ N.PlayerBuffWhiteListAll= {
 --------------------------------------------------------------------------------
 -- Retail starts here
 --------------------------------------------------------------------------------
-templates.class.WARRIOR = {
+  templates.class.WARRIOR = {
     [1] = { -- Arms
       [1] = {
         title = L["Buffs"],
@@ -1155,6 +1155,7 @@ templates.class.WARRIOR = {
           { spell = 193641, type = "buff", unit = "player", talent = 2}, -- Elaborate Planning
           { spell = 256735, type = "buff", unit = "player", talent = 6}, -- Master Assassin
           { spell = 270070, type = "buff", unit = "player", talent = 20}, -- Hidden Blades
+          { spell = 315496, type = "buff"}, -- Slice and Dice
         },
         icon = 132290
       },
@@ -1250,7 +1251,6 @@ templates.class.WARRIOR = {
           { spell = 1966, type = "buff", unit = "player"}, -- Feint
           { spell = 2983, type = "buff", unit = "player"}, -- Sprint
           { spell = 3408, type = "buff", unit = "player"}, -- Crippling Poison
-          { spell = 5171, type = "buff", unit = "player"}, -- Slice and Dice
           { spell = 5277, type = "buff", unit = "player"}, -- Evasion
           { spell = 5761, type = "buff", unit = "player"}, -- Numbing Poison
           { spell = 8679, type = "buff", unit = "player"}, -- Wound Poison
@@ -4345,7 +4345,6 @@ templates.class.WARRIOR = {
       },
     },
   }
-
 
 templates.items = { -- Тринкеты вида [item ID] = spellID
   [113931] = 176878,  [113969] = 176874,  [118876] = 177597,  [118878] = 177594,  [118880] = 177592,  [118882] = 177189,  [118884] = 176460,  [113905] = 176873,  --Tank BRF

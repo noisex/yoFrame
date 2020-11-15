@@ -1,18 +1,5 @@
 local L, yo, N = unpack( select( 2, ...))
 
-bls = {
- 	--[774] = true,     	-- "for esting..."   омоложение
-    --[8936] = true,    	-- "for esting..." восстановление
-
-    [80353] = true,     -- "Time Warp",
-    [2825] = true,      -- "Bloodlust",
-    [32182] = true,     -- "Heroism",
-    [90355] = true,     -- "Ancient Hysteria",
-    [160452] = true,    -- "Netherwinds",
-    [178207] = true,    -- "Drums of Fury",
-    [35475] = true,     -- "Drums of War",
-    [230935] = true   	-- "Drums of the Mountain"
-}
 
 -- в кастопалку кэдешку
 raid_CD_Spells = {

@@ -1,14 +1,14 @@
 local addonName, ns = ...
 local L, yo, N = unpack( ns)
 
-N["statusBars"] 	= {}
-N["strings"]		= {}
-N["shadows"]		= {}
-N["spellsBooks"] 	= {}
+N.statusBars 	= {}
+N.strings		= {}
+N.shadows		= {}
+N.spellsBooks 	= {}
 
-N.InfoTexts  	= CreateFrame("Frame")
+N.infoTexts  	= CreateFrame("Frame")
 N.version 	  	= GetAddOnMetadata( addonName, "Version")
-N.ScanTooltip 	= CreateFrame('GameTooltip', 'yoFrame_ScanTooltip', UIParent, 'GameTooltipTemplate')
+N.scanTooltip 	= CreateFrame('GameTooltip', 'yoFrame_STT', UIParent, 'GameTooltipTemplate')
 N.menuFrame 	= CreateFrame("Frame", "FriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
 
 N.slots = {
@@ -32,6 +32,22 @@ N.noReboot = {
 
 N.conFuncs = {
 	--["texture"] =
+}
+
+-- БЛы в ПОтатосе
+N.bls = {
+ 	--[774] = true,     	-- "for esting..."   омоложение
+    --[8936] = true,    	-- "for esting..." восстановление
+
+    [80353] 	= true,     -- "Time Warp",
+    [2825] 		= true,     -- "Bloodlust",
+    [32182] 	= true,     -- "Heroism",
+    [90355] 	= true,     -- "Ancient Hysteria",
+    [160452] 	= true,    -- "Netherwinds",
+    [178207] 	= true,    -- "Drums of Fury",
+    [35475] 	= true,     -- "Drums of War",
+    [230935] 	= true,   	-- "Drums of the Mountain"
+    [264667]	= true, 	-- собачка ханта
 }
 
 N.classEquipMap = {
@@ -76,7 +92,7 @@ N.slotEquipType = {
 	--["INVTYPE_RELIC"]	=	{18,},
 }
 
-N.QuestTypesIndex = {
+N.questTypesIndex = {
 	[0]  = "",           									--default
 	[1]  = " |cff00ff00"..PARTY.."|r",						--Group
 	[41] = " |cffff0000PvP|r",								--PvP
@@ -100,7 +116,7 @@ N.pType = {
 }
 
 
-N.class_specs_coords = {
+N.classSpecsCoords = {
   [577] = {128/512, 192/512, 256/512, 320/512}, --> havoc demon hunter
   [581] = {192/512, 256/512, 256/512, 320/512}, --> vengeance demon hunter
 

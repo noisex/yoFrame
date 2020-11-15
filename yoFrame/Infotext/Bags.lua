@@ -2,7 +2,7 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 --------------------------------------------------------------------
@@ -65,7 +65,7 @@ function Stat:Enable()
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self:SetWidth( self.Text:GetWidth())
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 	self:onEvent()
 	self:Show()

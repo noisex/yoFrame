@@ -2,7 +2,7 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID
@@ -96,7 +96,7 @@ function Stat:Enable()
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self.Text:SetFormattedText( infoText.displayString, "hps", 0, "") --,  SecondsToClocks(self.combatTime))
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 
 	infoText:reset( self)

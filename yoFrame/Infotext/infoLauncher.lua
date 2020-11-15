@@ -2,14 +2,9 @@ local L, yo, N = unpack( select( 2, ...))
 
 --if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
-
-infoText.texts["1empty"]	= "-none-"
-infoText.infosSorted 	= {}
+local infoText = N.infoTexts
 
 function infoText:infoLauncher()
-
-	wipe( infoText.infosSorted)
 
 	for infosName in pairs( infoText.texts) do
 
@@ -19,7 +14,6 @@ function infoText:infoLauncher()
 		if infosObj and infosObj.Disable then
 			infosObj.Disable( infosObj)
 		end
-		table.insert( infoText.infosSorted, infosName)
 	end
 
 	table.sort( infoText.infosSorted)
@@ -33,6 +27,8 @@ function infoText:infoLauncher()
 		if infosObj and infosObj.Enable and yo.InfoTexts.enable then
 			infosObj.parent 		= LeftInfoPanel
 			infosObj.parentCount	= yo.InfoTexts.countLeft
+			infosObj.textSide		= ( i == 1 and "LEFT") or ( i == yo.InfoTexts.countLeft and "RIGHT") or "CENTER"
+			infosObj.textShift		= ( i == 1 and 5) or (i == yo.InfoTexts.countLeft and -15) or 0
 			infosObj.shift 			= infoText.shift
 			infosObj.index 			= i
 			infosObj.Enable( infosObj)
@@ -49,6 +45,8 @@ function infoText:infoLauncher()
 			infosObj.parent 		= RightInfoPanel
 			infosObj.parentCount	= yo.InfoTexts.countRight
 			infosObj.shift 			= infoText.shift
+			infosObj.textSide		= ( i == 1 and "LEFT") or ( i == yo.InfoTexts.countRight and "RIGHT") or "CENTER"
+			infosObj.textShift		= ( i == 1 and 5) or (i == yo.InfoTexts.countRight and -15) or 0
 			infosObj.index 			= i
 			infosObj.Enable( infosObj)
 		end

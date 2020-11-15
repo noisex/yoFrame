@@ -22,7 +22,7 @@ mySex		= UnitSex('player')
 
 yo["InfoTexts"] = {
 	["enable"] 			= true,
-	["countLeft"] 		= 6,
+	["countLeft"] 		= 5,
 	["countRight"]		= 4,
 	["left1"]			= "system",
 	["left2"]			= "dura",
@@ -302,6 +302,7 @@ yo["UF"] 	= {
 	["showShards"]		= true,
 	["rightAbsorb"]		= true,
 	["hideOldAbsorb"]	= true,
+	["enableSPower"]	= false,
 }
 
 yo["Raid"] = {
@@ -342,7 +343,7 @@ yo["Raid"] = {
 
 yo["Chat"] = {
 	["EnableChat"] 		= true,
-	["fontsize"] 		= 10,
+	["chatFontsize"] 	= 10,
 	["BarChat"]			= true,
 	["linkOverMouse"]	= true,
 	["showVoice"]		= false,
@@ -365,6 +366,7 @@ yo["Chat"] = {
 	["wimFigter"]		= true,
 	["wimMaxHistory"]	= 200,
 	["wimPrehistoric"]	= 15,
+	["wimLastTab"]		= false,
 }
 
 yo["healBotka"] = {
@@ -397,6 +399,7 @@ yo["fliger"] = {
 	["fligerBuffCount"] = "",
 	["fligerBuffGlow"]	= true,
 	["fligerBuffAnim"]  = true,
+	["fligerBuffColr"]	= true,
 }
 
 yo["CTA"] = {

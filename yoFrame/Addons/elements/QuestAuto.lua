@@ -153,18 +153,19 @@ local function OnEvent( self, event, ...)
 		if ( isDaily or isWeekly) then --or (UnitLevel('player') == MAX_PLAYER_LEVEL) then
 			local money = GetQuestMoneyToGet()
 			local name, texture, amount, quality = GetQuestCurrencyInfo("required", 1)
-			--local iname, itexture, numItems, iquality, isUsable = GetQuestItemInfo("required", 1)
+			local iname, itexture, numItems, iquality, isUsable = GetQuestItemInfo("required", 1)
+			--local questID = GetQuestID();
 
 			if name then
 				local r, g, b, hexColor = GetItemQualityColor( quality)
 				print("|cffff0000"..L["Spend"].." |cff00ff00" .. amount .. " |r" .. '|T'.. texture ..':14|t |c' .. hexColor .. name .. "|cffffff00 "..L["myself"].."|r" .. L["DONT_SHIFT"])
-				CloseQuest()
+				--CloseQuest()
 			elseif money > 1 then
 				print("|cffff0000"..L["Pay"]..": |cff00ff00" .. formatMoney( money) .. "|cffffff00"..L["this huckster"].."|r" .. L["DONT_SHIFT"])
-				CloseQuest()
-			--elseif iname then
-			--	print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. '|T'.. itexture ..':14|t |c' .. select( 4, GetItemQualityColor( iquality)).. iname .. L["DONT_SHIFT"])
-			--	CloseQuest()
+				--CloseQuest()
+			elseif iname then
+				print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. '|T'.. itexture ..':14|t |c' .. select( 4, GetItemQualityColor( iquality)).. iname .. L["DONT_SHIFT"])
+				--CloseQuest()
 			else
 				CompleteQuest()
 			end

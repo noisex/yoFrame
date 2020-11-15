@@ -48,3 +48,7 @@ C_ChatInfo.RegisterAddonMessagePrefix( addonName)
 --		end
 --	end
 --end)
+
+--hooksecurefunc("SetItemRef", function(self, ...)
+--	print("...")
+--end)

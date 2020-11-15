@@ -2,7 +2,7 @@ local L, yo, N = unpack( select( 2, ...))
 
 if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local ICON_FORMAT =  '|T%s:14:14:0:0:64:64:4:60:4:60|t  %s'

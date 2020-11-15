@@ -2,7 +2,7 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local resetIntervals = { daily = 1, weekly = 2, unknown = 3 }
@@ -110,6 +110,16 @@ function Stat:onEvent( event, ...)
 		local playedtotal, playedlevel = ...
 		yo_AllData[myRealm][myName]["Played"] = playedtotal
 		yo_AllData[myRealm][myName]["PlayedLvl"] = playedlevel
+
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		OldMoney = GetMoney()						-- так надо, ибо не считает раньше деньгу
+		self:RegisterEvent("PLAYER_MONEY")
+		self:RegisterEvent("SEND_MAIL_MONEY_CHANGED")
+		self:RegisterEvent("SEND_MAIL_COD_CHANGED")
+		self:RegisterEvent("PLAYER_TRADE_MONEY")
+		self:RegisterEvent("TRADE_MONEY_CHANGED")
+		self:RegisterEvent("TIME_PLAYED_MSG")
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 
 	local NewMoney	= GetMoney()
@@ -242,14 +252,7 @@ function Stat:Enable()
 	self:ClearAllPoints()
 	self:SetPoint("LEFT", self.parent, "LEFT", self.parent:GetWidth()/self.parentCount*( self.index - 1) + self.shift, 0)
 
-	self:RegisterEvent("PLAYER_MONEY")
-	self:RegisterEvent("SEND_MAIL_MONEY_CHANGED")
-	self:RegisterEvent("SEND_MAIL_COD_CHANGED")
-	self:RegisterEvent("PLAYER_TRADE_MONEY")
-	self:RegisterEvent("TRADE_MONEY_CHANGED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("TIME_PLAYED_MSG")
-
 	self:SetScript("OnEvent", self.onEvent)
 	self:SetScript("OnEnter", self.onEnter)
 	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -259,13 +262,11 @@ function Stat:Enable()
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self:SetWidth( self.Text:GetWidth())
 
-	OldMoney = GetMoney()
-
 	local ofunc = ChatFrame_DisplayTimePlayed
 	function ChatFrame_DisplayTimePlayed() ChatFrame_DisplayTimePlayed = ofunc end
 	RequestTimePlayed()
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 	--CreateStyle( self, 2)
 	self:Show()

@@ -86,12 +86,12 @@ local CD_MIN = string.match( SPELL_RECHARGE_TIME_MIN, "%%d+(%D+)" ) -- 'min.' --
 
 local function checkTooltip( slot)
 	local cd = 0
-	local tt = N.ScanTooltip
+	local tt = N.scanTooltip
 	tt:SetOwner (WorldFrame, "ANCHOR_NONE")
 	tt:SetSpellBookItem ( slot, "spell")
 	tt:Show()
 	--for index = 1, tt:NumLines() do
-	local tl = _G["yoFrame_ScanTooltipTextRight3"]
+	local tl = _G["yoFrame_STTTextRight3"]
 	if not tl then return 0 end
 
 	local info = tl:GetText()

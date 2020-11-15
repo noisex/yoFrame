@@ -5,10 +5,10 @@ LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "
 RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
-N.InfoTexts.LeftInfoPanel  = LeftInfoPanel
-N.InfoTexts.LeftDataPanel  = LeftDataPanel
-N.InfoTexts.RightDataPanel = RightDataPanel
-N.InfoTexts.RightInfoPanel = RightInfoPanel
+N.infoTexts.LeftInfoPanel  = LeftInfoPanel
+N.infoTexts.LeftDataPanel  = LeftDataPanel
+N.infoTexts.RightDataPanel = RightDataPanel
+N.infoTexts.RightInfoPanel = RightInfoPanel
 
 CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
 CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
@@ -24,6 +24,11 @@ CreateStyle( LeftInfoPanel, 3, 0)
 
 if not yo.Addons.BlackPanels then RightDataPanel:Hide() LeftDataPanel:Hide() end
 if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
+
+AlertFrame:ClearAllPoints()
+AlertFrame:SetPoint("TOPLEFT", UIParent, "CENTER", 0, -150)
+AlertFrame.ClearAllPoints = dummy
+AlertFrame.SetPoint = dummy
 
 local function enterEvent( self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -94,3 +99,34 @@ end
 SLASH_CLEAR_CHAT1 = "/clear"
 SLASH_CLEAR_CHAT2 = "/сдуфк"
 SLASH_CLEAR_CHAT3 = "/cl"
+
+----------------------------------------------------------------------------------------
+--	Test Blizzard Alerts
+----------------------------------------------------------------------------------------
+
+SlashCmdList.TEST_ACHIEVEMENT = function()
+	PlaySound(SOUNDKIT.LFG_REWARDS)
+	if not AchievementFrame then
+		AchievementFrame_LoadUI()
+	end
+	AchievementAlertSystem:AddAlert(112)
+	CriteriaAlertSystem:AddAlert(9023, "Doing great!")
+	GuildChallengeAlertSystem:AddAlert(3, 2, 5)
+	InvasionAlertSystem:AddAlert(678, DUNGEON_FLOOR_THENEXUS1, true, 1, 1)
+	WorldQuestCompleteAlertSystem:AddAlert(AlertFrameMixin:BuildQuestData(42114))
+	---- GarrisonFollowerAlertSystem:AddAlert(32, "Dagg", 90, 2, true, C_Garrison.GetFollowerInfo(32)) -- error when mouseover
+	---- GarrisonShipFollowerAlertSystem:AddAlert(592, "Ship", "Transport", "GarrBuilding_Barracks_1_H", 3, 2, 1) -- error when mouseover
+	GarrisonBuildingAlertSystem:AddAlert(GARRISON_CACHE)
+	----GarrisonTalentAlertSystem:AddAlert(3, _G.C_Garrison.GetTalent(370))
+	----LegendaryItemAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832:0:0:0:0:0:0:0:0:0:0\124h[Brutality Blade]\124h\124r")
+	----LootAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832::::::::::\124h[Brutality Blade]\124h\124r", 1, 1, 100, 2, false, false, 0, false, false)
+	LootUpgradeAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832::::::::::\124h[Brutality Blade]\124h\124r", 1, 1, 1, nil, nil, false)
+	MoneyWonAlertSystem:AddAlert(81500)
+	EntitlementDeliveredAlertSystem:AddAlert("", "Interface\\Icons\\Ability_pvp_gladiatormedallion", TRINKET0SLOT, 214)
+	RafRewardDeliveredAlertSystem:AddAlert("", "Interface\\Icons\\Ability_pvp_gladiatormedallion", TRINKET0SLOT, 214)
+	DigsiteCompleteAlertSystem:AddAlert("Human")
+	NewRecipeLearnedAlertSystem:AddAlert(204)
+	---- BonusRollFrame_StartBonusRoll(242969, 'test', 20, 515, 15, 14)
+end
+SLASH_TEST_ACHIEVEMENT1 = "/tach"
+SLASH_TEST_ACHIEVEMENT2 = "/ефср"

@@ -2,13 +2,21 @@ local L, yo, N = unpack( select( 2, ...))
 
 --if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 
 local time, max, strjoin, format, find, GetSpellInfo, gsub
 	= time, max, strjoin, format, find, GetSpellInfo, gsub
 
+infoText.infosSorted, mt 	= {}, {}
+function mt.__newindex(self, key, value)
+	table.insert( infoText.infosSorted, key)
+	rawset( self, key, value)
+end
+
+infoText.texts = setmetatable({}, mt)
+infoText.texts["1empty"]= "--NONE--"
+
 infoText.pets = {}
-infoText.texts = {}
 infoText.spellsSchool 	= {}
 infoText.pet_blacklist 	= {}
 infoText.strIcon 		= "|cff888888%-3s|r|T%s:14:14:0:0:64:64:10:54:10:54|t %s"
@@ -56,7 +64,6 @@ infoText.spells_school = {
 }
 
 function infoText:reset( infos)
-	--infos.timeBegin = 0
 	infos.combatTime, infos.amountTotal, infos.newFight = 0, 0, false
 	wipe( infos.spellCount)
 	wipe( infos.spellDamage)
@@ -66,10 +73,8 @@ function infoText:start( infos)
 	infos.newFight 		= true
 	infos.inCombat 		= true
 	infos.combatTime 	= 0
-	--infoText:Reset( infos)
 	infos.timeBegin 	= time()
 
-	--self:stop( infos)
 	if infos.timerDPS then infos.timerDPS:Cancel() end
 
 	infos.timerDPS 	= C_Timer.NewTicker( 1, function() infoText:getDPS( infos) end)
@@ -82,7 +87,7 @@ end
 
 
 function infoText.checkNewSpell( infos, spellID, spellDMG, over, school)
-	--print( infos, spellID, spellDMG, over, school)
+
 	if spellDMG - ( over or 0) == 0 then return end
 
 	if infos.newFight then infoText:reset( infos) end
@@ -92,7 +97,6 @@ function infoText.checkNewSpell( infos, spellID, spellDMG, over, school)
 		infoText.spellsSchool[spellID] = school
 		infos.spellCount[spellID] 	= 0
 	end
-	--if not infos.spellCount[spellID] then end
 
 	infos.spellCount[spellID]  = infos.spellCount[spellID] + 1
 	infos.spellDamage[spellID] = infos.spellDamage[spellID] + spellDMG - ( over or 0)
@@ -101,10 +105,10 @@ end
 
 
 function infoText:checkPets( serial)
-	N.ScanTooltip:SetOwner (WorldFrame, "ANCHOR_NONE")
-	N.ScanTooltip:SetHyperlink ("unit:" .. serial or "")
+	N.scanTooltip:SetOwner (WorldFrame, "ANCHOR_NONE")
+	N.scanTooltip:SetHyperlink ("unit:" .. serial or "")
 
-	local line1 = _G ["yoFrame_ScanTooltipTextLeft2"]
+	local line1 = _G ["yoFrame_STTTextLeft2"]
 	local text1 = line1 and line1:GetText()
 	if (text1 and text1 ~= "") then
 		local playerName = myName
@@ -114,7 +118,7 @@ function infoText:checkPets( serial)
 		end
 	end
 
-	local line2 = _G ["yoFrame_ScanTooltipTextLeft3"]
+	local line2 = _G ["yoFrame_STTTextLeft3"]
 	local text2 = line2 and line2:GetText()
 	if (text2 and text2 ~= "") then
 		local playerName = myName
@@ -128,20 +132,17 @@ end
 
 
 function infoText:getDPS( infos)
-	--print("start", infos.newFight)
+
 	if infos.newFight then return end
 
 	local DPS = 0
 	infos.combatTime = time() - infos.timeBegin
 
 	if infos.amountTotal ~= 0 and infos.combatTime ~= 0 then
-	--	DPS = 0
-	--else
 		DPS = infos.amountTotal / infos.combatTime
 	end
-	--print(DPS, infos.combatTime, time(), infos.timeBegin)
+
 	infos.Text:SetFormattedText( self.displayString, "dps", nums( DPS), "") --, SecondsToClocks( infos.combatTime))
-	infos:SetWidth( infos.Text:GetWidth())
 end
 
 

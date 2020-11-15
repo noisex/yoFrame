@@ -146,7 +146,7 @@ local function CreateShardsBar( f)
 	local holyShards = f.holyShards or CreateFrame( "Frame", nil, f)
 
 	if yo.UF.simpleUF then
-		holyShards:SetPoint('LEFT', f, 'LEFT', 7, -1)
+		holyShards:SetPoint('LEFT', f, 'LEFT', 3, 2)
 	else
 		holyShards:SetPoint('TOPLEFT', f, 'TOPLEFT', 7, -4)
 	end

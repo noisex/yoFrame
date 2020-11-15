@@ -86,9 +86,10 @@ local function initPotatos( self)
 		self.tName:SetText( "pulling time")
 		self.tName:SetTextColor( 1, 1, 0)
 		self.IsNormal = false
+	end
 
-	elseif self.IsBuffed then
-		DrawDefault( self)
+	if self.IsBuffed then
+		--DrawDefault( self)
 		self.tName:SetText( "жарим-с....")
 		self.icon:SetVertexColor( 0, 1, 0, 0.7)
 		if timerEst == 0 then
@@ -99,8 +100,9 @@ local function initPotatos( self)
 			self:SetScript('OnUpdate', pullUpdate)
 		end
 		self.IsNormal = false
+	end
 
-	elseif self.itemReady and self.bigBoss then
+	if self.itemReady and self.bigBoss then
 		DrawDefault( self)
 		self.tName:SetText( "finish him")
 		self.icon:SetDesaturated( false)
@@ -190,17 +192,14 @@ local function OnEvent( self, event, ...)
 		local itemCount = ( GetItemCount( self.itemID) or 0)
 		self.tCount:SetText( itemCount)
 		if itemCount <= 10 then self.buyPots = true else self.buyPots = false 	end
-		--initPotatos( self)
 
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		self.bigBoss = nil
 		self.bossFight = nil
-		--initPotatos( self)
 
 	elseif event == "ENCOUNTER_END" then
 		self.bigBoss = nil
 		self.bossFight = nil
-		--initPotatos( self)
 
 	elseif event == "ENCOUNTER_START" then
 		self.bossFight = true
@@ -213,18 +212,20 @@ local function OnEvent( self, event, ...)
 
 		if UnitInRaid( "player") then
 			real_unit = ... unit = "boss1"
-			if real_unit == "boss1" then hpChan = hpInRaid 	else return end
+			if real_unit == "boss1" then hpChan = hpInRaid 	--else return
+			end
 
 		elseif UnitInParty( "player") then
 			unit = "boss1" real_unit = ...
-			if real_unit == "boss1" then hpChan = hpInParty else return end
+			if real_unit == "boss1" then hpChan = hpInParty --else return
+			end
 
 		else
 			if event == "PLAYER_TARGET_CHANGED" then
 				if not UnitExists( "target") then
 					self.bigBoss = nil
-					initPotatos( self)
-					return
+					--initPotatos( self)
+					--return
 				end
 			end
 
@@ -257,7 +258,7 @@ local function OnEvent( self, event, ...)
 			local name, icon, _, _, duration, expirationTime, unitCaster, _, _, spellID = UnitBuff( "player", i)
 			if not name then break end
 
-			if bls[spellID] == true then
+			if N.bls[spellID] == true then
 				self.IsBL 		= true
 				self.blEnd 		= expirationTime
 				self.nameBL 	= name
@@ -274,7 +275,7 @@ local function OnEvent( self, event, ...)
 		if self.IsBuffed then initPotatos( self) else self.buffEnd 	= 0 end
 		if self.IsBL     then initPotatos( self) else self.blframe.bltimerEnd  = 0 end
 	end
-
+	--print( self.IsBuffed )
 	initPotatos( self)
 end
 
@@ -380,7 +381,7 @@ local potatos = CreateFrame("Frame", "yo_Potatos", UIParent)
 		C_ChatInfo.RegisterAddonMessagePrefix("D4") -- DBM
 
 		--if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
-		CreateAnchor("yoMovePotatos", 		"Move Potatos", 40, 40, 250, 270, "BOTTOMLEFT", "BOTTOMLEFT")
+		CreateAnchor("yoMovePotatos", 		"Move Potatos", 40, 40, 100, 0, "LEFT", "RIGHT", LeftDataPanel)
 		CreatePotatos( self)
 		initPotatos( self)
 	end)

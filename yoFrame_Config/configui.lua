@@ -1,4 +1,5 @@
-local L, _ = unpack( select( 2, ...))
+local addon, ns = ...
+local L, _ = unpack( ns)
 
 local ACD
 local needReload = false
@@ -102,6 +103,7 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
 
 
 function InitOptions()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
 	N = yoFrame[3]
 
 	local defaults = {
@@ -372,7 +374,8 @@ function InitOptions()
 					unitFrames		= {	order = 1,  type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full", disabled = false,},
 					colorUF 		= {	order = 10, type = "select", 	name = function(info) return tr( info[#info]) end, disabled = true, values = { [0]  = L["HBAR_TS"] ,[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
 					classBackground = {	order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full", disabled = true,},
-					simpleUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					simpleUF 		= {	order = 20,	type = "toggle", 	name = function(info) return tr( info[#info]) end, },
+					enableSPower	= {	order = 25,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = 1.2},
 					showGCD 		= {	order = 30,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					showShards 		= {	order = 40,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					debuffHight		= {	order = 50, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
@@ -545,7 +548,7 @@ function InitOptions()
 					wisperSound		= {	order = 40, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
 					wisperInCombat	= {	order = 42, type = "toggle",	name = function(info) return tr( info[#info]) end,},
 
-					fontsize = {
+					chatFontsize = {
 						name = function(info) return tr( info[#info]) end,
 						order = 2,	type = "range", desc = L["DEFAULT"] .. 10,	min = 10, max = 16, step = 1,
 						get = function(info) return yo["Chat"][info[#info]] end,
@@ -592,29 +595,29 @@ function InitOptions()
 			InfoTexts = {
 				order = 87,	name = "Инфотексты", type = "group",
 				get = function(info) return yo["InfoTexts"][info[#info]] end,
-				set = function(info,val) Setlers( "InfoTexts#" .. info[#info], val) N.InfoTexts:infoLauncher() end,
+				set = function(info,val) Setlers( "InfoTexts#" .. info[#info], val) N.infoTexts:infoLauncher() end,
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
 					enable 		= {	order = 01, type = "toggle", name = L["ITenable"], width = "full", disabled = false,},
 
 					countLeft 	= {	order = 10, width = 0.7, type = "select", name = function(info) return tr( info[#info]) end,	values = { [0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,},},
 					set01		= {	order = 11, type = "description", name = " ", width = 1.5},
-					left1 		= {	order = 22, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 1 or not yo[info[1]].enable; end,},
-					left2 		= {	order = 32, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 2 or not yo[info[1]].enable; end,},
-					left3 		= {	order = 42, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 3 or not yo[info[1]].enable; end,},
-					left4 		= {	order = 52, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 4 or not yo[info[1]].enable; end,},
-					left5 		= {	order = 62, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 5 or not yo[info[1]].enable; end,},
-					left6 		= {	order = 72, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "",	values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 6 or not yo[info[1]].enable; end,},
+					left1 		= {	order = 22, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 1 or not yo[info[1]].enable; end,},
+					left2 		= {	order = 32, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 2 or not yo[info[1]].enable; end,},
+					left3 		= {	order = 42, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 3 or not yo[info[1]].enable; end,},
+					left4 		= {	order = 52, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 4 or not yo[info[1]].enable; end,},
+					left5 		= {	order = 62, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 5 or not yo[info[1]].enable; end,},
+					left6 		= {	order = 72, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 6 or not yo[info[1]].enable; end,},
 
 					set02		= {	order = 090, type = "description", name = " ", width = "full"},
 					countRight 	= {	order = 110, width = 0.7, type = "select", name = function(info) return tr( info[#info]) end, values = { [0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,},},
 					set00		= {	order = 111, type = "description", name = " ", width = 1.5},
-					right1		= {	order = 120, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 1 or not yo[info[1]].enable; end,},
-					right2		= {	order = 130, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 2 or not yo[info[1]].enable; end,},
-					right3		= {	order = 140, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 3 or not yo[info[1]].enable; end,},
-					right4		= {	order = 150, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 4 or not yo[info[1]].enable; end,},
-					right5		= {	order = 160, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 5 or not yo[info[1]].enable; end,},
-					right6		= {	order = 170, width = 0.7, sorting = N.InfoTexts.infosSorted, type = "select", name = "", values = N.InfoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 6 or not yo[info[1]].enable; end,},
+					right1		= {	order = 120, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 1 or not yo[info[1]].enable; end,},
+					right2		= {	order = 130, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 2 or not yo[info[1]].enable; end,},
+					right3		= {	order = 140, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 3 or not yo[info[1]].enable; end,},
+					right4		= {	order = 150, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 4 or not yo[info[1]].enable; end,},
+					right5		= {	order = 160, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 5 or not yo[info[1]].enable; end,},
+					right6		= {	order = 170, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 6 or not yo[info[1]].enable; end,},
 				},
 			},
 
@@ -628,11 +631,13 @@ function InitOptions()
 					--desc01			= {	order = 2, type = "description", name = L["DESC_FILGER"], width = "full"},
 
 					fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					fligerBuffAnim	= {	order = 05, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					fligerBuffCount	= { order = 07, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
-					fligerBuffSpell = { order = 10, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.8,},
+					fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 
-					tDebuffEnable	= {	order = 18, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
+					fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
+					fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.5,},
+
+					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
 					pBuffEnable		= {	order = 30, type = "toggle",name = "Player Buff", 		width = 0.75},
 					pDebuffEnable	= {	order = 40, type = "toggle",name = "Player Debuff", 	width = 0.75},
@@ -697,6 +702,12 @@ function InitOptions()
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
 				args = {
+					label07 = { order = 992, type = "description",
+						name = "|cff00ff002020.11.12|r"
+						.."\n - [|cffff8000WIM|r] научился принимать линки на предметы, квесты и прочее, это победа ящитаю"
+						.."\n - [|cffff8000Общее|r] коварно пролез в опции игры - Настройка клавиш, стало чутка удобней жить."
+						.."\n - [|cffff8000Сумки|r] в меню сумок вернулся рюкзак/backpack и добавился пункт меню 'пропускать сортировку сумки'\n\n",
+					},
 					label06 = { order = 993, type = "description",
 						name = "|cff00ff002020.11.07|r"
 						.."\n - [|cffff8000Инфотексты|r] почти полностью почти всё почти переписал почти заново... местами стало даже лучше"
@@ -862,7 +873,7 @@ GameMenuFrame:HookScript("OnShow", function()
 end)
 
 GameMenuButton:SetScript("OnClick", function()
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+	--PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
 	HideUIPanel(GameMenuFrame)
 	InitOptions()
 end)
@@ -875,6 +886,7 @@ init:SetScript("OnEvent", function()
 	T, yo, N = unpack( yoFrame)
 end)
 
+ns.InitOptions = InitOptions
 
 
 --LSM:Register("font", "yoOswald-ExtraLight",	"Interface\\Addons\\yoFrame\\Media\\Oswald-ExtraLight.ttf", 130)

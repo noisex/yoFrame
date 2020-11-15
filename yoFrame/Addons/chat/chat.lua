@@ -57,6 +57,9 @@ local hyperlinkTypes = {
 }
 local hyperLinkEntered
 
+function doMoreEmote( ...)
+print("...")
+end
 function doEnote( enote, ...)
 	local emote = {
 		[13] = "LICK",
@@ -73,7 +76,7 @@ end
 UIMenu_AddButton( ChatMenu, "LICK", nil, doEnote)
 UIMenu_AddButton( ChatMenu, "WAVE", nil, doEnote)
 UIMenu_AddButton( ChatMenu, "SPIT", nil, doEnote)
-
+--UIMenu_AddButton( ChatMenu, "A", "SLASH_EMOTE1", doMoreEmote);
 --UIMenu_AddButton( ChatMenu, EMOTE117_CMD1, nil, doEnote)
 --UIMenu_AddButton( ChatMenu, EMOTE102_CMD1, nil, doEnote)
 
@@ -289,7 +292,7 @@ local function SetupChatPosAndFont(self)
 	for i = 1, NUM_CHAT_WINDOWS do
 		local chat = _G[format("ChatFrame%s", i)]
 		local id = chat:GetID()
-		local fontsize =	yo.Chat.fontsize
+		local fontsize =	yo.Chat.chatFontsize
 		local _, fontSize = FCF_GetChatWindowInfo(id)
 
 		-- Min. size for chat font
@@ -349,7 +352,7 @@ local function SetupChatPosAndFont(self)
 		wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
 		wimButton:SetNormalTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat")
 		wimButton:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-		wimButton:SetScript("OnClick", function() yo_WIM:SetShown( not yo_WIM:IsShown()) yo_WIM:stopFlash( wimButton) end)
+		wimButton:SetScript("OnClick", function() ns:wimToggle() yo_WIM:stopFlash( wimButton) end)
 		yo_WIM.wimButton = wimButton
 	end
 

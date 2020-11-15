@@ -36,6 +36,7 @@ function SetUpAnimGroup(object, type, ...)
 		--object.anim.scale:SetFromScale( 0.7, .7)
 		--object.anim.scale:SetToScale( 1, 1)
 		--object.anim:SetScript("OnFinished", function(_, requested)
+		--	--print(time(), "...")
 		--	if(not requested) then
 		--		object.anim:Play( true)
 		--	end

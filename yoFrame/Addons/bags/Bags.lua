@@ -40,6 +40,17 @@ AssignmentColors = {
 	[4] = {255/255, 81/255, 168/255}, -- tradegoods
 }
 
+
+QuestColors = {
+	questStarter = {r = 1, g = 1, b = 0},
+	questItem 	 = {r = 1, g = 0.30, b = 0.30},
+}
+
+--QuestKeys = {
+--	questStarter = 'questStarter',
+--	questItem = 'questItem',
+--}
+
 local UpdateItemUpgradeIcon;
 local ITEM_UPGRADE_CHECK_TIME = 0.5;
 
@@ -400,6 +411,10 @@ local function hideNewItemGlow(slot)
 	addon:NewItemGlowSlotSwitch(slot)
 end
 
+function addon:CheckSlotNewItem(slot, bagID, slotID)
+	addon:NewItemGlowSlotSwitch(slot, C_NewItems_IsNewItem(bagID, slotID))
+end
+
 function addon:GetBagAssignedInfo(holder)
 
 	if not (holder and holder.id and holder.id > 0) then return end
@@ -609,7 +624,7 @@ function UpdateSlot( self, bagID, slotID)
 	local texture, count, locked, readable, noValue
 
 	slot.name, slot.rarity = nil, nil;
-	texture, count, locked, slot.rarity, readable, _, _, _, noValue = GetContainerItemInfo(bagID, slotID);
+	texture, count, locked, slot.rarity, readable, _, itemLink, _, noValue = GetContainerItemInfo(bagID, slotID);
 
 	slot:Show();
 	slot.itemLevel:SetText("")
@@ -655,16 +670,17 @@ function UpdateSlot( self, bagID, slotID)
 
 		if slot.UpgradeIcon then
 			--dprint( "CheckUpdateIcon: ", bagID, slotID, slot)
-			checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)  --- C_NewItems_IsNewItem(bagID, slotID))
+			--checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)  --- C_NewItems_IsNewItem(bagID, slotID))
+			yoDelay( 0.5, checkSloLocUpdate, bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)
 		end
 
 		-- color slot according to item quality
 		if questId and not isActiveQuest then
-			slot.shadow:SetBackdropBorderColor(1.0, 0.3, 0.3, 0.9);
+			slot.shadow:SetBackdropBorderColor( QuestColors.questStarter.r, QuestColors.questStarter.g, QuestColors.questStarter.b);
 			if(slot.questIcon) then slot.questIcon:Show(); end
 
 		elseif questId or isQuestItem then
-			slot.shadow:SetBackdropBorderColor(1.0, 0.3, 0.3, 0.9);
+			slot.shadow:SetBackdropBorderColor( QuestColors.questItem.r, QuestColors.questItem.g, QuestColors.questItem.b);
 			if(slot.questIcon) then slot.questIcon:Show(); end
 
 		elseif slot.rarity and slot.rarity > 1 then
@@ -687,7 +703,8 @@ function UpdateSlot( self, bagID, slotID)
 		--slot.shadow:SetBackdropBorderColor( .12, .12, .12, .9)		-- DEFAULT border !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	end
 
-	addon:NewItemGlowSlotSwitch(slot, C_NewItems_IsNewItem(bagID, slotID))
+	--addon:NewItemGlowSlotSwitch(slot, C_NewItems_IsNewItem(bagID, slotID))
+	yoDelay( 0.2, addon.CheckSlotNewItem, addon, slot, bagID, slotID)
 
 	if (texture) then
 		local start, duration, enable = GetContainerItemCooldown(bagID, slotID)
@@ -708,6 +725,7 @@ function UpdateSlot( self, bagID, slotID)
 	SetItemButtonTexture(slot, texture);
 	SetItemButtonCount(slot, count);
 	SetItemButtonDesaturated(slot, locked, 0.5, 0.5, 0.5);
+	SetItemButtonQuality(slot, rarity, itemLink)
 
 	if GameTooltip:GetOwner() == slot and not slot.hasItem then GameTooltip:Hide() end
 end
@@ -721,11 +739,11 @@ function addon:UpdateBagSlots(bagID)
 		end
 	else
 		for slotID = 1, GetContainerNumSlots(bagID) do
-			if self.UpdateSlot then
+			--if self.UpdateSlot then
 				self:UpdateSlot(bagID, slotID);
-			else
-				self:GetParent():GetParent():UpdateSlot(bagID, slotID);
-			end
+			--else
+			--	self:GetParent():GetParent():UpdateSlot(bagID, slotID);
+			--end
 		end
 	end
 end
@@ -1001,50 +1019,6 @@ function addon:CreateLayout( isBank)
 
 		assignedBag = addon:GetBagAssignedInfo(f.ContainerHolder[i])
 
-		--for slotID = 1, MAX_CONTAINER_ITEMS do
-			--f.Bags[bagID][slotID] = B:ConstructContainerButton(f, slotID, bagID)
-		--end
-
-		--		f.ContainerHolder[i].id = isBank and bagID or bagID -- + 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		--		f.ContainerHolder[i]:HookScript("OnEnter", function(self) addon.SetSlotAlphaForBag(self, f) end)
-		--		f.ContainerHolder[i]:HookScript("OnLeave", function(self) addon.ResetSlotAlphaForBags(self, f) end)
-
-		--		if isBank then
-		--			f.ContainerHolder[i]:SetID(bagID - 4)
-		--			if not f.ContainerHolder[i].tooltipText then
-		--				f.ContainerHolder[i].tooltipText = ""
-		--			end
-		--		end
-		--		f.ContainerHolder[i].IconBorder:SetAlpha(0)
-		--		f.ContainerHolder[i].icon:ClearAllPoints()
-		--		f.ContainerHolder[i].icon:SetPoint("CENTER", f.ContainerHolder[i])
-		--		f.ContainerHolder[i].icon:SetSize(buttonSize -5, buttonSize -5)
-		--		f.ContainerHolder[i].icon:SetTexCoord( unpack( f.texCoord))
-		--	end
-
-		--	f.ContainerHolder:SetSize(((buttonSize) * (isBank and i - 1 or i)) + 10, buttonSize + (buttonSpacing * 2))
-
-		--	if isBank then
-		--		--print( "erroe")
-		--		BankFrameItemButton_Update( f.ContainerHolder[i])
-		--		BankFrameItemButton_UpdateLocked( f.ContainerHolder[i])
-		--	end
-
-		--	assignedBag = addon:GetBagAssignedInfo(f.ContainerHolder[i])
-
-		--	f.ContainerHolder[i]:SetSize( buttonSize, buttonSize)
-		--	f.ContainerHolder[i]:ClearAllPoints()
-		--	if (isBank and i == 2) or (not isBank and i == 1) then
-		--		f.ContainerHolder[i]:SetPoint('BOTTOMLEFT', f.ContainerHolder, 'BOTTOMLEFT', buttonSpacing, buttonSpacing)
-		--	else
-		--		f.ContainerHolder[i]:SetPoint('LEFT', lastContainerButton, 'RIGHT', 0, 0)
-		--	end
-
-		--	lastContainerButton = f.ContainerHolder[i];
-
-		--	f.ContainerHolder[i]:Show()
-		--end
-
 ----------------------------------------------------------------------------
 --				BAG/BANK SLOTS
 ----------------------------------------------------------------------------
@@ -1130,7 +1104,7 @@ function addon:CreateLayout( isBank)
 					f.Bags[bagID][slotID].icon:SetTexCoord( unpack( f.texCoord))  		--( unpack( yo.tCoord))
 					f.Bags[bagID][slotID].icon:ClearAllPoints()
 					f.Bags[bagID][slotID].icon:SetPoint("CENTER", f.Bags[bagID][slotID])
-					f.Bags[bagID][slotID].icon:SetSize(f.Bags[bagID][slotID]:GetWidth() -5, f.Bags[bagID][slotID]:GetHeight() -5)
+					f.Bags[bagID][slotID].icon:SetSize(f.Bags[bagID][slotID]:GetWidth() -8, f.Bags[bagID][slotID]:GetHeight() -8)
 					f.Bags[bagID][slotID].icon.ClearAllPoints = dummy
 
 
@@ -1609,7 +1583,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.editBox.searchIcon:SetSize(15, 15)
 	end
 
-	CreateStyle( f, 5, nil, 0.5)
+	CreateStyle( f, 5, nil, 0.9)
 	tinsert( addon.BagFrames, f)
 	return f
 end
@@ -1774,14 +1748,15 @@ function addon:PLAYER_ENTERING_WORLD()
 
 	if not yo.Bags.enable then return end
 
-	self:InitBags()
+	--C_Timer.After( 2,  function(f, ...)
+		self:InitBags( self)
+	--end)
 
 	self:RegisterEvent("BANKFRAME_OPENED")
 	self:RegisterEvent("BANKFRAME_CLOSED")
 	self:RegisterEvent("PLAYERBANKBAGSLOTS_CHANGED")
 
 	-- Events for trade skill UI handling
-	--self:RegisterEvent("OBLITERUM_FORGE_SHOW");
 	self:RegisterEvent("SCRAPPING_MACHINE_SHOW");
 	self:RegisterEvent("SCRAPPING_MACHINE_CLOSE");
 	self:RegisterEvent('AUCTION_HOUSE_SHOW')
@@ -1791,9 +1766,6 @@ function addon:PLAYER_ENTERING_WORLD()
 
 	self:RegisterEvent('TRADE_SHOW')
 	self:RegisterEvent('TRADE_CLOSED')
-
-	--self:RegisterEvent('TRADE_SKILL_SHOW')
-	--self:RegisterEvent('TRADE_SKILL_CLOSE')
 
 	self:RegisterEvent('MERCHANT_CLOSED')
 	---- self:RegisterEvent("PLAYERBANKSLOTS_CHANGED")

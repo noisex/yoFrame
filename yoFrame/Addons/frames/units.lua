@@ -28,27 +28,33 @@ local function unitShared(self, unit)
 	GetColors( self)
 	importAPI( self)
 
-	local height 		= _G["yoMove" .. cunit]:GetHeight()
-	local width 		= _G["yoMove" .. cunit]:GetWidth()
-	local enablePower 	= true
-	local nameLeight	= "namelong"
-	local namePos		= { "BOTTOMLEFT", self, "BOTTOMLEFT", 4, 13}
-	local rtargetPos 	= { "CENTER", self, "TOP", 0, 2}
-	local healthTextPos	= { "TOPRIGHT", self, "TOPRIGHT", 0, -2}
-	local showLeader 	= true
-	local combatPos 	= 6
-	local nameTextSize	= fontsize
+	local height 			= _G["yoMove" .. cunit]:GetHeight()
+	local width 			= _G["yoMove" .. cunit]:GetWidth()
+	local enablePower 		= true
+	local enablePowerText	= false
+	local nameLeight		= "namelong"
+	local namePos			= { "BOTTOMLEFT", self, "BOTTOMLEFT", 4, 13}
+	local rtargetPos 		= { "CENTER", self, "TOP", 0, 2}
+	local healthTextPos		= { "TOPRIGHT", self, "TOPRIGHT", 0, -2}
+	local powerPos			= { "BOTTOM", self, "BOTTOM", 0, 4}
+	local powerHeight		= 4
+	local showLeader 		= true
+	local combatPos 		= 6
+	local nameTextSize		= fontsize
 
 	if yo.UF.simpleUF then
 		height 			= height / 1.8
 		width 			= width / 1.1
-		enablePower 	= false
+		enablePower 	= yo.UF.enableSPower
+		enablePowerText	= false
+		powerPos		= { "BOTTOM", self, "BOTTOM", 0, 2}
+		powerHeight		= 3
 		showLeader 		= false
 		nameTextSize	= fontsize + 0
 		combatPos 		= 0
 		nameLeight		= "namemedium"
 		namePos			= { "LEFT", self, "TOPLEFT", 5, 1}
-		healthTextPos	= { "BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 3}
+		healthTextPos	= { "BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 2}
 		rtargetPos 		= { "CENTER", self, "TOPRIGHT", -15, 0}
 		self.simpleUF	= true
 	end
@@ -125,11 +131,11 @@ local function unitShared(self, unit)
 
 	if enablePower then
 		self.Power = CreateFrame("StatusBar", nil, self)
-		self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
+		self.Power:SetPoint( unpack( powerPos))
 		self.Power:SetStatusBarTexture( yo.texture)
 		self.Power:SetFrameLevel( 5)
 		self.Power:SetWidth( width - 10)
-		self.Power:SetHeight( 4)
+		self.Power:SetHeight( powerHeight)
 		table.insert( N.statusBars, self.Power)
 
 		self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
@@ -191,7 +197,7 @@ local function unitShared(self, unit)
 		self.Health.healthText:SetPoint( unpack( healthTextPos))
 		table.insert( N.strings, self.Health.healthText)
 
-		if enablePower then
+		if enablePower and enablePowerText then
 			self.Power.powerText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
 			self.Power.powerText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
 			self.Power.powerText:SetPoint("TOPRIGHT", self.Health.healthText, "BOTTOMRIGHT", 0, -3)

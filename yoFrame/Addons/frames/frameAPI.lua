@@ -172,23 +172,32 @@ local function updatePower( f, unit, pmin, min, pmax)
 
 	if pmin >= 1 then uPP = math.floor( pmin / pmax * 100) else uPP = 0 end
 
-    if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "focustarget" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) or pmin == 0 then
-        uPText = ""
-	elseif f.isboss then
-		uPText = uPP .. "%"
-    else
-    	if pmin == pmax then
-    		uPText = nums( pmin)
+	if f.powerText then
+    	if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "focustarget" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) or pmin == 0 then
+        	uPText = ""
+		elseif f.isboss then
+			uPText = uPP .. "%"
     	else
-    		if myClass == "WARLOCK" and mySpec == 3 then
-				uPText = nums( pmin) .. " | 10"
-   			else
-   				uPText = nums( pmin) .. " | " .. uPP .. "%"
+    		if pmin == pmax then
+    			uPText = nums( pmin)
+    		else
+    			if myClass == "WARLOCK" and mySpec == 3 then
+					uPText = nums( pmin) .. " | 10"
+   				else
+   					uPText = nums( pmin) .. " | " .. uPP .. "%"
+   				end
    			end
-   		end
+	   	end
+
+   		f.powerText:SetText( uPText)
    	end
 
-	f.powerText:SetText( uPText)
+   	--if pmin == pmax and ( UnitPowerType( "player")  == 0 ) then
+   	--	f:Hide()
+   	--else
+   	--	f:Show()
+   	--end
+
 	f:SetMinMaxValues( 0, pmax)
 	f:SetValue( pmin)
 	f.powerMax = pmax
@@ -378,6 +387,12 @@ local function updateHealthColor( f, event, unit, ...)
 			f.Health.AbsorbBar:SetStatusBarColor( f.colr * f.darkAbsorb, f.colg * f.darkAbsorb, f.colb * f.darkAbsorb , 0.9)
 		end
 	else
+		if yo.Raid.classBackground then
+			f.Health.hbg:SetVertexColor( f.colr * f.fader, f.colg * f.fader, f.colb * f.fader, 0.9)
+		else
+			f.Health.hbg:SetVertexColor( 0.45, 0.45, 0.45, 0.9)
+		end
+
 		if not UnitIsConnected( unit) then
 			cols = f.colors.disconnected
 		else
@@ -385,7 +400,7 @@ local function updateHealthColor( f, event, unit, ...)
 		end
 
 		f.Health:SetStatusBarColor( cols[1], cols[2], cols[3], 0.9)
-		f.Health.hbg:SetVertexColor( 0.45, 0.45, 0.45, 0.9)
+
 		if f.Health.AbsorbBar then
 			f.Health.AbsorbBar:SetStatusBarColor( 0.3, 0.3, 0.3, 0.9)
 		end

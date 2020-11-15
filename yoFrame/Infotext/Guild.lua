@@ -2,7 +2,7 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 --------------------------------------------------------------------
 -- GUILD ROSTER
@@ -150,7 +150,7 @@ function Stat:onMouseDown( btn)
 	EasyMenu(menuList, menuFrame, "cursor", -50, 100, "MENU", 2)
 end
 
-Stat.ShowGuild = function(self, btn)
+Stat.ShowGuild = function(self, btn, obj)
 	local menuWIM = {
 		{ text = "Гильдейский шептун", isTitle = true, notCheckable=true},
 	}
@@ -177,7 +177,7 @@ Stat.ShowGuild = function(self, btn)
 		end
 	end
 
-	EasyMenu(menuWIM, menuFrame, "cursor", 5, -5, "MENU", 2)
+	EasyMenu(menuWIM, menuFrame, obj, 25, 50, "MENU", 2)
 end
 
 
@@ -302,7 +302,7 @@ function Stat:Enable()
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	--self.Text:SetFormattedText( infoText.displayString, "dps", 0,  SecondsToClocks( self.combatTime))
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 
 	self:Show()

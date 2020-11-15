@@ -220,7 +220,7 @@ function ActionBars:SkinFlyoutButtons()
 		local Button = _G["SpellFlyoutButton"..i]
 
 		if Button and not Button.IsSkinned then
-			CreateStyle( Button, 2)
+			CreateStyle( Button, 1)
 
 			if Button:GetChecked() then
 				Button:SetChecked(nil)

@@ -267,7 +267,7 @@ local raidShared = function(self, unit)
 
 	self.Info = self.Overlay:CreateFontString( nil, "OVERLAY")
 	self.Info:SetPoint( unpack( posInfo))
-	self.Info:SetFont( yo.font, sizeInfoFont)
+	self.Info:SetFont( yo.font, sizeInfoFont) --, "OUTLINE"
 	self.Info:SetShadowOffset( 1, -1)
 	self.Info:SetShadowColor( 0, 0, 0, 1)
 	table.insert( N.strings, self.Info)

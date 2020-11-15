@@ -436,9 +436,9 @@ local function DecorateTooltip(guid)
 		--local levelText = format('|cff%2x%2x%2x%.1f|r |cff%2x%2x%2x(%s)|r', r1 * 255, g1 * 255, b1 * 255, averageItemLevel, r2 * 255, g2 * 255, b2 * 255, neckLevel)
 		local levelText = format('|cff%2x%2x%2x%.1f|r', r1 * 255, g1 * 255, b1 * 255, averageItemLevel, r2 * 255, g2 * 255, b2 * 255)
 
-		if GameTooltipStatusBar and GameTooltipStatusBar.icon and ( cache.specID and N.class_specs_coords[cache.specID]) then
+		if GameTooltipStatusBar and GameTooltipStatusBar.icon and ( cache.specID and N.classSpecsCoords[cache.specID]) then
 			print("CASHGE ", cache.specID)
-			GameTooltipStatusBar.icon:SetTexCoord( unpack( N.class_specs_coords[cache.specID]))
+			GameTooltipStatusBar.icon:SetTexCoord( unpack( N.classSpecsCoords[cache.specID]))
 			GameTooltipStatusBar.icon:Show()
 		end
 

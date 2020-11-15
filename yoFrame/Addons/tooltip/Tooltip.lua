@@ -433,6 +433,7 @@ end
 --local _SetItemRef = SetItemRef
 --function SetItemRef(...)
 --	local link, text, button = ...
+--	print("...")
 --	local handled = strsplit(":", link)
 --	if not IsModifiedClick() and handled and types[handled] then
 --		local tip = CreateTip(link)

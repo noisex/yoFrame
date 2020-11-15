@@ -61,6 +61,8 @@ local function UpdateTabs( self)
 			tab.header:SetText( Ambiguate( tab.fullName, "none"))
 
 			self.lastTab = tab:GetID()
+			--yo.Chat.wimLastTab = tab:GetID()
+			--print( yo.Chat.wimLastTab)
 		end
 	end
 	self.tabUpdate 	= false
@@ -97,6 +99,15 @@ local function CreateTabs(self, ID)
 	tab.hover = hover
 	tab:SetHighlightTexture( hover)
 
+	--editBox.HighlightText = function(self, theStart, theEnd)
+	--	if( self.focused) then
+	--		WIM.EditBoxInFocus:HighlightText(theStart, theEnd);
+	--	else
+	--		self:wimHighlightText(theStart, theEnd);
+	--	end
+	--end
+    --Hooked_ChatFrameEditBoxes[editBox:GetName()] = true;
+
 	local editBox = CreateFrame('EditBox', nil, self)--, "InputBoxTemplate");
 	editBox:SetFrameLevel( editBox:GetFrameLevel() + 2);
 	editBox:SetHeight( 16)
@@ -109,15 +120,15 @@ local function CreateTabs(self, ID)
 	editBox:SetScript("OnLeave", 			function() self:SetAlpha( minAlpha) end)
 	editBox:SetScript("OnEnter", 			function() self:SetAlpha(1) end)
 	editBox:SetScript("OnEscapePressed", 	function() editBox:ClearFocus() end) --self:Hide()
-	editBox:SetScript("OnEditFocusGained", 	function() self.focused = tab:GetID() end)
-	editBox:SetScript("OnEditFocusLost", 	function() if self.focused == tab:GetID() then self.focused = false end end)
-	editBox:SetScript("OnEditFocusLost", 	function(self) self:ClearFocus() end)
-	editBox:SetScript("OnEditFocusGained", 	editBox.HighlightText)
+	editBox:SetScript("OnEditFocusGained", 	function() self.focused = tab:GetID()  end) --self.HighlightText
+	editBox:SetScript("OnEditFocusLost", 	function() if self.focused == tab:GetID() then self.focused = false editBox:ClearFocus() end end)
+	--editBox:SetScript("OnEditFocusLost", 	function(self) self:ClearFocus() end)
+	--editBox:SetScript("OnEditFocusGained", 	editBox.HighlightText)
 	editBox:SetScript("OnEnterPressed", 	self:GetParent().editBoxOnterPressed)
 	tab.editBox = editBox
 
 	local textBox = CreateFrame("ScrollingMessageFrame", nil, self)
-	textBox:SetFont( yo.Chat.chatFont, yo.Chat.fontsize)
+	textBox:SetFont( yo.Chat.chatFont, yo.Chat.chatFontsize)
 	textBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", 6, -6)
 	textBox:SetPoint("BOTTOMRIGHT", editBox, "TOPRIGHT", 0, 6)
 	textBox:SetInsertMode( "BOTTOM")
@@ -203,6 +214,7 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 
 		local BNETAccInfo = C_BattleNet.GetAccountInfoByID( btag)
 		self.tabber.tabs[tabID].fullTag	= BNETAccInfo.battleTag
+		Setlers( "Chat#wimLastTab", format( "%s,,%s", unit, btag))
 	elseif guid then
 		local _, classId, _, raceId, gender = GetPlayerInfoByGUID( guid)
 		local name, realm = strsplit("-", unit)
@@ -215,11 +227,13 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 		self.tabber.tabs[tabID].race 	= raceId
 		self.tabber.tabs[tabID].class 	= classId
 		self.tabber.tabs[tabID].guild 	= GetGuildInfo( name)
+		Setlers( "Chat#wimLastTab", format( "%s,%s", unit, guid))
 	elseif unit then
 		local name, realm = strsplit( "-", unit)
 		self.tabber.tabs[tabID].fullName= unit
 		self.tabber.tabs[tabID].name 	= name
 		self.tabber.tabs[tabID].realm 	= realm
+		Setlers( "Chat#wimLastTab", format( "%s", unit))
 	end
 
 	--print( self.tabber.tabs[tabID].preHistoric, self.tabber.tabs[tabID].fullName, unit )
@@ -304,7 +318,7 @@ local function CreateWIM( self)
 	self:RegisterForDrag( "LeftButton")
 	self:SetScript("OnEnter", 		function() self:SetAlpha(1) end)
 	self:SetScript("OnLeave", 		function() self:SetAlpha( minAlpha) end)
-	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) ContainerFrame3:Show() end)
+	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) ContainerFrame3:Show() if yo.Chat.wimLastTab then CheckTabForUnit( self, strsplit( ",", yo.Chat.wimLastTab)) end end)
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
 		yoMoveWIM:ClearAllPoints()
@@ -343,7 +357,7 @@ local function CreateWIM( self)
 	guild:SetNormalTexture( 	"Interface\\Addons\\yoFrame\\Media\\Guild-UI-SquareButton-Up")
 	guild:SetPushedTexture( 	"Interface\\Addons\\yoFrame\\Media\\Guild-UI-SquareButton-Down")
 	guild:SetHighlightTexture( 	"Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-	guild:SetScript("OnMouseDown", function(self, button) N.InfoGuild:ShowGuild( button) end)
+	guild:SetScript("OnMouseDown", function(self, button) N.infoTexts.infos.guild:ShowGuild( button, guild) end)
 	guild:SetScript("OnEnter", self.tooltipShow)
 	guild:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.guild = guild
@@ -357,8 +371,8 @@ local function CreateWIM( self)
 	friends:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	friends:SetScript("OnMouseDown", function( f, button)
 		self.menuWIM = { { text = "Дружеский шептун", isTitle = true,notCheckable=true}, }
-		N.InfoTexts.infos.friend:onEnter( nil, "fomWIM")
-		EasyMenu( self.menuWIM, N.menuFrame, f, 5, -5, "MENU", 2)
+		N.infoTexts.infos.friend:onEnter( nil, "fomWIM")
+		EasyMenu( self.menuWIM, N.menuFrame, f, 25, 50, "MENU", 2)
 	end)
 	--friends:SetScript("OnMouseDown", function(self, button) N.InfoFriend:ShowFiends( button)
 
@@ -817,8 +831,8 @@ local sizes = {
 local function CreatCopyFrame()
 	copyFrame = CreateFrame("Frame", nil, UIParent)
 	CreateStyle(copyFrame, 2, nil, 0.7)
-	copyFrame:SetPoint("TOPLEFT", wim, "BOTTOMLEFT", 0, -10)
-	copyFrame:SetPoint("TOPRIGHT", wim, "BOTTOMRIGHT", 0, -10)
+	--copyFrame:SetPoint("TOPLEFT", wim, "BOTTOMLEFT", 0, -10)
+	--copyFrame:SetPoint("TOPRIGHT", wim, "BOTTOMRIGHT", 0, -10)
 	copyFrame:SetFrameStrata("DIALOG")
 	copyFrame:Hide()
 	wim.copyFrame = copyFrame
@@ -828,7 +842,7 @@ local function CreatCopyFrame()
 	editBox:SetMaxLetters(199999)
 	editBox:EnableMouse(true)
 	editBox:SetAutoFocus(false)
-	editBox:SetFont( yo.Chat.chatFont, yo.Chat.fontsize +1 )
+	editBox:SetFont( yo.Chat.chatFont, yo.Chat.chatFontsize +1 )
 	editBox:SetHeight(350)
 	editBox:SetScript("OnEscapePressed", function() copyFrame:Hide() end)
 	editBox:SetScript("OnTextSet", function(self)
@@ -874,12 +888,18 @@ function wim:CopyTextBox()
 	--text = text:gsub("|[Tt]Interface\\TargetingFrame\\UI%-RaidTargetingIcon_(%d):0|[Tt]", "{rt%1}")
 	--text = text:gsub("|[Tt][^|]+|[Tt]", "")
 	--print(text)
+	local sh, a1, p1, a2, a3, p2, a4 = whereAreYouAre( wim, true, true)
+
+	wim.copyFrame:ClearAllPoints()
+	wim.copyFrame:SetPoint( a1, p1, a2, 0, 10 * sh)
+	wim.copyFrame:SetPoint( a3, p2, a4, 0, 10 * sh)
 
 	wim.copyFrame:SetWidth( wim:GetWidth())
 	wim.copyFrame:SetHeight(wim:GetHeight() * 0.75)
 	wim.copyFrame.editBox:SetWidth( wim:GetWidth() -30)
+
 	--wim.copyFrame.editBox:SetText( text)
-	wim.copyFrame:Show()
+	wim.copyFrame:SetShown( not wim.copyFrame:IsShown())
 end
 
 -----------------------------------------------------------------------------------
@@ -942,6 +962,23 @@ SLASH_TELLTARGET2 = "/ее"
 SlashCmdList.TELLTARGET = function(msg)
 	SendChatMessage(msg, "WHISPER")
 end
+
+ns.wimToggle = function(...)
+	if not yo_WIM:IsShown() then
+		PlaySound(SOUNDKIT.IG_QUEST_LOG_OPEN);
+	else
+		PlaySound(SOUNDKIT.IG_QUEST_LOG_CLOSE);
+	end
+
+	yo_WIM:SetShown( not yo_WIM:IsShown())
+end
+
+_G ["BINDING_HEADER_YOFRAME"] 	= "yoFrame"
+--_G ["BINDING_NAME_YOFrame"] 	= "yoFrame"
+
+--_G ["BINDING_NAME_DETAILS_SCROLL_UP"] = Loc ["STRING_KEYBIND_SCROLL_UP"]
+--_G ["BINDING_NAME_DETAILS_SCROLL_DOWN"] = Loc ["STRING_KEYBIND_SCROLL_DOWN"]
+
 
 --wim.insertLink = function( link)
 --	if link then

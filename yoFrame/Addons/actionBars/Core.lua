@@ -3,7 +3,7 @@ local L, yo, N = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-N["ActionBars"] = CreateFrame("Frame")
+N.ActionBars = CreateFrame("Frame")
 N.Hider = CreateFrame("Frame", nil, UIParent)
 N.Hider:Hide()
 N.PetHider = CreateFrame("Frame", "yoPetHider", UIParent, "SecureHandlerStateTemplate")

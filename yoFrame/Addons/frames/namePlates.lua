@@ -269,13 +269,13 @@ local function OnRaidTargetUpdate()
 end
 
 local function scanToQuest( self, ...)
-	local tt, showMe = N.ScanTooltip
+	local tt, showMe = N.scanTooltip
 	tt:SetOwner( UIParent, "ANCHOR_NONE")
 	tt:SetUnit( self.unit)
 	tt:Show()
 	local p1, p2, p4
 	for i = 3, min( 8, tt:NumLines()) do
-		local line = _G["yoFrame_ScanTooltipTextLeft"..i]
+		local line = _G["yoFrame_STTTextLeft"..i]
 		if line then
 			local lineText = line:GetText()
 

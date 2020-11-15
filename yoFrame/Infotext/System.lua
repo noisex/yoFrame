@@ -2,12 +2,12 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
-N.InfoTexts["infos"] = {}
+N.infoTexts["infos"] = {}
 
 --------------------------------------------------------------------
 -- System Stats
 --------------------------------------------------------------------
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local colorme = string.format("%02x%02x%02x", 1*255, 1*255, 1*255)
@@ -127,7 +127,7 @@ function Stat:Enable()
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 
 	self:Show()

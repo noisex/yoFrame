@@ -2,7 +2,7 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
-local infoText = N.InfoTexts
+local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID
@@ -82,6 +82,7 @@ function Stat:Enable()
 	self:SetSize( 1, 15)
 	self:ClearAllPoints()
 	self:SetPoint("LEFT", self.parent, "LEFT", self.parent:GetWidth()/self.parentCount*( self.index - 1) + self.shift, 0)
+	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 	self:RegisterEvent( 'COMBAT_LOG_EVENT_UNFILTERED')
 	self:RegisterEvent( "UNIT_PET")
 	self:RegisterEvent( 'PLAYER_LEAVE_COMBAT')
@@ -93,12 +94,13 @@ function Stat:Enable()
 	self:SetScript("OnEnter", function( ) infoText:onEnter( self) end )
 	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	self:SetScript("OnMouseDown", self.onClick)
+
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
 	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self.Text:SetFormattedText( infoText.displayString, "dps", 0, "") --,  SecondsToClocks( self.combatTime))
 	self.Text:ClearAllPoints()
-	self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
-	self:SetWidth( self.parent:GetWidth() / self.parentCount)
+	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
+
 	infoText:reset( self)
 	self:Show()
 end
