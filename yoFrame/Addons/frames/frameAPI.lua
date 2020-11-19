@@ -3,17 +3,26 @@ local oUF = ns.oUF or oUF
 --local colors = oUF.colors
 local L, yo, N = ns[1], ns[2], ns[3]
 
-local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
-	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, GetTime
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, GetTime
 
+local GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied
+	= GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied
+
+local UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax
+	= UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax
 
 local updateAllElements = function(frame)
 	for _, v in ipairs(frame.__elements) do
 		v(frame, "UpdateElement", frame.unit)
+		--print( GetTime(), "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	end
 end
 
 local function frameOnEnter(f, event)
+	if f.overShadow then
+
+		f.overShadow:Show() end
 
 	if not f.bgHlight then
 		f.bgHlight = f.Health:CreateTexture(nil, "OVERLAY")
@@ -21,7 +30,7 @@ local function frameOnEnter(f, event)
 		f.bgHlight:SetVertexColor( 0.4,0.4,0.4,0.9)
 		f.bgHlight:SetTexture( texhl)
 		f.bgHlight:SetBlendMode("ADD")
-		f.bgHlight:SetAlpha(0.1)
+		f.bgHlight:SetAlpha(0.2)
 		f.bgHlight:Show()
 	else
 		f.bgHlight:Show()
@@ -34,12 +43,9 @@ local function frameOnEnter(f, event)
 end
 
 local function frameOnLeave(f, event)
-	if f.bgHlight then
-		f.bgHlight:Hide()
-	end
-	if GameTooltip:IsShown() then
-		GameTooltip:FadeOut(2)
-	end
+	if f.overShadow 		 then f.overShadow:Hide()    end
+	if f.bgHlight 			 then f.bgHlight:Hide()      end
+	if GameTooltip:IsShown() then GameTooltip:FadeOut(2) end
 end
 
 local function updatePowerBar ( power, event, unit)
@@ -123,17 +129,19 @@ local function updateManaCost(self, event, _, _, spellID) -- 240022
 end
 
 local function addDebuffHigh( self)
-	self.DebuffHighlightMy = self.Health:CreateTexture(nil, "OVERLAY")
+	self.DebuffHighlightMy = self.DebuffHighlightMy or self.Health:CreateTexture(nil, "OVERLAY")
+	self.DebuffHighlightMy:ClearAllPoints()
 	self.DebuffHighlightMy:SetAllPoints(self.Health:GetStatusBarTexture())
 	self.DebuffHighlightMy:SetTexture(texture)
 	self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
 	self.DebuffHighlightMy:SetBlendMode("BLEND")
-	self.DebuffHighlightMyAlpha = 0.7
+	self.DebuffHighlightMyAlpha = 0.5
 	self.DebuffHighlightMyFilter = yo.Raid.filterHighLight
 end
 
 local function addAbsorbBar( self)
-	local AbsorbBar = CreateFrame('StatusBar', nil, self.Health)
+	local AbsorbBar = self.Health.AbsorbBar or CreateFrame('StatusBar', nil, self.Health)
+	AbsorbBar:ClearAllPoints()
    	AbsorbBar:SetPoint('TOP')
    	AbsorbBar:SetPoint('BOTTOM')
    	AbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture(), 'RIGHT')
@@ -147,7 +155,8 @@ local function addAbsorbBar( self)
 end
 
 local function addHealPred( self)
-	local healPred = CreateFrame('StatusBar', nil, self.Health)
+	local healPred = self.Health.healPred or CreateFrame('StatusBar', nil, self.Health)
+	healPred:ClearAllPoints()
     healPred:SetPoint('TOP')
     healPred:SetPoint('BOTTOM')
     healPred:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
@@ -358,9 +367,6 @@ local function updateHealthColor( f, event, unit, ...)
 	elseif UnitReaction( unit, 'player') or UnitPlayerControlled( unit) then
 		cols = f.colors.reaction[UnitReaction( unit, "player")]
 	end
-
-	if not cols then print( "ЖОПА!") end
-	if not cols[1] then print( "Большая ЖОПА!") end
 
 	f.colr, f.colg, f.colb = cols[1] or 1, cols[2] or 1, cols[3] or 1
 

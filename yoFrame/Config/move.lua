@@ -10,7 +10,6 @@ SetAnchPosition = function(anch, realAnch)
 
 	if realAnch then
 		ap, _, rp, x, y = realAnch:GetPoint()
-		--print(ap, f, rp, x, y)
 	end
 
 	local w, h = anch:GetSize()

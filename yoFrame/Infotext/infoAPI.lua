@@ -17,15 +17,15 @@ infoText.texts = setmetatable({}, mt)
 infoText.texts["1empty"]= "--NONE--"
 
 infoText.pets = {}
-infoText.spellsSchool 	= {}
-infoText.pet_blacklist 	= {}
-infoText.strIcon 		= "|cff888888%-3s|r|T%s:14:14:0:0:64:64:10:54:10:54|t %s"
+infoText.petBlacklist 	= {}
+infoText.strIcon 		= "|T%s:14:14:0:0:64:64:10:54:10:54|t %s %-3s" --|cff888888
 infoText.damag 			= "%s (%.1f%%)"
 infoText.displayString 	= "%s: ".. myColorStr .. "%s%s|r"
 infoText.parentCount 	= yo.InfoTexts.countLeft
 infoText.shift 			= 0
 
-infoText.spells_school = {
+infoText.spellSchool = {
+	[-1]=   {name = STRING_SCHOOL_PHYSICAL, 	formated = "|cFFFFFFFF" .. STRING_SCHOOL_PHYSICAL 	.. "|r", 	hex = "FFFFFF00", rgb = {255, 255, 255},	decimals = {1.00, 1.00, 1.00}},
 	[0] =   {name = STRING_SCHOOL_PHYSICAL, 	formated = "|cFFFFFFFF" .. STRING_SCHOOL_PHYSICAL 	.. "|r", 	hex = "FFFFFF00", rgb = {255, 255, 255},	decimals = {1.00, 1.00, 1.00}},
 	[1] =   {name = STRING_SCHOOL_PHYSICAL, 	formated = "|cFFFFFF00" .. STRING_SCHOOL_PHYSICAL 	.. "|r", 	hex = "FFFFFF00", rgb = {255, 255, 0}, 		decimals = {1.00, 1.00, 0.00}},
 	[2] =   {name = STRING_SCHOOL_HOLY , 		formated = "|cFFFFE680" .. STRING_SCHOOL_HOLY 		.. "|r", 	hex = "FFFFE680", rgb = {255, 230, 128},	decimals = {1.00, 0.90, 0.50}},
@@ -65,7 +65,7 @@ infoText.spells_school = {
 
 function infoText:reset( infos)
 	infos.combatTime, infos.amountTotal, infos.newFight = 0, 0, false
-	wipe( infos.spellCount)
+	wipe( infos.spellInfo)
 	wipe( infos.spellDamage)
 end
 
@@ -86,21 +86,26 @@ function infoText:stop( infos)
 end
 
 
-function infoText.checkNewSpell( infos, spellID, spellDMG, over, school)
+function infoText:checkNewSpell( sourceGUID, spellId, spellName, spellDMG, over, school, spellCrit)
+	local over = over == -1 and 0 or 0
+	--print(spellId, spellName, spellDMG, over, school)
+	if spellDMG - over == 0 then return end
 
-	if spellDMG - ( over or 0) == 0 then return end
+	if self.newFight then infoText:reset( self) end
 
-	if infos.newFight then infoText:reset( infos) end
-
-	if not infos.spellDamage[spellID] then
-		infos.spellDamage[spellID]	= 0
-		infoText.spellsSchool[spellID] = school
-		infos.spellCount[spellID] 	= 0
+	if not self.spellDamage[spellName] then
+		self.spellDamage[spellName]		= 0
+		self.spellInfo[spellName] 		= {}
+		self.spellInfo[spellName].count	= 0
+		self.spellInfo[spellName].id	= spellId
+		self.spellInfo[spellName].school= school
+		self.spellInfo[spellName].crit	= 0
 	end
-
-	infos.spellCount[spellID]  = infos.spellCount[spellID] + 1
-	infos.spellDamage[spellID] = infos.spellDamage[spellID] + spellDMG - ( over or 0)
-	infos.amountTotal = infos.amountTotal + spellDMG - ( over or 0)
+	--print( spellName, spellCrit, self.spellInfo[spellName].crit)
+	self.spellInfo[spellName].count = self.spellInfo[spellName].count 	+ 1
+	self.spellInfo[spellName].crit 	= spellCrit and self.spellInfo[spellName].crit + 1 or self.spellInfo[spellName].crit
+	self.spellDamage[spellName] 	= self.spellDamage[spellName] 		+ spellDMG - ( over or 0)
+	self.amountTotal = self.amountTotal + spellDMG - ( over or 0)
 end
 
 
@@ -127,7 +132,7 @@ function infoText:checkPets( serial)
 			self.pets[serial] = true
 		end
 	end
-	self.pet_blacklist[serial] = true
+	self.petBlacklist[serial] = true
 end
 
 
@@ -151,12 +156,12 @@ function infoText:onEnter( infos)
 	GameTooltip:ClearLines()
 	GameTooltip:AddLine( myColorStr .. "Царский депс:")
 	local ind = 1
-	local shift = 2.7
+	local shift = 2.9
 	local stoPerc
-	for spellID, data in spairs( infos.spellDamage, function(t,a,b) return t[b] < t[a] end) do
+	for spellName, data in spairs( infos.spellDamage, function(t,a,b) return t[b] < t[a] end) do
 
-    	local spellName, _, icon = GetSpellInfo( spellID)
-		local col  = self.spells_school[ self.spellsSchool[spellID]].decimals		-- CombatLog_Color_ColorArrayBySchool( self.spellsSchool[spellID]) --COMBATLOG_DEFAULT_COLORS.schoolColoring[self.spellsSchool[spellID]
+    	local _, _, icon = GetSpellInfo( infos.spellInfo[spellName].id)
+		local col  = self.spellSchool[ infos.spellInfo[spellName].school].decimals		-- CombatLog_Color_ColorArrayBySchool( self.spellsSchool[spellID]) --COMBATLOG_DEFAULT_COLORS.schoolColoring[self.spellsSchool[spellID]
 		local perc = infos.amountTotal * data == 0 and 0 or 100 / infos.amountTotal * data
     	if ind == 1 then
     		stoPerc = 100 / perc * shift
@@ -164,9 +169,10 @@ function infoText:onEnter( infos)
 			ind = nil
 		end
 
-		local count = IsShiftKeyDown() and infos.spellCount[spellID] or " "
+		local crit  = ( IsShiftKeyDown() and infos.spellInfo[spellName].crit > 0) and " |cffffff00*" ..infos.spellInfo[spellName].crit .. " |r" or ""
+		local count = IsShiftKeyDown() and infos.spellInfo[spellName].count .. crit or " "
 
-		GameTooltip:AddDoubleLine( format( self.strIcon, count, icon, spellName) , format( self.damag, nums( data), perc), col[1], col[2], col[3], col[1], col[2], col[3])
+		GameTooltip:AddDoubleLine( format( self.strIcon, icon, spellName, count) , format( self.damag, nums( data), perc), col[1], col[2], col[3], col[1], col[2], col[3])
 
     	if IsShiftKeyDown() then
     		local strPerc = ""

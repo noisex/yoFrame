@@ -174,8 +174,6 @@ local NamePlatesFrame = CreateFrame("Frame", "yo_NamePlatesFrame", UIParent)
 	NamePlatesFrame:SetScript("OnEvent", NamePlates_OnEvent)
 
 
-
-
 local function UpdateBuffs(self)
 	if not self.unit then return end
 
@@ -192,10 +190,10 @@ local function UpdateBuffs(self)
 
 			--if spellID ==212431 then print(name, count, debuffType, caster, nameplateShowPersonal, spellID, namepmateshowall) end
 			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
-			if not yo.NamePlates.moreDebuffIcons then nameplateShowPersonal = false end
 
-			if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( N.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or N.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
-
+			--if not yo.NamePlates.moreDebuffIcons then nameplateShowPersonal = false end
+			--if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( N.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or N.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
+			if ((caster == "player" or caster == "pet" or caster == "vehicle") and N.DebuffWhiteList[name] ) or namepmateshowall or N.tauntsSpell[name] then
 				debuffType = blueDebuff and debuffType or nil
 
 				local aIcon = N.createAuraIcon( self.debuffIcons, idebuff)
@@ -626,7 +624,8 @@ local function createNP(self, unit)
 	self.debuffIcons:SetWidth( nameplatewidth / 2)
 	self.debuffIcons:SetHeight( auras_size)
 	self.debuffIcons:SetFrameLevel(self:GetFrameLevel() + 20)
-	self.debuffIcons.direction = "RIGHT"
+	self.debuffIcons.direction 	= "RIGHT"
+	self.debuffIcons.inRow  	= 3
 
 	self.buffIcons = CreateFrame("Frame", nil, self)
 	self.buffIcons:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT",  0, 15)
@@ -634,13 +633,16 @@ local function createNP(self, unit)
 	self.buffIcons:SetHeight( aurasB_size)
 	self.buffIcons:SetFrameLevel(self:GetFrameLevel() + 20)
 	self.buffIcons.direction = "LEFT"
+	self.buffIcons.anchor 	 = "BOTTOMRIGHT"
+	self.buffIcons.inRow  	 = 3
 
 	self.disIcons = CreateFrame("Frame", nil, self)
 	self.disIcons:SetPoint("BOTTOM", self.Health, "TOP",  0, 15)
 	self.disIcons:SetWidth( iconDiSize)
 	self.disIcons:SetHeight( iconDiSize)
 	self.disIcons:SetFrameLevel(self:GetFrameLevel() + 20)
-	self.disIcons.direction = "UP"
+	self.disIcons.direction = "LEFT"
+	self.disIcons.inRow  	= 1
 
 	self.questIcon = self:CreateTexture(nil, "OVERLAY")
 	self.questIcon:SetPoint("RIGHT", self.Health, "LEFT", -2, 0)

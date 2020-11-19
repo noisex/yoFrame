@@ -35,12 +35,14 @@ function SetUpAnimGroup(object, type, ...)
 		--object.anim.scale:SetDuration(0.75)
 		--object.anim.scale:SetFromScale( 0.7, .7)
 		--object.anim.scale:SetToScale( 1, 1)
-		--object.anim:SetScript("OnFinished", function(_, requested)
-		--	--print(time(), "...")
-		--	if(not requested) then
-		--		object.anim:Play( true)
-		--	end
-		--end)
+		object.anim:SetScript("OnFinished", function(_, requested)
+			object.plaing = false
+			--print(time(), "...")
+		end)
+		object.anim:SetScript("OnPlay", function(_, requested)
+			object.plaing = true
+			--print(time(), "!!!!!!!!!!!")
+		end)
 	elseif type == 'Shake' then
 		object.shake = object:CreateAnimationGroup("Shake")
 		object.shake:SetLooping("REPEAT")

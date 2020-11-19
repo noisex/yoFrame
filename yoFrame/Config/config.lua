@@ -130,6 +130,14 @@ yo.tCoord 		= {0.07, 0.93, 0.07, 0.93}
 yo.tCoordBig 	= {0.22, 0.78, 0.22, 0.78}
 yo.tCoordSmall 	= {0.07, 0.93, 0.07, 0.93}
 
+
+if yo.healBotka.enable then
+	Clique = Clique or CreateFrame("Frame", "yo_Clique", UIParent)
+	header = Clique.header or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
+	Clique.header = header
+	SecureHandlerSetFrameRef(header, 'clickcast_header', Clique.header)
+end
+
 ---- Apply or remove saved settings as needed
 --for group, options in pairs(yo_tCfg) do
 --	if yo[group] then

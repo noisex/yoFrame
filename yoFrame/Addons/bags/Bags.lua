@@ -40,6 +40,11 @@ AssignmentColors = {
 	[4] = {255/255, 81/255, 168/255}, -- tradegoods
 }
 
+BAG_FILTER_ICONS = {
+	[_G.LE_BAG_FILTER_FLAG_EQUIPMENT] = 'Interface/ICONS/INV_Chest_Plate10',
+	[_G.LE_BAG_FILTER_FLAG_CONSUMABLES] = 'Interface/ICONS/INV_Potion_93',
+	[_G.LE_BAG_FILTER_FLAG_TRADE_GOODS] = 'Interface/ICONS/INV_Fabric_Silk_02',
+}
 
 QuestColors = {
 	questStarter = {r = 1, g = 1, b = 0},
@@ -156,12 +161,12 @@ function addon:UpdateSearch()
 	addon:SetSearch(SEARCH_STRING);
 end
 
-function addon:OpenEditbox()
-	addon.BagFrame.detail:Hide();
-	addon.BagFrame.editBox:Show();
-	addon.BagFrame.editBox:SetText( SEARCH);
-	addon.BagFrame.editBox:HighlightText();
-end
+--function addon:OpenEditbox()
+--	addon.BagFrame.detail:Hide();
+--	addon.BagFrame.editBox:Show();
+--	addon.BagFrame.editBox:SetText( SEARCH);
+--	addon.BagFrame.editBox:HighlightText();
+--end
 
 function addon:ResetAndClear()
 	local editbox = self:GetParent().editBox or self
@@ -254,10 +259,10 @@ function addon:AssignBagFlagMenu()
 
 					if value then
 						holder.tempflag = i
-						holder.ElvUIFilterIcon:SetTexture(BAG_FILTER_ICONS[i])
-						holder.ElvUIFilterIcon:Show()
+						--holder.ElvUIFilterIcon:SetTexture(BAG_FILTER_ICONS[i])
+						--holder.ElvUIFilterIcon:Show()
 					else
-						holder.ElvUIFilterIcon:Hide()
+						--holder.ElvUIFilterIcon:Hide()
 						holder.tempflag = -1
 					end
 				end
@@ -438,7 +443,11 @@ function addon:GetBagAssignedInfo(holder)
 			if active then
 				color = AssignmentColors[i]
 				active = (color and i) or 0
+				--holder.ElvUIFilterIcon:SetTexture( BAG_FILTER_ICONS[i])
+				--holder.ElvUIFilterIcon:Show()
 				break
+			else
+				--holder.ElvUIFilterIcon:Hide()
 			end
 		end
 	end
@@ -619,7 +628,7 @@ function UpdateSlot( self, bagID, slotID)
 	local slot, _ 		= self.Bags[bagID][slotID], nil;
 	local bagType 		= self.Bags[bagID].type;
 	local clink 		= GetContainerItemLink(bagID, slotID);
-	local assignedID 	= (self.isBank and bagID) or bagID - 1
+	local assignedID 	= bagID --(self.isBank and bagID) or bagID - 1
 	local assignedBag 	= self.Bags[assignedID] and self.Bags[assignedID].assigned
 	local texture, count, locked, readable, noValue
 
@@ -645,7 +654,7 @@ function UpdateSlot( self, bagID, slotID)
 		local r, g, b = unpack( ProfessionColors[bagType])
 		slot.shadow:SetBackdropBorderColor(r, g, b, 0.9)
 	elseif (clink) then
-		local iLvl, itemEquipLoc, itemClassID, itemSubClassID
+		local iLvl, itemEquipLoc, itemClassID, itemSubClassID, itemSubType
 		slot.name, _, _, _, _, _, itemSubType, _, itemEquipLoc, _, _, itemClassID, itemSubClassID = GetItemInfo(clink);
 
 		local item = Item:CreateFromBagAndSlot(bagID, slotID)
@@ -730,20 +739,16 @@ function UpdateSlot( self, bagID, slotID)
 	if GameTooltip:GetOwner() == slot and not slot.hasItem then GameTooltip:Hide() end
 end
 
-function addon:UpdateBagSlots(bagID)
+function addon:UpdateBagSlots( self, bagID)
 	--dprint( "UpdateBagSlot: ", bagID, GetContainerNumSlots(bagID), self.UpdateSlot)
 
 	if(bagID == REAGENTBANK_CONTAINER) then
 		for i=1, 98 do
-			self:UpdateReagentSlot(i);
+			addon:UpdateReagentSlot(i);
 		end
 	else
 		for slotID = 1, GetContainerNumSlots(bagID) do
-			--if self.UpdateSlot then
-				self:UpdateSlot(bagID, slotID);
-			--else
-			--	self:GetParent():GetParent():UpdateSlot(bagID, slotID);
-			--end
+			UpdateSlot( self, bagID, slotID);
 		end
 	end
 end
@@ -753,8 +758,7 @@ function UpdateAllSlots( self, ...)
 
 	for _, bagID in ipairs( self.BagIDs) do
 		if self.Bags[bagID] then
-			--self.Bags[bagID]:UpdateBagSlots( bagID);
-			addon.UpdateBagSlots( self, bagID);
+			addon:UpdateBagSlots( self, bagID);
 		end
 	end
 
@@ -907,6 +911,17 @@ function addon:GetContainerFrame(arg)
 	return self.bagFrame;
 end
 
+function addon:CreateFilterIcon(parent)
+	--Create the texture showing the assignment type
+	parent.ElvUIFilterIcon = parent:CreateTexture(nil, 'OVERLAY')
+	parent.ElvUIFilterIcon:Hide()
+	parent.ElvUIFilterIcon:SetTexture( "Interface\\ICONS\\INV_Potion_93")
+	--parent.ElvUIFilterIcon:CreateBackdrop(nil, nil, nil, true)
+	parent.ElvUIFilterIcon:SetPoint('TOPLEFT', parent, 'TOPLEFT', 2, -2)
+	parent.ElvUIFilterIcon:SetTexCoord(unpack(yo.tCoord))
+	parent.ElvUIFilterIcon:SetSize(14, 14)
+end
+
 function addon:CreateLayout( isBank)
 	local f = self:GetContainerFrame(isBank);
 	if not f then return; end
@@ -951,7 +966,7 @@ function addon:CreateLayout( isBank)
 		--f.ContainerHolder:SetSize(((buttonSize + buttonSpacing) * numContainerSlots) + buttonSpacing, buttonSize + (buttonSpacing * 2))
 		f.ContainerHolder:SetSize(((buttonSize) * i) + 10, buttonSize + (buttonSpacing * 2))
 
-		f.ContainerHolder[i] = CreateFrame("ItemButton", bagName, f.ContainerHolder, inherit) --"BagSlotButtonTemplate") --"ContainerFrameItemButtonTemplate")-- "BagSlotButtonTemplate")   --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		f.ContainerHolder[i] = f.ContainerHolder[i] or CreateFrame("ItemButton", bagName, f.ContainerHolder, inherit) --"BagSlotButtonTemplate") --"ContainerFrameItemButtonTemplate")-- "BagSlotButtonTemplate")   --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		f.ContainerHolder[i].id = bagID
 		f.ContainerHolder[i]:HookScript('OnEnter', function(ch) addon.SetSlotAlphaForBag(ch, f) end)
 		f.ContainerHolder[i]:HookScript('OnLeave', function(ch) addon.ResetSlotAlphaForBags(ch, f) end)
@@ -962,6 +977,8 @@ function addon:CreateLayout( isBank)
 		end
 		f.ContainerHolder[i]:SetNormalTexture("")
 		f.ContainerHolder[i]:SetPushedTexture("")
+
+		--addon:CreateFilterIcon(f.ContainerHolder[i])
 
 		if isBank then
 			f.ContainerHolder[i]:SetID(bagID - 4)
@@ -1014,7 +1031,7 @@ function addon:CreateLayout( isBank)
 			f.ContainerHolder[i]:SetPoint('LEFT', f.ContainerHolder[i - 1], 'RIGHT', 0, 0)
 		end
 
-		f.Bags[bagID] = CreateFrame('Frame', f:GetName()..'Bag'..bagID, f.holderFrame)
+		f.Bags[bagID] = f.Bags[bagID] or CreateFrame('Frame', f:GetName()..'Bag'..bagID, f.holderFrame)
 		f.Bags[bagID]:SetID(bagID)
 
 		assignedBag = addon:GetBagAssignedInfo(f.ContainerHolder[i])
@@ -1045,7 +1062,7 @@ function addon:CreateLayout( isBank)
 			for slotID = 1, numSlots do
 				f.totalSlots = f.totalSlots + 1;
 				if not f.Bags[bagID][slotID] then
-					f.Bags[bagID][slotID] = CreateFrame('ItemButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BankItemButtonGenericTemplate' or 'ContainerFrameItemButtonTemplate');
+					f.Bags[bagID][slotID] = f.Bags[bagID][slotID] or CreateFrame('ItemButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BankItemButtonGenericTemplate' or 'ContainerFrameItemButtonTemplate');
 
 					if not f.Bags[bagID][slotID].shadow then
 						CreateStyle( f.Bags[bagID][slotID], 1, nil, 0.5)
@@ -1113,7 +1130,7 @@ function addon:CreateLayout( isBank)
 					f.Bags[bagID][slotID].bagID = bagID
 					f.Bags[bagID][slotID].slotID = slotID
 
-					f.Bags[bagID][slotID].itemLevel = f.Bags[bagID][slotID]:CreateFontString(nil, 'OVERLAY')
+					f.Bags[bagID][slotID].itemLevel = f.Bags[bagID][slotID].itemLevel or f.Bags[bagID][slotID]:CreateFontString(nil, 'OVERLAY')
 					f.Bags[bagID][slotID].itemLevel:SetPoint("TOP", 0, -2)
 					f.Bags[bagID][slotID].itemLevel:SetFont( yo.font, yo.fontsize - 1, "OUTLINE")
 
@@ -1133,6 +1150,8 @@ function addon:CreateLayout( isBank)
 					end
 				end
 
+				f.Bags[bagID][slotID].slotID = slotID
+				f.Bags[bagID][slotID].bagID = bagID
 				f.Bags[bagID][slotID]:SetID(slotID);
 				f.Bags[bagID][slotID]:SetSize( buttonSize, buttonSize)
 
@@ -1203,7 +1222,7 @@ function addon:CreateLayout( isBank)
 			totalSlots = totalSlots + 1;
 
 			if(not f.reagentFrame.slots[i]) then
-				f.reagentFrame.slots[i] = CreateFrame("ItemButton", "ReagentBankFrameItem"..i, f.reagentFrame, "ReagentBankItemButtonGenericTemplate");
+				f.reagentFrame.slots[i] = f.reagentFrame.slots[i] or CreateFrame("ItemButton", "ReagentBankFrameItem"..i, f.reagentFrame, "ReagentBankItemButtonGenericTemplate");
 				f.reagentFrame.slots[i]:SetID(i)
 
 				StyleButton( f.reagentFrame.slots[i])
@@ -1629,7 +1648,7 @@ function OnEvent( self, event, ...)
 		end
 
 		--dprint( event, ": ", ...)
-		addon.UpdateBagSlots( self, ...);
+		addon:UpdateBagSlots( self, ...);
 
 		--Refresh search in case we moved items around
 		if addon:IsSearching() then
@@ -1648,7 +1667,7 @@ function OnEvent( self, event, ...)
 		doEquip = false
 		--dprint( "event =", event, doEquip)
 	elseif event == "PLAYERREAGENTBANKSLOTS_CHANGED" then
-		addon.UpdateReagentSlot( self, ...)
+		addon:UpdateReagentSlot( self, ...)
 	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED") and self:IsShown() then
 		UpdateAllSlots( self, ...)
 	elseif event == "BANK_BAG_SLOT_FLAGS_UPDATED" then

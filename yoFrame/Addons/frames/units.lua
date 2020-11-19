@@ -250,6 +250,13 @@ local function unitShared(self, unit)
 		self.PvPIndicator:SetAlpha( 0.7)
 		self.PvPIndicator:SetDesaturated(true)
 
+		self.PhaseIndicator = CreateFrame('Frame', nil, self)
+    	self.PhaseIndicator:SetSize( 28, 28)
+    	self.PhaseIndicator:SetPoint('CENTER', self)
+    	self.PhaseIndicator:EnableMouse(true)
+    	self.PhaseIndicator.Icon = self.PhaseIndicator:CreateTexture(nil, 'OVERLAY')
+    	self.PhaseIndicator.Icon:SetAllPoints()
+
     	self.ReadyCheckIndicator = self.Overlay:CreateTexture(nil, 'OVERLAY')
     	self.ReadyCheckIndicator:SetSize( 17, 17)
     	self.ReadyCheckIndicator:SetPoint('LEFT', self.Overlay, "CENTER", 40, 5)

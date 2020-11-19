@@ -50,6 +50,39 @@ N.bls = {
     [264667]	= true, 	-- собачка ханта
 }
 
+N.tankDefs = {
+	--[21562]	= true,
+	--[6673]	= true,
+	--[5697]	= true,
+	--[238454]= true,
+-- Death Knight / Blood
+	[49028] = true, --  [Dancing Rune Weapon](https://www.wowhead.com/spell=49028)
+	[48792] = true, --  [Icebound Fortitude](https://www.wowhead.com/spell=48792)
+	[55233] = true, --  [Vampiric Blood](https://www.wowhead.com/spell=55233)
+-- Demon Hunter / Vengeance
+	[204021] = true, --  [Fiery Brand](https://www.wowhead.com/spell=204021)
+	[187827] = true, --  [Metamorphosis](https://www.wowhead.com/spell=187827)
+-- Druid / Guardian
+	[22812] = true, --  [Barkskin](https://www.wowhead.com/spell=22812)
+	[61336] = true, --  [Survival Instincts](https://www.wowhead.com/spell=61336)
+	[22842] = true, --  -- Frenzied Regeneration
+	[61336]	= true, -- Survival Instincts]
+	[102342]= true, -- Ironbark
+-- Monk / Brewmaster
+	[115203] = true, --  [Fortifying Brew](https://www.wowhead.com/spell=115203)
+    -- Note: The CD on this is approximated to 3 minutes, but could be much different in practice
+	[115203] = true, --  [Zen Meditation](https://www.wowhead.com/spell=115203)
+-- Paladin / Protection
+	[31850] = true, --  [Ardent Defender](https://www.wowhead.com/spell=31850)
+	[86659] = true, --  [Guardian of Ancient Kings](https://www.wowhead.com/spell=86659)
+	[6940]	= true, --  Blessing of Sacrifice
+-- Warrior / Protection
+	[871] = true, --  [Shield Wall](https://www.wowhead.com/spell=871)
+	[12975] = true, --  [Last Stand](https://www.wowhead.com/spell=12975)
+-- warlock
+	[104773] = true, -- Твердая решимость
+}
+
 N.classEquipMap = {
 	["WARRIOR"] 	= 4,
 	["PALADIN"] 	= 4,

@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: |cff00ffffyoFrame|cffbbbbbb Config
 ## Notes: In-game configuration for yoFrame
 ## Author: Noisex

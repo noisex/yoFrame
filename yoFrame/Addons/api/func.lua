@@ -138,11 +138,10 @@ end
 
 function checkToClose(...)
 
-	if yo_WIM 			and yo_WIM:IsShown() 			then yo_WIM:Hide() end
-	if yo_BBFrame.bag 	and yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
-	if yo_DuLoot 		and yo_DuLoot:IsShown()			then yo_DuLoot:Hide()	end
-	if yo_Bags.bagFrame and yo_Bags.bagFrame:IsShown()  then yo_Bags.bagFrame:Hide() end
-
+	if yo_WIM 		and yo_WIM:IsShown() 	then yo_WIM:Hide() end
+	if yo_DuLoot 	and yo_DuLoot:IsShown()	then yo_DuLoot:Hide() end
+	if yo_BBFrame	and yo_BBFrame.bag 		and  yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
+	if yo_Bags		and yo_Bags.bagFrame 	and  yo_Bags.bagFrame:IsShown() then yo_Bags.bagFrame:Hide() end
 end
 
 if not ContainerFrame4  then

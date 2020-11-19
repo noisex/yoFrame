@@ -50,10 +50,10 @@ local function Keybinding_OnClick(frame, button)
 end
 
 local ignoreKeys = {
-	["BUTTON1"] = true, ["BUTTON2"] = true,
-	["UNKNOWN"] = true,
-	["LSHIFT"] = true, ["LCTRL"] = true, ["LALT"] = true,
-	["RSHIFT"] = true, ["RCTRL"] = true, ["RALT"] = true,
+	--["BUTTON1"] = true, ["BUTTON2"] = true,
+	--["UNKNOWN"] = true,
+	--["LSHIFT"] = true, ["LCTRL"] = true, ["LALT"] = true,
+	--["RSHIFT"] = true, ["RCTRL"] = true, ["RALT"] = true,
 }
 local function Keybinding_OnKeyDown(frame, key)
 	local self = frame.obj
@@ -88,8 +88,10 @@ local function Keybinding_OnKeyDown(frame, key)
 end
 
 local function Keybinding_OnMouseDown(frame, button)
-	if button == "LeftButton" or button == "RightButton" then
-		return
+	if button == "LeftButton" then
+		button = "BUTTON1"
+	elseif button == "RightButton" then
+		button = "BUTTON2"
 	elseif button == "MiddleButton" then
 		button = "BUTTON3"
 	elseif button == "Button4" then

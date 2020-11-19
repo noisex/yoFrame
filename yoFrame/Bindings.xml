@@ -1,7 +1,7 @@
 <Bindings>
 	<Binding name="Toggle WIM window" header="YOFRAME" category="|cff00ffffyoFrame|r ">
 		yoFrame:wimToggle()</Binding>
-	<Binding name="Open config window" category="|cff00ffffyoFrame|r ">
+	<Binding name="Toggle config window" category="|cff00ffffyoFrame|r ">
 		yoFrame_Config:InitOptions()</Binding>
 	<Binding name="Toggle move frames" category="|cff00ffffyoFrame|r ">
 		yoFrame:toggleMove()</Binding>

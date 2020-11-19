@@ -2,12 +2,10 @@ local addon, ns = ...
 local L, _ = unpack( ns)
 
 local ACD
-local needReload = false
+local needReload, openka, initka = false
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
-
---N = {}
 
 LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
 
@@ -103,7 +101,6 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
 
 
 function InitOptions()
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
 	N = yoFrame[3]
 
 	local defaults = {
@@ -265,7 +262,7 @@ function InitOptions()
 				--disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
 					ObjectiveTracker= {	order = 19, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
-					ObjectiveShort	= {	order = 21, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
+					--ObjectiveShort	= {	order = 21, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
 					ObjectiveHeight = { order = 22, type = "range", name = function(info) return tr( info[#info]) end, 	min = 250, max = 650, step = 1, desc = L["OBJQ_DESC"],	},
 					hideObjective	= {	order = 24, type = "toggle",name = function(info) return tr( info[#info]) end,   },
 					showToday		= {	order = 26, type = "toggle",name = function(info) return tr( info[#info]) end,  width = "full" },
@@ -391,7 +388,8 @@ function InitOptions()
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
 					enable 			= {	order = 1,  type = "toggle", name = L["RAIDenable"], disabled = false,},
-					simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info]) end,},
+					--simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info]) end,},
+					raidTemplate	= {	order = 02, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = "Normal", [2] = "Simple", [3] = "HealBotka",},},
 					classcolor 		= {	order = 10, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
 					groupingOrder 	= {	order = 15, type = "select", name = function(info) return tr( info[#info]) end,	values = {["ID"] = L["SRT_ID"], ["GROUP"] = L["SRT_GR"], ["TDH"] = L["SRT_TDH"], ["THD"] = L["SRT_THD"]},},
 					width 			= {	order = 20,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 60, max = 150, step = 1,},
@@ -630,12 +628,12 @@ function InitOptions()
 					enable 			= { width = "full",	order = 1, type = "toggle",	name = L["FLGenable"], disabled = false, },
 					--desc01			= {	order = 2, type = "description", name = L["DESC_FILGER"], width = "full"},
 
-					fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					--fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					--fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					--fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 
-					fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
-					fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.5,},
+					--fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
+					--fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.5,},
 
 					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
@@ -698,6 +696,102 @@ function InitOptions()
 						func = function() yo.CTA.hide = false resetCTAtimer() end,},
 				},
 			},
+
+			healBotka = {
+				type = 'group', name = "Хилботка", childGroups = 'tab', order = 200,
+				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
+				get = function(info) return yo[info[1]][info[#info]] end,
+				--disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
+				args = {
+					enable 	= { width = "full",	order = 0, type = "toggle",	name = "Включить жалкое подобие на нормальные хилфреймы.", desc = "Настоятельно рекомендую предварительно установить |cffff0000`Персональные настройки`|r на первой странице.", disabled = false, },
+
+					keneral = {
+						order = 1, type = 'group', name = "Ключ вязать мышь ключдоска",
+						args = {
+							set00	= {	order = 08, type = "description", name = "Маус ор клавабатон", width = 1.2,},
+							set01	= {	order = 09, type = "description", name = "Спелл фор биндинг", width = 1,},
+
+							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",   width = 1.1, desc = "Клац мышкой для смены бинды",},
+
+							key1	= {	order = 10, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key2	= {	order = 14, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell2	= { order = 16, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key3	= {	order = 18, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell3	= { order = 20, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key4	= {	order = 22, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell4	= { order = 24, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key5	= {	order = 26, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell5	= { order = 28, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key6	= {	order = 30, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell6	= { order = 32, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key7	= {	order = 34, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell7	= { order = 36, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key8	= {	order = 38, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell8	= { order = 40, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key9	= {	order = 42, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell9	= { order = 44, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key10	= {	order = 46, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell10	= { order = 48, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key11	= {	order = 50, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell11	= { order = 52, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							key12	= {	order = 54, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							spell12	= { order = 56, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+						},
+					},
+					heneral = {
+						order = 2, type = 'group', name = "Хотасы",
+						args = {
+							hSpell1	= { order = 70, type = "select", name = "Иконка №1 ( лево-центр)", width = 1.5, values = N.spellsBooks,},
+							hSpell2	= { order = 80, type = "select", name = "Иконка №2 ( лево-низ)",   width = 1.5, values = N.spellsBooks,},
+							hSpell3	= { order = 90, type = "select", name = "Иконка №3 ( центр-низ)",  width = 1.5, values = N.spellsBooks,},
+							hSpell4	= { order =100, type = "select", name = "Иконка №4 ( право-низ)",  width = 1.5, values = N.spellsBooks,},
+							hSpell5	= { order =110, type = "select", name = "Иконка №5 ( право-центр)",width = 1.5, values = N.spellsBooks,},
+
+							hColEna1= {	order = 71, type = "toggle",name = "Свой цвет вместо иконки",},
+							hColEna2= {	order = 81, type = "toggle",name = "Свой цвет вместо иконки",},
+							hColEna3= {	order = 91, type = "toggle",name = "Свой цвет вместо иконки",},
+							hColEna4= {	order = 101, type = "toggle",name ="Свой цвет вместо иконки",},
+							hColEna5= {	order = 111, type = "toggle",name ="Свой цвет вместо иконки",},
+
+							hColor1 ={	order = 72, type = "color",	name =  "", --function(info) return tr( info[#info]) end,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+							hColor2 ={	order = 82, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+							hColor3 ={	order = 92, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+							hColor4 ={	order = 102, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+							hColor5 ={	order = 112, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+
+							hTimEna1= {	order = 73, type = "toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna2= {	order = 83, type = "toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna3= {	order = 93, type = "toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna4= {	order = 103, type ="toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna5= {	order = 113, type ="toggle",name = "Скрывать таймер больше времени:",},
+
+							hTimer1	= {	order = 74,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
+							hTimer2	= {	order = 84,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
+							hTimer3	= {	order = 94,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
+							hTimer4	= {	order = 104,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
+							hTimer5 = {	order = 114,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
+						},
+					},
+				aeneral = {
+						order = 3, type = 'group', name = "Всякое с ...",
+						args = {},
+					},
+				},
+			--}
+			},
+
 
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
@@ -775,67 +869,27 @@ function InitOptions()
 				},
 			},
 
-			--healBotka = {
-			--	name = "Хилботка", type = "group", order = 200,
-			--	--hidden = function() return not yo.healBotka.enable end,
-			--	set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
-			--	get = function(info) return yo[info[1]][info[#info]] end,
-			--	args = {
-			--		enable 	= { width = "full",	order = 0, type = "toggle",	name = "Включить жалкое подобие на нормальные хилфреймы.", desc = "Настоятельно рекомендую предварительно установить |cffff0000`Персональные настройки`|r на первой странице.", disabled = false, },
-			--		set00	= {	order = 08, type = "description", name = "Маус ор клавабатон", width = 1.2,},
-			--		set01	= {	order = 09, type = "description", name = "Спелл фор биндинг", width = 1,},
-
-			--		targ01	= {	order = 01, type = "keybinding",	name = "Target", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		menu01	= {	order = 02, type = "keybinding",	name = "Menu",   width = 1.1, desc = "Клац мышкой для смены бинды",},
-
-			--		key1	= {	order = 10, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key2	= {	order = 14, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell2	= { order = 16, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key3	= {	order = 18, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell3	= { order = 20, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key4	= {	order = 22, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell4	= { order = 24, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key5	= {	order = 26, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell5	= { order = 28, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key6	= {	order = 30, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell6	= { order = 32, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key7	= {	order = 34, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell7	= { order = 36, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key8	= {	order = 38, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell8	= { order = 40, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key9	= {	order = 42, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell9	= { order = 44, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key10	= {	order = 46, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell10	= { order = 48, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key11	= {	order = 50, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell11	= { order = 52, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--		key12	= {	order = 54, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
-			--		spell12	= { order = 56, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-			--	},
-			--},
-
 			ResetConfig = {
-           		order = 1, type = "execute", confirm  = true, width = 0.75,	name = L["ResetConfig"],
+           		order = 1, type = "execute", confirm  = true, width = 0.9,	name = L["ResetConfig"],
            		desc = L["RESET_DESC"],
            		func = function() yo_PersonalConfig = {} yo_AllConfig = {} yo_BB = {}  yo_BBCount = {} yo_WIMSTER = {} yo_ChatHistory = {} yo_AllData = {} ReloadUI() end,},
 
 			MovingFrames = {
-           		order = 10,	type = "execute", width = 0.7,
+           		order = 10,	type = "execute", width = 0.9,
            		name = function()  if t_unlock ~= true then  return L["MOVE"] else return L["DONTMOVE"] end end,
            		func = function() if t_unlock ~= true then AnchorsUnlock() else AnchorsLock() end end,},
 
 			ResetPosition = {
-           		order = 20,	type = "execute", confirm  = true, width = 0.7,  		name = L["ResetPosition"],
+           		order = 20,	type = "execute", confirm  = true, width = 0.9,	name = L["ResetPosition"],
            		desc = L["RESETUI_DESC"],
            		func = function() AnchorsReset() end,},
 
-			KeyBind = {
-           		order = 30,	type = "execute", width = 0.7, name = "Key Binding", disabled = true,
-           		func = function() 	SlashCmdList.MOUSEOVERBIND() end,},
+			--KeyBind = {
+   --        		order = 30,	type = "execute", width = 0.7, name = "Key Binding", disabled = true,
+   --        		func = function() 	SlashCmdList.MOUSEOVERBIND() end,},
 
 			ReloadConfig = {
-           		order = -1, type = "execute", width = 0.7, name = L["ReloadConfig"], desc = L["RELOAD_DESC"],
+           		order = -1, type = "execute", width = 0.9, name = L["ReloadConfig"], desc = L["RELOAD_DESC"],
            		disabled = function() return not needReload end,
            		func = function() if needReload then ReloadUI() end	 end,},
 
@@ -854,14 +908,26 @@ function InitOptions()
 
 		ACD = LibStub("AceConfigDialog-3.0")
 		ACD:SetDefaultSize( "yoFrame", 650, 500)
+		ACD:AddToBlizOptions( "yoFrame", "yoFrame")--, parent, ...)
 	end
-	ACD:Open( "yoFrame")
+	openka = true
 end
 
-SlashCmdList["CFGSLASH"] = function() InitOptions() end
+function ns.InitOptions()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
+	if not openka then
+		InitOptions()
+		ACD:Open( "yoFrame")
+		openka = true
+	else
+		ACD:Close( "yoFrame")
+		openka = false
+	end
+end
+
+SlashCmdList["CFGSLASH"] = function() ns.InitOptions() end
 SLASH_CFGSLASH1 = "/cfg"
 SLASH_CFGSLASH2 = "/config"
-
 
 local GameMenuButton = CreateFrame("Button", "GameMenuButtonQulightUI", GameMenuFrame, "GameMenuButtonTemplate")
 GameMenuButton:SetText("|cff00ffffyoFrame|r")
@@ -873,9 +939,10 @@ GameMenuFrame:HookScript("OnShow", function()
 end)
 
 GameMenuButton:SetScript("OnClick", function()
-	--PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
 	HideUIPanel(GameMenuFrame)
 	InitOptions()
+	ACD:Open( "yoFrame")
 end)
 
 local init = CreateFrame("Frame")
@@ -886,9 +953,7 @@ init:SetScript("OnEvent", function()
 	T, yo, N = unpack( yoFrame)
 end)
 
-ns.InitOptions = InitOptions
-
-
+--ns.InitOptions = InitOptions
 --LSM:Register("font", "yoOswald-ExtraLight",	"Interface\\Addons\\yoFrame\\Media\\Oswald-ExtraLight.ttf", 130)
 --LSM:Register("font", "yoOswald-Light",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Light.ttf", 130)
 --LSM:Register("font", "yoOswald-Regular",	"Interface\\Addons\\yoFrame\\Media\\Oswald-Regular.ttf", 130)

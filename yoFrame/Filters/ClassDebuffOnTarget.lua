@@ -13,7 +13,7 @@ end
 N.DebuffWhiteList 	= {}
 
 N.tankSpecIDs			= {
-	["250 "]	= true, 	-- DEATHKNIGHT
+	["250"]		= true, 	-- DEATHKNIGHT
 	["104"]		= true,		-- DRUID
 	["268"]		= true,		-- MONK
 	["66"]		= true,		-- PALADIN

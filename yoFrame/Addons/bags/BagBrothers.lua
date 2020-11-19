@@ -484,7 +484,7 @@ function bagBro:CreateBagIconButton( self, parent)
 		for name, player in pairs( yo_BB[myRealm]) do
 			if not name:match( "*") then
 				local iconPers
-				if not gender[yo_AllData[myRealm][name].Sex] or not yo_AllData[myRealm][name].Race then
+				if not yo_AllData[myRealm][name].Sex or not yo_AllData[myRealm][name].Race then
 					iconPers = RACE_TEMP
 				else
 					iconPers = format( RACE_PORTRAITS, gender[yo_AllData[myRealm][name].Sex], yo_AllData[myRealm][name].Race)
@@ -598,7 +598,7 @@ end
 local function OnEvent( self, event, change)
 	--print(event, change)
 	if event == "PLAYER_ENTERING_WORLD" then
-		if not yo.Bags.showAltBags then return end
+		if not yo.Bags.showAltBags or not yo_Bags then return end
 
 		local firstRun
 		if not yo_BB then yo_BB = {} end
@@ -629,7 +629,7 @@ local function OnEvent( self, event, change)
 			self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
 		end
 
-		if yo_Bags.bagFrame then
+		if yo_Bags and yo_Bags.bagFrame then
 			yo_Bags.bagFrame:HookScript("OnShow", function()
 				self.tempBags = {}
 				for i, bag in pairs( bankas["bags"]) do

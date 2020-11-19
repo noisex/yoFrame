@@ -109,8 +109,20 @@ local function checkTooltip( slot)
 end
 
 local function parsespellbook(spellbook)
-	N.spellsBooks = {}
+	N.spellsBooks = {
+		[""] = "-Я еще не определился-",
+	}
 	N.spellsBooksName = {}
+
+	for i = 1, _G.MAX_TALENT_TIERS do
+		for j = 1, 3 do
+			local _, name, _, selected = GetTalentInfo( i, j, 1) --, 1, true, "player")
+			if selected then
+				N.spellsBooks[name] = name
+			end
+		end
+	end
+
 	local numTabs = GetNumSpellTabs();
 
 	for tabIndex = 1, 3 do
@@ -119,13 +131,14 @@ local function parsespellbook(spellbook)
       		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
       		local isPassive = IsPassiveSpell( i, "spell");
 
-   			if spellID and not isPassive and spellID ~= 125439 and spellID ~= 83958 then
+   			if spellID and not isPassive and ( spellID ~= 125439 or spellID ~= 83958) then
    				local cd = GetSpellBaseCooldown( spellID) / 1000
    				if cd == 0 then
    					cd = checkTooltip( i)
    				end
 
-   				N.spellsBooks[spellID] = spellName
+   				--N.spellsBooks[spellID] = spellName
+   				N.spellsBooks[spellName] = spellName
    				N.spellsBooksName[spellName] = spellID
    				if cd > 5 then
    					spells[spellID] = cd
@@ -189,6 +202,7 @@ function addon:BAG_UPDATE_COOLDOWN( slot)
 		end
 	end
 end
+
 
 function addon:PLAYER_ENTERING_WORLD()
 	addon:UnregisterEvent("PLAYER_ENTERING_WORLD")

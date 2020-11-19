@@ -604,7 +604,7 @@ do
 		end
 
 		header:CallMethod('styleFunction', self:GetName())
-
+		--print( self:GetName())
 		local clique = header:GetFrameRef('clickcast_header')
 		if(clique) then
 			clique:SetAttribute('clickcast_button', self)

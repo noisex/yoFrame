@@ -197,11 +197,11 @@ local OnEvent = function(self, event, ...)
 
 	elseif event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
 
-		if UnitInRaid("player") and yo_Raid then
+		if UnitInRaid("player") and yo_Raid and not yo.Raid.raidTemplate == 3 then
 			yo_RaidCD:ClearAllPoints()
 			yo_RaidCD:SetPoint("TOPLEFT", yo_Raid, "BOTTOMLEFT", 25, -30)
 
-		elseif UnitInParty("player") and yo_Party then
+		elseif UnitInParty("player") and yo_Party and not yo.Raid.raidTemplate == 3 then
 			yo_RaidCD:ClearAllPoints()
 			yo_RaidCD:SetPoint("TOPLEFT", yo_Party, "BOTTOMLEFT", 25, -30)
 
