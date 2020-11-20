@@ -8,6 +8,16 @@ if not yo.NamePlates.enable then return end
 -----------------------------------------------------------------------------------------------
 --	CASTBAR
 -----------------------------------------------------------------------------------------------
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local _G = _G
+
+local myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+	= myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+
+local UnitInRaid, UnitIsUnit, myColorStr, UnitName
+	= UnitInRaid, UnitIsUnit, myColorStr, UnitName
 
 function updateCastColor(f, unit)
 	f.spellDelay = yo.General.spellDelay

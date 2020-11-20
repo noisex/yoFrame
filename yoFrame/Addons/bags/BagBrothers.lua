@@ -1,13 +1,22 @@
 local L, yo = unpack( select( 2, ...))
 
+local _G = _G
+
 local GetContainerItemInfo, GetItemCount, GetContainerNumSlots, GetNumGuildBankTabs, GetGuildBankTabInfo, GetCurrentGuildBankTab, GetGuildBankItemLink, GetGuildBankItemInfo, GetItemInfo, GetItemQualityColor
 	= GetContainerItemInfo, GetItemCount, GetContainerNumSlots, GetNumGuildBankTabs, GetGuildBankTabInfo, GetCurrentGuildBankTab, GetGuildBankItemLink, GetGuildBankItemInfo, GetItemInfo, GetItemQualityColor
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
+local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
 --local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
 --local strlower, strsub, strlen, strupper, strtrim, strmatch = strlower, strsub, strlen, strupper, strtrim, strmatch
+
+local yo_AllData, yo_BBCount, yo_BB, yo_Bags
+	= yo_AllData, yo_BBCount, yo_BB, yo_Bags
+
+-- GLOBALS: yo_BBFrame
 
 local COMPLETE_LINK 	= '|c.+|H.+|h.+|h|r'
 local PET_LINK 			= '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
@@ -16,7 +25,7 @@ local RACE_PORTRAITS 	= 'Interface\\CharacterFrame\\TEMPORARYPORTRAIT-%s-%s'
 local RACE_TEMP			= 'Interface\\CharacterFrame\\TempPortrait'
 local ERROR_HEAD		= "|cffff0000Oops, NO DATA FOUND!|cffffff00 "
 
-local reloader = 0
+local reloader,maxSlots = 0
 
 local gender 	= { "", 'Male', 'Female'}
 local bankBags 	= {-1, 5, 6, 7, 8, 9, 10, 11}

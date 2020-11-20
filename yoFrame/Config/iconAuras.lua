@@ -2,6 +2,8 @@ local addon, ns = ...
 
 local L, yo, N = unpack( ns)
 
+local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall
+	= GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall
 -----------------------------------------------------------------------------------------------
 --	AURAS
 -----------------------------------------------------------------------------------------------
@@ -183,9 +185,7 @@ function N.createAuraIcon( parent, index)
 	end
 
     if parent.direction == "ICONS" then
-        local p1, shX, shY = posz[index][1], posz[index][2], posz[index][3]
-        --local pare = parent:GetParent()
-       button:SetPoint( p1, parent:GetParent(), p1, shX, shY)
+       button:SetPoint( posz[index][1], parent, posz[index][1], posz[index][2], posz[index][3])
 
  	else
 		local sizeSh 	= size + sh
@@ -193,6 +193,7 @@ function N.createAuraIcon( parent, index)
 		local growthx 	= ( parent.direction  == 'LEFT' and -1) or 1
 		local growthy 	= ( parent.directionY == 'DOWN' and -1) or 1
 		local cols 		= parent.inRow or 20  --math.floor(parent:GetWidth() / size + 0.5)
+
 		local col 		= (index - 1) % cols
 		local row 		= math.floor((index - 1) / cols)
 

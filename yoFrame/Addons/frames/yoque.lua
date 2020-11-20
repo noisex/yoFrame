@@ -1,7 +1,18 @@
 local L, yo, N = unpack( select( 2, ...))
 
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local IsSpellKnown, IsPlayerSpell, type, strmatch, GetSpellBookItemInfo, GetSpellCooldown, UnitAura, CreateFrame
+	= IsSpellKnown, IsPlayerSpell, type, strmatch, GetSpellBookItemInfo, GetSpellCooldown, UnitAura, CreateFrame
+
 local spells = {}
-local sIsSwiftmend = false
+local sIsSwiftmend, readyToSwift = false, false
+
+--REGROWTH 	= GetSpellInfo(8936);
+--WILD_GROWTH 	= GetSpellInfo(48438);
+--REJUVENATION = GetSpellInfo(774);
+--GERMINATION 	= GetSpellInfo(155777);
 
 local ID = {
 	[GetSpellInfo(18562)] = true,
@@ -9,48 +20,58 @@ local ID = {
 	[GetSpellInfo(48438)] = true,
 	[GetSpellInfo(774)] = true,
 	[GetSpellInfo(155777)] = true,
+
+	[GetSpellInfo(53563)] = true,
+	[GetSpellInfo(156910)] = true,
 }
 
-SWIFTMEND 	= GetSpellInfo(18562);
---REGROWTH 	= GetSpellInfo(8936);
---WILD_GROWTH 	= GetSpellInfo(48438);
---REJUVENATION = GetSpellInfo(774);
---GERMINATION 	= GetSpellInfo(155777);
+local SWIFTMEND 	= GetSpellInfo(18562);
+local NEZERKALO 	= GetSpellInfo(53563);
+local NEZERKALO2 	= GetSpellInfo(156910);
+local ICONS_NUMBER	= 5
 
-function isSpellKnown(aSpellName)
+local function isSpellKnown(aSpellName)
 	return (type(aSpellName) == "number" and IsSpellKnown(aSpellName))
 		or (type(aSpellName) == "number" and IsPlayerSpell(aSpellName))
 		or GetSpellBookItemInfo(aSpellName) ~= nil
 --		or VUHDO_NAME_TO_SPELL[aSpellName] ~= nil and GetSpellBookItemInfo(VUHDO_NAME_TO_SPELL[aSpellName]);
 end
 
-
+local function isSpellReady( aSpellName)
+	local tStart, tSmDuration, tEnabled = GetSpellCooldown( aSpellName);
+	if tEnabled ~= 0 and (tStart == nil or tSmDuration == nil or tStart <= 0 or tSmDuration <= 1.6) then
+		return true
+	end
+end
 
 local function onAuras( self, event, unit, ...)
 
 	if event == "UNIT_AURA" and self:GetParent().unit  == unit then --- remover GetParent().unit
---print(event, unit, self.unit, self:GetParent().unit)
-		index = 0
-		sIsSwiftmend = false
+		local index, vkl = 0, {}
+
+		sIsSwiftmend, readyToSwift = false, false
 		while true do
 			index = index + 1
 			local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, "HELPFUL")
 			if not name then break end
---print(spell)
-			if caster == "player" then
 
-				if isSpellKnown( SWIFTMEND) and not sIsSwiftmend then
+			if caster == "player" then
+				if ( isSpellKnown( NEZERKALO) or isSpellKnown( NEZERKALO2)) and not sIsSwiftmend then
 					if ID[name] then
-						local tStart, tSmDuration, tEnabled = GetSpellCooldown( SWIFTMEND);
-						if tEnabled ~= 0 and (tStart == nil or tSmDuration == nil or tStart <= 0 or tSmDuration <= 1.6) then
-							sIsSwiftmend = true;
-						end
+						sIsSwiftmend = true
 					end
 				end
 
-				for i = 1, 5 do
+				if isSpellKnown( SWIFTMEND) and not sIsSwiftmend then
+					if ID[name] then
+						readyToSwift = true
+						if isSpellReady( SWIFTMEND) then sIsSwiftmend = true; end
+					end
+				end
 
+				for i = 1, ICONS_NUMBER do
 					if spells[i] and spells[i] == name then
+						vkl[i] = true
 						self[i]:Show()
 						N.updateAuraIcon( self[i], "HELPFUL", icon, count, nil, duration, expirationTime, spellID, i, name)
 					end
@@ -58,17 +79,23 @@ local function onAuras( self, event, unit, ...)
 			end
 		end
 
-		if sIsSwiftmend then
-			self.swift:Show()
-		else
-			self.swift:Hide()
+		for i = 1, ICONS_NUMBER do
+			if not vkl[i] then
+				self[i]:Hide()
+			end
 		end
+
+		if sIsSwiftmend then self.swift:Show()
+		else 				 self.swift:Hide() end
+
+	else
+		if isSpellKnown( SWIFTMEND) and readyToSwift and isSpellReady( SWIFTMEND) then self.swift:Show() end
 	end
 end
 
 N.CreateClique = function( self)
 	--Clique = Clique or CreateFrame("Frame", "yo_Clique", UIParent)
-	--local header = Clique.header or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
+	local header = Clique.header --or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
 	--Clique.header = header
 	--SecureHandlerSetFrameRef(header, 'clickcast_header', Clique.header)
 
@@ -87,6 +114,7 @@ N.CreateClique = function( self)
 			end
 
 			if strmatch( key, "button") then
+
 			elseif strmatch( key, "wheel") then
 				bmod = strmatch( key, "down") or "up"
 				ret = format("%sself:SetBindingClick( true, \"%s\", self:GetName(), \"%s\");\n", ret, key, kamod .. "wheel" .. bmod);
@@ -209,9 +237,9 @@ N.makeQuiButton = function ( self )
 	if self:GetName() == "yo_Target" then return end
 
 	local buffHots = CreateFrame("Frame", nil, self)
-	buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
-	buffHots:SetWidth( 10)
-	buffHots:SetHeight( 10)
+	--buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
+	buffHots:SetAllPoints( self)
+	buffHots:SetSize(12, 12)
 	buffHots:SetFrameLevel(120)
 	buffHots:SetFrameStrata( "MEDIUM")
 	buffHots.direction   	= "ICONS"
@@ -219,50 +247,30 @@ N.makeQuiButton = function ( self )
 	buffHots.hideTooltip    = true
 	buffHots.timeSecOnly    = true
 	buffHots:RegisterEvent("UNIT_AURA", buffHots:GetParent().unit)
-	--print("buffHots from clique unit = ", buffHots:GetParent().unit)
+	buffHots:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	self.buffHots        	= buffHots
 
 	self.buffHots.swift = self.buffHots:CreateTexture(nil, "OVERLAY")
-	self.buffHots.swift:SetPoint("LEFT", self.buffHots, "TOPLEFT", 15, 0)
-	self.buffHots.swift:SetTexture( texture)
-	self.buffHots.swift:SetVertexColor(1, 0, 0, 1)
-	self.buffHots.swift:SetSize(20, 20)
+	self.buffHots.swift:SetPoint("LEFT", self.buffHots, "TOPLEFT", 20, 3)
+	self.buffHots.swift:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\icon_red")
+	self.buffHots.swift:SetVertexColor( 1, 0.8, 0.2, 1)
+	self.buffHots.swift:SetSize( 12, 12)
 	self.buffHots.swift:Hide()
 
-	for i = 1, 5 do
+	for i = 1, ICONS_NUMBER do
 		self.buffHots[i] = N.createAuraIcon( self.buffHots, i)
 		self.buffHots[i]:Hide()
 
 		if yo.healBotka["hSpell" .. i] 	then spells[i] 					= yo.healBotka["hSpell" .. i]	end
 		if yo.healBotka["hColEna" ..i] 	then self.buffHots[i].color 	= { strsplit( ",", yo.healBotka["hColor" ..i])} end
 		if yo.healBotka["hTimEna" ..i] 	then self.buffHots[i].minTimer 	= yo.healBotka["hTimer" ..i] + 0.1 end
+
+		self.buffHots[i]:SetScale( yo.healBotka["hScale" .. i] or 1)
 	end
 
 	buffHots:SetScript("OnEvent", onAuras)
 end
 
-
---VUHDO_SPELL_ID.SWIFTMEND 		= VUHDO_getSpellInfo(18562);
---VUHDO_SPELL_ID.REGROWTH 		= VUHDO_getSpellInfo(8936);
---VUHDO_SPELL_ID.WILD_GROWTH 	= VUHDO_getSpellInfo(48438);
---VUHDO_SPELL_ID.REJUVENATION 	= VUHDO_getSpellInfo(774);
---VUHDO_SPELL_ID.GERMINATION 	= VUHDO_getSpellInfo(155777);
-
---function VUHDO_isSpellKnown(aSpellName)
---	return (type(aSpellName) == "number" and IsSpellKnown(aSpellName))
---		or (type(aSpellName) == "number" and IsPlayerSpell(aSpellName))
---		or GetSpellBookItemInfo(aSpellName) ~= nil
---		or VUHDO_NAME_TO_SPELL[aSpellName] ~= nil and GetSpellBookItemInfo(VUHDO_NAME_TO_SPELL[aSpellName]);
---end
-
---if sIsPlayerKnowsSwiftmend and tIsCastByPlayer and not sIsSwiftmend then
---	if VUHDO_SPELL_ID.REGROWTH == tBuffName or VUHDO_SPELL_ID.WILD_GROWTH == tBuffName or VUHDO_SPELL_ID.REJUVENATION == tBuffName or VUHDO_SPELL_ID.GERMINATION == tBuffName then
---		tStart, tSmDuration, tEnabled = GetSpellCooldown(VUHDO_SPELL_ID.SWIFTMEND);
---		if tEnabled ~= 0 and (tStart == nil or tSmDuration == nil or tStart <= 0 or tSmDuration <= 1.6) then
---			sIsSwiftmend = true;
---		end
---	end
---end
 
 --[[
 function initialConfigFunction(child)

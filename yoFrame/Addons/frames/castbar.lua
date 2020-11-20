@@ -5,7 +5,10 @@ if not yo.UF.unitFrames then return end
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
+local _G = _G
 
+local myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+	= myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
 --/dump GetCVar("SpellQueueWindow") – чтобы узнать текущее значение
 --/console spellqueuewindow 200 – чтобы установить значение 200
 --/cqs
@@ -196,7 +199,7 @@ local function startCast( f, unit, ...)
 	f:Show()
 end
 
-function hideTicks( self)
+local function hideTicks( self)
 	for i = 1, #self.ticks do
 		self.ticks[i]:Hide()
 	end

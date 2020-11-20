@@ -2,6 +2,12 @@ local L, yo = unpack( select( 2, ...))
 
 if not yo.ActionBar.enable then return end
 
+local _G = _G
+-- GLOBALS: myButtonBorder
+
+local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, dummy, CreatePanel
+	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, dummy, CreatePanel
+
 local function buttonsUP( self)
 	if not InCombatLockdown() then
 		--print("Buttons UP!")
@@ -224,7 +230,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local Dura 		= _G[name.."Duration"]
 		--local HotKey 	= _G[name.."HotKey"]
 
-		f1, f2 = button:GetChildren()
+		local f1, f2 = button:GetChildren()
 		f2:Hide()
 
 		Icon:SetSize( buttonWidth, buttonWidth)
@@ -286,10 +292,10 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			Border = dummy
 		end
 
-		if float then
-			float:Hide()
-			float = dummy
-		end
+		--if float then
+		--	float:Hide()
+		--	float = dummy
+		--end
 
 		local countFrame = CreateFrame( "Frame", nil, button)
 		countFrame:SetAllPoints( button)

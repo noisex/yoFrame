@@ -375,8 +375,8 @@ yo["healBotka"] = {
 
 	["set00"]	= "",
 	["set01"]	= "",
-	["targ01"]	= "BUTTON1",
-	["menu01"]	= "BUTTON2",
+	["targ01"]	= "CTRL-BUTTON1",
+	["menu01"]	= "CTRL-BUTTON2",
 	["key1"]	= "",
 	["spell1"]	= "",
 	["key2"]	= "",
@@ -426,6 +426,11 @@ yo["healBotka"] = {
 	["hTimer3"] = 10,
 	["hTimer4"] = 10,
 	["hTimer5"] = 10,
+	["hScale1"] = 1,
+	["hScale2"] = 1,
+	["hScale3"] = 1,
+	["hScale4"] = 1,
+	["hScale5"] = 1,
 
 }
 

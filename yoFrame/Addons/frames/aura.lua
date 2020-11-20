@@ -2,8 +2,13 @@ local L, yo, N = unpack( select( 2, ...))
 
 if not yo.UF.unitFrames then return end
 
-
+local _G = _G
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
+
+local CreateStyle, unpack, GameTooltip, Round, CreateFrame, UnitAura, BuffFrame, formatTime, UnitExists, ipairs, GetTime
+	= CreateStyle, unpack, GameTooltip, Round, CreateFrame, UnitAura, BuffFrame, formatTime, UnitExists, ipairs, GetTime
+
+local lastID
 
 local function OnUpdate(f, elapsed)
 	f.elapsed = (f.elapsed or 0) + elapsed
@@ -130,7 +135,7 @@ local function BuffDEbuffDesign(...)
 
 	for i = 1, 2 do
 		for idx = blast[i], 30 do
-			bf =  bname[i] .. idx
+			local bf =  bname[i] .. idx
 			if not _G[bf] then
 				break
 			end
@@ -149,7 +154,7 @@ local function BuffDEbuffDesign(...)
 	end
 end
 
-function AuraPrepare(f, event)
+local function AuraPrepare(f, event)
 	if f.unit == "player" then
 		BuffDEbuffDesign()
 	end
@@ -176,7 +181,7 @@ local function BuffOnEnter( f)
 	GameTooltip:SetUnitAura( f:GetParent().unit, f.id, f.filter)
 end
 
-function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, plusx)
+local function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, direct, plusx)
 	local f = uf[name]
 	if not f then
 		f = CreateFrame("Frame", nil, uf)

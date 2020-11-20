@@ -292,10 +292,6 @@ local function unitShared(self, unit)
 	elseif unit == "target" and yo.healBotka.enable then
 		N.makeQuiButton(self)
 
-		--self.PhaseIndicator = self:CreateTexture(nil, 'OVERLAY')
-	  	--self.PhaseIndicator:SetSize( 25, 25)
-  		--self.PhaseIndicator:SetPoint('CENTER', self.PvPIndicator, "CENTER", 0, 0)
-
 	elseif cunit == "boss" then
 		self.tarBorder = self:CreateFontString(nil ,"OVERLAY", 'GameFontNormal')
 		self:Tag( self.tarBorder, '[bossTarget]')

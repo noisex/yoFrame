@@ -5,6 +5,13 @@ local oUF = ns.oUF
 local wim = yo_WIM
 if not wim then return end
 
+local _G = _G
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+
 local wimH = CreateFrame("Frame", nil, wim)
 local userListCount
 

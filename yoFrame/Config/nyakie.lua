@@ -4,7 +4,7 @@ local L, yo, N = unpack( ns)
 N.statusBars 	= {}
 N.strings		= {}
 N.shadows		= {}
-N.spellsBooks 	= {}
+--N.spellsBooks 	= {}
 
 N.infoTexts  	= CreateFrame("Frame")
 N.version 	  	= GetAddOnMetadata( addonName, "Version")

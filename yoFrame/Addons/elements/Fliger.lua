@@ -3,11 +3,12 @@ local L, yo, N = unpack( select( 2, ...))
 local lib = LibStub("LibCooldown")
 if not lib then error("CooldownFlash requires LibCooldown") return end
 
+local _G = _G
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization
-	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization
+local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, myClass, mySpec, CreateFrame
+	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, myClass, mySpec, CreateFrame
 
 ------------------------------------------------------------------------------------------------------------
 ---								Buf Icons Anime

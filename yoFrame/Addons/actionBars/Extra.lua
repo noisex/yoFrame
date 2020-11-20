@@ -3,6 +3,7 @@ local L, yo, N = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
+local _G = _G
 local ActionBars = N["ActionBars"]
 local Button = ExtraActionButton1
 local Icon = ExtraActionButton1Icon
@@ -23,9 +24,9 @@ function ActionBars:SkinZoneAbilities()
 			local button = SpellButton
 			local shift, alpfa = 7, 0.9
 
-			if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa,   { 1, 1, 0})) end
-			if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "normal", shift, alpfa,  { 0, 1, 0})) 	end
-			if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa, { 1, 0, 0})) end
+			if button.SetHighlightTexture 	then button:SetHighlightTexture( 	_G:myButtonBorder( button, "hover", shift, alpfa,   { 1, 1, 0})) end
+			if button.SetNormalTexture 		then button:SetNormalTexture( 		_G:myButtonBorder( button, "normal", shift, alpfa,  { 0, 1, 0})) 	end
+			if button.SetCheckedTexture 	then button:SetCheckedTexture( 		_G:myButtonBorder( button, "checked", shift, alpfa, { 1, 0, 0})) end
 
 			SpellButton.Icon:SetTexCoord(unpack( yo.tCoord))
 			SpellButton.NormalTexture:SetAlpha(0)

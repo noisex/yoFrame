@@ -12,6 +12,8 @@ local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
 local C_NewItems_IsNewItem = C_NewItems.IsNewItem
 local Search = LibStub('LibItemSearch-1.2')
 local defcol = 0.17
+local CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, myColor, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
+	= CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, myColor, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
 
 local addon = CreateFrame("Frame", "yo_Bags", UIParent)
 	--addon:RegisterEvent("ADDON_LOADED")

@@ -3,6 +3,17 @@ local L, yo, N = unpack( select( 2, ...))
 local lib = LibStub:NewLibrary("LibCooldown", 1.0)
 if not lib then return end
 
+local _G = _G
+
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local GetTalentInfo, GetTime, GetSpellCharges, IsPassiveSpell, GetNumSpellTabs, GetSpellTabInfo, GetItemCooldown, next, assert, type, GetSpellBookItemName, GetActionInfo, GetSpellCooldown, GetInventoryItemLink
+	= GetTalentInfo, GetTime, GetSpellCharges, IsPassiveSpell, GetNumSpellTabs, GetSpellTabInfo, GetItemCooldown, next, assert, type, GetSpellBookItemName, GetActionInfo, GetSpellCooldown, GetInventoryItemLink
+
+local GetSpellBaseCooldown, GetContainerItemLink, BOOKTYPE_SPELL, WorldFrame, tinsert, error
+	= GetSpellBaseCooldown, GetContainerItemLink, BOOKTYPE_SPELL, WorldFrame, tinsert, error
+
 lib.startcalls = {}
 lib.stopcalls = {}
 
@@ -97,7 +108,7 @@ local function checkTooltip( slot)
 	local info = tl:GetText()
 	if info and info:find( CD_BAS) then
 		info = gsub( info, ",", ".")   	-- меняем запятую на точку
-		cd = tonumber( string.match( info, '%d+.?%d?'))
+		cd = tonumber( match( info, '%d+.?%d?'))
 		if info:find( CD_MIN) then 		-- ищем "минуту"
 			cd = cd * 60
 		end
@@ -137,7 +148,7 @@ local function parsespellbook(spellbook)
    					cd = checkTooltip( i)
    				end
 
-   				--N.spellsBooks[spellID] = spellName
+   				----N.spellsBooks[spellID] = spellName
    				N.spellsBooks[spellName] = spellName
    				N.spellsBooksName[spellName] = spellID
    				if cd > 5 then
@@ -222,7 +233,7 @@ end
 
 hooksecurefunc("UseInventoryItem", function(slot)
 	local link = GetInventoryItemLink("player", slot) or ""
-	local id = string.match(link, ":(%w+).*|h%[(.+)%]|h")
+	local id = match(link, ":(%w+).*|h%[(.+)%]|h")
 	id = tonumber( id)
 	if id and not items[id] then
 		items[id] = true
@@ -232,7 +243,7 @@ end)
 
 hooksecurefunc("UseContainerItem", function(bag, slot)
 	local link = GetContainerItemLink(bag, slot) or ""
-	local id = string.match(link, ":(%w+).*|h%[(.+)%]|h")
+	local id = match(link, ":(%w+).*|h%[(.+)%]|h")
 	id = tonumber( id)
 	if id and not items[id] then
 		items[id] = true

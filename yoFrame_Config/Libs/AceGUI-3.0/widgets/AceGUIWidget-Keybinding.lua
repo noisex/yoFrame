@@ -51,9 +51,9 @@ end
 
 local ignoreKeys = {
 	--["BUTTON1"] = true, ["BUTTON2"] = true,
-	--["UNKNOWN"] = true,
-	--["LSHIFT"] = true, ["LCTRL"] = true, ["LALT"] = true,
-	--["RSHIFT"] = true, ["RCTRL"] = true, ["RALT"] = true,
+	["UNKNOWN"] = true,
+	["LSHIFT"] = true, ["LCTRL"] = true, ["LALT"] = true,
+	["RSHIFT"] = true, ["RCTRL"] = true, ["RALT"] = true,
 }
 local function Keybinding_OnKeyDown(frame, key)
 	local self = frame.obj

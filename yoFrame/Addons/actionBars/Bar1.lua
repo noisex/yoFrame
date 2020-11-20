@@ -1,6 +1,11 @@
 local addon, ns = ...
 local L, yo, N = unpack( ns)
 
+local _G = _G
+
+local ceil, CreateFrame, select, UnitClass
+	= ceil, CreateFrame, select, UnitClass
+
 if not yo.ActionBar.enable then return end
 
 local ActionBars = N["ActionBars"]

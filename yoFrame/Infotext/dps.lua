@@ -2,12 +2,13 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
+
 local infoText 	= N.infoTexts
 local Stat 		= CreateFrame("Frame", nil, UIParent)
 local aaName 	= GetSpellInfo( 6603)
 
-local time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID
-	= time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID
+local time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID, myGUID, GameTooltip, type
+	= time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID, myGUID, GameTooltip, type
 
 --bit.band (flag, 0x2000) ~= 0)
 --https://github.com/Gethe/wow-ui-source/blob/live/FrameXML/Constants.lua

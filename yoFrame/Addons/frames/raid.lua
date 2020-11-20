@@ -8,6 +8,9 @@ local L, yo, N = ns[1], ns[2], ns[3]
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
+local CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring
+	= CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring
+
 local UnitSpecific = {
 	player = function(self)
 		-- Player specific layout code.
@@ -498,7 +501,7 @@ local function raidShared(self, unit)
 	------------------------------------------------------------------------------------------------------
 	if enableDeHight then self.addDebuffHigh( self) end
 
-	if yo.healBotka.enable then
+	if yo.healBotka.enable and unit ~= "tank" then
 		N.makeQuiButton(self)
 
 		self:HookScript("OnEnter", self.frameOnEnter)

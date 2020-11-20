@@ -1,13 +1,22 @@
 local L, yo, N = unpack( select( 2, ...))
 
 --if not yo.InfoTexts.enable then return end
+local _G = _G
+
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local myName, GameTooltip, Round, nums, wipe, IsShiftKeyDown, myColorStr, spairs, WorldFrame, SecondsToClocks, rawset
+	= myName, GameTooltip, Round, nums, wipe, IsShiftKeyDown, myColorStr, spairs, WorldFrame, SecondsToClocks, rawset
 
 local infoText = N.infoTexts
 
 local time, max, strjoin, format, find, GetSpellInfo, gsub
 	= time, max, strjoin, format, find, GetSpellInfo, gsub
 
-infoText.infosSorted, mt 	= {}, {}
+local mt = {}
+infoText.infosSorted = {}
+
 function mt.__newindex(self, key, value)
 	table.insert( infoText.infosSorted, key)
 	rawset( self, key, value)

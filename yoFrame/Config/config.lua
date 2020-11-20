@@ -133,23 +133,7 @@ yo.tCoordSmall 	= {0.07, 0.93, 0.07, 0.93}
 
 if yo.healBotka.enable then
 	Clique = Clique or CreateFrame("Frame", "yo_Clique", UIParent)
-	header = Clique.header or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
+	local header = Clique.header or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
 	Clique.header = header
 	SecureHandlerSetFrameRef(header, 'clickcast_header', Clique.header)
 end
-
----- Apply or remove saved settings as needed
---for group, options in pairs(yo_tCfg) do
---	if yo[group] then
---		for option, value in pairs(options) do
---			if yo[group][option] == nil or yo[group][option] == value then
---				-- remove saved vars if they do not exist in lua config anymore, or are the same as the lua config
---				yo_tCfg[group][option] = nil
---			else
---				yo[group][option] = value
---			end
---		end
---	else
---		yo_tCfg[group] = nil
---	end
---end

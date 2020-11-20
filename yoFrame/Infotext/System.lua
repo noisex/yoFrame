@@ -2,8 +2,16 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, myColorStr, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
+	= GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, myColorStr, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
+
 N.infoTexts["infos"] = {}
 
+local statColor
+local MAINMENUBAR_LATENCY_LABEL = MAINMENUBAR_LATENCY_LABEL
 --------------------------------------------------------------------
 -- System Stats
 --------------------------------------------------------------------
@@ -24,16 +32,16 @@ function Stat:formatMem(memory, color)
 	if memory > 999 then
 		local mem = floor((memory/1024) * mult + 0.5) / mult
 		if mem  %1 == 0 then
-			return mem..string.format(".0 %sMb%s", unpack(statColor))
+			return mem..format(".0 %sMb%s", unpack(statColor))
 		else
-			return mem..string.format(" %sMb%s", unpack(statColor))
+			return mem..format(" %sMb%s", unpack(statColor))
 		end
 	else
 		local mem = floor(memory * mult + 0.5) / mult
 			if mem  %1 == 0 then
-				return mem..string.format(".0 %sKb%s", unpack(statColor))
+				return mem..format(".0 %sKb%s", unpack(statColor))
 			else
-				return mem..string.format(" %sKb%s", unpack(statColor))
+				return mem..format(" %sKb%s", unpack(statColor))
 			end
 	end
 end

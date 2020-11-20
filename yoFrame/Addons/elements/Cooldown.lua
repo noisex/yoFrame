@@ -1,6 +1,8 @@
 local L, yo = unpack( select( 2, ...))
 
 --if true then return end
+local tonumber, unpack, pairs, CreateFrame, RGBToHex, UIParent, GetActionCooldown, GetActionCharges
+	= tonumber, unpack, pairs, CreateFrame, RGBToHex, UIParent, GetActionCooldown, GetActionCharges
 
 RGBToHex = function(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
@@ -177,7 +179,7 @@ local function cooldown_OnHide(self)
 	active[self] = nil
 end
 
-local function cooldown_ShouldUpdateTimer(self, start, duration, changes)
+local function cooldown_ShouldUpdateTimer(self, start, duration, charges, maxCharges)
 	local timer = self.timer
 	return not(timer and timer.start == start and timer.duration == duration and timer.charges == charges and timer.maxCharges == maxCharges)
 end
@@ -188,7 +190,7 @@ local function cooldown_Update(self)
 	local start, duration, enable = GetActionCooldown(action)
 	local charges, maxCharges, chargeStart, chargeDuration = GetActionCharges(action)
 
-	if cooldown_ShouldUpdateTimer(self, start, duration) then
+	if cooldown_ShouldUpdateTimer(self, start, duration, charges, maxCharges) then
 		Timer_Start(self, start, duration)
 	end
 end

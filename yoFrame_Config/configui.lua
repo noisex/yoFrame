@@ -755,33 +755,41 @@ function InitOptions()
 							hColEna4= {	order = 101, type = "toggle",name ="Свой цвет вместо иконки",},
 							hColEna5= {	order = 111, type = "toggle",name ="Свой цвет вместо иконки",},
 
-							hColor1 ={	order = 72, type = "color",	name =  "", --function(info) return tr( info[#info]) end,
+							hColor1 ={	order = 72, type = "color",	name =  "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor2 ={	order = 82, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+							hColor2 ={	order = 82, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor3 ={	order = 92, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+							hColor3 ={	order = 92, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor4 ={	order = 102, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+							hColor4 ={	order = 102, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor5 ={	order = 112, type = "color",	name = "", --function(info) return tr( info[#info]) end,
+							hColor5 ={	order = 112, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 
-							hTimEna1= {	order = 73, type = "toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna2= {	order = 83, type = "toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna3= {	order = 93, type = "toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna4= {	order = 103, type ="toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna5= {	order = 113, type ="toggle",name = "Скрывать таймер больше времени:",},
+							hScale1	= {	order = 73,	type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale2	= {	order = 83,	type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale3	= {	order = 93,	type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale4 = {	order = 103,type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale5 = {	order = 113,type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
 
-							hTimer1	= {	order = 74,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
-							hTimer2	= {	order = 84,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
-							hTimer3	= {	order = 94,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
-							hTimer4	= {	order = 104,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
-							hTimer5 = {	order = 114,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.75},
+							hTimEna1= {	order = 75, type = "toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna2= {	order = 85, type = "toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna3= {	order = 95, type = "toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna4= {	order = 105, type ="toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna5= {	order = 115, type ="toggle",name = "Скрывать таймер больше времени:",},
+--hScale2
+							hTimer1	= {	order = 76,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
+							hTimer2	= {	order = 86,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
+							hTimer3	= {	order = 96,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
+							hTimer4	= {	order = 106,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
+							hTimer5 = {	order = 116,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
+
+
 						},
 					},
 				aeneral = {
@@ -952,67 +960,3 @@ init:SetScript("OnEvent", function()
 
 	T, yo, N = unpack( yoFrame)
 end)
-
---ns.InitOptions = InitOptions
---LSM:Register("font", "yoOswald-ExtraLight",	"Interface\\Addons\\yoFrame\\Media\\Oswald-ExtraLight.ttf", 130)
---LSM:Register("font", "yoOswald-Light",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Light.ttf", 130)
---LSM:Register("font", "yoOswald-Regular",	"Interface\\Addons\\yoFrame\\Media\\Oswald-Regular.ttf", 130)
---LSM:Register("font", "yoOswald-Medium",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Medium.ttf", 130)
---LSM:Register("font", "yoOswald-Bold",		"Interface\\Addons\\yoFrame\\Media\\Oswald-Bold.ttf", 130)
-
---local function UpdateShadowEdge( scale)
-	--for k, shadow in pairs( N.shadows) do
-	--	local drop = shadow:GetBackdrop()
-	--	local esize = max( 1, drop.edgeSize + ( scale or 0)) --yo.Media.edgeSize
-	--	local dropCr, dropCg, dropCb, dropCa = shadow:GetBackdropColor()
-	--	local dropBCr, dropBCg, dropBCb, dropBCa = shadow:GetBackdropBorderColor()
-
-	--	if yo.Media.classBorder then
-	--		dropBCr, dropBCg, dropBCb = myColor.r, myColor.g, myColor.b
-	--	end
-
-	--	drop.edgeSize = esize
-	--	drop.insets = { left = esize, right = esize, top = esize, bottom = esize}
-
-	--	shadow:SetBackdrop( drop)
-	--	shadow:SetBackdropColor( dropCr, dropCg, dropCb, dropCa)
-	--	shadow:SetBackdropBorderColor( dropBCr, dropBCg, dropBCb, dropBCa)
-
-	--	--if shadow:GetPoint(1) then
-	--	--	local _, p = shadow:GetPoint(1)
-	--	--end
-	--	--if p then
-	--	--	shadow:ClearAllPoints()
-	--	--	shadow:SetPoint( "TOPLEFT", p, "TOPLEFT", -esize, esize)
-	--	--	shadow:SetPoint( "BOTTOMRIGHT", p, "BOTTOMRIGHT", esize, -esize)
-	--	--end
-	--end
---end
-
---local function UpdateStatusBars()
-	--for k, bar in pairs( N.statusBars) do
-
-	--	if bar and bar:GetStatusBarTexture() then
-	--		bar:SetStatusBarTexture( yo.Media.texture)
-	--	end
-	--end
---end
-
---local function UpdateStrings( newVal, curVal)
-	--for k, string in pairs( N.strings) do
-	--	if string then
-	--		local fn, fs, fc = string:GetFont()
-	--		string:SetFont( fn, fs - curVal + newVal, fc)
-	--	end
-	--end
---end
-
---local function UpdateStringScale( scale)
-	--for k, strings in pairs( N.strings) do
-	--	if strings then
-	--		local font, fs, fd = strings:GetFont()
-	--		fs = fs + scale
-	--		strings:SetFont( font, fs, fd)
-	--	end
-	--end
---end

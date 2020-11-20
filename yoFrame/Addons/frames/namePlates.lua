@@ -5,19 +5,24 @@ local oUF = ns.oUF
 
 if not yo.NamePlates.enable then return end
 
+local _G = _G
+
+local CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor
+	= CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor
+
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GetTime, UnitIsPlayer, UnitAura, UnitIsPlayer, SetRaidTarget, UnitIsUnit, UnitName, UnitClass, UnitHealth, UnitHealthMax, InCombatLockdown, UnitIsTapDenied
-	= GetTime, UnitIsPlayer, UnitAura, UnitIsPlayer, SetRaidTarget, UnitIsUnit, UnitName, UnitClass, UnitHealth, UnitHealthMax, InCombatLockdown, UnitIsTapDenied
+local GetTime, UnitIsPlayer, UnitAura, UnitIsPlayer, SetRaidTarget, UnitIsUnit, UnitName, UnitClass, UnitHealth, UnitHealthMax, InCombatLockdown, UnitIsTapDenied, GetRaidTargetIndex
+	= GetTime, UnitIsPlayer, UnitAura, UnitIsPlayer, SetRaidTarget, UnitIsUnit, UnitName, UnitClass, UnitHealth, UnitHealthMax, InCombatLockdown, UnitIsTapDenied, GetRaidTargetIndex
 
-local GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo
-	= GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo
+local GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo, UnitGUID, UIParent
+	= GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo, UnitGUID, UIParent
 
-local UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation
-	= UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation
+local UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, myColor, myClass, isDruid
+	= UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, myColor, myClass, isDruid
 
-local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badClassTypes, showToolTip
+local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badClassTypes, showToolTip, iconDiSize, showArrows, blueDebuff
 local treatColor = {}
 local auraFilter = { "HARMFUL", "HELPFUL"}
 
@@ -182,7 +187,7 @@ local function UpdateBuffs(self)
 	local idebuff, ibuff, iDisp = 1, 1, 1
 
 	for	j = 1, 2 do
-		filter = auraFilter[j]
+		local filter = auraFilter[j]
 		local index = 1
 		while true do
 			local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, _, _, _, namepmateshowall = UnitAura(unit, index, filter)

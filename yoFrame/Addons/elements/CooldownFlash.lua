@@ -2,6 +2,8 @@ local L, yo, N = unpack( select( 2, ...))
 
 if not yo.Addons.FlashIconCooldown then return end
 
+local GetItemIcon, GetSpellInfo, select = GetItemIcon, GetSpellInfo, select
+
 local lib = LibStub("LibCooldown")
 if not lib then error("CooldownFlash requires LibCooldown") return end
 

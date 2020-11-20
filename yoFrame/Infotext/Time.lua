@@ -2,6 +2,15 @@ local L, yo, N = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local GameTooltip, myName, myRealm, GetTime, myColorStr, myLogin, GetNumSavedInstances, GetGameTime, SecondsToClock, type, date, GetSavedInstanceInfo
+	= GameTooltip, myName, myRealm, GetTime, myColorStr, myLogin, GetNumSavedInstances, GetGameTime, SecondsToClock, type, date, GetSavedInstanceInfo
+
+local yo_AllData = yo_AllData
+local Hr24, Min
+
 local infoText = N.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
@@ -62,7 +71,7 @@ function Stat:onEnter()
 
 				oneDate = false
 				for _, v in pairs(tkeys) do
-					value = realm[v.name]
+					local value = realm[v.name]
 					if value.WorldBoss and timeLastWeeklyReset() < value.MoneyTime then
 						v.name = v.name .. value.WorldBoss
 					end
@@ -96,7 +105,7 @@ function Stat:onEnter()
 	if Min<10 then Min = "0"..Min end
 	GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, Hr24 .. ":" .. Min, 1, 1, 0, 1, 1, 1)
 
-	oneDate = false
+	local oneDate = false
 	for i = 1, GetNumSavedInstances() do
 		local name, id, reset, difficulty, locked, extended, _, isRaid, _, diff, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
 		if isRaid and (locked or extended) then

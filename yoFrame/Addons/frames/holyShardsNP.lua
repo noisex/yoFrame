@@ -2,6 +2,11 @@ local L, yo, N = unpack( select( 2, ...))
 
 if not yo.NamePlates.enable or not yo.NamePlates.showResourses then return end
 
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+
+local myClass, C_NamePlate, UnitPower, isDruid, GetSpecialization, CreateFrame, UnitPowerMax, GetRuneCooldown
+	= myClass, C_NamePlate, UnitPower, isDruid, GetSpecialization, CreateFrame, UnitPowerMax, GetRuneCooldown
 -----------------------------------------------------------------------------------
 --- COMBO POINTS
 -----------------------------------------------------------------------------------
@@ -106,7 +111,7 @@ function CreateCPpoints( f)
 		f.classPower:SetScript("OnEvent", OnCPEvent)
 	end
 
-	self = f.classPower
+	local self = f.classPower
 
 	local size = 8
 	local maxComboPoints = UnitPowerMax("player", self.powerID);

@@ -3,6 +3,10 @@ local L, yo, N = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
+local _G = _G
+local pairs, unpack, SetCVar, hooksecurefunc, InCombatLockdown
+	= pairs, unpack, SetCVar, hooksecurefunc, InCombatLockdown
+
 N.ActionBars = CreateFrame("Frame")
 N.Hider = CreateFrame("Frame", nil, UIParent)
 N.Hider:Hide()
@@ -202,9 +206,9 @@ function ActionBars:UpdateStanceBar()
 				else
 					Button:SetChecked(false)
 
-					if Button.Backdrop then
-						Button.Backdrop:SetBorderColor(unpack(C.General.BorderColor))
-					end
+					--if Button.Backdrop then
+						--Button.Backdrop:SetBorderColor(unpack(C.General.BorderColor))
+					--end
 				end
 
 				if IsCastable then

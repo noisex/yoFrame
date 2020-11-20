@@ -6,11 +6,11 @@ local L, yo, N = ns[1], ns[2], ns[3]
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, GetTime
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, GetTime
 
-local GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied
-	= GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied
+local GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied, UnitGroupRolesAssigned
+	= GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied, UnitGroupRolesAssigned
 
-local UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax
-	= UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax
+local UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, myClass, mySpec, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
+	= UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, myClass, mySpec, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
 
 local updateAllElements = function(frame)
 	for _, v in ipairs(frame.__elements) do
