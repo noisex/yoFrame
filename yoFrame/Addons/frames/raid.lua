@@ -488,7 +488,7 @@ local function raidShared(self, unit)
 					button:GetParent().tankOverlay.anim:Stop()
 				end
 			end)
-			--CreateStyleSmall( button, 3)
+			--CreateStyleSmall( button, 2)
 		end
 	end
 
