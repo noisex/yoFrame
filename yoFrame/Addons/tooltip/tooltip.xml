@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="tooltip.lua"/>
+	<Script file="IDTooltip.lua"/>
+ 	<Script file="ItemLvl.lua"/>
+ 	<Script file="lfgMembers.lua"/>
+ 	<Script file="setBorder.lua"/>
+ 	<Script file="modelToolTip.lua"/>
+ 	<Script file="whoCast.lua"/>
+	<!--
+	<Script file=""/>
+ -->
+ </Ui>

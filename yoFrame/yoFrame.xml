@@ -1,0 +1,30 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Config\init.lua"/>
+	<Script file="Config\constants.lua"/>
+	<Script file="Config\nyakie.lua"/>
+	<Script file="Config\config.lua"/>
+
+	<Include file="Locale\locale.xml"/>
+	<Include file="Libs\Load_Libraries.xml"/>
+
+	<Script file="Config\screen.lua"/>
+	<Script file="Config\fonts.lua"/>
+	<Script file="Config\blizzard.lua"/>
+	<Script file="Config\move.lua"/>
+	<Include file="addons\api\api.xml"/>
+	<Script file="Config\core.lua"/>
+	<Script file="Config\iconAuras.lua"/>
+	<Script file="Config\antiTaint.lua"/>
+
+	<Include file="Filters\filters.xml"/>
+ 	<Include file="Infotext\infotexts.xml"/>
+ 	<Include file="addons\frames\frames.xml"/>
+ 	<Include file="addons\actionBars\actionBars.xml"/>
+	<Include file="addons\bags\bags.xml"/>
+	<Include file="addons\chat\chat.xml"/>
+	<Include file="addons\maps\maps.xml"/>
+	<Include file="addons\tooltip\tooltip.xml"/>
+	<Include file="addons\elements\elements.xml"/>
+	<Include file="skins\skins.xml"/>
+ -->
+ </Ui>

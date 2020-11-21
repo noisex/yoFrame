@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="MiniMap.lua"/>
+	<Script file="MiniMapIcon.lua"/>
+ 	<Script file="FogOfWar.lua"/>
+
+	<!--
+	<Script file=""/>
+ -->
+ </Ui>

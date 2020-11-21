@@ -1,0 +1,19 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="rLib\core.lua"/>
+	<Script file="rLib\dragframe.lua"/>
+	<Script file="rLib\framefader.lua"/>
+
+	<Script file="LibStub\LibStub.lua"/>
+	<Script file="CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
+
+	<Script file="LibCooldown.lua"/>
+	<Include file="LibSharedMedia-3.0\lib.xml"/>
+	<Include file="LibObjectiveProgress-1.0\embed.xml"/>
+	<Include file="LibItemSearch-1.2\LibItemSearch-1.2.xml"/>
+	<Include file="LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
+
+	<Include file="oUF\oUF.xml"/>
+	<Script file="oUF_DebuffHighlight.lua"/>
+	<Script file="GCD.lua"/>
+	<Script file= "AutoResurrect.lua"/>
+</Ui>

@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="shBigWigs.lua"/>
+	<Script file="shDBM.lua"/>
+	<Script file="WeakAuras.lua"/>
+</Ui>

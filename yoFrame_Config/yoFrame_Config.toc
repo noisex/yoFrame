@@ -1,0 +1,16 @@
+## Interface: 90002
+## Title: |cff00ffffyoFrame|cffbbbbbb Config
+## Notes: In-game configuration for yoFrame
+## Author: Noisex
+## Version: 7.30
+## RequiredDeps: yoFrame
+## SavedVariables: yo_AllConfig, yo_AllData
+## SavedVariablesPerCharacter: yo_PersonalConfig, yo_ChatHistory
+
+Libs\libs.xml
+
+Locale\locale.lua
+Locale\enUS.lua
+Locale\ruRU.lua
+
+configui.lua

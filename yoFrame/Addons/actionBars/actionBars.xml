@@ -1,0 +1,18 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<Script file="Core.lua"/>
+	<Script file="actionBars.lua"/>
+ 	<Script file="Skin.lua"/>
+	<Script file="Bar1.lua"/>
+ 	<Script file="Bar2.lua"/>
+	<Script file="Bar3.lua"/>
+	<Script file="Bar4.lua"/>
+	<Script file="Bar5.lua"/>
+	<Script file="BarPet.lua"/>
+	<Script file="BarStance.lua"/>
+	<!-- <Script file="BarTotem.lua"/> -->
+	<Script file="microMenu.lua"/>
+	<Script file="Extra.lua"/>
+	<Script file="taxi.lua"/>
+
+</Ui>

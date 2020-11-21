@@ -1,0 +1,26 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="AzeritPower.lua"/>
+	<Script file="Challenges.lua"/>
+	<Script file="ChallengeFrame.lua"/>
+	<Script file="ChallengeProc.lua"/>
+	<Script file="Cooldown.lua"/>
+	<Script file="CooldownFlash.lua"/>
+	<Script file="CTA.lua"/>
+	<Script file="DoLoot.lua"/>
+	<Script file="Inspect.lua"/>
+	<Script file="Fliger.lua"/>
+	<Script file="Experience.lua"/>
+	<Script file="lfgFilter.lua"/>
+	<Script file="Mail.lua"/>
+	<Script file="Mirror.lua"/>
+	<Script file="MoveBlizzFrames.lua"/>
+	<Script file="ObjectiveTrack.lua"/>
+	<Script file="Potatos.lua"/>
+	<Script file="QuestAuto.lua"/>
+	<Script file="RaidCooldowns.lua"/>
+	<Script file="RaidUtility.lua"/>
+	<Script file="Reputation.lua"/>
+	<Script file="ScrollText.lua"/>
+	<Script file="Scripts.lua"/>
+	<Script file="TalkingHead.lua"/>
+ </Ui>
