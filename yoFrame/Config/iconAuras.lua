@@ -160,6 +160,7 @@ function N.createAuraIcon( parent, index)
 	button.showBorder	= parent.showBorder 	-- по-дефолту = фэлс, что бы рисовать смолстайл
 	button.minTimer 	= button.minTimer or 100
 	button.tFormat 		= parent.timeSecOnly and formatTimeSec or formatTime
+	button.redTimer		= parent.redTimer or 2
 
 	button.icon = button:CreateTexture(nil, "BORDER")
 	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
@@ -173,8 +174,8 @@ function N.createAuraIcon( parent, index)
 	button.count:SetTextColor( 0, 1, 0)
 
 	button.timer = button:CreateFontString(nil, "OVERLAY")
-	button.timer:SetFont( yo.fontpx, max( 10, size / 1.7), "THINOUTLINE")
-	button.timer:SetShadowOffset(1, -1)
+	button.timer:SetFont( yo.fontpx, max( 10, size / 1.5), "OUTLINE")
+	--button.timer:SetShadowOffset(1, -1)
 
 	if parent.timerPosition == "BOTTOM" then
 		button.count:SetPoint("TOPRIGHT", button, "TOPRIGHT", 6, 6)
@@ -280,8 +281,9 @@ function N.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 
 		local est = expirationTime - GetTime()
 
-		if est <= 2 then
+		if est <= button.redTimer then
 			button.timer:SetTextColor( 1, 0, 0)
+
 		elseif est <= 0 then
 			button:Hide()
 			self:SetScript("OnUpdate", nil)

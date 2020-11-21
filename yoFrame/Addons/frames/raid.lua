@@ -151,7 +151,7 @@ local function raidShared(self, unit)
 		sizeAuras 		= 12
 		spacingAuras 	= 1
 	 	numAuras 		= 3
-		initialAnchor 	= "TOPLEFT"
+		initialAnchor 	= "TOPRIGHT"
 		growthX 		= "RIGHT"
 		growAuraTank 	= "LEFT"
 		--CustomFilter 	= funcWhiteList --funcBlackList
@@ -427,6 +427,7 @@ local function raidShared(self, unit)
 	------------------------------------------------------------------------------------------------------
 	if enableAuras then
 		self.Debuffs = self.Debuffs or CreateFrame('Frame', nil, self)
+		self.Debuffs:ClearAllPoints()
 		self.Debuffs:SetPoint( unpack( posAuras))
 		self.Debuffs:SetFrameLevel( 100)
 		self.Debuffs:SetSize( sizeAuras * ( numAuras +1), sizeAuras)
@@ -504,8 +505,8 @@ local function raidShared(self, unit)
 	if enableDeHight then self.addDebuffHigh( self) end
 
 	if yo.healBotka.enable and unit ~= "tank" then
-		N.makeQuiButton(self)
 
+		self:addQliqueButton()
 		self:addBuffHost()
 
 		self:HookScript("OnEnter", self.frameOnEnter)
@@ -637,10 +638,11 @@ logan:SetScript("OnEvent", function(self, event)
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
 	if yo.healBotka.enable then N.CreateClique( self) end
 
-	local unit_width = 	yo.Raid.width
-	local unit_height = yo.Raid.height
-	local spaicing = ( yo.Raid.spaicing or 6)
-	local unitsPerColumn = 5
+	local unit_width 	= yo.Raid.width
+	local unit_height 	= yo.Raid.height
+	local spaicing 		= ( yo.Raid.spaicing or 6)
+	local unitsPerColumn= 5
+	local partyScale 	= yo.Raid.raidTemplate == 3 and 1 or yo.Raid.partyScale
 
 	if yo.Raid.raidTemplate == 2 then
 		unit_width 	= unit_width * 1.2
@@ -759,17 +761,17 @@ logan:SetScript("OnEvent", function(self, event)
 				self:SetWidth(header:GetAttribute("initial-width"))
 				self:SetHeight(header:GetAttribute("initial-height"))
 			]],
-			"initial-width", unit_width * yo.Raid.partyScale,
-			"initial-height", unit_height * yo.Raid.partyScale,
+			"initial-width", unit_width * partyScale, --yo.Raid.partyScale,
+			"initial-height", unit_height * partyScale, --yo.Raid.partyScale,
 			"showSolo", yo.Raid.showSolo,
 			'sortMethod', 'NAME',
 			"showPlayer", true,
 			"showParty", true,
 			"showRaid", true,
-			"xOffset", spaicing * yo.Raid.partyScale,
+			"xOffset", spaicing * partyScale, --yo.Raid.partyScale,
 			"groupBy", groupBy,
 			"groupingOrder", 'TANK,HEALER,DAMAGER,NONE', --groupingOrder,
-			"yOffset", -spaicing * yo.Raid.partyScale * 1.0,			---6,
+			"yOffset", -spaicing * partyScale,			---6,
 			"unitsPerColumn", unitsPerColumn,
 			"columnSpacing", yo.Raid.spaicing,
 			"point", "TOP",

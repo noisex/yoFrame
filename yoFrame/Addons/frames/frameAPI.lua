@@ -272,15 +272,16 @@ local function addBuffHost( self)
 	local buffHots = CreateFrame("Frame", nil, self)
 	--buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
 	buffHots:SetAllPoints( self)
-	buffHots:SetSize(10, 10)
+	buffHots:SetSize(12, 12)
 	buffHots:SetFrameLevel(120)
 	buffHots:SetFrameStrata( "MEDIUM")
 	buffHots.direction   	= "ICONS"
 	buffHots.noShadow   	= true
 	buffHots.hideTooltip    = true
-	buffHots.timeSecOnly    = true
+	buffHots.timeSecOnly    = false --true
 	buffHots.spells 		= {}
 	buffHots.iconNumber 	= 5
+	buffHots.redTimer		= 3
 	self.buffHots        	= buffHots
 
 	self.buffHots.swift = self.buffHots:CreateTexture(nil, "OVERLAY")
@@ -562,6 +563,7 @@ function importAPI( self)
 	self.updateBuffHost		= updateBuffHost
 	self.updateAllElements	= updateAllElements
 	self.updateManaCost 	= updateManaCost
+	self.updateAuraIcon 	= N.updateAuraIcon
 	self.addHealPred 		= addHealPred
 	self.addAbsorbBar		= addAbsorbBar
 	self.addDebuffHigh 		= addDebuffHigh
@@ -569,4 +571,5 @@ function importAPI( self)
 	self.frameOnLeave 		= frameOnLeave
 	self.frameOnEnter 		= frameOnEnter
 	self.onChangeTarget 	= onChangeTarget
+	self.addQliqueButton	= N.makeQuiButton
 end
