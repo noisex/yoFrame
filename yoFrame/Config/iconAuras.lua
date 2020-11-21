@@ -241,6 +241,7 @@ function N.createAuraIcon( parent, index)
 end
 
 
+
 function N.updateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 
 	button.expirationTime 	= expirationTime
