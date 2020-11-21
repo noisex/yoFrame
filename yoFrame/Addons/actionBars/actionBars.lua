@@ -5,8 +5,8 @@ if not yo.ActionBar.enable then return end
 local _G = _G
 -- GLOBALS: myButtonBorder
 
-local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, dummy, CreatePanel
-	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, dummy, CreatePanel
+local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel
+	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel
 
 local function buttonsUP( self)
 	if not InCombatLockdown() then

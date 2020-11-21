@@ -5,9 +5,13 @@ local L, yo, N = ns[1], ns[2], ns[3]
 local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
 
+local _G= _G
+
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
+local GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font
+	= GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font
 
 local updateAllElements = function(frame)
 	for _, v in ipairs(frame.__elements) do
@@ -290,7 +294,7 @@ local function unitShared(self, unit)
 		end
 
 	elseif unit == "target" and yo.healBotka.enable then
-		N.makeQuiButton(self)
+		--N.makeQuiButton(self)
 
 	elseif cunit == "boss" then
 		self.tarBorder = self:CreateFontString(nil ,"OVERLAY", 'GameFontNormal')

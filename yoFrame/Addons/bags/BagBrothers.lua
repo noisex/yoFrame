@@ -13,8 +13,8 @@ local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParen
 --local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
 --local strlower, strsub, strlen, strupper, strtrim, strmatch = strlower, strsub, strlen, strupper, strtrim, strmatch
 
-local yo_AllData, yo_BBCount, yo_BB, yo_Bags
-	= yo_AllData, yo_BBCount, yo_BB, yo_Bags
+--local yo_AllData, yo_BBCount, yo_BB, yo_Bags
+--	= yo_AllData, yo_BBCount, yo_BB, yo_Bags
 
 -- GLOBALS: yo_BBFrame
 

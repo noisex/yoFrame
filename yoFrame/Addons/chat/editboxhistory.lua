@@ -4,6 +4,10 @@ local L, yo, N = unpack( ns)
 ----------------------------------------------------------------------------------------
 --	Save slash command typo
 ----------------------------------------------------------------------------------------
+--local yo_AllData = yo_AllData
+local tinsert = tinsert
+local tremove = tremove
+local table_maxn = table.maxn
 
 local function editboxAddHistory( self)
 	local text = self.tempString
@@ -11,7 +15,7 @@ local function editboxAddHistory( self)
 	if text and #text > 1 then
 		if not yo_AllData.editHistory then yo_AllData.editHistory = {} end
 
-		if text ~= yo_AllData.editHistory[ table.maxn( yo_AllData.editHistory)] then
+		if text ~= yo_AllData.editHistory[ table_maxn( yo_AllData.editHistory)] then
 			tinsert( yo_AllData.editHistory, text)
 		end
 

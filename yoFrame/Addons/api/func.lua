@@ -1,9 +1,15 @@
 local addon, ns = ...
 local L, yo, N = unpack( ns)
 
-local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs
-	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs
+local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs, type, select, unpack, tremove, max
+	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs, type, select, unpack, tremove, max
 local texture, texglow = yo.texture, yo.texglow
+
+--local myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, myName
+--	= myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, myName
+
+local GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
+	= GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
 
 function isDruid( self)
 	if myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
@@ -65,7 +71,7 @@ end
 -- 						Delay from ElvUI
 -------------------------------------------------------------------------------------------
 
-WaitTable = {}
+local WaitTable = {}
 local C_Timer_After = C_Timer.After
 local WaitFrame = CreateFrame('Frame', 'yo_WaitFrame', UIParent)
 
@@ -233,7 +239,7 @@ function CreateNewBorder( f)
 
 	f.border = CreateFrame( "Button", nil, f)
 	f.border:SetAllPoints( f)
-	f.border:SetFrameLevel( level or 0)
+	--f.border:SetFrameLevel( level or 0)
 	f.border:SetFrameStrata( f:GetFrameStrata())
 	--f.border:SetFrameStrata( "BACKGROUND")
 
@@ -276,7 +282,7 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     shadow:SetBackdropColor(.075,.075,.086, alpha or 1)
 	shadow:SetBackdropBorderColor( r, g, b, alphaborder or 1)	--(0, 0, 0, alphaborder or 1)
     f.shadow = shadow
-    table.insert( N["shadows"], f.shadow)
+    tinsert( N["shadows"], f.shadow)
     return shadow
 end
 
@@ -301,7 +307,7 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
     shadow:SetBackdrop(style)
     shadow:SetBackdropColor(.07,.07,.07, alpha or 0.9)
 	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
-	table.insert( N["shadows"], f.shadow)
+	tinsert( N["shadows"], f.shadow)
     f.shadow = shadow
     return shadow
 end

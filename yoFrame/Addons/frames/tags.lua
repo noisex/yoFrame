@@ -4,6 +4,17 @@ assert(oUF, "oUF_q was unable to locate oUF install.")
 
 local L, yo = ns[1], ns[2]
 
+local _G = _G
+
+local GetSpellInfo, UnitName, UnitIsConnected, UnitClass, UnitIsDead, UnitLevel, UnitIsUnit, UnitIsPlayer, UnitReaction, UnitHealth, UnitHealthMax, UnitIsDeadOrGhost, UnitClassification, UnitPlayerControlled, UnitIsAFK
+	= GetSpellInfo, UnitName, UnitIsConnected, UnitClass, UnitIsDead, UnitLevel, UnitIsUnit, UnitIsPlayer, UnitReaction, UnitHealth, UnitHealthMax, UnitIsDeadOrGhost, UnitClassification, UnitPlayerControlled, UnitIsAFK
+
+local UnitGroupRolesAssigned, UnitIsGhost, UnitPowerMax, UnitPower, UnitGetIncomingHeals, unpack, type, GetThreatStatusColor, UnitDetailedThreatSituation, utf8sub, GetTotemInfo, ShortValue, GetQuestDifficultyColor
+	= UnitGroupRolesAssigned, UnitIsGhost, UnitPowerMax, UnitPower, UnitGetIncomingHeals, unpack, type, GetThreatStatusColor, UnitDetailedThreatSituation, utf8sub, GetTotemInfo, ShortValue, GetQuestDifficultyColor
+
+local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
+local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX
+local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES
 
 local foo = {""}
 local spellcache = setmetatable({},
@@ -234,7 +245,7 @@ oUF.Tags.Events['color'] = 'UNIT_HEALTH'
 
 oUF.Tags.Methods["afk"] = function(unit)
 
-	return UnitIsAFK(unit) and "|cffCFCFCF afk|r" or ""
+	return UnitIsAFK(unit) and "|cff7F7F7F afk|r" or ""
 end
 oUF.Tags.Events["afk"] = "PLAYER_FLAGS_CHANGED"
 

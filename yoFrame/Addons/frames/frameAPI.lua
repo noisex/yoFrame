@@ -12,6 +12,102 @@ local GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, Un
 local UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, myClass, mySpec, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
 	= UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, myClass, mySpec, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
 
+local texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell
+	= texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell
+
+--local sIsSwiftmend, readyToSwift = false, false
+
+--REGROWTH 	= GetSpellInfo(8936);
+--WILD_GROWTH 	= GetSpellInfo(48438);
+--REJUVENATION = GetSpellInfo(774);
+--GERMINATION 	= GetSpellInfo(155777);
+--114108
+local ID = {
+	[GetSpellInfo(18562)] = true,
+	[GetSpellInfo(8936)] = true,
+	[GetSpellInfo(48438)] = true,
+	[GetSpellInfo(774)] = true,
+	[GetSpellInfo(155777)] = true,
+
+	[GetSpellInfo(53563)] = true,
+	[GetSpellInfo(156910)] = true,
+}
+
+local SWIFTMEND 	= GetSpellInfo(18562);
+local NEZERKALO 	= GetSpellInfo(53563);
+local NEZERKALO2 	= GetSpellInfo(156910);
+
+local function isSpellKnown(aSpellName)
+	return (type(aSpellName) == "number" and IsSpellKnown(aSpellName))
+		or (type(aSpellName) == "number" and IsPlayerSpell(aSpellName))
+		or GetSpellBookItemInfo(aSpellName) ~= nil
+--		or VUHDO_NAME_TO_SPELL[aSpellName] ~= nil and GetSpellBookItemInfo(VUHDO_NAME_TO_SPELL[aSpellName]);
+end
+
+local function isSpellReady( aSpellName)
+	local tStart, tSmDuration, tEnabled = GetSpellCooldown( aSpellName);
+	if tEnabled ~= 0 and (tStart == nil or tSmDuration == nil or tStart <= 0 or tSmDuration <= 1.6) then
+		return true
+	end
+end
+
+local function updateBuffHost( self, event, unit, ...)
+
+	local buffHots = self.buffHots
+	if event == "UNIT_AURA" and self.unit == unit then --- remover GetParent().unit
+		local index, vkl = 0, {}
+
+		buffHots.sIsSwiftmend, buffHots.readyToSwift = false, false
+		while true do
+			index = index + 1
+			local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, "HELPFUL")
+			if not name then break end
+
+			if caster == "player" then
+				if ( isSpellKnown( NEZERKALO) or isSpellKnown( NEZERKALO2)) and not buffHots.sIsSwiftmend then
+					if ID[name] then
+						buffHots.sIsSwiftmend = true
+					end
+				end
+
+				if isSpellKnown( SWIFTMEND) and not buffHots.sIsSwiftmend then
+					if ID[name] then
+						buffHots.readyToSwift = true
+						if isSpellReady( SWIFTMEND) then buffHots.sIsSwiftmend = true; end
+					end
+				end
+
+				for i = 1, buffHots.iconNumber do
+					if buffHots.spells[i] and buffHots.spells[i] == name then
+						vkl[i] = true
+						buffHots[i]:Show()
+						N.updateAuraIcon( buffHots[i], "HELPFUL", icon, count, nil, duration, expirationTime, spellID, i, name)
+					end
+				end
+			end
+		end
+
+		for i = 1, buffHots.iconNumber do
+			if not vkl[i] then
+				buffHots[i]:Hide()
+			end
+		end
+
+		if buffHots.sIsSwiftmend then buffHots.swift:Show()
+		else 					 	  buffHots.swift:Hide() end
+
+	else
+		--print(event, time()	, unit)
+		if isSpellKnown( SWIFTMEND) then
+			if buffHots.readyToSwift and isSpellReady( SWIFTMEND) then
+				buffHots.swift:Show()
+			else
+				buffHots.swift:Hide()
+			end
+		end
+	end
+end
+
 local updateAllElements = function(frame)
 	for _, v in ipairs(frame.__elements) do
 		v(frame, "UpdateElement", frame.unit)
@@ -45,7 +141,8 @@ end
 local function frameOnLeave(f, event)
 	if f.overShadow 		 then f.overShadow:Hide()    end
 	if f.bgHlight 			 then f.bgHlight:Hide()      end
-	if GameTooltip:IsShown() then GameTooltip:FadeOut(2) end
+	--if GameTooltip:IsShown() then GameTooltip:FadeOut(2) end
+	GameTooltip:Hide()
 end
 
 local function updatePowerBar ( power, event, unit)
@@ -150,7 +247,7 @@ local function addAbsorbBar( self)
 	AbsorbBar:SetFillStyle( 'REVERSE')
 	AbsorbBar:SetFrameLevel(2)
 	self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", self.updateHealth)
-	table.insert( N.statusBars, AbsorbBar)
+	tinsert( N.statusBars, AbsorbBar)
 	return AbsorbBar
 end
 
@@ -164,11 +261,49 @@ local function addHealPred( self)
 	healPred:SetStatusBarTexture( yo.texture)
 	healPred:SetStatusBarColor( 0.3, 0.9, 0.3, 0.6)
 	healPred:SetFrameLevel(2)
-	table.insert( N.statusBars, healPred)
+	tinsert( N.statusBars, healPred)
 
 	self:RegisterEvent("UNIT_HEAL_PREDICTION", self.updateHealth)
 	self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", self.updateHealth)
 	return healPred
+end
+
+local function addBuffHost( self)
+	local buffHots = CreateFrame("Frame", nil, self)
+	--buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
+	buffHots:SetAllPoints( self)
+	buffHots:SetSize(10, 10)
+	buffHots:SetFrameLevel(120)
+	buffHots:SetFrameStrata( "MEDIUM")
+	buffHots.direction   	= "ICONS"
+	buffHots.noShadow   	= true
+	buffHots.hideTooltip    = true
+	buffHots.timeSecOnly    = true
+	buffHots.spells 		= {}
+	buffHots.iconNumber 	= 5
+	self.buffHots        	= buffHots
+
+	self.buffHots.swift = self.buffHots:CreateTexture(nil, "OVERLAY")
+	self.buffHots.swift:SetPoint("LEFT", self.buffHots, "TOPLEFT", 1, 0)
+	self.buffHots.swift:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\icon_red")
+	self.buffHots.swift:SetVertexColor( 1, 0.8, 0.2, 1)
+	self.buffHots.swift:SetSize( 10, 10)
+	self.buffHots.swift:Hide()
+
+	for i = 1, buffHots.iconNumber do
+		self.buffHots[i] = N.createAuraIcon( self.buffHots, i)
+		self.buffHots[i]:Hide()
+
+		if yo.healBotka["hSpell" .. i] 	then buffHots.spells[i]			= yo.healBotka["hSpell" .. i]	end
+		if yo.healBotka["hColEna" ..i] 	then self.buffHots[i].color 	= { strsplit( ",", yo.healBotka["hColor" ..i])} end
+		if yo.healBotka["hTimEna" ..i] 	then self.buffHots[i].minTimer 	= yo.healBotka["hTimer" ..i] + 0.1 end
+
+		self.buffHots[i]:SetScale( yo.healBotka["hScale" .. i] or 1)
+	end
+
+	tinsert(self.__elements, self.updateBuffHost)
+	self:RegisterEvent('SPELL_UPDATE_COOLDOWN', self.updateBuffHost, true)
+	self:RegisterEvent("UNIT_AURA", self.updateBuffHost)
 end
 
 local function updatePower( f, unit, pmin, min, pmax)
@@ -179,7 +314,7 @@ local function updatePower( f, unit, pmin, min, pmax)
 		pmin = mod( pmin, 10)
 	end
 
-	if pmin >= 1 then uPP = math.floor( pmin / pmax * 100) else uPP = 0 end
+	if pmin >= 1 then uPP = floor( pmin / pmax * 100) else uPP = 0 end
 
 	if f.powerText then
     	if UnitIsDead( unit) or unit == "targettarget" or unit == "focus" or unit == "focustarget" or unit == "pet" or not UnitIsConnected( unit) or UnitIsGhost( unit) or pmin == 0 then
@@ -424,11 +559,13 @@ function importAPI( self)
 	self.updatePowerBar 	= updatePowerBar
 	self.updateTOTAuras 	= updateTOTAuras
 	self.updateFlash 		= updateFlash
+	self.updateBuffHost		= updateBuffHost
 	self.updateAllElements	= updateAllElements
 	self.updateManaCost 	= updateManaCost
 	self.addHealPred 		= addHealPred
 	self.addAbsorbBar		= addAbsorbBar
 	self.addDebuffHigh 		= addDebuffHigh
+	self.addBuffHost		= addBuffHost
 	self.frameOnLeave 		= frameOnLeave
 	self.frameOnEnter 		= frameOnEnter
 	self.onChangeTarget 	= onChangeTarget

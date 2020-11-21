@@ -8,8 +8,8 @@ local L, yo, N = ns[1], ns[2], ns[3]
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring
-	= CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring
+local CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, texture, CreateStyleSmall, type, print, tinsert, UnitClass, texglow, GetColors
+	= CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, texture, CreateStyleSmall, type, print, tinsert, UnitClass, texglow, GetColors
 
 local UnitSpecific = {
 	player = function(self)
@@ -69,9 +69,9 @@ function N.updateAllRaid(...)
 	end
 end
 
-qwert = function(self, ...)
-	print("...")
-end
+--qwert = function(self, ...)
+--	print("...")
+--end
 -------------------------------------------------------------------------------------------------------
 --											SHARED
 -------------------------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ local function raidShared(self, unit)
 	importAPI( self)
 
 	self:RegisterForClicks("AnyUp")
-	self.qwert = qwert
+	--self.qwert = qwert
 
 	CreateStyleSmall(self, 1)
 
@@ -233,7 +233,7 @@ local function raidShared(self, unit)
 	self.Health:SetWidth( self:GetWidth())
 	self.Health:SetFrameLevel(1)
 	self.Health:SetStatusBarTexture( texture)
-	table.insert( N.statusBars, self.Health)
+	tinsert( N.statusBars, self.Health)
 
 	self.Health.hbg = self.Health.hbg or self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
@@ -306,7 +306,7 @@ local function raidShared(self, unit)
 		self.Power:SetFrameStrata( "MEDIUM")
 		self.Power:SetWidth( self:GetWidth() - 6)
 		self.Power:SetHeight( 2)
-		table.insert( N.statusBars, self.Power)
+		tinsert( N.statusBars, self.Power)
 
 		self.Power:SetFrameLevel(10)
 		self.Power.frequentUpdates = false
@@ -340,7 +340,7 @@ local function raidShared(self, unit)
 	self.Info:SetFont( yo.font, sizeInfoFont, "OUTLINE")
 	--self.Info:SetShadowOffset( 1, -1)
 	--self.Info:SetShadowColor( 0, 0, 0, 1)
-	table.insert( N.strings, self.Info)
+	tinsert( N.strings, self.Info)
 
 	if unit == "tank" then
 		self:Tag( self.Info, "[GetNameColor][nameshort]")
@@ -350,8 +350,10 @@ local function raidShared(self, unit)
 			self.threat:SetFont( yo.fontpx, yo.fontsize +1)--, "THINOUTLINE")
 			self.threat:SetShadowOffset( 1, -1)
 			self.threat:SetPoint("BOTTOMLEFT", self.Overlay, "BOTTOMLEFT", 3, 2)
-			table.insert( N.strings, self.threat)
+			tinsert( N.strings, self.threat)
 		end
+	elseif  yo.Raid.raidTemplate == 3 then
+		 self:Tag( self.Info, "[GetNameColor][namemedium]\n[afk]")
 	else
 		 self:Tag( self.Info, "[GetNameColor][namemedium][afk]")
 	end
@@ -375,7 +377,7 @@ local function raidShared(self, unit)
 
     	self.LeaderIndicator = self.LeaderIndicator or self.Overlay:CreateTexture(nil, 'OVERLAY')
    		self.LeaderIndicator:SetSize(10, 10)
-   		self.LeaderIndicator:SetPoint('LEFT', self, 'TOPLEFT', 10, 0)
+   		self.LeaderIndicator:SetPoint('LEFT', self, 'TOPLEFT', 15, 0)
 
 		self.AssistantIndicator = self.AssistantIndicator or self.Overlay:CreateTexture(nil, 'OVERLAY')
    		self.AssistantIndicator:SetSize(10, 10)
@@ -401,14 +403,14 @@ local function raidShared(self, unit)
 	self.DeadText:SetPoint( unpack( posDead))
 	self.DeadText:SetShadowOffset( 1, -1)
 	self.DeadText:SetShadowColor( 0, 0, 0, 1)
-	table.insert( N.strings, self.DeadText)
+	tinsert( N.strings, self.DeadText)
 	self:Tag( self.DeadText, "[GetNameColor]".. yo.Raid.showHPValue)
 
 	if unit == "raid" and yo.Raid.showGroupNum and ( not self.unitTT or self.unitT) then
 		self.rText = self.rText or self.Overlay:CreateFontString(nil ,"OVERLAY")
 		self.rText:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
 		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -4)
-		table.insert( N.strings, self.rText)
+		tinsert( N.strings, self.rText)
 		self:Tag(self.rText, "[GetNameColor][group]")
 	end
 
@@ -490,7 +492,7 @@ local function raidShared(self, unit)
 	end
 
    	if enableBorder then
-		table.insert(self.__elements, self.onChangeTarget)
+		tinsert(self.__elements, self.onChangeTarget)
 		self:RegisterEvent('PLAYER_TARGET_CHANGED', self.onChangeTarget, true)
 		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", self.onChangeTarget)
 		self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", self.onChangeTarget)
@@ -503,6 +505,8 @@ local function raidShared(self, unit)
 
 	if yo.healBotka.enable and unit ~= "tank" then
 		N.makeQuiButton(self)
+
+		self:addBuffHost()
 
 		self:HookScript("OnEnter", self.frameOnEnter)
 		self:HookScript("OnLeave", self.frameOnLeave)
@@ -673,6 +677,7 @@ logan:SetScript("OnEvent", function(self, event)
 					]],
 					"initial-width", unit_width,
 					"initial-height", unit_height,
+					--'sortMethod', 'NAME',
 					"showRaid", true,
 					"yOffset", -spaicing,
 					"point", "TOPLEFT",
@@ -707,6 +712,10 @@ logan:SetScript("OnEvent", function(self, event)
 			if yo.Raid.groupingOrder == "THD" then
 				groupBy 	= 'ASSIGNEDROLE'
 				groupingOrder = 'TANK,HEALER,DAMAGER,NONE'
+			elseif yo.Raid.groupingOrder == "LGBT" then
+				groupBy = 'CLASS'
+				groupingOrder = 'DEATHKNIGHT,DRUID,ROGUE,HUNTER,MONK,MAGE,SHAMAN,WARLOCK,DEMONHUNTER,PALADIN,PRIEST,WARRIOR'
+				--groupingOrder = 'DEMONHUNTER,DEATHKNIGHT,WARRIOR,ROGUE,MONK,PALADIN,DRUID,SHAMAN,HUNTER,PRIEST,MAGE,WARLOCK'
 			elseif yo.Raid.groupingOrder == "TDH" then
 				groupBy = 'ASSIGNEDROLE'
 				groupingOrder = 'TANK,DAMAGER,HEALER,NONE'
@@ -726,6 +735,7 @@ logan:SetScript("OnEvent", function(self, event)
 				"groupingOrder", groupingOrder,
 				"initial-width", unit_width,
 				"initial-height", unit_height,
+				'sortMethod', 'NAME',
 				"showSolo", false,
 				"showPlayer", true,
 				"showRaid", true,
@@ -752,6 +762,7 @@ logan:SetScript("OnEvent", function(self, event)
 			"initial-width", unit_width * yo.Raid.partyScale,
 			"initial-height", unit_height * yo.Raid.partyScale,
 			"showSolo", yo.Raid.showSolo,
+			'sortMethod', 'NAME',
 			"showPlayer", true,
 			"showParty", true,
 			"showRaid", true,
@@ -785,6 +796,7 @@ logan:SetScript("OnEvent", function(self, event)
     			----'groupFilter', 'MAINTANK',
     			'roleFilter', 'TANK',
     			'yOffset', offsetMT,
+    			'sortMethod', 'NAME',
     			'template', template,
     			'oUF-initialConfigFunction', ([[
             		self:SetWidth(%d)
@@ -826,4 +838,47 @@ unitsPerColumn = [NUMBER or nil] - maximum units that will be displayed in a sin
 startingIndex = [NUMBER] - the index in the final sorted unit list at which to start displaying units (Default: 1)
 columnSpacing = [NUMBER] - the amount of space between the rows/columns (Default: 0)
 columnAnchorPoint = [STRING] - the anchor point of each new column (ie. use LEFT for the columns to grow to the right)
+
+UF.headerGroupBy = {
+	CLASS = function(header)
+		header:SetAttribute('groupingOrder', 'DEATHKNIGHT,DEMONHUNTER,DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR,MONK')
+		header:SetAttribute('sortMethod', 'NAME')
+		header:SetAttribute('groupBy', 'CLASS')
+	end,
+	MTMA = function(header)
+		header:SetAttribute('groupingOrder', 'MAINTANK,MAINASSIST,NONE')
+		header:SetAttribute('sortMethod', 'NAME')
+		header:SetAttribute('groupBy', 'ROLE')
+	end,
+	ROLE = function(header)
+		header:SetAttribute('groupingOrder', 'TANK,HEALER,DAMAGER,NONE')
+		header:SetAttribute('sortMethod', 'NAME')
+		header:SetAttribute('groupBy', 'ASSIGNEDROLE')
+	end,
+	ROLE2 = function(header)
+		header:SetAttribute('groupingOrder', 'TANK,DAMAGER,HEALER,NONE')
+		header:SetAttribute('sortMethod', 'NAME')
+		header:SetAttribute('groupBy', 'ASSIGNEDROLE')
+	end,
+	NAME = function(header)
+		header:SetAttribute('groupingOrder', '1,2,3,4,5,6,7,8')
+		header:SetAttribute('sortMethod', 'NAME')
+		header:SetAttribute('groupBy', nil)
+	end,
+	GROUP = function(header)
+		header:SetAttribute('groupingOrder', '1,2,3,4,5,6,7,8')
+		header:SetAttribute('sortMethod', 'INDEX')
+		header:SetAttribute('groupBy', 'GROUP')
+	end,
+	CLASSROLE = function(header)
+		header:SetAttribute('groupingOrder', 'DEATHKNIGHT,WARRIOR,DEMONHUNTER,ROGUE,MONK,PALADIN,DRUID,SHAMAN,HUNTER,PRIEST,MAGE,WARLOCK')
+		header:SetAttribute('sortMethod', 'NAME')
+		header:SetAttribute('groupBy', 'CLASS')
+	end,
+	INDEX = function(header)
+		header:SetAttribute('groupingOrder', '1,2,3,4,5,6,7,8')
+		header:SetAttribute('sortMethod', 'INDEX')
+		header:SetAttribute('groupBy', nil)
+	end,
+}
 --]]

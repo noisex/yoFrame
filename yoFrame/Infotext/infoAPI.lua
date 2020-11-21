@@ -96,7 +96,8 @@ end
 
 
 function infoText:checkNewSpell( sourceGUID, spellId, spellName, spellDMG, over, school, spellCrit)
-	local over = over == -1 and 0 or 0
+
+	local over = over == -1 and 0 or over or 0
 	--print(spellId, spellName, spellDMG, over, school)
 	if spellDMG - over == 0 then return end
 

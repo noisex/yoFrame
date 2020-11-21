@@ -3,95 +3,35 @@ local L, yo, N = unpack( select( 2, ...))
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local IsSpellKnown, IsPlayerSpell, type, strmatch, GetSpellBookItemInfo, GetSpellCooldown, UnitAura, CreateFrame
-	= IsSpellKnown, IsPlayerSpell, type, strmatch, GetSpellBookItemInfo, GetSpellCooldown, UnitAura, CreateFrame
+local type, strmatch, CreateFrame
+	= type, strmatch, CreateFrame
 
-local spells = {}
-local sIsSwiftmend, readyToSwift = false, false
+--local function VUHDO_getAutoBattleRezText(anIsKeyboard)
 
---REGROWTH 	= GetSpellInfo(8936);
---WILD_GROWTH 	= GetSpellInfo(48438);
---REJUVENATION = GetSpellInfo(774);
---GERMINATION 	= GetSpellInfo(155777);
+--	if ("DRUID" == VUHDO_PLAYER_CLASS or "PALADIN" == VUHDO_PLAYER_CLASS) and VUHDO_SPELL_CONFIG["autoBattleRez"] then
+--		tRezText = "/use [dead,combat,@" .. (anIsKeyboard and "mouseover" or "vuhdo");
+--		if VUHDO_SPELL_CONFIG["smartCastModi"] ~= "all" then
+--			tRezText = tRezText .. ",mod:" .. VUHDO_SPELL_CONFIG["smartCastModi"];
+--		end
+--		tRezText = tRezText .. "] " .. VUHDO_SPELL_ID.REBIRTH .. "\n";
+--	else
+--		tRezText = "";
+--	end
 
-local ID = {
-	[GetSpellInfo(18562)] = true,
-	[GetSpellInfo(8936)] = true,
-	[GetSpellInfo(48438)] = true,
-	[GetSpellInfo(774)] = true,
-	[GetSpellInfo(155777)] = true,
+--	return tRezText;
+--end
+--if VUHDO_SPELL_CONFIG["IS_CANCEL_CURRENT"] then
+--		tStopText = "/stopcasting\n";
+--	else
+--		tStopText = "";
+--	end
+--if VUHDO_SPELL_CONFIG["IS_FIRE_TRINKET_1"] then
+--	sFireText = sFireText .. "/use".. tModi .."13\n";
+--end
+--if VUHDO_SPELL_CONFIG["IS_FIRE_TRINKET_2"] then
+--	sFireText = sFireText .. "/use".. tModi .."14\n";
+--end
 
-	[GetSpellInfo(53563)] = true,
-	[GetSpellInfo(156910)] = true,
-}
-
-local SWIFTMEND 	= GetSpellInfo(18562);
-local NEZERKALO 	= GetSpellInfo(53563);
-local NEZERKALO2 	= GetSpellInfo(156910);
-local ICONS_NUMBER	= 5
-
-local function isSpellKnown(aSpellName)
-	return (type(aSpellName) == "number" and IsSpellKnown(aSpellName))
-		or (type(aSpellName) == "number" and IsPlayerSpell(aSpellName))
-		or GetSpellBookItemInfo(aSpellName) ~= nil
---		or VUHDO_NAME_TO_SPELL[aSpellName] ~= nil and GetSpellBookItemInfo(VUHDO_NAME_TO_SPELL[aSpellName]);
-end
-
-local function isSpellReady( aSpellName)
-	local tStart, tSmDuration, tEnabled = GetSpellCooldown( aSpellName);
-	if tEnabled ~= 0 and (tStart == nil or tSmDuration == nil or tStart <= 0 or tSmDuration <= 1.6) then
-		return true
-	end
-end
-
-local function onAuras( self, event, unit, ...)
-
-	if event == "UNIT_AURA" and self:GetParent().unit  == unit then --- remover GetParent().unit
-		local index, vkl = 0, {}
-
-		sIsSwiftmend, readyToSwift = false, false
-		while true do
-			index = index + 1
-			local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, "HELPFUL")
-			if not name then break end
-
-			if caster == "player" then
-				if ( isSpellKnown( NEZERKALO) or isSpellKnown( NEZERKALO2)) and not sIsSwiftmend then
-					if ID[name] then
-						sIsSwiftmend = true
-					end
-				end
-
-				if isSpellKnown( SWIFTMEND) and not sIsSwiftmend then
-					if ID[name] then
-						readyToSwift = true
-						if isSpellReady( SWIFTMEND) then sIsSwiftmend = true; end
-					end
-				end
-
-				for i = 1, ICONS_NUMBER do
-					if spells[i] and spells[i] == name then
-						vkl[i] = true
-						self[i]:Show()
-						N.updateAuraIcon( self[i], "HELPFUL", icon, count, nil, duration, expirationTime, spellID, i, name)
-					end
-				end
-			end
-		end
-
-		for i = 1, ICONS_NUMBER do
-			if not vkl[i] then
-				self[i]:Hide()
-			end
-		end
-
-		if sIsSwiftmend then self.swift:Show()
-		else 				 self.swift:Hide() end
-
-	else
-		if isSpellKnown( SWIFTMEND) and readyToSwift and isSpellReady( SWIFTMEND) then self.swift:Show() end
-	end
-end
 
 N.CreateClique = function( self)
 	--Clique = Clique or CreateFrame("Frame", "yo_Clique", UIParent)
@@ -209,66 +149,32 @@ N.makeQuiButton = function ( self )
 				kamod, bmod = strsplit( "-", key, 2)
 				amod = kamod .. "-"
 			end
+				--		tRezText = "/use [dead,combat,@" .. (anIsKeyboard and "mouseover" or "vuhdo");
 
 			if strmatch( key, "button") then
 				key = strmatch( key, "%d+")
 				self:SetAttribute( amod     .. "type"       .. key, "macro")
-				self:SetAttribute( amod     .. "macrotext"  .. key, "/cast [@mouseover] " .. spell)
+				--self:SetAttribute( amod     .. "macrotext"  .. key, "/cast [@mouseover] " .. spell)
+				self:SetAttribute( amod     .. "macrotext"  .. key, "/use [help,nodead,@mouseover] " .. spell)
 
 			elseif strmatch( key, "wheel") then
 				bmod = strmatch( key, "down") or "up"
 				--print("type-"       .. kamod .. "wheel" .. bmod, "macro")
 				--print("macrotext-"  .. kamod .. "wheel" .. bmod, "/cast [@mouseover] " .. spell)
 				self:SetAttribute("type-"       .. kamod .. "wheel" .. bmod, "macro")
-				self:SetAttribute("macrotext-"  .. kamod .. "wheel" .. bmod, "/cast [@mouseover] " .. spell)
+				self:SetAttribute("macrotext-"  .. kamod .. "wheel" .. bmod, "/use [help,nodead,@mouseover] " .. spell)
 
 			elseif strmatch( key, "numpad") then
 				key = strmatch( key, "%d+")
 				self:SetAttribute( "type-"      .. kamod .. "numpad" .. key, "macro")
-				self:SetAttribute( "macrotext-" .. kamod .. "numpad" .. key, "/cast [@mouseover] " .. spell)
+				self:SetAttribute( "macrotext-" .. kamod .. "numpad" .. key, "/use [help,nodead,@mouseover] " .. spell)
 
 			else
 				self:SetAttribute("type-"       .. kamod .. bmod, "macro")
-				self:SetAttribute("macrotext-"  .. kamod .. bmod, "/cast [@mouseover] " .. spell)
+				self:SetAttribute("macrotext-"  .. kamod .. bmod, "/use [help,nodead,@mouseover] " .. spell)
 			end
 		end
 	end
-
-	if self:GetName() == "yo_Target" then return end
-
-	local buffHots = CreateFrame("Frame", nil, self)
-	--buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
-	buffHots:SetAllPoints( self)
-	buffHots:SetSize(12, 12)
-	buffHots:SetFrameLevel(120)
-	buffHots:SetFrameStrata( "MEDIUM")
-	buffHots.direction   	= "ICONS"
-	buffHots.noShadow   	= true
-	buffHots.hideTooltip    = true
-	buffHots.timeSecOnly    = true
-	buffHots:RegisterEvent("UNIT_AURA", buffHots:GetParent().unit)
-	buffHots:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-	self.buffHots        	= buffHots
-
-	self.buffHots.swift = self.buffHots:CreateTexture(nil, "OVERLAY")
-	self.buffHots.swift:SetPoint("LEFT", self.buffHots, "TOPLEFT", 20, 3)
-	self.buffHots.swift:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\icon_red")
-	self.buffHots.swift:SetVertexColor( 1, 0.8, 0.2, 1)
-	self.buffHots.swift:SetSize( 12, 12)
-	self.buffHots.swift:Hide()
-
-	for i = 1, ICONS_NUMBER do
-		self.buffHots[i] = N.createAuraIcon( self.buffHots, i)
-		self.buffHots[i]:Hide()
-
-		if yo.healBotka["hSpell" .. i] 	then spells[i] 					= yo.healBotka["hSpell" .. i]	end
-		if yo.healBotka["hColEna" ..i] 	then self.buffHots[i].color 	= { strsplit( ",", yo.healBotka["hColor" ..i])} end
-		if yo.healBotka["hTimEna" ..i] 	then self.buffHots[i].minTimer 	= yo.healBotka["hTimer" ..i] + 0.1 end
-
-		self.buffHots[i]:SetScale( yo.healBotka["hScale" .. i] or 1)
-	end
-
-	buffHots:SetScript("OnEvent", onAuras)
 end
 
 

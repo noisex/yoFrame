@@ -8,7 +8,7 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local GameTooltip, myName, myRealm, GetTime, myColorStr, myLogin, GetNumSavedInstances, GetGameTime, SecondsToClock, type, date, GetSavedInstanceInfo
 	= GameTooltip, myName, myRealm, GetTime, myColorStr, myLogin, GetNumSavedInstances, GetGameTime, SecondsToClock, type, date, GetSavedInstanceInfo
 
-local yo_AllData = yo_AllData
+--local yo_AllData = yo_AllData
 local Hr24, Min
 
 local infoText = N.infoTexts

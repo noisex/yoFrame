@@ -59,12 +59,12 @@ local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ce
 local aGlow = LibStub("LibCustomGlow-1.0", true)
 
 local posz = {
-    [1] =  { [1] = "LEFT",   	 [2] = 2,    [3] = 0},
-    [2] =  { [1] = "BOTTOMLEFT", [2] = 2,    [3] = 2},
-    [3] =  { [1] = "BOTTOM",     [2] = 0,    [3] = 2},
-    [4] =  { [1] = "BOTTOMRIGHT",[2] = -2,   [3] = 2},
-    [5] =  { [1] = "RIGHT",  	 [2] = -2,   [3] = 0},
-    [6] =  { [1] = "TOPLEFT",    [2] = 2,    [3] = -2},
+    [1] =  { [1] = "LEFT",   	 [2] = 1,    [3] = 0},
+    [2] =  { [1] = "BOTTOMLEFT", [2] = 1,    [3] = 1},
+    [3] =  { [1] = "BOTTOM",     [2] = 0,    [3] = 1},
+    [4] =  { [1] = "BOTTOMRIGHT",[2] = -1,   [3] = 1},
+    [5] =  { [1] = "RIGHT",  	 [2] = -1,   [3] = 0},
+    [6] =  { [1] = "TOPLEFT",    [2] = 1,    [3] = -1},
 }
 
 local function BuffOnLeave( self) GameTooltip:Hide() end

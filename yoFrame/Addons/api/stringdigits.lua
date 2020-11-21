@@ -1,9 +1,14 @@
 local addon, ns = ...
 local L, yo, N = unpack( ns)
 
-local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
-local texture, texglow = yo.texture, yo.texglow
+local tonumber, floor, ceil, abs, mod, modf, format, len, sub, abs, gsub, tostring, find, tinsert
+    = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, math.abs, string.gsub, tostring, string.find, tinsert
 
+local texture, texglow
+  = yo.texture, yo.texglow
+
+local COPPER_AMOUNT_TEXTURE, GOLD_AMOUNT_TEXTURE_STRING, SILVER_AMOUNT_TEXTURE
+    = COPPER_AMOUNT_TEXTURE, GOLD_AMOUNT_TEXTURE_STRING, SILVER_AMOUNT_TEXTURE
 
 function formatMoney(money, noColor, noCooper, noSilver)
 	local goldColor, silverColor, copperColor, back = "|cffffaa00", "|cffbbbbbb", "|cffff6600", "|r"
@@ -13,9 +18,9 @@ function formatMoney(money, noColor, noCooper, noSilver)
 
 	if money == 0 then return format( copperColor .. COPPER_AMOUNT_TEXTURE, money) end
 
-	local gold   = commav( floor(math.abs(money) / 10000))
-	local silver = noSilver and 0 or mod(floor(math.abs(money) / 100), 100)
-	local copper = noCooper and 0 or mod(floor(math.abs(money)), 100)
+	local gold   = commav( floor( abs(money) / 10000))
+	local silver = noSilver and 0 or mod(floor( abs(money) / 100), 100)
+	local copper = noCooper and 0 or mod(floor( abs(money)), 100)
 
 	gold = tonumber(gold) ~= 0 and 	goldColor   .. format( GOLD_AMOUNT_TEXTURE_STRING, gold) .. back .. " "	or ""
 	silver = 	silver ~= 0 and 	silverColor .. format( SILVER_AMOUNT_TEXTURE, silver) 	 .. back .. " "	or ""
@@ -47,9 +52,9 @@ function ShortValue( value)
 end
 
 function commav(amount)
-  local formatted = amount
+  local formatted, k = amount
   while true do
-    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1 %2')
+    formatted, k = gsub(formatted, "^(-?%d+)(%d%d%d)", '%1 %2')
     if (k==0) then
       break
     end
@@ -58,23 +63,23 @@ function commav(amount)
 end
 
 function nums(num)
-	TRILLION = 1000000000000
-	BILLION  = 1000000000
-	MILLION  = 1000000
-	THOUSAND = 1000
+	local TRILLION = 1000000000000
+	local BILLION  = 1000000000
+	local MILLION  = 1000000
+	local THOUSAND = 1000
 
     if not num then return " " end
     if num == 0 then return "0" end
     if num < THOUSAND then
-        return math.floor(num)
+        return floor(num)
     elseif num >= TRILLION then
-        return string.format('%.3ft', num/TRILLION)
+        return format('%.3ft', num/TRILLION)
     elseif num >= BILLION then
-        return string.format('%.3fb', num/BILLION)
+        return format('%.3fb', num/BILLION)
     elseif num >= MILLION then
-        return string.format('%.2fm', num/MILLION)
+        return format('%.2fm', num/MILLION)
     elseif num >= THOUSAND then
-        return string.format('%.1fk', num/THOUSAND)
+        return format('%.1fk', num/THOUSAND)
     end
 end
 
@@ -82,7 +87,7 @@ function paddString(str, paddingChar, minLength, paddRight)
     str = tostring(str or "");
     paddingChar = tostring(paddingChar or " ");
     minLength = tonumber(minLength or 0);
-    while(string.len(str) < minLength) do
+    while( len(str) < minLength) do
         if(paddRight) then
             str = str..paddingChar;
         else
@@ -93,7 +98,7 @@ function paddString(str, paddingChar, minLength, paddRight)
 end
 
 function utf8sub(string, i, dots)
-    i = math.floor( i)
+    i = floor( i)
     if not string then return end
     local bytes = string:len()
     if bytes <= i then
@@ -127,13 +132,13 @@ function SplitToTable(str, inSplitPattern, outResults )
     return;
   end
   local theStart = 1
-  local theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+  local theSplitStart, theSplitEnd = find( str, inSplitPattern, theStart )
   while theSplitStart do
-    table.insert( outResults, string.sub( str, theStart, theSplitStart-1 ) )
+    tinsert( outResults, sub( str, theStart, theSplitStart-1 ) )
     theStart = theSplitEnd + 1
-    theSplitStart, theSplitEnd = string.find( str, inSplitPattern, theStart )
+    theSplitStart, theSplitEnd = find( str, inSplitPattern, theStart )
   end
-  table.insert( outResults, string.sub( str, theStart ) )
+  tinsert( outResults, sub( str, theStart ) )
   --if(#outResults > 0) then
   --  table.remove(outResults, 1);
   --end
