@@ -1,5 +1,5 @@
 ## Interface: 90002
-## Version: 9.0106
+## Version: @project-version@
 ## Title: |cff00ffffyoFrame|r
 ## Author: NoiseX
 ## Notes: Foo frames... Based on ElvUI, Qulight, ShestakUI and more code and design ideas. Thanks.
@@ -7,4 +7,5 @@
 ## SavedVariables:  yo_BB, yo_BBCount, yo_WIMSTER
 ## SavedVariablesPerCharacter: yo_Position
 
+## X-Curse-Project-ID: 300674
 yoFrame.xml
