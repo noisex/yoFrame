@@ -141,8 +141,9 @@ local function raidShared(self, unit)
 
 	elseif yo.Raid.raidTemplate == 3 then
 		posInfo			= {"CENTER", self, "CENTER", 0, 3}
-		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -3, 0}
+		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -1, -3}
 		posAuraTank		= {"CENTER", self, "CENTER"}
+		posDead 		= {"TOP", self, "CENTER", 0, -5}
 		enablePower		= false
 		enableHealPr	= false
 		enableAbsorb	= false
@@ -152,7 +153,7 @@ local function raidShared(self, unit)
 		spacingAuras 	= 1
 	 	numAuras 		= 3
 		initialAnchor 	= "TOPRIGHT"
-		growthX 		= "RIGHT"
+		growthX 		= "LEFT"
 		growAuraTank 	= "LEFT"
 		--CustomFilter 	= funcWhiteList --funcBlackList
 		CustomFilter 	= nil
@@ -504,19 +505,17 @@ local function raidShared(self, unit)
 	------------------------------------------------------------------------------------------------------
 	if enableDeHight then self.addDebuffHigh( self) end
 
-	if yo.healBotka.enable and unit ~= "tank" then
 
+	if yo.healBotka.hEnable and unit ~= "tank" then self:addBuffHost()	end
+
+	if yo.healBotka.enable  then
 		self:addQliqueButton()
-		self:addBuffHost()
-
 		self:HookScript("OnEnter", self.frameOnEnter)
 		self:HookScript("OnLeave", self.frameOnLeave)
 	else
 		self:SetScript("OnEnter", self.frameOnEnter)
 		self:SetScript("OnLeave", self.frameOnLeave)
 	end
-
-
 
 	if self.unitT or self.unitTT then
 		self:SetSize( yo.Raid.widthMT * 0.75, yo.Raid.heightMT * 0.7)
@@ -558,7 +557,9 @@ local function CreateTempStyle(f, size, level, alpha, alphaborder)
     return shadowMove
 end
 
-local function CreateMovier(frame)
+local function CreateMovier(frame, f)
+	--print( frame:GetWidth(), #f)
+
 	local delta = 8
 	CreateStyle( frame, delta, 0, 0, 0)
 	CreateTempStyle( frame, delta, 0, .2, .9)
@@ -638,11 +639,13 @@ logan:SetScript("OnEvent", function(self, event)
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
 	if yo.healBotka.enable then N.CreateClique( self) end
 
-	local unit_width 	= yo.Raid.width
-	local unit_height 	= yo.Raid.height
 	local spaicing 		= ( yo.Raid.spaicing or 6)
 	local unitsPerColumn= 5
-	local partyScale 	= yo.Raid.raidTemplate == 3 and 1 or yo.Raid.partyScale
+	local unit_width 	= yo.Raid.raidTemplate == 3 and yo.healBotka.hTempW or yo.Raid.width
+	local unit_height 	= yo.Raid.raidTemplate == 3 and yo.healBotka.hTempH or yo.Raid.height
+	local partyScale 	= yo.Raid.raidTemplate == 3 and 1 					or yo.Raid.partyScale
+	local point 		= yo.Raid.raidTemplate == 3 and "LEFT" 				or "TOP"
+	local colAnchorPoint= yo.Raid.raidTemplate == 3 and "TOP" 				or "LEFT"
 
 	if yo.Raid.raidTemplate == 2 then
 		unit_width 	= unit_width * 1.2
@@ -698,19 +701,9 @@ logan:SetScript("OnEvent", function(self, event)
 				end
 				raid[i] = raidgroup
 			end
-			CreateMovier( raid[1], yo.Raid.numgroups, spaicing)
+			CreateMovier( raid[1], raid, yo.Raid.numgroups, spaicing)
 
 		else
-			local point = "TOP"
-			local columnAnchorPoint = "LEFT"
-
-			if yo.Raid.raidTemplate == 3 then
-				unit_width = 90
-				unit_height= 40
-				point = "LEFT"
-				columnAnchorPoint = "TOP"
-			end
-
 			if yo.Raid.groupingOrder == "THD" then
 				groupBy 	= 'ASSIGNEDROLE'
 				groupingOrder = 'TANK,HEALER,DAMAGER,NONE'
@@ -748,7 +741,7 @@ logan:SetScript("OnEvent", function(self, event)
 				"unitsPerColumn", unitsPerColumn,
 				"columnSpacing", spaicing,
 				"point", point, --"LEFT", --"TOP",
-				"columnAnchorPoint", columnAnchorPoint --"TOP" -- "LEFT"
+				"columnAnchorPoint", colAnchorPoint --"TOP" -- "LEFT"
 			)
 			--raid:SetPoint("TOPLEFT", yoMoveRaid, "TOPLEFT", 0, 0)
 			CreateMovier( yo_Raid)
@@ -769,13 +762,13 @@ logan:SetScript("OnEvent", function(self, event)
 			"showParty", true,
 			"showRaid", true,
 			"xOffset", spaicing * partyScale, --yo.Raid.partyScale,
-			"groupBy", groupBy,
+			"groupBy", "ASSIGNEDROLE", --groupBy,
 			"groupingOrder", 'TANK,HEALER,DAMAGER,NONE', --groupingOrder,
 			"yOffset", -spaicing * partyScale,			---6,
 			"unitsPerColumn", unitsPerColumn,
 			"columnSpacing", yo.Raid.spaicing,
 			"point", "TOP",
-			"columnAnchorPoint", "LEFT"
+			"columnAnchorPoint", colAnchorPoint --"LEFT"
 		)
 
 		CreateMovier( yo_Party)

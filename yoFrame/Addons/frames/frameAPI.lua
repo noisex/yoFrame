@@ -57,7 +57,7 @@ local function updateBuffHost( self, event, unit, ...)
 	if event == "UNIT_AURA" and self.unit == unit then --- remover GetParent().unit
 		local index, vkl = 0, {}
 
-		buffHots.sIsSwiftmend, buffHots.readyToSwift = false, false
+		buffHots.sIsSwiftmend, buffHots.readyToSwift, hotBatShow = false, false, false
 		while true do
 			index = index + 1
 			local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, "HELPFUL")
@@ -77,6 +77,13 @@ local function updateBuffHost( self, event, unit, ...)
 					end
 				end
 
+				if name == yo.healBotka.bSpell then
+					hotBatShow = true
+					buffHots.hotaBar.duration = duration
+					buffHots.hotaBar.expirationTime = expirationTime
+					buffHots.hotaBar:SetMinMaxValues( 0, duration)
+				end
+
 				for i = 1, buffHots.iconNumber do
 					if buffHots.spells[i] and buffHots.spells[i] == name then
 						vkl[i] = true
@@ -87,15 +94,12 @@ local function updateBuffHost( self, event, unit, ...)
 			end
 		end
 
-		for i = 1, buffHots.iconNumber do
-			if not vkl[i] then
-				buffHots[i]:Hide()
-			end
-		end
 
-		if buffHots.sIsSwiftmend then buffHots.swift:Show()
-		else 					 	  buffHots.swift:Hide() end
 
+		buffHots.swift:SetShown( buffHots.sIsSwiftmend)
+		if buffHots.hotaBar then buffHots.hotaBar:SetShown( hotBatShow)	end
+
+		for i = 1, buffHots.iconNumber do if not vkl[i] then buffHots[i]:Hide() end end
 	else
 		--print(event, time()	, unit)
 		if isSpellKnown( SWIFTMEND) then
@@ -269,22 +273,41 @@ local function addHealPred( self)
 end
 
 local function addBuffHost( self)
-	local buffHots = CreateFrame("Frame", nil, self)
+	local buffHots = self.buffHots or CreateFrame("Frame", nil, self)
 	--buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
+	buffHots:ClearAllPoints()
 	buffHots:SetAllPoints( self)
-	buffHots:SetSize(12, 12)
-	buffHots:SetFrameLevel(120)
+	buffHots:SetSize( yo.healBotka.hSize, yo.healBotka.hSize)
+	buffHots:SetFrameLevel(10)
 	buffHots:SetFrameStrata( "MEDIUM")
 	buffHots.direction   	= "ICONS"
 	buffHots.noShadow   	= true
 	buffHots.hideTooltip    = true
-	buffHots.timeSecOnly    = false --true
+	buffHots.timeSecOnly    = yo.healBotka.hTimeSec
 	buffHots.spells 		= {}
 	buffHots.iconNumber 	= 5
-	buffHots.redTimer		= 3
+	buffHots.redTimer		= yo.healBotka.hRedTime
+	buffHots.timerRedCol	= { strsplit( ",", yo.healBotka.hRedCol)}
+	buffHots.timerDefCol	= { strsplit( ",", yo.healBotka.hDefCol)}
 	self.buffHots        	= buffHots
 
-	self.buffHots.swift = self.buffHots:CreateTexture(nil, "OVERLAY")
+	if yo.healBotka.bSpell ~= "" then
+		self.buffHots.hotaBar = self.buffHots.hotaBar or CreateFrame("StatusBar", nil, self)
+		self.buffHots.hotaBar:ClearAllPoints()
+		self.buffHots.hotaBar:SetPoint( "TOP", self, "TOP", 0, yo.healBotka.bShiftY)
+		self.buffHots.hotaBar:SetWidth( self:GetWidth() - 6)
+		self.buffHots.hotaBar:SetHeight( 2)
+		self.buffHots.hotaBar:SetStatusBarTexture( yo.texture)
+		self.buffHots.hotaBar:SetStatusBarColor( split( ",", yo.healBotka.bColor ), 1)
+		self.buffHots.hotaBar:SetFrameLevel( 120)
+		self.buffHots.hotaBar:Hide()
+		self.buffHots.hotaBar:SetScript( "OnUpdate", function( bar, elapsed) bar:SetValue( bar.expirationTime - GetTime()) end)
+		CreateStyle( self.buffHots.hotaBar, 1, 9, 0.3)
+		table.insert( N.statusBars, self.buffHots.hotaBar)
+	end
+
+	self.buffHots.swift = self.buffHots.swift or self.buffHots:CreateTexture(nil, "OVERLAY")
+	self.buffHots.swift:ClearAllPoints()
 	self.buffHots.swift:SetPoint("LEFT", self.buffHots, "TOPLEFT", 1, 0)
 	self.buffHots.swift:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\icon_red")
 	self.buffHots.swift:SetVertexColor( 1, 0.8, 0.2, 1)
@@ -295,9 +318,9 @@ local function addBuffHost( self)
 		self.buffHots[i] = N.createAuraIcon( self.buffHots, i)
 		self.buffHots[i]:Hide()
 
-		if yo.healBotka["hSpell" .. i] 	then buffHots.spells[i]			= yo.healBotka["hSpell" .. i]	end
-		if yo.healBotka["hColEna" ..i] 	then self.buffHots[i].color 	= { strsplit( ",", yo.healBotka["hColor" ..i])} end
-		if yo.healBotka["hTimEna" ..i] 	then self.buffHots[i].minTimer 	= yo.healBotka["hTimer" ..i] + 0.1 end
+		if yo.healBotka["hSpell" .. i] ~= ""	then buffHots.spells[i]			= yo.healBotka["hSpell" .. i]	end
+		if yo.healBotka["hColEna" ..i] 			then self.buffHots[i].color 	= { strsplit( ",", yo.healBotka["hColor" ..i])} end
+		if yo.healBotka["hTimEna" ..i] 			then self.buffHots[i].minTimer 	= yo.healBotka["hTimer" ..i] + 0.1 end
 
 		self.buffHots[i]:SetScale( yo.healBotka["hScale" .. i] or 1)
 	end
@@ -512,6 +535,12 @@ local function updateHealthColor( f, event, unit, ...)
 		f.Power.bg:SetVertexColor( f.colr, f.colg, f.colb, 0.2)
 		if UnitPowerMax( unit) == 0 then f.Power:Hide() else f.Power:Show() end
 		if f.Power.powerText then f.Power.powerText:SetTextColor( f.colr, f.colg, f.colb, 1) end
+	end
+
+	if f.buffHots and f.buffHots.hotaBar then
+		if not yo.healBotka.bColEna then
+			f.buffHots.hotaBar:SetStatusBarColor( f.colr, f.colg, f.colb, 1)
+		end
 	end
 
 	if f.holyShards then f.holyShards:recolorShards( cols) end

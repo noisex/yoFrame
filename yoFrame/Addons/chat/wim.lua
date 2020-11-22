@@ -980,12 +980,6 @@ ns.wimToggle = function(...)
 	yo_WIM:SetShown( not yo_WIM:IsShown())
 end
 
-_G ["BINDING_HEADER_YOFRAME"] 	= "yoFrame"
---_G ["BINDING_NAME_YOFrame"] 	= "yoFrame"
-
---_G ["BINDING_NAME_DETAILS_SCROLL_UP"] = Loc ["STRING_KEYBIND_SCROLL_UP"]
---_G ["BINDING_NAME_DETAILS_SCROLL_DOWN"] = Loc ["STRING_KEYBIND_SCROLL_DOWN"]
-
 
 --wim.insertLink = function( link)
 --	if link then

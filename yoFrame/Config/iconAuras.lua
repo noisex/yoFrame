@@ -161,6 +161,9 @@ function N.createAuraIcon( parent, index)
 	button.minTimer 	= button.minTimer or 100
 	button.tFormat 		= parent.timeSecOnly and formatTimeSec or formatTime
 	button.redTimer		= parent.redTimer or 2
+	button.timerDefCol	= parent.timerDefCol or { 1, 1, 0}
+	button.timerRedCol	= parent.timerRedCol or { 1, 0, 0}
+
 
 	button.icon = button:CreateTexture(nil, "BORDER")
 	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
@@ -253,7 +256,7 @@ function N.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 	button.id 				= index
 	button.tick 			= 1
 
-	button.timer:SetTextColor( 1, 1, 0)
+	button.timer:SetTextColor( button.timerDefCol[1], button.timerDefCol[2], button.timerDefCol[3])
 
 	if button.color then
 		button.icon:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\plain_white.tga")--texture)
@@ -283,7 +286,7 @@ function N.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 		local est = expirationTime - GetTime()
 
 		if est <= button.redTimer then
-			button.timer:SetTextColor( 1, 0, 0)
+			button.timer:SetTextColor( button.timerRedCol[1], button.timerRedCol[2], button.timerRedCol[3])
 
 		elseif est <= 0 then
 			button:Hide()

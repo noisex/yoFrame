@@ -84,8 +84,8 @@ local function unitShared(self, unit)
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( yo.texture)
 
-	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
-	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
+	--if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
+	--if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
 
 	if unit == "player" or unit == "target" or unit == "pet" then
 		self.Health.AbsorbBar = self:addAbsorbBar( self)

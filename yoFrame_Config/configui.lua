@@ -703,46 +703,57 @@ function InitOptions()
 				get = function(info) return yo[info[1]][info[#info]] end,
 				--disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
-					enable 	= { width = "full",	order = 0, type = "toggle",	name = "Включить жалкое подобие на нормальные хилфреймы.", desc = "Настоятельно рекомендую предварительно установить |cffff0000`Персональные настройки`|r на первой странице.", disabled = false, },
+					funcEnable = {
+           				order = 1, type = "execute", confirm  = true, width = 1.2,	name = L["funcEnable"], desc = L["DESC_HBOT_ENA"],
+           				func = function() Setlers( "healBotka#enable", true) Setlers( "healBotka#hEnable", true) Setlers( "Raid#raidTemplate", 3) ReloadUI() end,},
+					funcDisable = {
+           				order = 2, type = "execute", confirm  = true, width = 1.2,	name = L["funcDisable"], desc = L["DESC_HBOT_DIS"],
+           				func = function() Setlers( "healBotka#enable", false) Setlers( "healBotka#hEnable", false) Setlers( "Raid#raidTemplate", 1) ReloadUI() end,},
 
 					keneral = {
 						order = 1, type = 'group', name = "Ключ вязать мышь ключдоска",
+						disabled = function( info) if info[3] ~= "enable" and info.type ~= "group" then return not yo[info[1]].enable; end end,
 						args = {
-							set00	= {	order = 08, type = "description", name = "Маус ор клавабатон", width = 1.2,},
-							set01	= {	order = 09, type = "description", name = "Спелл фор биндинг", width = 1,},
+							enable 	= { width = "full",	order = 0, type = "toggle",	name = "Забинбить всякое, для кликания этим по рейдфреймам.", desc = L["DESC_HENA"], disabled = false, },
 
-							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", width = 1.1, desc = "Клац мышкой для смены бинды",},
-							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",   width = 1.1, desc = "Клац мышкой для смены бинды",},
+							set00	= {	order = 08, type = "description", 	name = "Маус ор клавабатон", width = 1.2,},
+							set01	= {	order = 09, type = "description", 	name = "Спелл фор биндинг", width = 1,},
 
-							key1	= {	order = 10, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", width = 1.1, desc = L["DESC_KEY"],},
+							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",   width = 1.1, desc = L["DESC_KEY"],},
+
+							key1	= {	order = 10, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key2	= {	order = 14, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key2	= {	order = 14, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell2	= { order = 16, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key3	= {	order = 18, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key3	= {	order = 18, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell3	= { order = 20, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key4	= {	order = 22, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key4	= {	order = 22, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell4	= { order = 24, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key5	= {	order = 26, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key5	= {	order = 26, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell5	= { order = 28, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key6	= {	order = 30, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key6	= {	order = 30, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell6	= { order = 32, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key7	= {	order = 34, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key7	= {	order = 34, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell7	= { order = 36, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key8	= {	order = 38, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key8	= {	order = 38, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell8	= { order = 40, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key9	= {	order = 42, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key9	= {	order = 42, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell9	= { order = 44, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key10	= {	order = 46, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key10	= {	order = 46, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell10	= { order = 48, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key11	= {	order = 50, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key11	= {	order = 50, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell11	= { order = 52, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
-							key12	= {	order = 54, type = "keybinding",	name = "", width = 1.1, desc = "Клац мышкой для смены бинды",},
+							key12	= {	order = 54, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
 							spell12	= { order = 56, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
 						},
 					},
 					heneral = {
 						order = 2, type = 'group', name = "Хотасы",
+						disabled = function( info) if info[3] ~= "hEnable" and info.type ~= "group" then return not yo[info[1]].hEnable; end end,
 						args = {
+							hEnable= {	order = 1, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", desc = L["DESC_HENA"],},
+
 							hSpell1	= { order = 70, type = "select", name = "Иконка №1 ( лево-центр)", width = 1.5, values = N.spellsBooks,},
 							hSpell2	= { order = 80, type = "select", name = "Иконка №2 ( лево-низ)",   width = 1.5, values = N.spellsBooks,},
 							hSpell3	= { order = 90, type = "select", name = "Иконка №3 ( центр-низ)",  width = 1.5, values = N.spellsBooks,},
@@ -788,13 +799,43 @@ function InitOptions()
 							hTimer3	= {	order = 96,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
 							hTimer4	= {	order = 106,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
 							hTimer5 = {	order = 116,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
-
-
 						},
 					},
 				aeneral = {
 						order = 3, type = 'group', name = "Всякое с ...",
-						args = {},
+						args = {
+							raidTemplate	= {	order = 02, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = "Normal", [2] = "Simple", [3] = "HealBotka",},
+								get = function(info) return yo.Raid.raidTemplate end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end, desc = L["DESC_RTEMPL"],},
+							set00	= {	order = 10,type = "description", name = " ", width = "full"},
+
+							hSize 	= {	order = 05,type = "range", name = function(info) return tr( info[#info]) end,	min = 5,  max = 25,  step = 1, },
+							hTempW	= {	order = 20,type = "range", name = function(info) return tr( info[#info]) end,	min = 50, max = 150, step = 1, },
+							hTempH	= {	order = 22,type = "range", name = function(info) return tr( info[#info]) end,	min = 20, max = 100, step = 1, },
+
+							hRedTime= {	order = 25,type = "range", name = function(info) return tr( info[#info]) end,	min = 0,  max = 10,  step = 0.1,},
+							set01	= {	order = 26,type = "description", name = " ", width = "full"},
+
+							hDefCol = {	order = 30,type = "color", name = function(info) return tr( info[#info]) end, 	--width = 0.2,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+							hRedCol = {	order = 32,type = "color", name = function(info) return tr( info[#info]) end, 	--width = 0.2,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+
+							hTimeSec= {	order = 35,type = "toggle", name = function(info) return tr( info[#info]) end, width = "full"},
+
+							bSpell 	= { order = 40, type = "select",name = function(info) return tr( info[#info]) end, width = 1.5, values = N.spellsBooks,},
+							bColEna = {	order = 43, type = "toggle",name = function(info) return tr( info[#info]) end,},
+							bColor	 ={	order = 45, type = "color",	name = "", width = 0.2,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+							bShiftY = {	order = 47,type = "range", name = function(info) return tr( info[#info]) end,	min = -50,  max = 10,  step = 1,},
+
+							hpBarVertical 	= {	order = 62, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", get = function(info) return yo.Raid[info[#info]] end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end},
+							hpBarRevers	 	= {	order = 65, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", get = function(info) return yo.Raid[info[#info]] end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end},
+
+							--hTimeSec= {	order = 20,type = "range", name = function(info) return tr( info[#info]) end,	min = 5, max = 25, step = 1, width = 0.7},
+						},
 					},
 				},
 			--}
@@ -870,9 +911,7 @@ function InitOptions()
 						.."\n - потатос"
 						.."\n - хилботка"
 						.."\n - нужен еще один тпринт"
-						.."\n - новые друзьяшки"
 						.."\n - что там с СТА..."
-						.."\n - фазаиндикатор"
 					,},
 				},
 			},

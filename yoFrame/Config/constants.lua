@@ -371,7 +371,20 @@ yo["Chat"] = {
 }
 
 yo["healBotka"] = {
-	["enable"]			= false,
+	["enable"]	= false,
+	["hEnable"]	= false,
+	["hSize"]	= 12,
+	["hTimeSec"]= false,
+	["hTempW"] 	= 90,
+	["hTempH"]	= 40,
+	["hRedTime"]= 3,
+	["hDefCol"]	= "1,1,0",
+	["hRedCol"]	= "1,0,0",
+
+	["bSpell"]	= "",
+	["bColor"]	= "0,1,0",
+	["bColEna"]	= true,
+	["bShiftY"] = 1,
 
 	["set00"]	= "",
 	["set01"]	= "",
