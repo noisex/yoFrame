@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Bags.enable then return end
 
@@ -560,8 +560,8 @@ end
 local itemTable = {}
 ---------http://wowprogramming.com/docs/api/IsEquippedItemType.html
 local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink, itemSubClassID)  --- C_NewItems_IsNewItem(bagID, slotID))
-	local ret, canWear = false, false
-	local slotIndexes = N.slotEquipType[itemEquipLoc]
+	local ret, canWear, weapon2H = false, false
+	local slotIndexes = n.slotEquipType[itemEquipLoc]
 
 	if slotIndexes and iLvl then
 
@@ -569,10 +569,12 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 			local itemLocation = ItemLocation:CreateFromEquipmentSlot( locSlotID)
 			local item = Item:CreateFromItemLocation( itemLocation)
 			local locLvl = item:GetCurrentItemLevel()
-			--tprint( item)
-			--print( locSlotID, clink, item:GetItemLink(), item:IsItemEmpty())
 
-			if itemSubClassID == N.classEquipMap[myClass] or itemEquipLoc == "INVTYPE_FINGER" or itemEquipLoc == "INVTYPE_TRINKET" then
+			if locSlotID == 16 and n.slot2HWeapon[item:GetInventoryTypeName()] then weapon2H = true end
+			--tprint( item)
+			--print( locSlotID, clink, item:GetItemLink(), item:GetInventoryTypeName(), weapon2H)
+
+			if itemSubClassID == n.classEquipMap[myClass] or itemEquipLoc == "INVTYPE_FINGER" or itemEquipLoc == "INVTYPE_TRINKET" then
 				canWear = true
 			else
 				wipe( itemTable)
@@ -612,7 +614,11 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 				end
 
 			elseif item:IsItemEmpty() and canWear then
-				ret = true
+				if locSlotID == 17 and weapon2H then  -- если 17й пустой, а в 16-м - двуручув
+				else
+					ret = true
+				end
+
 			end
 		end
 	end
@@ -1064,7 +1070,7 @@ function addon:CreateLayout( isBank)
 			for slotID = 1, numSlots do
 				f.totalSlots = f.totalSlots + 1;
 				if not f.Bags[bagID][slotID] then
-					f.Bags[bagID][slotID] = f.Bags[bagID][slotID] or CreateFrame('ItemButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BankItemButtonGenericTemplate' or 'ContainerFrameItemButtonTemplate');
+					f.Bags[bagID][slotID] = f.Bags[bagID][slotID] or CreateFrame('ItemButton', f.Bags[bagID]:GetName()..'Slot'..slotID, f.Bags[bagID], bagID == -1 and 'BackdropTemplate, BankItemButtonGenericTemplate' or 'BackdropTemplate, ContainerFrameItemButtonTemplate')
 
 					if not f.Bags[bagID][slotID].shadow then
 						CreateStyle( f.Bags[bagID][slotID], 1, nil, 0.5)
@@ -1119,6 +1125,10 @@ function addon:CreateLayout( isBank)
 						SetIcon:Hide()
 						f.Bags[bagID][slotID].SetIcon = SetIcon
 					end
+
+					--slot.IconBorder:Kill()
+					--slot.IconOverlay:SetInside()
+					--slot.IconOverlay2:SetInside()
 
 					f.Bags[bagID][slotID].icon:SetTexCoord( unpack( f.texCoord))  		--( unpack( yo.tCoord))
 					f.Bags[bagID][slotID].icon:ClearAllPoints()
@@ -1224,13 +1234,17 @@ function addon:CreateLayout( isBank)
 			totalSlots = totalSlots + 1;
 
 			if(not f.reagentFrame.slots[i]) then
-				f.reagentFrame.slots[i] = f.reagentFrame.slots[i] or CreateFrame("ItemButton", "ReagentBankFrameItem"..i, f.reagentFrame, "ReagentBankItemButtonGenericTemplate");
+				f.reagentFrame.slots[i] = f.reagentFrame.slots[i] or CreateFrame("ItemButton", "ReagentBankFrameItem"..i, f.reagentFrame, "BankItemButtonGenericTemplate, BackdropTemplate");
 				f.reagentFrame.slots[i]:SetID(i)
 
 				StyleButton( f.reagentFrame.slots[i])
 				if not f.reagentFrame.slots[i].shadow then
 					CreateStyle( f.reagentFrame.slots[i], 1, nil, 0.5)
 				end
+
+				--slot.IconBorder:Kill()
+				--slot.IconOverlay:SetInside()
+				--slot.IconOverlay2:SetInside()
 
 				f.reagentFrame.slots[i]:SetNormalTexture(nil);
 				f.reagentFrame.slots[i].Count:ClearAllPoints();

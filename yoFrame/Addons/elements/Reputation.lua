@@ -1,7 +1,8 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Addons.ArtifactPowerbar then return end
 
+local yoUF = n.unitFrames
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)
@@ -115,7 +116,7 @@ local function Experience( f)
 	Experience:SetSize( yoMoveExperience:GetSize())
 	Experience:SetOrientation("VERTICAL")
 	Experience:SetFrameLevel(3)
-	table.insert( N.statusBars, Experience)
+	table.insert( n.statusBars, Experience)
 	CreateStyle(Experience)
 
 	f.Experience = Experience
@@ -125,10 +126,10 @@ local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
-	if not yo.Addons.ArtifactPowerbar  or not plFrame then return end
+	if not yo.Addons.ArtifactPowerbar  or not yoUF.player then return end
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if (UnitLevel('player') ~= MAX_PLAYER_LEVEL) then return end  -- not yo["Addons"].Experience or
 
-	Experience( plFrame)
-	EnableExp( plFrame)
+	Experience( yoUF.player)
+	EnableExp( yoUF.player)
 end)

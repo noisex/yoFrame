@@ -1,4 +1,4 @@
-local _, yo, N = unpack( select( 2, ...))
+local _, yo, n = unpack( select( 2, ...))
 
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 	L = {}
@@ -76,7 +76,7 @@ local templates =
 	},
   }
 
-N.PlayerBuffWhiteListAll= {
+n.PlayerBuffWhiteListAll= {
   [126389]  = true, -- Goblin Glider [Goblin Glider Kit]
   [54861]   = true, -- Nitro Boosts
   [55001]   = true, -- Parachute
@@ -4346,6 +4346,290 @@ N.PlayerBuffWhiteListAll= {
 	},
   }
 
+templates.covenants = {
+    [1] = { -- Kyrian
+      title = C_Covenants.GetCovenantData(1).name,
+      icon = 3257748,
+      args = {
+        -- General Ability
+        { spell = 324739, type = "ability"}, -- Summon Steward
+        -- Soul Binds
+        -- Pelgagos
+        { spell = 328908, type = "buff", unit = "player"}, -- Combat Meditation
+        { spell = 330896, type = "buff", unit = "player"}, -- Road of Trials
+        { spell = 330749, type = "buff", unit = "player"}, -- Phial of Patience
+        { spell = 328900, type = "buff", unit = "player"}, -- Let Go of the Past
+        -- Kleia
+        { spell = 331449, type = "buff", unit = "player"}, -- Valiant Strikes
+        { spell = 334067, type = "buff", unit = "player"}, -- Mentorship
+        { spell = 330752, type = "buff", unit = "player"}, -- Ascendant Phial
+        { spell = 330927, type = "buff", unit = "player"}, -- Cleansing Rites
+        { spell = 328925, type = "buff", unit = "player"}, -- Ever Forward
+        { spell = 321759, type = "debuff", unit = "target"}, -- Bearer's Pursuit
+        { spell = 330511, type = "buff", unit = "player"}, -- Pointed Courage
+        { spell = 330859, type = "buff", unit = "player"}, -- Resonant Accolades
+        -- Forgelite Prime Mikanikos
+        { spell = 332514, type = "buff", unit = "player"}, -- Bron's Call to Action
+        { spell = 337697, type = "buff", unit = "player"}, -- Resilient Plumage
+        { spell = 332505, type = "buff", unit = "player"}, -- Soulsteel Clamps
+        { spell = 333943, type = "buff", unit = "player"}, -- Hammer of Genesis
+        { spell = 332423, type = "debuff", unit = "target"}, -- Sparkling Driftglobe Core
+
+        -- WARRIOR
+        { spell = 307865, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "WARRIOR"}, -- Spear of Bastion
+        { spell = 307871, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "WARRIOR"}, -- Spear of Bastion
+        -- PALADIN
+        { spell = 304971, type = "ability", class = "PALADIN"}, -- Divine Toll
+        -- HUNTER
+        { spell = 308491, type = "ability", titleSuffix = L["Cooldown"], class = "HUNTER"}, -- Resonating Arrow
+        { spell = 308498, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "HUNTER"}, -- Resonating Arrow
+        -- ROGUE
+        { spell = 323547, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "ROGUE"}, -- Echoing Reprimand
+        { spell = 323560, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "ROGUE"}, -- Echoing Reprimand
+        -- PRIEST
+        { spell = 325013, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "PRIEST"}, -- Boon of the Ascended
+        { spell = 325013, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "PRIEST"}, -- Boon of the Ascended
+        -- SHAMAN
+        { spell = 324386, type = "ability", totem = true, titleSuffix = L["Cooldown"], class = "SHAMAN"}, -- Vesper Totem
+        { spell = 324386, type = "totem", titleSuffix = L["Totem"], class = "SHAMAN"}, -- Vesper Totem
+        -- MAGE
+        { spell = 307443, type = "ability", titleSuffix = L["Cooldown"], class = "MAGE"}, -- Radiant Spark
+        { spell = 307443, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "MAGE"}, -- Radiant Spark
+        -- WARLOCK
+        { spell = 312321, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "WARLOCK"}, -- Scouring Tithe
+        { spell = 312321, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "WARLOCK"}, -- Scouring Tithe
+        -- MONK
+        { spell = 310454, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "MONK"}, -- Weapons of Order
+        { spell = 310454, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "MONK"}, -- Weapons of Order
+        -- DRUID
+        { spell = 326434, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "DRUID"}, -- Kindred Spirits
+        { spell = 326967, type = "buff", unit = "player", titleSuffix = L["Bonded Buff"], class = "DRUID"}, -- Kindred Spirits
+        { spell = 327139, type = "buff", unit = "player", titleSuffix = L["Empowered Buff"], class = "DRUID"}, -- Kindred Spirits
+        -- DEMONHUNTER
+        { spell = 306830, type = "ability", class = "DEMONHUNTER"}, -- Elysian Decree
+        -- DEATHKNIGHT
+        { spell = 312202, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "DEATHKNIGHT"}, -- Shackle the Unworthy
+        { spell = 312202, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "DEATHKNIGHT"}, -- Shackle the Unworthy
+      }
+    },
+    [2] = { -- Venthyr
+      title = C_Covenants.GetCovenantData(2).name,
+      icon = 3257751,
+      args = {
+        -- General Ability
+        { spell = 300728, type = "ability"}, -- Door of Shadows
+
+        -- Soul Binds
+        -- Nadjia the  Mistblade
+        { spell = 331939, type = "buff", unit = "player"}, -- Thrillseeker
+        { spell = 331937, type = "buff", unit = "player"}, -- Euphoria
+        { spell = 338836, type = "debuff", unit = "target"}, -- Agent of Chaos
+        { spell = 331868, type = "buff", unit = "player"}, -- Fancy Footwork
+        { spell = 331934, type = "debuff", unit = "target"}, -- Adversary
+        -- Theotar the Mad Duke
+        { spell = 336885, type = "buff", unit = "player"}, -- Soothing Shade
+        { spell = 337470, type = "buff", unit = "target"}, -- Token of Appreciation
+        { spell = 333218, type = "buff", unit = "player"}, -- Wasteland Propriety
+        -- General Draven
+        { spell = 333104, type = "buff", unit = "player"}, -- Move As One
+        { spell = 321012, type = "buff", unit = "player"}, -- Enduring Gloom
+        { spell = 333089, type = "buff", unit = "player"}, -- Hold Your Ground
+        { spell = 332922, type = "buff", unit = "player"}, -- Superior Tactics
+        { spell = 332842, type = "buff", unit = "player"}, -- Built for War
+
+        -- WARRIOR
+        { spell = 317320, type = "ability", titleSuffix = L["Ability"], class = "WARRIOR"}, -- Condemn
+        { spell = 317491, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "WARRIOR"}, -- Condemned
+        -- PALADIN
+        { spell = 316958, type = "ability", class = "PALADIN"}, -- Ashen Hallow
+        -- HUNTER
+        { spell = 324149, type = "ability", titleSuffix = L["Cooldown"], class = "HUNTER"}, -- Flayed Shot
+        { spell = 324149, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "HUNTER"}, -- Flayed Shot
+        { spell = 324156, type = "buff", unit = "player", class = "HUNTER"}, -- Flayed Shot
+        -- ROGUE
+        { spell = 323654, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "ROGUE"}, -- Flagellation
+        { spell = 323654, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "ROGUE"}, -- Flagellation
+        { spell = 323654, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "ROGUE"}, -- Flagellation
+        -- PRIEST
+        { spell = 323673, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "PRIEST"}, -- Mindgames
+        { spell = 323673, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "PRIEST"}, -- Mindgames
+        -- SHAMAN
+        { spell = 320674, type = "ability", class = "SHAMAN"}, -- Chain Harvest
+        -- MAGE
+        { spell = 314793, type = "ability", titleSuffix = L["Cooldown"], class = "MAGE"}, -- Mirrors of Torment
+        { spell = 314793, type = "debuff", unit = "target", titleSuffix = L[" Debuff"], class = "MAGE"}, -- Mirrors of Torment
+        { spell = 320035, type = "debuff", unit = "target", titleSuffix = L["Slow"], class = "MAGE"}, -- Mirrors of Torment
+        -- WARLOCK
+        { spell = 321792, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "WARLOCK"}, -- Impending Catastrophe
+        { spell = 322170, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "WARLOCK"}, -- Impending Catastrophe
+        -- MONK
+        { spell = 326860, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "MONK"}, -- Fallen Order
+        { spell = 326860, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "MONK"}, -- Fallen Order
+        -- DRUID
+        { spell = 323546, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "DRUID"}, -- Ravenous Frenzy
+        { spell = 323546, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "DRUID"}, -- Ravenous Frenzy
+        { spell = 323557, type = "debuff", unit = "player", titleSuffix = L["Stun Debuff"], class = "DRUID"}, -- Ravenous Frenzy
+        -- DEMONHUNTER
+        { spell = 317009, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "DEMONHUNTER"}, -- Sinful Brand
+        { spell = 317009, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "DEMONHUNTER"}, -- Sinful Brand
+        -- DEATHKNIGHT
+        { spell = 311648, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "DEATHKNIGHT"}, -- Swarming Mist
+        { spell = 311648, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "DEATHKNIGHT"}, -- Swarming Mist
+      }
+    },
+    [3] = { -- Night Fae
+      title = C_Covenants.GetCovenantData(3).name,
+      icon = 3257750,
+      args = {
+        -- General Ability
+        { spell = 310143, type = "ability", buff = true, titleSuffix = L["Cooldown"]}, -- Soulshape
+        { spell = 310143, type = "buff", unit = "player", titleSuffix = L["Buff"]}, -- Soulshape
+
+        -- Soul Binds
+        -- Niya
+        { spell = 342814, type = "buff", unit = "player"}, -- Grove Invigoration
+        { spell = 321527, type = "buff", unit = "player"}, -- Swift Patrol
+        { spell = 333526, type = "debuff", unit = "target"}, -- Niya's Tools: Burrs
+        { spell = 321519, type = "debuff", unit = "target"}, -- Niya's Tools: Poison
+        { spell = 321510, type = "buff", unit = "player"}, -- Niya's Tools: Herbs
+        -- Dreamweaver
+        { spell = 320224, type = "buff", unit = "player"}, -- Podtender
+        { spell = 320267, type = "buff", unit = "player"}, -- Soothing Voice
+        { spell = 320212, type = "buff", unit = "player"}, -- Social Butterfly
+        { spell = 320009, type = "buff", unit = "player"}, -- Empowered Chrysalis
+        { spell = 319970, type = "buff", unit = "player"}, -- Faerie Dust
+        { spell = 320235, type = "buff", unit = "player"}, -- Somnambulist
+        { spell = 342774, type = "buff", unit = "player"}, -- Field of Blossoms
+        -- Korayn
+        { spell = 343594, type = "buff", unit = "player"}, -- Wild Hunt Tactics
+        { spell = 325268, type = "buff", unit = "player"}, -- Horn of the Wild Hunt
+        { spell = 325321, type = "debuff", unit = "target"}, -- Wild Hunt's Charge
+        { spell = 325443, type = "buff", unit = "player"}, -- Get In Formation
+        { spell = 325437, type = "debuff", unit = "target"}, -- Face Your Foes
+        { spell = 325381, type = "buff", unit = "player"}, -- First Strike
+        { spell = 325612, type = "buff", unit = "player"}, -- Hold the Line
+
+        -- WARRIOR
+        { spell = 325886, type = "ability", class = "WARRIOR"}, -- Ancient Aftershock
+        -- PALADIN
+        { spell = 328620, type = "ability", titleSuffix = "Cooldown", class = "PALADIN"}, -- Blessing of Seasons
+        { spell = 328620, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "PALADIN"}, -- Blessing of Summer
+        { spell = 328622, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "PALADIN"}, -- Blessing of Autumn
+        { spell = 328281, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "PALADIN"}, -- Blessing of Winter
+        { spell = 328282, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "PALADIN"}, -- Blessing of Spring
+        -- HUNTER
+        { spell = 328231, type = "ability", titleSuffix = L["Cooldown"], class = "HUNTER"}, -- Wild Spirits
+        { spell = 328275, type = "debuff", unit = "target", class = "HUNTER"}, -- Wild Mark
+        -- ROGUE
+        { spell = 328305, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "ROGUE"}, -- Sepsis
+        { spell = 328305, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "ROGUE"}, -- Sepsis
+        { spell = 347037, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "ROGUE"}, -- Sepsis
+        -- PRIEST
+        { spell = 327661, type = "ability", class = "PRIEST"}, -- Fae Guardians
+        { spell = 327694, type = "buff", unit = "target", class = "PRIEST"}, -- Fae Guardians
+        { spell = 327710, type = "buff", unit = "target", class = "PRIEST"}, -- Fae Guardians
+        { spell = 342132, type = "debuff", unit = "target", class = "PRIEST"}, -- Fae Guardians
+        -- SHAMAN
+        { spell = 328923, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "SHAMAN"}, -- Fae Transfusion
+        { spell = 328933, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "SHAMAN"}, -- Fae Transfusion
+        -- MAGE
+        { spell = 314791, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "MAGE"}, -- Shifting Power
+        { spell = 314791, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "MAGE"}, -- Shifting Power
+        -- WARLOCK
+        { spell = 325640, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "WARLOCK"}, -- Soul Rot
+        { spell = 325640, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "WARLOCK"}, -- Soul Rot
+        -- MONK
+        { spell = 327104, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "MONK"}, -- Faeline Stomp
+        { spell = 327104, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "MONK"}, -- Faeline Stomp
+        -- DRUID
+        { spell = 323764, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "DRUID"}, -- Convoke the Spirits
+        { spell = 323764, type = "buff", titleSuffix = L["Buff"], class = "DRUID"}, -- Convoke the Spirits
+        -- DEMONHUNTER
+        { spell = 323639, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "DEMONHUNTER"}, -- The Hunt
+        { spell = 323802, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "DEMONHUNTER"}, -- The Hunt
+        -- DEATHKNIGHT
+        { spell = 324128, type = "ability", class = "DEATHKNIGHT"}, -- Death's Due
+      }
+    },
+    [4] = { -- Necrolord
+      title = C_Covenants.GetCovenantData(4).name,
+      icon = 3257749,
+      args = {
+        -- General Ability
+        { spell = 324631, type = "ability", buff = true, titleSuffix = L["Cooldown"]}, -- Fleshcraft
+        { spell = 324867, type = "buff", unit = "player", titleSuffix = L["Buff"]}, -- Fleshcraft
+        -- Plague Deviser Marileth
+        { spell = 323510, type = "buff", unit = "player"}, -- Volatile Solvent: Undead
+        { spell = 323491, type = "buff", unit = "player"}, -- Volatile Solvent: Humanoid
+        { spell = 323500, type = "buff", unit = "player"}, -- Volatile Solvent: Demon
+        { spell = 323506, type = "buff", unit = "player"}, -- Volatile Solvent: Giant
+        { spell = 323497, type = "buff", unit = "player"}, -- Volatile Solvent: Aberration
+        { spell = 323502, type = "buff", unit = "player"}, -- Volatile Solvent: Dragonkin
+        { spell = 323504, type = "buff", unit = "player"}, -- Volatile Solvent: Elemental
+        { spell = 323507, type = "buff", unit = "player"}, -- Volatile Solvent: Mechanical
+        { spell = 323498, type = "buff", unit = "player"}, -- Volatile Solvent: Beast
+        { spell = 323385, type = "buff", unit = "player"}, -- Ooz's Frictionless Coating
+        { spell = 323396, type = "buff", unit = "player"}, -- Bloop's Wanderlust
+        { spell = 323416, type = "debuff", unit = "target"}, -- Plaguey's Preemptive Strike
+        { spell = 323524, type = "buff", unit = "player"}, -- Ultimate Form
+        -- Emeni
+        { spell = 328210, type = "buff", unit = "player"}, -- Emeni's Magnificent Skin
+        { spell = 324523, type = "buff", unit = "player"}, -- Cartilaginous Legs
+        { spell = 324463, type = "buff", unit = "player"}, -- Gristled Toes
+        { spell = 324242, type = "buff", unit = "player"}, -- Gnashing Chompers
+        { spell = 324523, type = "buff", unit = "player"}, -- Cartilaginous Legs
+        { spell = 324263, type = "debuff", unit = "target"}, -- Sulfuric Emission
+
+        -- Bonesmith Heirmir
+        { spell = 327140, type = "buff", unit = "player"}, -- Forgeborne Reveries
+        { spell = 326939, type = "debuff", unit = "target"}, -- Serrated Spaulders
+        { spell = 327852, type = "buff", unit = "player"}, -- Runeforged Spurs
+        { spell = 327159, type = "buff", unit = "player"}, -- Heirmir's Arsenal: Gorestompers
+        { spell = 327066, type = "buff", unit = "player"}, -- Marrowed Gemstone Charging
+        { spell = 327069, type = "buff", unit = "player"}, -- Marrowed Gemstone Enhancement
+        { spell = 326946, type = "buff", unit = "player"}, -- Heirmir's Arsenal: Ravenous Pendant
+
+        -- WARRIOR
+        { spell = 324143, type = "ability", class = "WARRIOR"}, -- Conqueror's Banner
+        { spell = 343672, type = "buff", unit = "player", class = "WARRIOR"}, -- Conqueror's Frenzy
+        { spell = 325787, type = "buff", unit = "player", class = "WARRIOR"}, -- Glory
+        -- PALADIN
+        { spell = 328204, type = "ability", titleSuffix = L["Cooldown"], class = "PALADIN"}, -- Conqueror's Banner
+        { spell = 328204, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "PALADIN"}, -- Glory
+        -- HUNTER
+        { spell = 325028, type = "ability", titleSuffix = L["Cooldown"], class = "HUNTER"}, -- Death Chakram
+        -- ROGUE
+        { spell = 328547, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "ROGUE"}, -- Serrated Bone Spike
+        { spell = 324073, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "ROGUE"}, -- Serrated Bone Spike
+        -- PRIEST
+        { spell = 324724, type = "ability", debuff = true, class = "PRIEST"}, -- Unholy Nova
+        { spell = 325203, type = "debuff", unit = "target", class = "PRIEST"}, -- Unholy Nova
+        -- SHAMAN
+        { spell = 326059, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "SHAMAN"}, -- Primordial Wave
+        { spell = 327164, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "SHAMAN"}, -- Primordial Wave
+        -- MAGE
+        { spell = 324220, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "MAGE"}, -- Shifting Power
+        { spell = 324220, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "MAGE"}, -- Deathborne
+        -- WARLOCK
+        { spell = 325289, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "WARLOCK"}, -- Decimating Bolt
+        { spell = 325299, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "WARLOCK"}, -- Decimating Bolt
+        -- MONK
+        { spell = 325216, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "MONK"}, -- Bonedust Brew
+        { spell = 325216, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "MONK"}, -- Bonedust Brew
+        -- DRUID
+        { spell = 325727, type = "ability", titleSuffix = L["Cooldown"], class = "DRUID"}, -- Adaptive Swarm
+        { spell = 325748, type = "buff", unit = "player", titleSuffix = L["Bonded Buff"], class = "DRUID"}, -- Adaptive Swarm
+        { spell = 325733, type = "debuff", unit = "target", titleSuffix = L["Debuff"], class = "DRUID"}, -- Adaptive Swarm
+        -- DEMONHUNTER
+        { spell = 329554, type = "ability", titleSuffix = L["Cooldown"], class = "DEMONHUNTER"}, -- Fodder to the Flame
+        { spell = 347765, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "DEMONHUNTER"}, -- Fodder to the Flame
+        -- DEATHKNIGHT
+        { spell = 315443, type = "ability", buff = true, titleSuffix = L["Cooldown"], class = "DEATHKNIGHT"}, -- Abomination Limb
+        { spell = 315443, type = "buff", unit = "player", titleSuffix = L["Buff"], class = "DEATHKNIGHT"}, -- Abomination Limb
+      }
+    }
+  }
+
 templates.items = { -- Тринкеты вида [item ID] = spellID
   [113931] = 176878,  [113969] = 176874,  [118876] = 177597,  [118878] = 177594,  [118880] = 177592,  [118882] = 177189,  [118884] = 176460,  [113905] = 176873,  --Tank BRF
   [113834] = 176876,  [113835] = 176875,  [113842] = 176879,  [110002] = 165531,  [110003] = 165543,  [110008] = 165535,  [110012] = 165532,  [110013] = 165543,
@@ -4420,7 +4704,7 @@ end
 itemInfoReceived:SetScript("OnEvent", function( self, event)
   if event == "PLAYER_LOGIN" then
 
- -- 	N.spellsBooks = {
+ -- 	n.spellsBooks = {
 	--	[""] = "-Я еще не определился-",
 	--}
 
@@ -4430,10 +4714,10 @@ itemInfoReceived:SetScript("OnEvent", function( self, event)
 	  end
 	end
 	enrichDatabase();
-	N.templates = templates
+	n.templates = templates
   end
 
- -- for k , specList in pairs( N.templates.class[myClass]) do
+ -- for k , specList in pairs( n.templates.class[myClass]) do
 	----for k, specData in pairs(specList) do
 	--for i = 1, 3 do
 	--		--print(k, specData)
@@ -4442,14 +4726,14 @@ itemInfoReceived:SetScript("OnEvent", function( self, event)
 	--		for k,v in pairs(buffData) do
 	--			local name = GetSpellInfo( v.spell)
 	--			--print(k, v.spell, name)
-	--			N.spellsBooks[name] = name
+	--			n.spellsBooks[name] = name
 	--		end
 	--	--end
 
 	--	end
  -- end
 --local name = GetSpellInfo(id)
---N.spellsBooks[spellName] = spellName
+--n.spellsBooks[spellName] = spellName
 
   if (not delayedEnrichDatabase) then
 	delayedEnrichDatabase = true;

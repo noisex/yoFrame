@@ -1,6 +1,6 @@
 local addon, ns = ...
 
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 -------------------------------------------------------------------------------------------------------
@@ -129,7 +129,7 @@ local function createLFGFrame( self)
 
 		self.LFGListUtil_SortSearchResults = LFGListUtil_SortSearchResults
 
-		N.CreateBorder( setting, 14, -3)
+		n.CreateBorder( setting, 14, -3)
 	end
 end
 

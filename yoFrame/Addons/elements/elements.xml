@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="AzeritPower.lua"/>
+	<!-- <Script file="AzeritPower.lua"/> -->
 	<Script file="Challenges.lua"/>
 	<Script file="ChallengeFrame.lua"/>
 	<Script file="ChallengeProc.lua"/>

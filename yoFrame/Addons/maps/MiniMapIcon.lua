@@ -1,5 +1,7 @@
 local L, yo = unpack( select( 2, ...))
 
+if not yo["Addons"].MMColectIcons then return end
+
 local ignoreButtons = {
 	["MiniMapTracking"]= true,
 	["MiniMapWorldMapButton"]= true,
@@ -73,8 +75,8 @@ local function MoveButtons( parent, numRow)
 		iFrame:SetParent(parent)
 		iFrame:SetScript('OnDragStart', nil);
 		iFrame:SetScript('OnDragStop', nil);
-		iFrame:SetFrameStrata( parent:GetFrameStrata());
-		iFrame:SetFrameLevel( parent:GetFrameLevel() + 1);
+		iFrame:SetFrameStrata( "HIGH") -- parent:GetFrameStrata());
+		iFrame:SetFrameLevel( parent:GetFrameLevel() + 10);
 		iFrame:ClearAllPoints();
 
 		if count == 1 then
@@ -95,8 +97,8 @@ local function CreateMiniMapFrame(self)
 
 		SimpleBackground( self, bSize * numRow + bShift * 2, frameHeight, "RIGHT", Minimap, "LEFT", -8, 0)
 		CreateStyle( self, 3, 0, 0.85)
-		self:SetFrameLevel(10)
-		self:SetFrameStrata("HIGH")
+		--self:SetFrameLevel(10)
+		--self:SetFrameStrata("HIGH")
 		self:SetScript("OnLeave", SetTimer)
 		self:SetBackdropColor( 0, 0, 0, 0)
 		self:Hide()
@@ -132,7 +134,6 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	if not yo["Addons"].MMColectIcons then return end
 
 	ScanButtons( Minimap)
 	ScanButtons( MinimapBackdrop)

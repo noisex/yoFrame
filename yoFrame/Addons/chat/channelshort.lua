@@ -1,5 +1,5 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 ----------------------------------------------------------------------------------------
 --	Short channel name

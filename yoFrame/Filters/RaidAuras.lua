@@ -1,6 +1,6 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
-N.blackSpells = {
+n.blackSpells = {
 	[36900]  = true, -- Soul Split: Evil!
 	[36901]  = true, -- Soul Split: Good
 	[36893]  = true, -- Transporter Malfunction
@@ -43,7 +43,7 @@ N.blackSpells = {
 	[287825] = true, -- конфета какая-то
 }
 
-N.RaidDebuffList = {
+n.RaidDebuffList = {
 	-- Mythic Dungeons
 	--[209858] = true, -- Necrotic
 	--[226512] = true, -- Sanguine

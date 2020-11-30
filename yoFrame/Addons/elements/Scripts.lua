@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 local _, addon = ...
 local oUF = addon.oUF
 

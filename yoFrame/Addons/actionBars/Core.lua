@@ -1,5 +1,5 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
@@ -7,12 +7,12 @@ local _G = _G
 local pairs, unpack, SetCVar, hooksecurefunc, InCombatLockdown
 	= pairs, unpack, SetCVar, hooksecurefunc, InCombatLockdown
 
-N.ActionBars = CreateFrame("Frame")
-N.Hider = CreateFrame("Frame", nil, UIParent)
-N.Hider:Hide()
-N.PetHider = CreateFrame("Frame", "yoPetHider", UIParent, "SecureHandlerStateTemplate")
+n.ActionBars = CreateFrame("Frame")
+n.Hider = CreateFrame("Frame", nil, UIParent)
+n.Hider:Hide()
+n.PetHider = CreateFrame("Frame", "yoPetHider", UIParent, "SecureHandlerStateTemplate")
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local format = format
 local Replace = string.gsub
 local NUM_ACTIONBAR_BUTTONS = NUM_ACTIONBAR_BUTTONS
@@ -33,7 +33,7 @@ local Frames = {
 }
 
 function ActionBars:DisableBlizzard()
-	local Hider = N.Hider
+	local Hider = n.Hider
 
 	for _, frame in pairs(Frames) do
 		frame:UnregisterAllEvents()
@@ -268,8 +268,8 @@ function ActionBars:StartHighlight()
 	end
 
 	-- Hide Blizard Proc
-	if self.overlay and self.overlay:GetParent() ~= N.Hider then
-		self.overlay:SetParent( N.Hider)
+	if self.overlay and self.overlay:GetParent() ~= n.Hider then
+		self.overlay:SetParent( n.Hider)
 	end
 
 	if not self.Animation:IsPlaying() then

@@ -13,12 +13,14 @@ local function styleIcon( region)
 				local sizeH = region.icon:GetHeight()
 				local sizeW = region.icon:GetWidth()
 
-				region.border = CreateFrame( "Button", nil, region)
+				region.border = region.border or CreateFrame( "Button", nil, region)
+				region.border:ClearAllPoints()
 				region.border:SetPoint( ( a1 or "TOPLEFT"), ( p or region), ( a2 or "TOPLEFT"), ( x or 0), ( y or 0))
 				region.border:SetWidth(  sizeW)
 				region.border:SetHeight( sizeH)
 
-				region.border.glow = region.border:CreateTexture(nil, "BORDER")
+				region.border.glow = region.border.glow or region.border:CreateTexture(nil, "BORDER")
+				region.border.glow:ClearAllPoints()
 				region.border.glow:SetPoint( "CENTER", region.border, "CENTER", 0, 0)
 				region.border.glow:SetTexture( "Interface\\Buttons\\UI-Quickslot2")
 				--region.border.glow:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
@@ -32,6 +34,9 @@ local function styleIcon( region)
 		else
 			region:SetHeight( region:GetHeight() * 0.8)
 			region:SetWidth( region:GetWidth() * 0.8)
+			region.SetWidth = dummy
+			region.SetHeight = dummy
+			region.SetSize = dummy
 
 			CreateNewBorder( region)
 
@@ -58,9 +63,8 @@ local function styleIcon( region)
     	end
 	end
 
-
 	region.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)	--(0.1, 0.9, 0.1, 0.9) --(unpack( yo.tCoord))
-	region.icon.SetTexCoord = dummy
+	--region.icon.SetTexCoord = dummy
 
 	if region.bar then
 		if not region.bar.bordertop then

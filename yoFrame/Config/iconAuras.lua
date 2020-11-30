@@ -1,9 +1,9 @@
 local addon, ns = ...
 
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
-local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall
-	= GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall
+local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall, min, floor, texture
+	= GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall, math.min, floor, texture
 -----------------------------------------------------------------------------------------------
 --	AURAS
 -----------------------------------------------------------------------------------------------
@@ -18,9 +18,9 @@ local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ce
 
 -- ( self, unit, filter, customFilter, func)
 
---N.AurasFrame = CreateFrame("Frame")
+--n.AurasFrame = CreateFrame("Frame")
 
---local auras = N.AurasFrame
+--local auras = n.AurasFrame
 --local spells = {
 --	[48025] 	= true,
 --	[186403]	= true,
@@ -141,7 +141,7 @@ local function checkForFilter( button)
 	end
 end
 
-function N.createAuraIcon( parent, index)
+function n.createAuraIcon( parent, index)
 	if parent[index] then return parent[index] end
 
 	local size = parent:GetHeight()
@@ -172,13 +172,14 @@ function N.createAuraIcon( parent, index)
 	button.icon:SetTexCoord( unpack( yo.tCoord))
 
 	button.count = button:CreateFontString(nil, "OVERLAY")
-	button.count:SetFont( yo.fontpx, max( 10, size / 1.5), "THINOUTLINE")
+	button.count:SetFont( yo.fontpx, max( 10, size / 1.9), "THINOUTLINE")
 	button.count:SetShadowOffset(1, -1)
 	button.count:SetTextColor( 0, 1, 0)
 
 	button.timer = button:CreateFontString(nil, "OVERLAY")
-	button.timer:SetFont( yo.fontpx, max( 10, size / 1.5), "OUTLINE")
-	--button.timer:SetShadowOffset(1, -1)
+	button.timer:SetFont( yo.fontpx, max( 10, size / 1.9), "OUTLINE")
+	button.timer:SetShadowColor(0, 0, 0, 0.5)
+	button.timer:SetShadowOffset( 1, -1)
 
 	if parent.timerPosition == "BOTTOM" then
 		button.count:SetPoint("TOPRIGHT", button, "TOPRIGHT", 6, 6)
@@ -199,7 +200,7 @@ function N.createAuraIcon( parent, index)
 		local cols 		= parent.inRow or 20  --math.floor(parent:GetWidth() / size + 0.5)
 
 		local col 		= (index - 1) % cols
-		local row 		= math.floor((index - 1) / cols)
+		local row 		= floor((index - 1) / cols)
 
 		button:ClearAllPoints()
 		button:SetPoint( anchor, parent, anchor, col * sizeSh * growthx, row * sizeSh * growthy)
@@ -209,8 +210,8 @@ function N.createAuraIcon( parent, index)
 		CreateStyleSmall( button, max( 1, sh - 5))
 
 	elseif button.showBorder == "border" then
-		N.CreateBorder( button, size / 3)
-		N.SetBorderColor( button, 0.19, 0.19, 0.19, 0.9)
+		n.CreateBorder( button, size / 3)
+		n.SetBorderColor( button, 0.19, 0.19, 0.19, 0.9)
 	end
 
 	if button.countAnim then
@@ -238,14 +239,15 @@ function N.createAuraIcon( parent, index)
 		button:SetScript("OnLeave", BuffOnLeave)
 	end
 
-	parent[index] = button
+	parent.iMAx 	= index
+	parent[index] 	= button
 
 	return parent[index]
 end
 
 
 
-function N.updateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
+function n.updateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 
 	button.expirationTime 	= expirationTime
 	button.duration 		= duration

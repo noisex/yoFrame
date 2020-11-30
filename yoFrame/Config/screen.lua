@@ -1,5 +1,5 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 local resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution")
 local getscreenwidth, getscreenheight = GetPhysicalScreenSize() --DecodeResolution(resolution)
@@ -39,8 +39,8 @@ local function updateScreenScale(...)
 		SetCVar("useUiScale", 0)
 	end
 end
-N.conFuncs["AutoScale"] = updateScreenScale
-N.conFuncs["ScaleRate"] = updateScreenScale
+n.conFuncs["AutoScale"] = updateScreenScale
+n.conFuncs["ScaleRate"] = updateScreenScale
 updateScreenScale()
 
 local function updateErrors()
@@ -50,7 +50,7 @@ local function updateErrors()
 		SetCVar("scriptErrors", 0)
 	end
 end
-N.conFuncs["scriptErrors"] = updateErrors
+n.conFuncs["scriptErrors"] = updateErrors
 updateErrors()
 
 SetCVar("alwaysShowActionBars", 1)
@@ -70,11 +70,6 @@ SetCVar("TargetPriorityCombatLock", 0)
 SetCVar("TargetPriorityCombatLockContextualRelaxation", 0)
 SetCVar("countdownForCooldowns", 0)
 SetCVar("showTargetOfTarget", 1)
-
-SetCVar("nameplateShowSelf", 0)
-SetCVar("nameplateShowAll", 1)
-SetCVar("nameplateShowEnemyMinus", 1)
-SetCVar("nameplateShowEnemyMinions", 1)
 
 SetCVar("autoLootDefault", 1)
 SetCVar("doNotFlashLowHealthWarning", 1)

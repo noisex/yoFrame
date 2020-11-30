@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.UF.unitFrames then return end
 
@@ -9,6 +9,7 @@ local CreateStyle, unpack, GameTooltip, Round, CreateFrame, UnitAura, BuffFrame,
 	= CreateStyle, unpack, GameTooltip, Round, CreateFrame, UnitAura, BuffFrame, formatTime, UnitExists, ipairs, GetTime
 
 local lastID
+local yoUF = n.unitFrames
 
 local function OnUpdate(f, elapsed)
 	f.elapsed = (f.elapsed or 0) + elapsed
@@ -73,7 +74,7 @@ local function AuraUpdate( f, lastID, filter)
 		--if isBossDebuff then print ( "|cffff0000 isBossDebuff:|r " .. name .. " ( " .. spellId .. ")" ) end
 
 		--if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and nameplateShowPersonal and duration >= 10)) then
-		if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and N.DebuffWhiteList[name])) then
+		if name and ( unit == "player" or unit == "target" or ( unit == "focus" and nameplateShowAll) or ( isboss and filter == "HELPFUL") or ( svistelka and n.DebuffWhiteList[name])) then
 			f[lastID].icon:SetTexture( icon)
 			f[lastID].filter = filter
 			f[lastID].id = i
@@ -287,12 +288,12 @@ logan:SetScript("OnEvent", function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.UF.unitFrames or not yo_Player then return end
 
-	CreateBuff( plFrame,  "aurabar", 27, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
-	CreateBuff( tarFrame, "aurabar", 21, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
-	CreateBuff( fcFrame, "aurabar", 25, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
+	CreateBuff( yoUF.player,  "aurabar", 27, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
+	CreateBuff( yoUF.target, "aurabar", 21, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
+	CreateBuff( yoUF.focus, "aurabar", 25, nil, "TOPLEFT", "BOTTOMLEFT", 5, 8, 1, 0)
 
 	for i = 1, MAX_BOSS_FRAMES do
-		local bFrame = _G["yo_Boss"..i]
+		local bFrame = yoUF["boss" .. i]
 		if not bFrame then break end
 		CreateBuff(    bFrame, "aurabar",  bFrame:GetHeight(), 10, "LEFT", "RIGHT", 6, 0, 1, 7)
 		CreateBuff(    bFrame, "aurabuff", bFrame:GetHeight(), 10, "RIGHT", "LEFT", 7, 0, -1, 8)

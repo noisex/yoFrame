@@ -1,7 +1,15 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local logon = CreateFrame("Button", "Butsu", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 local title = logon:CreateFontString(nil, "OVERLAY")
+
+local UnitIsDead, UnitName, UnitIsFriend, GetNumLootItems, GameTooltip, GetLootSlotLink, GetCVar, GetLootSlotInfo, pairs, GetCursorPosition, CreateFrame, max, GetBuildInfo, CursorUpdate, ResetCursor
+	= UnitIsDead, UnitName, UnitIsFriend, GetNumLootItems, GameTooltip, GetLootSlotLink, GetCVar, GetLootSlotInfo, pairs, GetCursorPosition, CreateFrame, math.max, GetBuildInfo, CursorUpdate, ResetCursor
+
+local IsModifiedClick, IsAltKeyDown, HandleModifiedItemClick, LootSlot, CloseLoot, IsFishingLoot
+	= IsModifiedClick, IsAltKeyDown, HandleModifiedItemClick, LootSlot, CloseLoot, IsFishingLoot
+
+local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 
 local iconSize = 30
 local frameScale = 1
@@ -62,16 +70,16 @@ local OnUpdate = function(self)
 	end
 end
 
-media = {
+local media = {
 	["backdrop1"] = texture,
 	["backdrop"] =  texture,
 	["checked"] = "Interface\\AddOns\\Aurora\\CheckButtonHilight",
 	["glow"] = "Interface\\AddOns\\yoFrame\\Root\\Media\\glowTex",
 }
 
-dummy = function() end
+local dummy = function() end
 
-CreateBD = function(f, a)
+local CreateBD = function(f, a)
 	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
 	if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end
 
@@ -157,7 +165,7 @@ local anchorSlots = function(self)
 		end
 	end
 
-	self:SetHeight(math.max(shownSlots * iconsize + 8, 20))
+	self:SetHeight( max(shownSlots * iconsize + 8, 20))
 end
 
 title:SetFont( yo.font, yo.fontsize, "OUTLINE")
@@ -251,8 +259,8 @@ logon.LOOT_OPENED = function(self, event, autoloot)
 				end
 
 				slot.quality = quality
-				m = math.max(m, quality)
-				w = math.max(w, slot.name:GetStringWidth())
+				m = max(m, quality)
+				w = max(w, slot.name:GetStringWidth())
 
 				slot.name:SetText(item)
 				slot.name:SetTextColor( r, g, b)
@@ -272,7 +280,7 @@ logon.LOOT_OPENED = function(self, event, autoloot)
 		--slot.icon:SetColorTexture[[Interface\Icons\INV_Misc_Herb_AncientLichen]]
 
 		items = 1
-		w = math.max(w, slot.name:GetStringWidth())
+		w = max(w, slot.name:GetStringWidth())
 
 		slot.count:Hide()
 		slot.drop:Hide()

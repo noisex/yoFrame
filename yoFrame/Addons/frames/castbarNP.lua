@@ -1,6 +1,6 @@
 local addon, ns = ...
 
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 if not yo.NamePlates.enable then return end
@@ -83,7 +83,7 @@ function startCastBar( f, unit)
 
 	f.text:SetText( f.name  .. text)
 
-	if yo.NamePlates.badCasts then
+	if yo.NamePlates.badCasts and n.badMobsCasts[f.spellID] then
 		f.spark:Show()
 		glowTargetStart( f.ibg, {0.95, 0.95, 0.32, 1}, 8, 0.5, 5, 2, 2, 2, false, 1, 11 )
 	else
@@ -101,7 +101,7 @@ function createCastBarNP( f)
 	f.Castbar:SetSize( yo.NamePlates.width, 5)
 	f.Castbar:SetStatusBarTexture( yo.texture)
 	f.Castbar:SetStatusBarColor(1, 0.8, 0)
-	table.insert( N.statusBars, f.Castbar)
+	table.insert( n.statusBars, f.Castbar)
 	f.Castbar:SetFrameLevel( 12)
 
 	f.Castbar.bg = f.Castbar:CreateTexture(nil, "BACKGROUND")
@@ -114,14 +114,14 @@ function createCastBarNP( f)
 	f.Castbar.time:SetFont( yo.font, yo.fontsize - 1, "THINOUTLINE")
 	f.Castbar.time:SetShadowOffset(1, -1)
 	f.Castbar.time:SetTextColor(1, 1, 1)
-	table.insert( N.strings, f.Castbar.time)
+	table.insert( n.strings, f.Castbar.time)
 
 	f.Castbar.text = f.Castbar:CreateFontString(nil, "OVERLAY")
 	f.Castbar.text:SetPoint("TOP", f.Castbar, "BOTTOM", 0, -1)
 	f.Castbar.text:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
 	f.Castbar.text:SetTextColor(1, 1, 1)
 	f.Castbar.text:SetJustifyH("CENTER")
-	table.insert( N.strings, f.Castbar.text)
+	table.insert( n.strings, f.Castbar.text)
 
 	f.Castbar.ibg = CreateFrame("Frame", nil, f.Castbar)
    	f.Castbar.ibg:SetPoint("BOTTOM", f.Health,"CENTER", 0, 0);

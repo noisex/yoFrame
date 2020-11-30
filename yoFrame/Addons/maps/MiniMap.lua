@@ -1,6 +1,7 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local tick, ptick = 1, 0
+local yoUF = n.unitFrames
 
 local cfg = {
   	scale = 1,
@@ -54,7 +55,7 @@ local function MiniInit()
 
 	--CreateStyle( DurabilityFrame, 3, 0)
 	DurabilityFrame:ClearAllPoints()
-	DurabilityFrame:SetPoint("BOTTOM", plFrame, "TOP", 0, 20)
+	DurabilityFrame:SetPoint("BOTTOM", yoUF.player, "TOP", 0, 20)
 	--DurabilityFrame:SetFrameLevel( 10)
 	DurabilityFrame.ClearAllPoints = dummy
 	DurabilityFrame.SetPoint = dummy
@@ -118,13 +119,14 @@ local function MiniInit()
 	--GarrisonLandingPageMinimapButton
 	GarrisonLandingPageMinimapButton:ClearAllPoints()
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
-	GarrisonLandingPageMinimapButton:SetSize( 28,33)
-	GarrisonLandingPageMinimapButton.SetSize = dummy
-	GarrisonLandingPageMinimapButton.SetWidth = dummy
-	GarrisonLandingPageMinimapButton.SetHeight = dummy
-
-	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", 0, 0)
-	--GarrisonLandingPageMinimapButton:SetScale( 0.3)
+	GarrisonLandingPageMinimapButton:SetSize( 28, 28)
+	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", -0, -0)
+	GarrisonLandingPageMinimapButton:SetAlpha( 0.6)
+	GarrisonLandingPageMinimapButton.ClearAllPoints = dummy
+	GarrisonLandingPageMinimapButton.SetSize 	= dummy
+	GarrisonLandingPageMinimapButton.SetWidth 	= dummy
+	GarrisonLandingPageMinimapButton.SetHeight 	= dummy
+	GarrisonLandingPageMinimapButton.SetPoint 	= dummy
 
 	--mail
 	MiniMapMailFrame:ClearAllPoints()

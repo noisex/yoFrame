@@ -1,13 +1,23 @@
 local addon, ns = ...
 local L, _ = unpack( ns)
 
+local _G = _G
+
 local ACD
 local needReload, openka, initka = false
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
+local strjoin, ReloadUI, PlaySound
+	= strjoin, ReloadUI, PlaySound
+
+local yo, n
+local aConf = {}
+
+-- GLOBALS: Setlers
+
+local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
 
 LSM:Register("statusbar", "yo Plain Gray", 	"Interface\\AddOns\\yoFrame\\Media\\bar16")
 LSM:Register("statusbar", "yo Plain White", "Interface\\AddOns\\yoFrame\\Media\\plain_white")
@@ -37,26 +47,26 @@ LSM:Register("font", "yoPixelFont", "Interface\\AddOns\\yoFrame\\Media\\pxFont.t
 
 local function checkToReboot( var, ...)
 	local noReboot
-	for k, v in pairs( N.noReboot) do
+	for k, v in pairs( n.noReboot) do
 		if v == var then
 			noReboot = true
 			break
 		end
 	end
 
-	if N.conFuncs[var] then
-		N.conFunc( var, ...)
+	if n.conFuncs[var] then
+		n.conFunc( var, ...)
 	end
 
 	if not noReboot then needReload = true end
 end
 
 function Setlers( path, val, ...)
-	local aConf = {}
+	--local aConf = {}
 	local p1, p2, p3, p4 = strsplit("#", path)
 
-	if yo_AllData[myRealm][myName].PersonalConfig then 	aConf = yo_PersonalConfig
-	else												aConf = yo_AllConfig	end
+	--if yo_AllData[myRealm][myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
+	--else												aConf = _G["yo_AllConfig"]	end
 
 	if p4 then
 		aConf[p1][p2][p3][p4] = val
@@ -101,7 +111,7 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
 
 
 function InitOptions()
-	N = yoFrame[3]
+	n = yoFrame[3]
 
 	local defaults = {
 		profile = {},
@@ -593,29 +603,29 @@ function InitOptions()
 			InfoTexts = {
 				order = 87,	name = "Инфотексты", type = "group",
 				get = function(info) return yo["InfoTexts"][info[#info]] end,
-				set = function(info,val) Setlers( "InfoTexts#" .. info[#info], val) N.infoTexts:infoLauncher() end,
+				set = function(info,val) Setlers( "InfoTexts#" .. info[#info], val) n.infoTexts:infoLauncher() end,
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
 					enable 		= {	order = 01, type = "toggle", name = L["ITenable"], width = "full", disabled = false,},
 
 					countLeft 	= {	order = 10, width = 0.7, type = "select", name = function(info) return tr( info[#info]) end,	values = { [0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,},},
 					set01		= {	order = 11, type = "description", name = " ", width = 1.5},
-					left1 		= {	order = 22, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 1 or not yo[info[1]].enable; end,},
-					left2 		= {	order = 32, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 2 or not yo[info[1]].enable; end,},
-					left3 		= {	order = 42, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 3 or not yo[info[1]].enable; end,},
-					left4 		= {	order = 52, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 4 or not yo[info[1]].enable; end,},
-					left5 		= {	order = 62, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 5 or not yo[info[1]].enable; end,},
-					left6 		= {	order = 72, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "",	values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 6 or not yo[info[1]].enable; end,},
+					left1 		= {	order = 22, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "",	values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 1 or not yo[info[1]].enable; end,},
+					left2 		= {	order = 32, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "",	values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 2 or not yo[info[1]].enable; end,},
+					left3 		= {	order = 42, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "",	values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 3 or not yo[info[1]].enable; end,},
+					left4 		= {	order = 52, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "",	values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 4 or not yo[info[1]].enable; end,},
+					left5 		= {	order = 62, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "",	values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 5 or not yo[info[1]].enable; end,},
+					left6 		= {	order = 72, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "",	values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countLeft < 6 or not yo[info[1]].enable; end,},
 
 					set02		= {	order = 090, type = "description", name = " ", width = "full"},
 					countRight 	= {	order = 110, width = 0.7, type = "select", name = function(info) return tr( info[#info]) end, values = { [0] = 0, [1] = 1, [2] = 2, [3] = 3, [4] = 4, [5] = 5, [6] = 6,},},
 					set00		= {	order = 111, type = "description", name = " ", width = 1.5},
-					right1		= {	order = 120, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 1 or not yo[info[1]].enable; end,},
-					right2		= {	order = 130, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 2 or not yo[info[1]].enable; end,},
-					right3		= {	order = 140, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 3 or not yo[info[1]].enable; end,},
-					right4		= {	order = 150, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 4 or not yo[info[1]].enable; end,},
-					right5		= {	order = 160, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 5 or not yo[info[1]].enable; end,},
-					right6		= {	order = 170, width = 0.7, sorting = N.infoTexts.infosSorted, type = "select", name = "", values = N.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 6 or not yo[info[1]].enable; end,},
+					right1		= {	order = 120, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "", values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 1 or not yo[info[1]].enable; end,},
+					right2		= {	order = 130, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "", values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 2 or not yo[info[1]].enable; end,},
+					right3		= {	order = 140, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "", values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 3 or not yo[info[1]].enable; end,},
+					right4		= {	order = 150, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "", values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 4 or not yo[info[1]].enable; end,},
+					right5		= {	order = 160, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "", values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 5 or not yo[info[1]].enable; end,},
+					right6		= {	order = 170, width = 0.7, sorting = n.infoTexts.infosSorted, type = "select", name = "", values = n.infoTexts.texts, disabled = function( info) return yo.InfoTexts.countRight < 6 or not yo[info[1]].enable; end,},
 				},
 			},
 
@@ -683,8 +693,10 @@ function InitOptions()
 					setD	= {	order = 28, type = "toggle",name = L["dd"], 	width = 0.5, disabled = function( info) return ( not yo[info[1]].enable or yo[info[1]].setN); end,},
 
 					set02	= {	order = 29, type = "description", name = " ", width = "full"},
-					heroic	= {	order = 30, type = "toggle",name = L["heroic"], 	width = 1},
+					--heroic	= {	order = 30, type = "toggle",name = L["heroic"], 	width = 1},
+					lfdMode = {	order = 30, type = "select", name = function(info) return tr( info[#info]) end,	values = n.dungensTypes,},
 					lfr		= {	order = 32, type = "toggle",name = L["lfr"], 	width = 1},
+
 
 					timer	= {	order = 40,	type = "range", name = L["CTAtimer"],	min = 1, max = 600, step = 1, width = 1},
 					sound	= {	order = 42, type = "select",name = L["CTAsound"], dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
@@ -723,29 +735,29 @@ function InitOptions()
 							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",   width = 1.1, desc = L["DESC_KEY"],},
 
 							key1	= {	order = 10, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key2	= {	order = 14, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell2	= { order = 16, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell2	= { order = 16, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key3	= {	order = 18, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell3	= { order = 20, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell3	= { order = 20, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key4	= {	order = 22, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell4	= { order = 24, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell4	= { order = 24, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key5	= {	order = 26, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell5	= { order = 28, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell5	= { order = 28, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key6	= {	order = 30, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell6	= { order = 32, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell6	= { order = 32, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key7	= {	order = 34, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell7	= { order = 36, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell7	= { order = 36, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key8	= {	order = 38, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell8	= { order = 40, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell8	= { order = 40, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key9	= {	order = 42, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell9	= { order = 44, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell9	= { order = 44, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key10	= {	order = 46, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell10	= { order = 48, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell10	= { order = 48, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key11	= {	order = 50, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell11	= { order = 52, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell11	= { order = 52, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 							key12	= {	order = 54, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell12	= { order = 56, type = "select", 		name = "", width = 1.1, values = N.spellsBooks,},
+							spell12	= { order = 56, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 						},
 					},
 					heneral = {
@@ -754,11 +766,11 @@ function InitOptions()
 						args = {
 							hEnable= {	order = 1, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", desc = L["DESC_HENA"],},
 
-							hSpell1	= { order = 70, type = "select", name = "Иконка №1 ( лево-центр)", width = 1.5, values = N.spellsBooks,},
-							hSpell2	= { order = 80, type = "select", name = "Иконка №2 ( лево-низ)",   width = 1.5, values = N.spellsBooks,},
-							hSpell3	= { order = 90, type = "select", name = "Иконка №3 ( центр-низ)",  width = 1.5, values = N.spellsBooks,},
-							hSpell4	= { order =100, type = "select", name = "Иконка №4 ( право-низ)",  width = 1.5, values = N.spellsBooks,},
-							hSpell5	= { order =110, type = "select", name = "Иконка №5 ( право-центр)",width = 1.5, values = N.spellsBooks,},
+							hSpell1	= { order = 70, type = "select", name = "Иконка №1 ( лево-центр)", width = 1.5, values = n.spellsBooks,},
+							hSpell2	= { order = 80, type = "select", name = "Иконка №2 ( лево-низ)",   width = 1.5, values = n.spellsBooks,},
+							hSpell3	= { order = 90, type = "select", name = "Иконка №3 ( центр-низ)",  width = 1.5, values = n.spellsBooks,},
+							hSpell4	= { order =100, type = "select", name = "Иконка №4 ( право-низ)",  width = 1.5, values = n.spellsBooks,},
+							hSpell5	= { order =110, type = "select", name = "Иконка №5 ( право-центр)",width = 1.5, values = n.spellsBooks,},
 
 							hColEna1= {	order = 71, type = "toggle",name = "Свой цвет вместо иконки",},
 							hColEna2= {	order = 81, type = "toggle",name = "Свой цвет вместо иконки",},
@@ -824,7 +836,7 @@ function InitOptions()
 
 							hTimeSec= {	order = 35,type = "toggle", name = function(info) return tr( info[#info]) end, width = "full"},
 
-							bSpell 	= { order = 40, type = "select",name = function(info) return tr( info[#info]) end, width = 1.5, values = N.spellsBooks,},
+							bSpell 	= { order = 40, type = "select",name = function(info) return tr( info[#info]) end, width = 1.5, values = n.spellsBooks,},
 							bColEna = {	order = 43, type = "toggle",name = function(info) return tr( info[#info]) end,},
 							bColor	 ={	order = 45, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
@@ -845,6 +857,20 @@ function InitOptions()
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
 				args = {
+					label08 = { order = 991, type = "description",
+						name = "|cff00ff002020.11.23|r"
+						.."\n - [|cffff8000Общее|r] в настройках биндов клавиш добались комбинации для установки рейдовых меток не беря жертву в цель, а просто при наведении на нее курсора ( MouseOver)"
+						.."\n - [|cffff8000Рейд|r] добавился метод сортировки рейда по цветовой гамме - \"Пихора эдишн\", пользы от него никакой ( как и от тебя, кстати), но зато красиво, особенно в 40 ппл рейде."
+						.."\n - [|cffff8000Хилботка|r] свершилось, то, о чем так долго говорили большевики - накодилось! Встречаем ноавый рассадник багов, глюков и моей жопоболи... Состоит эта пепега из трех частей: бинды, хотасы и шаблон рейда."
+						.."\n 1. Бинды надо что бы ты такой по кому-нить в рейде тыкаешь, сразу лечить этого бедолагу начиаешь. Не забываем, что, при включении всего этого ужаса, действия `Взять в цель` и `Показать меню` автоматически переползут на Ctrl+ЛКМ и Ctrl+ПКМ, что бы освободишь мышку под всякое другое, несомненно более полезное."
+						.."\n 2. Хотасы, там вроде все понятно дожно быть, одно скажу, что , лично мне, удобней заменять иконки хоток на тупые и незамысловатые квадратики разного цвета, проям как в детсаду оказался, мне норм."
+						.."\n 3. ХилБотка, это шаблон рейда, из которого убрано всякое лишнее и не нужно для реального хардкор-хила. Рост потенциальных больных идет по горизонтали, а не вертикально, это пока так, потом будем посмотреть как лучше."
+						.."\n - [|cffff8000Хилботка|r] одельно хочу отметить пацана с именем `ХотаБар` ( не путать с Алахакбар, нет, это не про это), это палка, которая пытается изображать из себя хотку, лично я вешаю на нее Жизнецвет, видно сразу, удобно, понятно. Так же, я, при всей своей гениатности, не смог определиться, где лучше найти место под это, но зато тама можно ее подвигать вверх-вниз-вверх-вниз-вверх..., пока не станет приятно и хорошо ( настроил, покурил, оттвернулся, захрапел)"
+						.."\n - [|cffff8000Хилботка|r] в соответствующем разделе вверху есть 2 кнопки, сцуть которых такая, что мы сначало все включаем, настраиваем под себя, а затем просто ими уже включаем/выключаем это шнягу целиком ( я про Хилботку) по мере нужды, большшойй или малой, само собой..."
+						.."\n - [|cffff8000Хилботка|r] для Друидов и Паладосов есть маленький бонус: в верхем левом углу автоматически загорается иконка, что с цели можно снять Быстрое восстановление или на болезном есть уже заботливо наложенная частица Светы или Веры"
+						.."\n - [|cffff8000Хилботка|r] в догонку плюнуть в спину: не обязательно всключать все, если оно не надо, например можно включить только Бинды, 'вернуть назад' на ПКМ-ЛКМ Таргет-Меню и забиндить какую-то свою ущербную абилку на кнопку мышки или клавы, не включая Хотки и Хилботку. Кто я такой, что бы вам запретить такое вытворять с этим убогим аддоном?"
+						.."\n - [|cffff8000Хилботка|r] и да, самое же почти главное в этой пепеге - включить |cffff0000`Персональные настройки`|r. Вдудь мужиком - сделай это прям сейчас. А?А?А?А?А?А!!!\n\n",
+					},
 					label07 = { order = 992, type = "description",
 						name = "|cff00ff002020.11.12|r"
 						.."\n - [|cffff8000WIM|r] научился принимать линки на предметы, квесты и прочее, это победа ящитаю"
@@ -995,7 +1021,10 @@ end)
 local init = CreateFrame("Frame")
 init:RegisterEvent("PLAYER_LOGIN")
 init:SetScript("OnEvent", function()
-	if not yoFrame then return end
+	if not _G["yoFrame"] then return end
 
-	T, yo, N = unpack( yoFrame)
+	_, yo, n = unpack( _G["yoFrame"])
+
+	if _G["yo_AllData"][myRealm][myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
+	else														aConf = _G["yo_AllConfig"]	end
 end)

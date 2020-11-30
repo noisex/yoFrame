@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
@@ -11,7 +11,7 @@ local GameTooltip, myName, myRealm, GetTime, myColorStr, myLogin, GetNumSavedIns
 --local yo_AllData = yo_AllData
 local Hr24, Min
 
-local infoText = N.infoTexts
+local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 --------------------------------------------------------------------

@@ -1,9 +1,9 @@
-local _, ns = ...
+ local _, ns = ...
 local oUF 	= ns.oUF or oUF
 --local colors = oUF.colors
 local cols 	= {}
 
-local L, yo, N = ns[1], ns[2], ns[3]
+local L, yo, n = ns[1], ns[2], ns[3]
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -30,7 +30,7 @@ end
 
 local funcWhiteList = function( self, button, ...)
 	local spellID = select( 11, ...)
-	if not N.blackSpells[spellID] then
+	if not n.blackSpells[spellID] then
 		return true
 	else
 		return false
@@ -40,7 +40,7 @@ end
 local funcTankList = function( self, button, ...)
 	local spellID = select( 11, ...)
 
-	if N.tankDefs[spellID] then
+	if n.tankDefs[spellID] then
 		return true
 	else
 		return false
@@ -49,14 +49,14 @@ end
 
 local funcBlackList = function( self, button, ...)
 	local spellID = select( 11, ...)
-	if N.RaidDebuffList[spellID] then
+	if n.RaidDebuffList[spellID] then
 		return true
 	else
 		return false
 	end
 end
 
-function N.updateAllRaid(...)
+function n.updateAllRaid(...)
 	for ind, button in pairs( yo_Raid) do
 		--print(ind, button)
 		if type(button) == "table" then
@@ -115,8 +115,8 @@ local function raidShared(self, unit)
 	local enableAbsorb	= false
 	local enableLFD		= yo.Raid.showLFD
 	local enableIcons 	= true
-	local sizeAuras 	= self:GetHeight() * 0.95
-	local spacingAuras 	= 6
+	local sizeAuras 	= self:GetHeight() * 0.8
+	local spacingAuras 	= 5
 	local numAuras 		= 10
 	local initialAnchor = "LEFT"
 	local growthX 		= "RIGHT"
@@ -126,6 +126,8 @@ local function raidShared(self, unit)
 	local frameHeight	= yo.Raid.height
 	local growAuraTank  = "RIGHT"
 	local anchTankAura 	= "CENTER"
+	local hpBarVertical = yo.Raid.hpBarVertical
+	local hpBarRevers	= yo.Raid.hpBarRevers
 
 	if yo.Raid.raidTemplate == 2 then
 		posInfo			= {"LEFT", self, "RIGHT", 12, 0}
@@ -141,7 +143,6 @@ local function raidShared(self, unit)
 
 	elseif yo.Raid.raidTemplate == 3 then
 		posInfo			= {"CENTER", self, "CENTER", 0, 3}
-		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -1, -3}
 		posAuraTank		= {"CENTER", self, "CENTER"}
 		posDead 		= {"TOP", self, "CENTER", 0, -5}
 		enablePower		= false
@@ -149,22 +150,29 @@ local function raidShared(self, unit)
 		enableAbsorb	= false
 		enableLFD		= false
 		enableAuras		= true
-		sizeAuras 		= 12
-		spacingAuras 	= 1
-	 	numAuras 		= 3
-		initialAnchor 	= "TOPRIGHT"
-		growthX 		= "LEFT"
-		growAuraTank 	= "LEFT"
-		--CustomFilter 	= funcWhiteList --funcBlackList
 		CustomFilter 	= nil
-		outsideAlpha	= 0.2
+		outsideAlpha	= 0.5
 		frameWidth		= 90
 		frameHeight		= 40
+		anchTankAura 	= "CENTER"
+		showBorder 		= "border"
+
+		if unit == "raid" then
+			sizeAuras 		= 14
+			spacingAuras 	= 1
+	 		numAuras 		= 3
+			initialAnchor 	= "TOPRIGHT"
+			growthX 		= "LEFT"
+			growAuraTank 	= "LEFT"
+			posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -1, -3}
+
+			CustomFilter 	= funcWhiteList --funcBlackList
+		end
+
 		CreateStyleSmall( self.shadow, 2)
 		self.overShadow = self.shadow.shadow
 		self.overShadow:Hide()
 		self.overShadow:SetBackdropBorderColor(1, 0, 0, 1)
-		anchTankAura 	= "CENTER"
 	end
 
 	if unit == "raid" then
@@ -185,7 +193,7 @@ local function raidShared(self, unit)
 		enablePower		= false
 		enableAbsorb	= true
 		numAuras		= 3
-		spacingAuras	= 3
+		spacingAuras	= 2
 		sizeInfoFont	= yo.fontsize
 		initialAnchor 	= "RIGHT"
 		growthX 		= 'LEFT'
@@ -197,6 +205,8 @@ local function raidShared(self, unit)
 		posAuraTank		= { "LEFT", self, "LEFT", 3, -5}
 		growAuraTank  	= "RIGHT"
 		anchTankAura 	= "LEFT"
+		hpBarVertical	= false
+		hpBarRevers		= false
 
 		if self.unitT then
 			enableBorder 	= true
@@ -234,29 +244,27 @@ local function raidShared(self, unit)
 	self.Health:SetWidth( self:GetWidth())
 	self.Health:SetFrameLevel(1)
 	self.Health:SetStatusBarTexture( texture)
-	tinsert( N.statusBars, self.Health)
+	tinsert( n.statusBars, self.Health)
 
 	self.Health.hbg = self.Health.hbg or self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( texture)
 
-	if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
-	if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
-	if enableHealPr 		 then self.Health.healPred  = self:addHealPred( self) end --self.Health.healPred or
-	if enableAbsorb		 	 then self.Health.AbsorbBar = self:addAbsorbBar( self) end --self.Health.AbsorbBar or
+	if hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
+	if hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
+	if enableHealPr  then self.Health.healPred  = self:addHealPred( self) end --self.Health.healPred or
+	if enableAbsorb	 then self.Health.AbsorbBar = self:addAbsorbBar( self) end --self.Health.AbsorbBar or
 
 	if yo.Raid.classcolor == 1 then
 		self.shadowAlpha = 0.5
 		outsideAlpha = 0.3
 
 	elseif yo.Raid.classcolor == 2 then
-		--self.Health.colorSmooth = true
 		self.shadowAlpha = 0.5
 		outsideAlpha = 0.3
 
 	else
-		--self.colors.disconnected = { 0.4, 0.4, 0.4}
-		self.shadowAlpha = 0.2
+		self.shadowAlpha = 0.5
 	end
 
 	if yo.Raid.raidTemplate == 2 and yo.Raid.classcolor ~= 3 then
@@ -269,15 +277,15 @@ local function raidShared(self, unit)
 		self.Range.PostUpdate = function(object, self, inRange, checkedRange, connected)
 			if connected then
 				if checkedRange and not inRange then
-		--			self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
-					self.shadow:SetBackdropColor( .075,.075,.086, self.shadowAlpha) --:SetAlpha( self.shadowAlpha)
+					self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
+					self.shadow:SetBackdropColor( .075,.075,.086, self.shadowAlpha)
 				else
-		--			self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
+					self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
 					self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
 		--			--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 				end
 			else
-		--		self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
+				self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
 				self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
 		--		--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 			end
@@ -307,7 +315,7 @@ local function raidShared(self, unit)
 		self.Power:SetFrameStrata( "MEDIUM")
 		self.Power:SetWidth( self:GetWidth() - 6)
 		self.Power:SetHeight( 2)
-		tinsert( N.statusBars, self.Power)
+		tinsert( n.statusBars, self.Power)
 
 		self.Power:SetFrameLevel(10)
 		self.Power.frequentUpdates = false
@@ -341,7 +349,7 @@ local function raidShared(self, unit)
 	self.Info:SetFont( yo.font, sizeInfoFont, "OUTLINE")
 	--self.Info:SetShadowOffset( 1, -1)
 	--self.Info:SetShadowColor( 0, 0, 0, 1)
-	tinsert( N.strings, self.Info)
+	tinsert( n.strings, self.Info)
 
 	if unit == "tank" then
 		self:Tag( self.Info, "[GetNameColor][nameshort]")
@@ -351,7 +359,7 @@ local function raidShared(self, unit)
 			self.threat:SetFont( yo.fontpx, yo.fontsize +1)--, "THINOUTLINE")
 			self.threat:SetShadowOffset( 1, -1)
 			self.threat:SetPoint("BOTTOMLEFT", self.Overlay, "BOTTOMLEFT", 3, 2)
-			tinsert( N.strings, self.threat)
+			tinsert( n.strings, self.threat)
 		end
 	elseif  yo.Raid.raidTemplate == 3 then
 		 self:Tag( self.Info, "[GetNameColor][namemedium]\n[afk]")
@@ -404,14 +412,14 @@ local function raidShared(self, unit)
 	self.DeadText:SetPoint( unpack( posDead))
 	self.DeadText:SetShadowOffset( 1, -1)
 	self.DeadText:SetShadowColor( 0, 0, 0, 1)
-	tinsert( N.strings, self.DeadText)
+	tinsert( n.strings, self.DeadText)
 	self:Tag( self.DeadText, "[GetNameColor]".. yo.Raid.showHPValue)
 
 	if unit == "raid" and yo.Raid.showGroupNum and ( not self.unitTT or self.unitT) then
 		self.rText = self.rText or self.Overlay:CreateFontString(nil ,"OVERLAY")
 		self.rText:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
 		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -4)
-		tinsert( N.strings, self.rText)
+		tinsert( n.strings, self.rText)
 		self:Tag(self.rText, "[GetNameColor][group]")
 	end
 
@@ -433,7 +441,7 @@ local function raidShared(self, unit)
 		self.Debuffs:SetFrameLevel( 100)
 		self.Debuffs:SetSize( sizeAuras * ( numAuras +1), sizeAuras)
 		self.Debuffs.disableCooldown = false
-		self.Debuffs.spacing 		= 1 --spacingAuras
+		self.Debuffs.spacing 		= spacingAuras
 		self.Debuffs.num 			= numAuras
 		self.Debuffs.disableMouse 	= false
 		self.Debuffs.size   		= sizeAuras
@@ -443,9 +451,18 @@ local function raidShared(self, unit)
 
 		self.Debuffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( unpack( yo.tCoord))
+			button.timerPos = { "TOP", button, "BOTTOM", 0, -3}
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
-			--CreateStyleSmall( button, 1)
+			if sizeAuras >= 30 then
+				n.CreateBorder( button, sizeAuras / 3)
+				n.SetBorderColor( button, 0.19, 0.19, 0.19, 0.9)
+			elseif sizeAuras >= 20 then
+				CreateStyle( button, 2)
+			else
+				CreateStyleSmall( button, 2)
+			end
+
 		end
 	end
 
@@ -637,7 +654,7 @@ logan:SetScript("OnEvent", function(self, event)
 	if not yo.Raid.enable then return end
 
 	if yo.Raid.noHealFrames and ( IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") or IsAddOnLoaded("VuhDo") or IsAddOnLoaded("oUF_Freebgrid")) then return end
-	if yo.healBotka.enable then N.CreateClique( self) end
+	if yo.healBotka.enable then n.CreateClique( self) end
 
 	local spaicing 		= ( yo.Raid.spaicing or 6)
 	local unitsPerColumn= 5

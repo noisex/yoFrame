@@ -1,6 +1,7 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
-if not yo.Addons.Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL
+if true
+	--not yo.Addons.Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL
 	then return end
 
 local timerEnd, timerEst = GetTime(), 0
@@ -258,7 +259,7 @@ local function OnEvent( self, event, ...)
 			local name, icon, _, _, duration, expirationTime, unitCaster, _, _, spellID = UnitBuff( "player", i)
 			if not name then break end
 
-			if N.bls[spellID] == true then
+			if n.bls[spellID] == true then
 				self.IsBL 		= true
 				self.blEnd 		= expirationTime
 				self.nameBL 	= name
@@ -352,7 +353,7 @@ local function CreatePotatos( f)
 	f.blframe.outerGlow:Hide()
 	--f.blframe:SetFrameLevel(3)
 
-	N.CreateBorder( f)
+	n.CreateBorder( f)
 	f.timerEst = 0
 	f:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	f:RegisterEvent("CHAT_MSG_ADDON")

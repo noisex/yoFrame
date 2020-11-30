@@ -1,5 +1,5 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 local _G = _G
 
@@ -8,7 +8,7 @@ local ceil, CreateFrame, select, UnitClass
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local Num = NUM_ACTIONBAR_BUTTONS
 local MainMenuBar_OnEvent = MainMenuBar_OnEvent
 
@@ -20,7 +20,7 @@ function ActionBars:CreateBar1()
 	local ButtonsPerRow = 12
 	local NumRow = ceil(12 / ButtonsPerRow)
 
-	local ActionBar1 = CreateFrame("Frame", "yoActionBar1", N.PetHider, "SecureHandlerStateTemplate")
+	local ActionBar1 = CreateFrame("Frame", "yoActionBar1", n.PetHider, "SecureHandlerStateTemplate")
 	ActionBar1:SetPoint("TOPLEFT", yoMoveABar1, "TOPLEFT", 0, 0)
 	ActionBar1:SetFrameStrata("LOW")
 	ActionBar1:SetFrameLevel(10)

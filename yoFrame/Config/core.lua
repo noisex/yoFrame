@@ -1,14 +1,14 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
-N.infoTexts.LeftInfoPanel  = LeftInfoPanel
-N.infoTexts.LeftDataPanel  = LeftDataPanel
-N.infoTexts.RightDataPanel = RightDataPanel
-N.infoTexts.RightInfoPanel = RightInfoPanel
+n.infoTexts.LeftInfoPanel  = LeftInfoPanel
+n.infoTexts.LeftDataPanel  = LeftDataPanel
+n.infoTexts.RightDataPanel = RightDataPanel
+n.infoTexts.RightInfoPanel = RightInfoPanel
 
 CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
 CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
@@ -40,6 +40,54 @@ local function enterEvent( self)
 
 	hooksecurefunc( "CloseAllWindows", checkToClose)
 	--C_Timer.After( 2, function() buttonsUP(self) end )
+
+	if yo.NamePlates.enable then
+		SetCVar("nameplateOccludedAlphaMult",1)
+		SetCVar("nameplateMinScale",1)
+		--SetCVar("nameplateMaxScale",1)
+		SetCVar("nameplateShowFriendlyNPCs", 0)
+
+		SetCVar("nameplateOverlapH",  0.8) 	--default is 0.8
+		SetCVar("nameplateOverlapV",  0.5) 	--default is 1.5
+		SetCVar("nameplateTargetRadialPosition", 1)
+		SetCVar("nameplateMotion", 1)
+
+		SetCVar("nameplateMaxAlpha", 0.7) -- 0.7
+		SetCVar("nameplateMinAlpha", 0.2)
+		SetCVar("nameplateMaxAlphaDistance", 100)
+		SetCVar("nameplateMinAlphaDistance", -30)
+
+		SetCVar("nameplateSelectedAlpha", 1)
+		SetCVar("nameplateSelectedScale", 1.25)
+
+		SetCVar( "nameplateOtherTopInset", 0.1)
+		SetCVar( "nameplateOtherBottomInset", -1)
+
+		SetCVar( "nameplateLargeTopInset", 0.1)
+		SetCVar( "nameplateLargeBottomInset", -1)
+
+		SetCVar( "nameplateSelfTopInset", 0.1)
+		SetCVar( "nameplateSelfBottomInset", -1)
+
+		SetCVar("ShowClassColorInNameplate", 1)
+
+		SetCVar("nameplateShowSelf", 0)
+		SetCVar("nameplateShowAll", 1)
+		SetCVar("nameplateShowEnemyMinus", 1)
+		SetCVar("nameplateShowEnemyMinions", 1)
+
+		SetCVar("nameplateMaxDistance", yo.NamePlates.maxDispance)
+	end
+
+	UIWidgetTopCenterContainerFrame:SetScale(0.75)
+	UIWidgetTopCenterContainerFrame:ClearAllPoints()
+	UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 200, -15)
+
+	UIWidgetTopCenterContainerFrame.SetScale = dummy
+	UIWidgetTopCenterContainerFrame.ClearAllPoints = dummy
+	UIWidgetTopCenterContainerFrame.SetPoint = dummy
+
+	--UIWidgetTopCenterContainerFrame:HookScript("OnShow", function(self, ...) print("...") end)
 end
 
 local function OnEvent( self, event, ...)
@@ -49,7 +97,7 @@ local function OnEvent( self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		enterEvent( self)
 	elseif event == "ADDON_ACTION_BLOCKED" or event == "ADDON_ACTION_FORBIDDEN" then
-		dprint(event, ...)
+		--dprint(event, ...)
 	elseif event == "PLAYER_LEVEL_UP" then
 		myLevel = UnitLevel("player")
 	end
@@ -130,3 +178,43 @@ SlashCmdList.TEST_ACHIEVEMENT = function()
 end
 SLASH_TEST_ACHIEVEMENT1 = "/tach"
 SLASH_TEST_ACHIEVEMENT2 = "/ефср"
+
+
+----------------------------------------------------------------------------------------
+--	Grid on screen
+----------------------------------------------------------------------------------------
+local grid
+SlashCmdList.GRIDONSCREEN = function()
+	if grid then
+		grid:Hide()
+		grid = nil
+	else
+		grid = CreateFrame("Frame", nil, UIParent)
+		grid:SetFrameStrata("BACKGROUND")
+		grid:SetAllPoints(UIParent)
+		local width = GetScreenWidth() / 128
+		local height = GetScreenHeight() / 72
+		for i = 0, 128 do
+			local texture = grid:CreateTexture(nil, "BACKGROUND")
+			if i == 64 then
+				texture:SetColorTexture(1, 0, 0, 0.8)
+			else
+				texture:SetColorTexture(0, 0, 0, 0.8)
+			end
+			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", i * width - 1, 0)
+			texture:SetPoint("BOTTOMRIGHT", grid, "BOTTOMLEFT", i * width, 0)
+		end
+		for i = 0, 72 do
+			local texture = grid:CreateTexture(nil, "BACKGROUND")
+			if i == 36 then
+				texture:SetColorTexture(1, 0, 0, 0.8)
+			else
+				texture:SetColorTexture(0, 0, 0, 0.8)
+			end
+			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", 0, -i * height)
+			texture:SetPoint("BOTTOMRIGHT", grid, "TOPRIGHT", 0, -i * height - 1)
+		end
+	end
+end
+SLASH_GRIDONSCREEN1 = "/align"
+SLASH_GRIDONSCREEN2 = "/фдшпт"

@@ -29,7 +29,7 @@ function myButtonBorder( self, name, shift, alpha, cols)
 	local alpha = alpha or 1
 	local cols  = cols 	or { 1, 1, 1}
 
-	local texture = self:CreateTexture("frame", nil, self)
+	local texture = self:CreateTexture( nil, "BORDER")
 	texture:SetTexture("Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
 	texture:SetVertexColor( cols[1], cols[2], cols[3], alpha)
 	texture:SetPoint("TOPLEFT", -shift, shift)
@@ -158,7 +158,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local shift, alpfa = 7, 0.9
 
 		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa,   { 1, 1, 0})) end
-		if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "normal", shift, alpfa,  { 0, 1, 0})) 	end
+		if button.SetNormalTexture 		then button:SetNormalTexture( 		myButtonBorder( button, "normal", shift, alpfa,  { 0, 1, 0})) end
 		if button.SetCheckedTexture 	then button:SetCheckedTexture( 		myButtonBorder( button, "checked", shift, alpfa, { 1, 0, 0})) end
 
 --------------------------------------------------------------------------------------------

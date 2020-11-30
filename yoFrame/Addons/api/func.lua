@@ -1,5 +1,7 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
+
+local yoEF = n.elemFrames
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs, type, select, unpack, tremove, max
 	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs, type, select, unpack, tremove, max
@@ -113,28 +115,28 @@ end
 
 -------------------------------------------------------------------------------------------
 local function updateStatusBars()
-	for k, bar in pairs( N.statusBars) do
+	for k, bar in pairs( n.statusBars) do
 
 		if bar and bar:GetStatusBarTexture() then
 			bar:SetStatusBarTexture( yo.Media.texture)
 		end
 	end
 end
-N.conFuncs["texture"] = updateStatusBars
+n.conFuncs["texture"] = updateStatusBars
 
 local function updateStrings( var, newVal, curVal)
 	curVal = curVal or 0
-	for k, string in pairs( N.strings) do
+	for k, string in pairs( n.strings) do
 		if string then
 			local fn, fs, fc = string:GetFont()
 			string:SetFont( fn, fs - curVal + newVal, fc)
 		end
 	end
 end
-N.conFuncs["fontsize"] = updateStrings
+n.conFuncs["fontsize"] = updateStrings
 
 function UpdateShadows( r, g, b)
-	for k, bar in pairs( N.shadows) do
+	for k, bar in pairs( n.shadows) do
 		bar:SetBackdropBorderColor(r, g, b, 0.9)
 	end
 end
@@ -144,10 +146,10 @@ end
 
 function checkToClose(...)
 
-	if yo_WIM 		and yo_WIM:IsShown() 	then yo_WIM:Hide() end
-	if yo_DuLoot 	and yo_DuLoot:IsShown()	then yo_DuLoot:Hide() end
-	if yo_BBFrame	and yo_BBFrame.bag 		and  yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
-	if yo_Bags		and yo_Bags.bagFrame 	and  yo_Bags.bagFrame:IsShown() then yo_Bags.bagFrame:Hide() end
+	if yoEF.wim 	and yoEF.wim:IsShown() 		then yoEF.wim:Hide() end
+	if yoEF.duLoot 	and yoEF.duLoot:IsShown()	then yoEF.duLoot:Hide() end
+	if yo_BBFrame	and yo_BBFrame.bag 			and  yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
+	if yo_Bags		and yo_Bags.bagFrame 		and  yo_Bags.bagFrame:IsShown() then yo_Bags.bagFrame:Hide() end
 end
 
 if not ContainerFrame4  then
@@ -282,7 +284,7 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     shadow:SetBackdropColor(.075,.075,.086, alpha or 1)
 	shadow:SetBackdropBorderColor( r, g, b, alphaborder or 1)	--(0, 0, 0, alphaborder or 1)
     f.shadow = shadow
-    tinsert( N["shadows"], f.shadow)
+    tinsert( n["shadows"], f.shadow)
     return shadow
 end
 
@@ -307,7 +309,7 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
     shadow:SetBackdrop(style)
     shadow:SetBackdropColor(.07,.07,.07, alpha or 0.9)
 	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
-	tinsert( N["shadows"], f.shadow)
+	tinsert( n["shadows"], f.shadow)
     f.shadow = shadow
     return shadow
 end
@@ -330,7 +332,7 @@ function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
 	--if yo.Media.classBorder then r, g, b = myColor.r, myColor.g, myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0)	--(.15,.15,.15, alphaborder  or 0)
-	--table.insert( N["shadows"], f)
+	--table.insert( n["shadows"], f)
 	return f
 end
 
@@ -366,5 +368,5 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
 	--if yo.Media.classBorder then r, g, b = myColor.r, myColor.g, myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0) --(0, 0, 0, alphaborder or 1)
-	--table.insert( N["shadows"], f)
+	--table.insert( n["shadows"], f)
 end

@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local lib = LibStub:NewLibrary("LibCooldown", 1.0)
 if not lib then return end
@@ -97,7 +97,7 @@ local CD_MIN = string.match( SPELL_RECHARGE_TIME_MIN, "%%d+(%D+)" ) -- 'min.' --
 
 local function checkTooltip( slot)
 	local cd = 0
-	local tt = N.scanTooltip
+	local tt = n.scanTooltip
 	tt:SetOwner (WorldFrame, "ANCHOR_NONE")
 	tt:SetSpellBookItem ( slot, "spell")
 	tt:Show()
@@ -120,16 +120,16 @@ local function checkTooltip( slot)
 end
 
 local function parsespellbook(spellbook)
-	N.spellsBooks = {
+	n.spellsBooks = {
 		[""] = "-Я еще не определился-",
 	}
-	N.spellsBooksName = {}
+	n.spellsBooksName = {}
 
 	for i = 1, _G.MAX_TALENT_TIERS do
 		for j = 1, 3 do
 			local _, name, _, selected = GetTalentInfo( i, j, 1) --, 1, true, "player")
 			if selected then
-				N.spellsBooks[name] = name
+				n.spellsBooks[name] = name
 			end
 		end
 	end
@@ -148,9 +148,9 @@ local function parsespellbook(spellbook)
    					cd = checkTooltip( i)
    				end
 
-   				----N.spellsBooks[spellID] = spellName
-   				N.spellsBooks[spellName] = spellName
-   				N.spellsBooksName[spellName] = spellID
+   				----n.spellsBooks[spellID] = spellName
+   				n.spellsBooks[spellName] = spellName
+   				n.spellsBooksName[spellName] = spellID
    				if cd > 5 then
    					spells[spellID] = cd
    					--print( i, spellID, spellName, cd)
@@ -158,7 +158,7 @@ local function parsespellbook(spellbook)
    			end
    		end
 	end
-	--table.sort( N.spellsBooks, compare)
+	--table.sort( n.spellsBooks, compare)
 end
 
 -- events --

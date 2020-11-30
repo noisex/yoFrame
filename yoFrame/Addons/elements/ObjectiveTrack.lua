@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Addons.ObjectiveTracker then return end
 
@@ -106,11 +106,11 @@ local function ShowQuestLevelInLog()
 	--end
 end
 
-local function designItemButton( itemButton)
+local function designItemButton( itemButton, block)
 
-	local _, f1 = itemButton:GetPoint()
+	--local p1, f1, p2 = itemButton:GetPoint()
 	itemButton:ClearAllPoints()
-	itemButton:SetPoint("TOPRIGHT", f1, "TOPLEFT", -35, 5)
+	itemButton:SetPoint("TOPRIGHT", block, "TOPLEFT", -35, 5)
 
 	if not itemButton.shadow then
 
@@ -158,7 +158,7 @@ local function ShowQuestLevelInWatchFrame()
 
 					if ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then
 						local questTypeIndex = GetQuestLogQuestType(questLogIndex)
-						local tagString = N.questTypesIndex[questTypeIndex] or ""
+						local tagString = n.questTypesIndex[questTypeIndex] or ""
 						local dailyMod = ( questInfo.frequency == 1 or questInfo.frequency == 2) and "|cff0080ff*!*|r" or ""
 
 						--resizing the block if new line requires more spaces.
@@ -170,7 +170,12 @@ local function ShowQuestLevelInWatchFrame()
 
 						-- Icon Quest Item resize
 						if block.itemButton then
-							designItemButton( block.itemButton)
+							designItemButton( block.itemButton, block)
+						end
+						if block.groupFinderButton then
+							--block.groupFinderButton:SetSize( 20, 20)
+							block.groupFinderButton.Icon:SetSize( 20, 20)
+							block.groupFinderButton:SetNormalTexture(nil)
 						end
 					end
 				end
@@ -181,10 +186,10 @@ local function ShowQuestLevelInWatchFrame()
 	if xxx then
 		for i, block in pairs(xxx) do
 			if block.itemButton then
-				designItemButton( block.itemButton)
+				designItemButton( block.itemButton, block)
 			end
 			if block.rightButton then
-				designItemButton( block.rightButton)
+				designItemButton( block.rightButton, block)
 			end
 		end
 	end

@@ -1,9 +1,9 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 
 function ActionBars:CreateStanceBar()
 	local PetSize = 30
@@ -14,7 +14,7 @@ function ActionBars:CreateStanceBar()
 	--	return
 	--end
 
-	local StanceBar = CreateFrame("Frame", "yoStanceBar", N.PetHider, "SecureHandlerStateTemplate")
+	local StanceBar = CreateFrame("Frame", "yoStanceBar", n.PetHider, "SecureHandlerStateTemplate")
 	StanceBar:SetSize((PetSize * 10) + (Spacing * 11), PetSize + (Spacing * 2))
 	StanceBar:SetPoint("BOTTOMRIGHT", yoMovePetBar, "BOTTOMRIGHT", 0, 0)
 	StanceBar:SetFrameStrata("LOW")

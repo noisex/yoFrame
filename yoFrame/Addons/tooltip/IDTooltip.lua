@@ -2,8 +2,10 @@ local L, yo = unpack( select( 2, ...))
 
 if not yo.ToolTip.enable then return end
 
-local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount
-	= hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount
+local _G = _G
+
+local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount, GameTooltip, GetItemGem, ipairs
+	= hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount, GameTooltip, GetItemGem, ipairs
 
 local cY, cW = "|cffffff00", "|cffffffff"
 

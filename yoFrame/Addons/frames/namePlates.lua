@@ -1,14 +1,14 @@
 local addon, ns = ...
 
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 if not yo.NamePlates.enable then return end
 
 local _G = _G
 
-local CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor
-	= CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor
+local CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert
+	= CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -22,21 +22,55 @@ local GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDiffi
 local UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, myColor, myClass, isDruid
 	= UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, myColor, myClass, isDruid
 
-local nameplateheight, nameplatewidth, auras_size, aurasB_size, showPercTreat, 	dissIcons,	buffIcons,	classDispell, badClassTypes, showToolTip, iconDiSize, showArrows, blueDebuff
-local treatColor = {}
+local nameplateheight 	= yo.NamePlates.height
+local nameplatewidth 	= yo.NamePlates.width
+local auras_size		= yo.NamePlates.iconDSize
+local aurasB_size		= yo.NamePlates.iconBSize
+local iconDiSize		= yo.NamePlates.iconDiSize
+local showPercTreat		= yo.NamePlates.showPercTreat
+local showArrows		= yo.NamePlates.showArrows
+local blueDebuff		= yo.NamePlates.blueDebuff
+local dissIcons			= yo.NamePlates.dissIcons
+local buffIcons			= yo.NamePlates.buffIcons
+local classDispell		= yo.NamePlates.classDispell
+local showToolTip		= yo.NamePlates.showToolTip
+
 local auraFilter = { "HARMFUL", "HELPFUL"}
 
-local aGlow = LibStub("LibCustomGlow-1.0", true)
-local glowColor, glowN, glowLength
+--glowColor, glowN, glowLength, glowBadStart, glowBadStop
 
-local glowStart = aGlow.PixelGlow_Start
-local glowStop = aGlow.PixelGlow_Stop
+local aGlow 			= LibStub("LibCustomGlow-1.0", true)
+local glowStart 		= aGlow.PixelGlow_Start
+local glowStop 			= aGlow.PixelGlow_Stop
+local castStart 		= aGlow.AutoCastGlow_Start
+local castStop 			= aGlow.AutoCastGlow_Stop
+local buttonStart 		= aGlow.ButtonGlow_Start
+local buttonStop 		= aGlow.ButtonGlow_Stop
 
-local castStart = aGlow.AutoCastGlow_Start
-local castStop = aGlow.AutoCastGlow_Stop
+glowTargetStart	= yo.NamePlates.glowTarget and glowStart or dummy
+glowTargetStop 	= yo.NamePlates.glowTarget and glowStop  or dummy
 
-local buttonStart = aGlow.ButtonGlow_Start
-local buttonStop = aGlow.ButtonGlow_Stop
+if yo.NamePlates.glowBadType == "pixel" then
+	glowBadStart 	= glowStart
+	glowBadStop  	= glowStop
+	glowColor 		= { 0.95, 0.1, 0.1, 1}
+	glowN			= 12
+	glowLength		= 12
+elseif yo.NamePlates.glowBadType == "button" then
+	glowBadStart 	= buttonStart
+	glowBadStop  	= buttonStop
+	glowColor 		= { 1, 0.75, 0, 1}
+	glowN			= 2
+elseif yo.NamePlates.glowBadType == "cast" then
+	glowBadStart 	= castStart
+	glowBadStop  	= castStop
+	glowColor 		= { 1, 0.75, 0, 1}
+	glowN			= 8
+	glowLength		= 1
+else
+	glowBadStart = dummy
+	glowBadStop  = dummy
+end
 
 local badClassTypes = {
 	["WARRIOR"]		=	{},
@@ -54,6 +88,8 @@ local badClassTypes = {
 	["DEMONHUNTER"]	=	{},
 }
 
+local badTypes = classDispell and badClassTypes[myClass] or badClassTypes["HUNTER"]
+
 local badMobes = {
 	--[130771] = true,	--	Дамми у ханта
 	[93619] = true, 	--	Дамми у лока
@@ -67,116 +103,27 @@ local badMobes = {
 	[141851] = true, 	--  Порождение Г'ууна 2
 }
 
-local function NamePlates_OnEvent(self, event, ...)
-	if event == "PLAYER_ENTERING_WORLD" then
-		if yo.NamePlates.enable then
+local treatColor = {
+	[0]			={	strsplit(",", yo.NamePlates.c0)},
+	[1]			={	strsplit(",", yo.NamePlates.c1)},
+	[2]			={	strsplit(",", yo.NamePlates.c2)},
+	[3]			={	strsplit(",", yo.NamePlates.c3)},
 
-			SetCVar("nameplateOccludedAlphaMult",1)
-			SetCVar("nameplateMinScale",1)
-    		--SetCVar("nameplateMaxScale",1)
-			SetCVar("nameplateShowFriendlyNPCs", 0)
+	[10]		={	strsplit(",", yo.NamePlates.c0t)},
+	[11]		={	strsplit(",", yo.NamePlates.c1)},
+	[12]		={	strsplit(",", yo.NamePlates.c2)},
+	[13]		={	strsplit(",", yo.NamePlates.c3t)},
 
-			SetCVar("nameplateOverlapH",  0.8) 	--default is 0.8
-			SetCVar("nameplateOverlapV",  0.6) 	--default is 1.5
-			SetCVar("nameplateTargetRadialPosition", 1)
-			SetCVar("nameplateMotion", 1)
+	["myPet"]	={	strsplit(",", yo.NamePlates.myPet)},
+	["tankOT"]	={ 	strsplit(",", yo.NamePlates.tankOT)},
+	["badGood"]	={ 	strsplit(",", yo.NamePlates.badGood)},
+}
 
-			SetCVar("nameplateMaxAlpha", 0.7) -- 0.7
-			SetCVar("nameplateMinAlpha", 0.2)
-			SetCVar("nameplateMaxAlphaDistance", 100)
-			SetCVar("nameplateMinAlphaDistance", -30)
-
-			SetCVar("nameplateSelectedAlpha", 1)
-			SetCVar("nameplateSelectedScale", 1.25)
-
-			SetCVar( "nameplateOtherTopInset", 0.1)
-			SetCVar( "nameplateOtherBottomInset", -1)
-
-			SetCVar( "nameplateLargeTopInset", 0.1)
-			SetCVar( "nameplateLargeBottomInset", -1)
-
-			SetCVar( "nameplateSelfTopInset", 0.1)
-			SetCVar( "nameplateSelfBottomInset", -1)
-
-			SetCVar("ShowClassColorInNameplate", 1)
-
-			treatColor = {
-				[0]			={	strsplit(",", yo.NamePlates.c0)},
-				[1]			={	strsplit(",", yo.NamePlates.c1)},
-				[2]			={	strsplit(",", yo.NamePlates.c2)},
-				[3]			={	strsplit(",", yo.NamePlates.c3)},
-
-				[10]		={	strsplit(",", yo.NamePlates.c0t)},
-				[11]		={	strsplit(",", yo.NamePlates.c1)},
-				[12]		={	strsplit(",", yo.NamePlates.c2)},
-				[13]		={	strsplit(",", yo.NamePlates.c3t)},
-
-				["myPet"]	={	strsplit(",", yo.NamePlates.myPet)},
-				["tankOT"]	={ 	strsplit(",", yo.NamePlates.tankOT)},
-				["badGood"]	={ 	strsplit(",", yo.NamePlates.badGood)},
-			}
-
-			nameplateheight = yo.NamePlates.height
-			nameplatewidth 	= yo.NamePlates.width
-			auras_size		= yo.NamePlates.iconDSize
-			aurasB_size		= yo.NamePlates.iconBSize
-			iconDiSize		= yo.NamePlates.iconDiSize
-			showPercTreat	= yo.NamePlates.showPercTreat
-			showArrows		= yo.NamePlates.showArrows
-			blueDebuff		= yo.NamePlates.blueDebuff
-			dissIcons		= yo.NamePlates.dissIcons
-			buffIcons		= yo.NamePlates.buffIcons
-			classDispell	= yo.NamePlates.classDispell
-			showToolTip		= yo.NamePlates.showToolTip
-
-			if yo.NamePlates.glowTarget then
-				glowTargetStart	= glowStart
-				glowTargetStop = glowStop
-			else
-				glowTargetStart	= dummy
-				glowTargetStop  = dummy
-			end
-
-			if yo.NamePlates.glowBadType == "pixel" then
-				glowBadStart 	= glowStart
-				glowBadStop  	= glowStop
-				glowColor 		= { 0.95, 0.1, 0.1, 1}
-				glowN			= 12
-				glowLength		= 12
-			elseif yo.NamePlates.glowBadType == "button" then
-				glowBadStart 	= buttonStart
-				glowBadStop  	= buttonStop
-				glowColor 		= { 1, 0.75, 0, 1}
-				glowN			= 2
-			elseif yo.NamePlates.glowBadType == "cast" then
-				glowBadStart 	= castStart
-				glowBadStop  	= castStop
-				glowColor 		= { 1, 0.75, 0, 1}
-				glowN			= 8
-				glowLength		= 1
-			else
-				glowBadStart = dummy
-				glowBadStop  = dummy
-			end
-
-			local br, bg, bb = strsplit( ",", yo.Media.shadowColor)
-			if yo.Media.classBorder then
-				br, bg, bb = myColor.r, myColor.g, myColor.b
-			end
-			DebuffTypeColor.none = { r = br, g = bg, b = bb}
-
-			badTypes = classDispell and badClassTypes[myClass] or badClassTypes["HUNTER"]
-
-			SetCVar("nameplateMaxDistance", yo.NamePlates.maxDispance)
-		end
-	end
+local br, bg, bb = strsplit( ",", yo.Media.shadowColor)
+if yo.Media.classBorder then
+	br, bg, bb = myColor.r, myColor.g, myColor.b
 end
-
---						http://wowprogramming.com/docs/api/UnitDetailedThreatSituation.html
-
-local NamePlatesFrame = CreateFrame("Frame", "yo_NamePlatesFrame", UIParent)
-	NamePlatesFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	NamePlatesFrame:SetScript("OnEvent", NamePlates_OnEvent)
+DebuffTypeColor.none = { r = br, g = bg, b = bb}
 
 
 local function UpdateBuffs(self)
@@ -193,30 +140,27 @@ local function UpdateBuffs(self)
 			local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, _, _, _, namepmateshowall = UnitAura(unit, index, filter)
 			if not name then break end
 
-			--if spellID ==212431 then print(name, count, debuffType, caster, nameplateShowPersonal, spellID, namepmateshowall) end
-			--if idebuff > ( nameplatewidth / 2) / auras_size then break end
-
 			--if not yo.NamePlates.moreDebuffIcons then nameplateShowPersonal = false end
-			--if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( N.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or N.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
-			if ((caster == "player" or caster == "pet" or caster == "vehicle") and N.DebuffWhiteList[name] ) or namepmateshowall or N.tauntsSpell[name] then
+			--if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( n.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or n.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
+			if ((caster == "player" or caster == "pet" or caster == "vehicle") and n.DebuffWhiteList[name] ) or namepmateshowall or n.tauntsSpell[name] then
 				debuffType = blueDebuff and debuffType or nil
 
-				local aIcon = N.createAuraIcon( self.debuffIcons, idebuff)
+				local aIcon = n.createAuraIcon( self.debuffIcons, idebuff)
 				aIcon.unit = unit
-				N.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
+				n.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 				idebuff = idebuff + 1
 
 			--elseif spellID == 277242 then showGuune = true
 
-			elseif ( filter == "HELPFUL" and not isPlayer and not N.blackSpells[spellID]) then
+			elseif ( filter == "HELPFUL" and not isPlayer and not n.blackSpells[spellID]) then
 
 				if dissIcons ~= "none"	or iDisp > 2 then
 					if ( dissIcons == "dispell" and badClassTypes[myClass][debuffType])
 						or ( dissIcons == "all" and debuffType) then
 
-						local aIcon = N.createAuraIcon( self.disIcons, iDisp)
+						local aIcon = n.createAuraIcon( self.disIcons, iDisp)
 						aIcon.unit = unit
-						N.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
+						n.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 						iDisp = iDisp + 1
 					end
 				end
@@ -226,9 +170,9 @@ local function UpdateBuffs(self)
 						or ( buffIcons == "dispell" and badTypes[debuffType])
 						or ( buffIcons == "buff" and not badTypes[debuffType]) then
 
-						local aIcon = N.createAuraIcon( self.buffIcons, ibuff)
+						local aIcon = n.createAuraIcon( self.buffIcons, ibuff)
 						aIcon.unit = unit
-						N.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
+						n.updateAuraIcon( aIcon, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 						ibuff = ibuff + 1
 					end
 				end
@@ -242,6 +186,15 @@ local function UpdateBuffs(self)
 	for index = ibuff,   #self.buffIcons   do self.buffIcons[index]:Hide()   end
 	for index = iDisp,   #self.disIcons    do self.disIcons[index]:Hide()   end
 
+	--for index = idebuff, self.debuffIcons.iMax or 0 do self.debuffIcons[index]:Hide() end
+	--for index = ibuff,   self.buffIcons.iMax   or 0 do self.buffIcons[index]:Hide()   end
+	--for index = iDisp,   self.disIcons.iMax    or 0 do self.disIcons[index]:Hide()    end
+
+	--self.debuffIcons.iMax 	= idebuff
+	--self.buffIcons.iMax 	= ibuff
+	--self.disIcons.iMax 		= iDisp
+
+	--print( index, self.debuffIcons.iMax)
 	--ShowGuune( self, showGuune)
 end
 
@@ -254,25 +207,8 @@ local function myUnitGroupRolesAssigned( unit)
 	end
 end
 
-local function UpdateRaidTarget(self)
-	local icon = self.RaidTargetFrame.RaidTargetIcon
-	local index = GetRaidTargetIndex(self.unit)
-	if index then
-		SetRaidTargetIconTexture(icon, index)
-		icon:Show()
-	else
-		icon:Hide()
-	end
-end
-
-local function OnRaidTargetUpdate()
-	for _, namePlate in pairs(C_NamePlate.GetNamePlates()) do
-		UpdateRaidTarget(namePlate.self)
-	end
-end
-
 local function scanToQuest( self, ...)
-	local tt, showMe = N.scanTooltip
+	local tt, showMe = n.scanTooltip
 	tt:SetOwner( UIParent, "ANCHOR_NONE")
 	tt:SetUnit( self.unit)
 	tt:Show()
@@ -459,7 +395,7 @@ local function updateHealth(self)--, unit, minHealth, maxHealth)
 	local minHealth, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
 	local perc = minHealth / maxHealth
 
-	local perc_text = string.format("%s - %d%%", ShortValue(minHealth), math.floor(perc * 100))
+	local perc_text = format("%s - %d%%", ShortValue(minHealth), floor(perc * 100))
 
 	self.Health:SetValue(perc)
 	self.Health.perc:SetText( perc_text )
@@ -491,7 +427,6 @@ local function updateAll(self, event, unit)
 		updateHealthColor(self, 1)
 		updateHealth(self)
 		UpdateBuffs(self)
-		UpdateRaidTarget(self)
 		scanToQuest( self, unit)
 
 		if self.Castbar then
@@ -540,7 +475,7 @@ local function createNP(self, unit)
 	self.Health:SetSize( nameplatewidth, nameplateheight)
 	self.Health:SetMinMaxValues(0, 1)
 	self.Health:SetStatusBarTexture( yo.texture)
-	table.insert( N.statusBars, self.Health)
+	tinsert( n.statusBars, self.Health)
 
 	self.Health.frequentUpdates = true
 	self.Health.Override = updateHealth --dummy
@@ -572,26 +507,26 @@ local function createNP(self, unit)
 	self.Health.perc:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
 	self.Health.perc:SetPoint("RIGHT", self.Health, "RIGHT", -5, 0)
 	self.Health.perc:SetTextColor(1, 1, 1)
-	table.insert( N.strings, self.Health.perc)
+	tinsert( n.strings, self.Health.perc)
 
 	self.name = self:CreateFontString(nil, "OVERLAY")
 	self.name:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
 	self.name:SetPoint("BOTTOM", self.Health, "TOP", 0, 2)
 	self.name:SetTextColor(1, 1, 1)
-	table.insert( N.strings, self.name)
+	tinsert( n.strings, self.name)
 
 	self.level = self.Health:CreateFontString(nil, "OVERLAY")
 	self.level:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
 	self.level:SetTextColor(1, 1, 1)
 	self.level:SetPoint("LEFT", self.Health, "LEFT", 10, 0)
-	table.insert( N.strings, self.level)
+	tinsert( n.strings, self.level)
 
 	--if yo.NamePlates.showPercTreat then
 		self.threat = self.Health:CreateFontString(nil, "OVERLAY")
 		self.threat:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
 		self.threat:SetTextColor(1, 1, 1)
 		self.threat:SetPoint("LEFT", self.level, "RIGHT", 6, 0)
-		table.insert( N.strings, self.threat)
+		tinsert( n.strings, self.threat)
 	--end
 
 	if showArrows then
@@ -615,14 +550,11 @@ local function createNP(self, unit)
 		self.arrows.arrowright:SetVertexColor( 0.8, 1, 0)
     end
 
-	self.RaidTargetFrame = CreateFrame("Frame", nil, self)
-	self.RaidTargetFrame:SetSize( auras_size +3, auras_size +3)
-	self.RaidTargetFrame:SetPoint("LEFT", self.Health, "RIGHT", 10, 0)
-
-	self.RaidTargetFrame.RaidTargetIcon = self.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
-	self.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\yoFrame\Media\raidicons]])
-	self.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
-	self.RaidTargetFrame.RaidTargetIcon:Hide()
+	self.RaidTargetIndicator = self.RaidTargetIndicator or self:CreateTexture(nil, 'OVERLAY')
+    self.RaidTargetIndicator:SetSize( auras_size +3, auras_size +3)
+    self.RaidTargetIndicator:SetPoint("LEFT", self.Health, "RIGHT", 10, 0)
+    self.RaidTargetIndicator:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidicons")
+    self.RaidTargetIndicator:Hide()
 
 	self.debuffIcons = CreateFrame("Frame", nil, self)
 	self.debuffIcons:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT",  0, 15)
@@ -674,7 +606,7 @@ local function createNP(self, unit)
 	--self.castBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", self.castBar.castOnEven, unit)
 	--self.castBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", self.castBar.castOnEven, unit)
 
-	if yo.NamePlates.showResourses and N.pType[myClass] then CreateCPpoints( self) end
+	if yo.NamePlates.showResourses and n.pType[myClass] then CreateCPpoints( self) end
 end
 
 oUF:RegisterStyle(	"yo", createNP)

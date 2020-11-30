@@ -1,14 +1,14 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 
 function ActionBars:CreateExitButton()
 	local Size = 35
 
-	local frame = CreateFrame("Frame", "yo_VehicleExitBar", N.PetHider, "SecureHandlerStateTemplate")
+	local frame = CreateFrame("Frame", "yo_VehicleExitBar", n.PetHider, "SecureHandlerStateTemplate")
   frame:SetPoint("CENTER", yoMoveExtr, "CENTER", 0, -60)
   frame:SetSize( Size, Size)
   frame.frameVisibility = "[canexitvehicle][target=vehicle,exists] show;hide"

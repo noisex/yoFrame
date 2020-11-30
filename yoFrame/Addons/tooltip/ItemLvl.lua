@@ -1,7 +1,23 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 local F, Events, A, T = CreateFrame('frame'), {}, ...
 
 if not yo.ToolTip.enable then return end
+
+local _G = _G
+
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, GetTime
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, GetTime
+
+local UnitGUID, UnitName, CanInspect, UnitIsPlayer, UnitSex, wipe, GetTalentInfo, GetPlayerInfoByGUID, GetAverageItemLevel, GetInventoryItemLink, GameTooltip, tinsert, UnitExists, GetCVar, GetDetailedItemLevelInfo
+	= UnitGUID, UnitName, CanInspect, UnitIsPlayer, UnitSex, wipe, GetTalentInfo, GetPlayerInfoByGUID, GetAverageItemLevel, GetInventoryItemLink, GameTooltip, tinsert, UnitExists, GetCVar, GetDetailedItemLevelInfo
+
+local IsInRaid, GetNumGroupMembers, next, pcall, strmatch, GetItemInfoInstant, rawset, IsShiftKeyDown, WorldFrame, UnitClass, GetSpecializationInfoByID, GetInspectSpecialization, GetInventoryItemTexture, NotifyInspect
+	= IsInRaid, GetNumGroupMembers, next, pcall, strmatch, GetItemInfoInstant, rawset, IsShiftKeyDown, WorldFrame, UnitClass, GetSpecializationInfoByID, GetInspectSpecialization, GetInventoryItemTexture, NotifyInspect
+
+local TALENTS = TALENTS
+local STAT_AVERAGE_ITEM_LEVEL= STAT_AVERAGE_ITEM_LEVEL
+local CLUB_FINDER_SPEC= CLUB_FINDER_SPEC
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local function Raise(_, event, ...)
 	if Events[event] then
@@ -46,7 +62,7 @@ local Module = {
 	},
 }
 
-N.Eve = setmetatable({}, {
+n.Eve = setmetatable({}, {
 	__call = function(eve)
 		local module = setmetatable({}, Module)
 		eve[ #eve + 1 ] = module
@@ -56,7 +72,7 @@ N.Eve = setmetatable({}, {
 
 F:SetScript('OnEvent', Raise)
 
-local E = N:Eve()
+local E = n:Eve()
 local CACHE_TIMEOUT = 5 -- seconds to keep stale information before issuing a new inspect
 
 local print = function() end -- lazy debug print
@@ -436,9 +452,9 @@ local function DecorateTooltip(guid)
 		--local levelText = format('|cff%2x%2x%2x%.1f|r |cff%2x%2x%2x(%s)|r', r1 * 255, g1 * 255, b1 * 255, averageItemLevel, r2 * 255, g2 * 255, b2 * 255, neckLevel)
 		local levelText = format('|cff%2x%2x%2x%.1f|r', r1 * 255, g1 * 255, b1 * 255, averageItemLevel, r2 * 255, g2 * 255, b2 * 255)
 
-		if GameTooltipStatusBar and GameTooltipStatusBar.icon and ( cache.specID and N.classSpecsCoords[cache.specID]) then
+		if GameTooltipStatusBar and GameTooltipStatusBar.icon and ( cache.specID and n.classSpecsCoords[cache.specID]) then
 			print("CASHGE ", cache.specID)
-			GameTooltipStatusBar.icon:SetTexCoord( unpack( N.classSpecsCoords[cache.specID]))
+			GameTooltipStatusBar.icon:SetTexCoord( unpack( n.classSpecsCoords[cache.specID]))
 			GameTooltipStatusBar.icon:Show()
 		end
 

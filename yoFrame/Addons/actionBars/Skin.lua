@@ -1,9 +1,9 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
 local Replace = string.gsub
 local FlyoutButtons = 0

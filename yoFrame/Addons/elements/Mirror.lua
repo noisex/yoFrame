@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 --local _, settings = ...
 local settings = {}
@@ -66,7 +66,7 @@ do
 	function Spawn(type)
 		if(barPool[type]) then return barPool[type] end
 		local frame = CreateFrame('StatusBar', "yo_Mirror", UIParent)
-		table.insert( N.statusBars, frame)
+		table.insert( n.statusBars, frame)
 
 		frame:SetScript("OnUpdate", OnUpdate)
 

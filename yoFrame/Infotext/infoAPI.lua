@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 --if not yo.InfoTexts.enable then return end
 local _G = _G
@@ -9,7 +9,7 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local myName, GameTooltip, Round, nums, wipe, IsShiftKeyDown, myColorStr, spairs, WorldFrame, SecondsToClocks, rawset
 	= myName, GameTooltip, Round, nums, wipe, IsShiftKeyDown, myColorStr, spairs, WorldFrame, SecondsToClocks, rawset
 
-local infoText = N.infoTexts
+local infoText = n.infoTexts
 
 local time, max, strjoin, format, find, GetSpellInfo, gsub
 	= time, max, strjoin, format, find, GetSpellInfo, gsub
@@ -120,8 +120,8 @@ end
 
 
 function infoText:checkPets( serial)
-	N.scanTooltip:SetOwner (WorldFrame, "ANCHOR_NONE")
-	N.scanTooltip:SetHyperlink ("unit:" .. serial or "")
+	n.scanTooltip:SetOwner (WorldFrame, "ANCHOR_NONE")
+	n.scanTooltip:SetHyperlink ("unit:" .. serial or "")
 
 	local line1 = _G ["yoFrame_STTTextLeft2"]
 	local text1 = line1 and line1:GetText()

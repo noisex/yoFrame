@@ -1,7 +1,7 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
 --local colors = oUF.colors
-local L, yo, N = ns[1], ns[2], ns[3]
+local L, yo, n = ns[1], ns[2], ns[3]
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, GetTime
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, GetTime
@@ -88,7 +88,7 @@ local function updateBuffHost( self, event, unit, ...)
 					if buffHots.spells[i] and buffHots.spells[i] == name then
 						vkl[i] = true
 						buffHots[i]:Show()
-						N.updateAuraIcon( buffHots[i], "HELPFUL", icon, count, nil, duration, expirationTime, spellID, i, name)
+						n.updateAuraIcon( buffHots[i], "HELPFUL", icon, count, nil, duration, expirationTime, spellID, i, name)
 					end
 				end
 			end
@@ -120,21 +120,22 @@ local updateAllElements = function(frame)
 end
 
 local function frameOnEnter(f, event)
-	if f.overShadow then
 
-		f.overShadow:Show() end
+	if f.overShadow then f.overShadow:Show() end
 
 	if not f.bgHlight then
 		f.bgHlight = f.Health:CreateTexture(nil, "OVERLAY")
 		f.bgHlight:SetAllPoints()
 		f.bgHlight:SetVertexColor( 0.4,0.4,0.4,0.9)
 		f.bgHlight:SetTexture( texhl)
-		f.bgHlight:SetBlendMode("ADD")
+		--f.bgHlight:SetBlendMode("ADD")
 		f.bgHlight:SetAlpha(0.2)
 		f.bgHlight:Show()
 	else
 		f.bgHlight:Show()
 	end
+
+	if yo.Raid.raidTemplate == 3 and InCombatLockdown() then return end
 
 	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
@@ -235,7 +236,7 @@ local function addDebuffHigh( self)
 	self.DebuffHighlightMy:SetAllPoints(self.Health:GetStatusBarTexture())
 	self.DebuffHighlightMy:SetTexture(texture)
 	self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
-	self.DebuffHighlightMy:SetBlendMode("BLEND")
+	--self.DebuffHighlightMy:SetBlendMode("BLEND")
 	self.DebuffHighlightMyAlpha = 0.5
 	self.DebuffHighlightMyFilter = yo.Raid.filterHighLight
 end
@@ -251,7 +252,7 @@ local function addAbsorbBar( self)
 	AbsorbBar:SetFillStyle( 'REVERSE')
 	AbsorbBar:SetFrameLevel(2)
 	self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", self.updateHealth)
-	tinsert( N.statusBars, AbsorbBar)
+	tinsert( n.statusBars, AbsorbBar)
 	return AbsorbBar
 end
 
@@ -265,7 +266,7 @@ local function addHealPred( self)
 	healPred:SetStatusBarTexture( yo.texture)
 	healPred:SetStatusBarColor( 0.3, 0.9, 0.3, 0.6)
 	healPred:SetFrameLevel(2)
-	tinsert( N.statusBars, healPred)
+	tinsert( n.statusBars, healPred)
 
 	self:RegisterEvent("UNIT_HEAL_PREDICTION", self.updateHealth)
 	self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", self.updateHealth)
@@ -296,14 +297,14 @@ local function addBuffHost( self)
 		self.buffHots.hotaBar:ClearAllPoints()
 		self.buffHots.hotaBar:SetPoint( "TOP", self, "TOP", 0, yo.healBotka.bShiftY)
 		self.buffHots.hotaBar:SetWidth( self:GetWidth() - 6)
-		self.buffHots.hotaBar:SetHeight( 2)
+		self.buffHots.hotaBar:SetHeight( 3)
 		self.buffHots.hotaBar:SetStatusBarTexture( yo.texture)
 		self.buffHots.hotaBar:SetStatusBarColor( split( ",", yo.healBotka.bColor ), 1)
 		self.buffHots.hotaBar:SetFrameLevel( 120)
 		self.buffHots.hotaBar:Hide()
 		self.buffHots.hotaBar:SetScript( "OnUpdate", function( bar, elapsed) bar:SetValue( bar.expirationTime - GetTime()) end)
 		CreateStyle( self.buffHots.hotaBar, 1, 9, 0.3)
-		table.insert( N.statusBars, self.buffHots.hotaBar)
+		table.insert( n.statusBars, self.buffHots.hotaBar)
 	end
 
 	self.buffHots.swift = self.buffHots.swift or self.buffHots:CreateTexture(nil, "OVERLAY")
@@ -315,7 +316,7 @@ local function addBuffHost( self)
 	self.buffHots.swift:Hide()
 
 	for i = 1, buffHots.iconNumber do
-		self.buffHots[i] = N.createAuraIcon( self.buffHots, i)
+		self.buffHots[i] = n.createAuraIcon( self.buffHots, i)
 		self.buffHots[i]:Hide()
 
 		if yo.healBotka["hSpell" .. i] ~= ""	then buffHots.spells[i]			= yo.healBotka["hSpell" .. i]	end
@@ -384,10 +385,10 @@ local function updateTOTAuras( self, f, unit)
 		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
 		if not name then break end
 
-		if not N.blackSpells[spellID] then
-			local aIcon	= N.createAuraIcon( f.pDebuff, fligerPD, false, "BOTTOM") --end
+		if not n.blackSpells[spellID] then
+			local aIcon	= n.createAuraIcon( f.pDebuff, fligerPD, false, "BOTTOM") --end
 			aIcon.unit = unit
-			N.updateAuraIcon( aIcon, filter, icon, count, nil, duration, expirationTime, spellID, index, name)
+			n.updateAuraIcon( aIcon, filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 			fligerPD = fligerPD + 1
 		end
 
@@ -592,7 +593,7 @@ function importAPI( self)
 	self.updateBuffHost		= updateBuffHost
 	self.updateAllElements	= updateAllElements
 	self.updateManaCost 	= updateManaCost
-	self.updateAuraIcon 	= N.updateAuraIcon
+	self.updateAuraIcon 	= n.updateAuraIcon
 	self.addHealPred 		= addHealPred
 	self.addAbsorbBar		= addAbsorbBar
 	self.addDebuffHigh 		= addDebuffHigh
@@ -600,5 +601,5 @@ function importAPI( self)
 	self.frameOnLeave 		= frameOnLeave
 	self.frameOnEnter 		= frameOnEnter
 	self.onChangeTarget 	= onChangeTarget
-	self.addQliqueButton	= N.makeQuiButton
+	self.addQliqueButton	= n.makeQuiButton
 end

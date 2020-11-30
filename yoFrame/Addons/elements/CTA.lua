@@ -2,8 +2,13 @@ local L, yo = unpack( select( 2, ...))
 
 if not yo.CTA.enable then return end
 
+local _G = _G
 local yo_CTA = {}
 local tRole, hRole, dRole, timer
+local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
+
+local CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, myColor, GetTime, format, GetLFGMode, GetLFGCategoryForID
+	= CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, myColor, GetTime, format, GetLFGMode, GetLFGCategoryForID
 
 local function isRaidFinderDungeonDisplayable(id)
 
@@ -187,7 +192,7 @@ end
 
 
 local function CreateLFRStrings( parent, id)
-	local button = CreateFrame("Button", nil, parent)
+	local button = CreateFrame("Button", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
 	button:SetFrameLevel(parent:GetFrameLevel() + 10)
 	button:SetWidth( parent:GetWidth() - 4)
 	button:SetHeight( 20)
@@ -347,12 +352,16 @@ local function CheckLFR( self, ...)
 
    	local newDate, update = false, false
    	local index = 0
-   	local id = 1671 	-- 	Random Battle For Azeroth Heroic
+   	local id = 	yo.CTA.lfdMode
+   				--1671 	Random Battle For Azeroth Heroic
+   				--2086	Random Dungeon (Shadowlands)	1: Normal - party
+				--2087	Random Heroic (Shadowlands)	2: Heroic - party
+   	if id > 0 and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then
 
-   	if yo.CTA.heroic and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then
 		local checkTank, checkHeal, checkDD
 		if not yo_CTA[id] then yo_CTA[id] = {} end
-		yo_CTA[id]["name"] = CALENDAR_TYPE_HEROIC_DUNGEON
+
+		yo_CTA[id]["name"] = CALENDAR_TYPE_DUNGEON  --CALENDAR_TYPE_HEROIC_DUNGEON
 		yo_CTA[id]["mode"] = LE_LFG_CATEGORY_LFD
 		yo_CTA[id]["icon"] = "Interface\\LFGFrame\\UI-LFG-BACKGROUND-HEROIC"	--252188
 

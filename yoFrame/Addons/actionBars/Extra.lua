@@ -1,10 +1,10 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
 local _G = _G
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local Button = ExtraActionButton1
 local Icon = ExtraActionButton1Icon
 local Container = ExtraAbilityContainer
@@ -19,14 +19,18 @@ function ActionBars:DisableExtraButtonTexture()
 end
 
 function ActionBars:SkinZoneAbilities()
-	for SpellButton in ZoneAbilities.SpellButtonContainer:EnumerateActive() do
-		if not SpellButton.IsSkinned then
-			local button = SpellButton
-			local shift, alpfa = 7, 0.9
+	local buttons = ZoneAbilities.SpellButtonContainer:GetLayoutChildren()
 
-			if button.SetHighlightTexture 	then button:SetHighlightTexture( 	_G:myButtonBorder( button, "hover", shift, alpfa,   { 1, 1, 0})) end
-			if button.SetNormalTexture 		then button:SetNormalTexture( 		_G:myButtonBorder( button, "normal", shift, alpfa,  { 0, 1, 0})) 	end
-			if button.SetCheckedTexture 	then button:SetCheckedTexture( 		_G:myButtonBorder( button, "checked", shift, alpfa, { 1, 0, 0})) end
+	for ind, SpellButton in pairs( buttons) do
+		if not SpellButton.IsSkinned then
+			local shift, alpfa = 7, 0.9
+			if SpellButton.CreateTexture then
+				if SpellButton.SetHighlightTexture 	then SpellButton:SetHighlightTexture( 	myButtonBorder( SpellButton, "hover", shift, alpfa,   { 1, 1, 0})) end
+				if SpellButton.SetNormalTexture 	then SpellButton:SetNormalTexture( 		myButtonBorder( SpellButton, "normal", shift, alpfa,  { 0, 1, 0})) end
+				if SpellButton.SetCheckedTexture	then SpellButton:SetCheckedTexture( 	myButtonBorder( SpellButton, "checked", shift, alpfa, { 1, 0, 0})) end
+			else
+				CreateStyleSmall( SpellButton, 3, 0, 1)
+			end
 
 			SpellButton.Icon:SetTexCoord(unpack( yo.tCoord))
 			SpellButton.NormalTexture:SetAlpha(0)

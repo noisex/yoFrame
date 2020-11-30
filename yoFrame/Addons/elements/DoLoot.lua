@@ -1,5 +1,7 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
+
+local yoEF = n.elemFrames
 
 local locationToFilter = {
 	["HeadSlot"]	= 0,
@@ -21,7 +23,7 @@ local locationToFilter = {
 }
 --													todo: SELECT STATSCER
 local function afterClearIcons( index)
-	local frame = yo_DuLoot.scrollChild
+	local frame = yoEF.duLoot.scrollChild
 	for i = index, #frame do
 		frame[i]:Hide()
 		frame[i].icon:SetTexture(nil)
@@ -63,7 +65,7 @@ local function OnLeave( self)
 end
 
 local function CreateIcon( index)
-	local frame, size = yo_DuLoot.scrollChild, 40
+	local frame, size = yoEF.duLoot.scrollChild, 40
 
 	if frame[index] then return frame[index] end
 
@@ -151,7 +153,7 @@ local function checkDungeLoot( filterType)
 
 	local index, instanceID, name, description, buttonImage, link  = 0, 0
 	local class, _, classID = UnitClass('player')
-	local frame = yo_DuLoot
+	local frame = yoEF.duLoot
 	frame.filterType = filterType
 	frame.headerKeeper.textHeader:SetText( myColorStr .. class .. " | " .. frame.specLootName )
 
@@ -249,12 +251,12 @@ local function checkDungeLoot( filterType)
 					end
 				end
 			end
-			yo_DuLoot:Show()
+			yoEF.duLoot:Show()
 		end
 	end
 	if frame.firstRun then
 		C_Timer.After( 1.2, function(self, ...)
-			checkDungeLoot( yo_DuLoot.filterType)
+			checkDungeLoot( yoEF.duLoot.filterType)
 		end)
 		frame.firstRun = false
 	end
@@ -339,8 +341,8 @@ local function createDuLoot( self)
 	self:Hide()
 	self:SetBackdropColor(0.075, 0.078, 0.086, 1)
 
-	N.CreateBorder( self, 14, -3)
-	--N.SetBorderColor(self, 1, 0.8, 0.1, 0.9)
+	n.CreateBorder( self, 14, -3)
+	--n.SetBorderColor(self, 1, 0.8, 0.1, 0.9)
 
 	local headerKeeper = CreateFrame("Frame", nil, self)
 	headerKeeper:SetPoint("TOPLEFT", self, "TOPLEFT", 3, -3)
@@ -445,8 +447,9 @@ duLoot:RegisterEvent("PLAYER_ENTERING_WORLD")
 duLoot:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 duLoot:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 duLoot:SetScript("OnEvent", OnEvent)
+yoEF.duLoot = duLoot
 
-for _, slot in pairs(N.slots) do
+for _, slot in pairs(n.slots) do
 	local button = _G["Character"..slot]
 	button.filterType = locationToFilter[slot]
 	button:HookScript( "OnClick", function(self, but)

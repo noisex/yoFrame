@@ -1,14 +1,14 @@
 local L, yo = unpack( select( 2, ...))
 
 --if true then return end
-local tonumber, unpack, pairs, CreateFrame, RGBToHex, UIParent, GetActionCooldown, GetActionCharges
-	= tonumber, unpack, pairs, CreateFrame, RGBToHex, UIParent, GetActionCooldown, GetActionCharges
+local tonumber, unpack, pairs, CreateFrame, RGBToHex, UIParent, GetActionCooldown, GetActionCharges, format
+	= tonumber, unpack, pairs, CreateFrame, RGBToHex, UIParent, GetActionCooldown, GetActionCharges, format
 
 RGBToHex = function(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
 	g = g <= 1 and g >= 0 and g or 0
 	b = b <= 1 and b >= 0 and b or 0
-	return string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
+	return format("|cff%02x%02x%02x", r*255, g*255, b*255)
 end
 
 --OmniCC = true --hack to work around detection from other addons for OmniCC
@@ -19,7 +19,7 @@ local HALFDAYISH, HALFHOURISH, HALFMINUTEISH = DAY/2 + 0.5, HOUR/2 + 0.5, MINUTE
 
 local FONT_FACE = yo.Media.fontpx --what font to use
 local FONT_SIZE = 22 --the base font size to use at a scale of 1
-local MIN_SCALE = 0.5 --the minimum scale we want to show cooldown counts at, anything below this will be hidden
+local MIN_SCALE = 0.2 --the minimum scale we want to show cooldown counts at, anything below this will be hidden
 local MIN_DURATION = 2 --the minimum duration to show cooldown text for
 local EXPIRING_DURATION = 2 --the minimum number of seconds a cooldown must be to use to display in the expiring format
 
@@ -80,9 +80,10 @@ local function Timer_OnSizeChanged(self, width, height)
 
 	self.fontScale = fontScale
 	if fontScale < MIN_SCALE then
+		--print("...")
 		self:Hide()
 	else
-		self.text:SetFont(FONT_FACE, fontScale * FONT_SIZE, 'OUTLINE')
+		self.text:SetFont(FONT_FACE, min( 20, fontScale * FONT_SIZE), 'OUTLINE')
 		self.text:SetShadowColor(0, 0, 0, 0.5)
 		self.text:SetShadowOffset(2, -2)
 

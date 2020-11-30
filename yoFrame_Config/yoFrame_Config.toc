@@ -7,6 +7,8 @@
 ## SavedVariables: yo_AllConfig, yo_AllData
 ## SavedVariablesPerCharacter: yo_PersonalConfig, yo_ChatHistory
 
+## X-Curse-Project-ID: 300674
+
 Libs\libs.xml
 
 Locale\locale.lua

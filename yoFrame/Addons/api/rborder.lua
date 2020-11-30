@@ -1,5 +1,5 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 --if true then return end
 
@@ -9,7 +9,7 @@ local borderColor = { 0.5, 0.5, 0.5 }
 local borderSize = 16
 local sections = { "TOPLEFT", "TOPRIGHT", "TOP", "BOTTOMLEFT", "BOTTOMRIGHT", "BOTTOM", "LEFT", "RIGHT" }
 
-function N.SetBorderColor(self, r, g, b, a, glow)
+function n.SetBorderColor(self, r, g, b, a, glow)
 	local t = self.BorderTextures
 	if not t then return end
 
@@ -32,11 +32,11 @@ function N.SetBorderColor(self, r, g, b, a, glow)
 	end
 end
 
-function N.GetBorderColor(self)
+function n.GetBorderColor(self)
 	return self.BorderTextures and self.BorderTextures.TOPLEFT:GetVertexColor()
 end
 
-function N.SetBorderParent(self, parent)
+function n.SetBorderParent(self, parent)
 	local t = self.BorderTextures
 	if not t then return end
 	if not parent then
@@ -48,7 +48,7 @@ function N.SetBorderParent(self, parent)
 	self:SetBorderSize(self:GetBorderSize())
 end
 
-function N.SetBorderSize(self, size, dL, dR, dT, dB)
+function n.SetBorderSize(self, size, dL, dR, dT, dB)
 	local t = self.BorderTextures
 	if not t then return end
 
@@ -71,13 +71,13 @@ function N.SetBorderSize(self, size, dL, dR, dT, dB)
 end
 
 
-function N.GetBorderSize(self)
+function n.GetBorderSize(self)
 	local t = self.BorderTextures
 	if not t then return end
 	return t.TOPLEFT:GetWidth(), t.LEFT.offset, t.RIGHT.offset, t.TOP.offset, t.BOTTOM.offset
 end
 
-function N.CreateBorder(self, size, offset, parent, layer)
+function n.CreateBorder(self, size, offset, parent, layer)
 	if type(self) ~= "table" or not self.CreateTexture or self.BorderTextures then return end
 
 	local t = {}
@@ -113,15 +113,15 @@ function N.CreateBorder(self, size, offset, parent, layer)
 
 	self.BorderTextures = t
 
-	self.SetBorderColor  = N.SetBorderColor
-	self.SetBorderLayer  = N.SetBorderLayer
-	self.SetBorderParent = N.SetBorderParent
-	self.SetBorderSize   = N.SetBorderSize
+	self.SetBorderColor  = n.SetBorderColor
+	self.SetBorderLayer  = n.SetBorderLayer
+	self.SetBorderParent = n.SetBorderParent
+	self.SetBorderSize   = n.SetBorderSize
 
-	self.GetBorderColor  = N.GetBorderColor
-	self.GetBorderLayer  = N.GetBorderLayer
-	self.GetBorderParent = N.GetBorderParent
-	self.GetBorderSize   = N.GetBorderSize
+	self.GetBorderColor  = n.GetBorderColor
+	self.GetBorderLayer  = n.GetBorderLayer
+	self.GetBorderParent = n.GetBorderParent
+	self.GetBorderSize   = n.GetBorderSize
 
 	--if self.GetBackdrop then
 	--	local backdrop = self:GetBackdrop()
@@ -140,7 +140,7 @@ function N.CreateBorder(self, size, offset, parent, layer)
 	--end
 
 	if self.SetBackdropBorderColor then
-		self.SetBackdropBorderColor = N.SetBorderColor
+		self.SetBackdropBorderColor = n.SetBorderColor
 	end
 
 	--tinsert(ns.borderedObjects, self)
@@ -178,17 +178,17 @@ borderFrame3.texture = borderFrame3:CreateTexture(nil, "OVERLAY")
 borderFrame3.texture:SetAllPoints()
 borderFrame3.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidbg")
 
-N.CreateBorder(borderFrame1, 16)
-N.CreateBorder(borderFrame2, 12)
-N.CreateBorder(borderFrame3, 20)
+n.CreateBorder(borderFrame1, 16)
+n.CreateBorder(borderFrame2, 12)
+n.CreateBorder(borderFrame3, 20)
 
 borderFrame1.texture:SetVertexColor( 0.09, 0.09, 0.09, 0.9)
 borderFrame2.texture:SetVertexColor( 1, 0.75, 0, 0.9)
 borderFrame3.texture:SetVertexColor( 0, 1, 1, 0.9)
 
-N.SetBorderColor(borderFrame1, 0, 0, 1, 1)
-N.SetBorderColor(borderFrame2, 1, 0, 0, 1)
-N.SetBorderColor(borderFrame3, 0, 0.75, 0, 1)
+n.SetBorderColor(borderFrame1, 0, 0, 1, 1)
+n.SetBorderColor(borderFrame2, 1, 0, 0, 1)
+n.SetBorderColor(borderFrame3, 0, 0.75, 0, 1)
 
 local toggle = true
 SlashCmdList["TB"] = function()

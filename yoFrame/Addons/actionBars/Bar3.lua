@@ -1,9 +1,9 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local NUM_ACTIONBAR_BUTTONS = NUM_ACTIONBAR_BUTTONS
 
 function ActionBars:CreateBar3()
@@ -24,7 +24,7 @@ function ActionBars:CreateBar3()
 		return
 	end
 
-	local ActionBar3 = CreateFrame("Frame", "yoActionBar3", N.PetHider, "SecureHandlerStateTemplate")
+	local ActionBar3 = CreateFrame("Frame", "yoActionBar3", n.PetHider, "SecureHandlerStateTemplate")
 	ActionBar3:SetPoint("TOPLEFT", yoMoveABar3, "TOPLEFT", 0, 0)
 	ActionBar3:SetFrameStrata("LOW")
 	ActionBar3:SetFrameLevel(10)
@@ -33,7 +33,7 @@ function ActionBars:CreateBar3()
 
 	MultiBarBottomRight:SetShown(true)
 	MultiBarBottomRight:SetParent(ActionBar3)
-	MultiBarBottomRight.QuickKeybindGlow:SetParent(N.Hider)
+	MultiBarBottomRight.QuickKeybindGlow:SetParent(n.Hider)
 
 	local NumPerRows = ButtonsPerRow
 	local NextRowButtonAnchor = _G["MultiBarBottomRightButton1"]

@@ -1,6 +1,7 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 --if C.misc.disenchanting ~= true then return end
 
+if not yo.Addons.disenchanting then return end
 ----------------------------------------------------------------------------------------
 --	One-click Milling, Prospecting and Disenchanting(Molinari by p3lim)
 ----------------------------------------------------------------------------------------
@@ -18,8 +19,6 @@ local function ScanTooltip(self, spells)
 end
 
 function button:PLAYER_LOGIN()
-
-	if not yo.Addons.disenchanting then return end
 
 	local spells, disenchanter, rogue = {}
 

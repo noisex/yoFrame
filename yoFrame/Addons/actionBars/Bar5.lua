@@ -1,9 +1,9 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local NUM_ACTIONBAR_BUTTONS = NUM_ACTIONBAR_BUTTONS
 
 function ActionBars:CreateBar5()
@@ -24,7 +24,7 @@ function ActionBars:CreateBar5()
 		return
 	end
 
-	local ActionBar5 = CreateFrame("Frame", "TukuiActionBar5", N.PetHider, "SecureHandlerStateTemplate")
+	local ActionBar5 = CreateFrame("Frame", "TukuiActionBar5", n.PetHider, "SecureHandlerStateTemplate")
 	ActionBar5:SetFrameStrata("LOW")
 	ActionBar5:SetFrameLevel(10)
 	ActionBar5:SetPoint("TOPLEFT", yoMoveABar5, "TOPLEFT", 0, 0)
@@ -38,7 +38,7 @@ function ActionBars:CreateBar5()
 
 	MultiBarLeft:SetShown(true)
 	MultiBarLeft:SetParent(ActionBar5)
-	MultiBarLeft.QuickKeybindGlow:SetParent( N.Hider)
+	MultiBarLeft.QuickKeybindGlow:SetParent( n.Hider)
 
 	local NumPerRows = ButtonsPerRow
 	local NextRowButtonAnchor = _G["MultiBarLeftButton1"]

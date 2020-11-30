@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
@@ -8,7 +8,7 @@ local L, yo, N = unpack( select( 2, ...))
 local 	GetInventorySlotInfo, GetInventoryItemID, GetItemInfo, UnitLevel, GetDodgeChance, abs, GetBonusBarOffset, GetInventoryItemLink, GetInventoryItemDurability, floor, strjoin, format, select, CanGuildBankRepair =
 	    GetInventorySlotInfo, GetInventoryItemID, GetItemInfo, UnitLevel, GetDodgeChance, abs, GetBonusBarOffset, GetInventoryItemLink, GetInventoryItemDurability, floor, strjoin, format, select, CanGuildBankRepair
 
-local infoText = N.infoTexts
+local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local AVD_DECAY_RATE, chanceString = 1.5, '%.2f%%'
@@ -143,7 +143,7 @@ function Stat:onEnter( )
 	GameTooltip:AddLine("Прочность")
 	local costTotal = 0
 	for i = 1, 10 do
-		local cost = select(3, N.scanTooltip:SetInventoryItem( "player", localSlots[i][1]))
+		local cost = select(3, n.scanTooltip:SetInventoryItem( "player", localSlots[i][1]))
 		costTotal = costTotal + cost
 		--print(i, localSlots[i][2], cost, costTotal)
 

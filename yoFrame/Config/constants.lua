@@ -1,5 +1,5 @@
 local addonName, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 -- название школы по индексу  _G.CombatLog_String_SchoolString(key))
 
@@ -492,4 +492,5 @@ yo["CTA"] = {
 	["expand"]	= false,
 	["sound"]	= "Murloc",
 	["hideLast"]= false,
+	["lfdMode"]	= 0,
 }

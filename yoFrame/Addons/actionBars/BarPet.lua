@@ -1,9 +1,9 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
 
 function ActionBars:CreatePetBar()
@@ -20,7 +20,7 @@ function ActionBars:CreatePetBar()
 	local ButtonsPerRow = 10
 	local NumRow = ceil(10 / ButtonsPerRow)
 
-	local Bar = CreateFrame("Frame", "yoPetActionBar", N.PetHider, "SecureHandlerStateTemplate")
+	local Bar = CreateFrame("Frame", "yoPetActionBar", n.PetHider, "SecureHandlerStateTemplate")
 	Bar:SetPoint("RIGHT", yoMovePetBar, "RIGHT")
 	Bar:SetFrameStrata("LOW")
 	Bar:SetFrameLevel(10)
@@ -34,7 +34,7 @@ function ActionBars:CreatePetBar()
 
 	PetActionBarFrame:EnableMouse(0)
 	PetActionBarFrame:ClearAllPoints()
-	PetActionBarFrame:SetParent( N.Hider)
+	PetActionBarFrame:SetParent( n.Hider)
 
 	local NumPerRows = ButtonsPerRow
 	local NextRowButtonAnchor = _G["PetActionButton1"]

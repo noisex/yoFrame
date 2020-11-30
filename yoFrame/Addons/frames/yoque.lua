@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -33,7 +33,7 @@ local type, strmatch, CreateFrame
 --end
 
 
-N.CreateClique = function( self)
+n.CreateClique = function( self)
 	--Clique = Clique or CreateFrame("Frame", "yo_Clique", UIParent)
 	local header = Clique.header --or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate, SecureHandlerAttributeTemplate")
 	--Clique.header = header
@@ -109,7 +109,7 @@ N.CreateClique = function( self)
 ]===])
 end
 
-N.makeQuiButton = function ( self )
+n.makeQuiButton = function ( self )
 
 	self:SetAttribute("*type1", nil)
 	self:SetAttribute("*type2", nil)

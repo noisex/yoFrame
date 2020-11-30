@@ -1,6 +1,6 @@
 local addon, ns = ...
 
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 if not yo.ToolTip.enable then return end

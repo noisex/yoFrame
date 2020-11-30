@@ -1,5 +1,7 @@
 
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
+
+local yoUF = n.unitFrames
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)
@@ -107,7 +109,7 @@ local function Experience( f)
 	Experience:SetSize( yoMoveExperience:GetSize())
 	Experience:SetOrientation("VERTICAL")
 	Experience:SetFrameLevel(3)
-	table.insert( N.statusBars, Experience)
+	table.insert( n.statusBars, Experience)
 
 	Experience.Rested = CreateFrame('StatusBar', nil, f)
 	Experience.Rested:SetStatusBarTexture( texture)
@@ -116,7 +118,7 @@ local function Experience( f)
 	Experience.Rested:SetSize( yoMoveExperience:GetSize())
 	Experience.Rested:SetOrientation("VERTICAL")
 	Experience.Rested:SetFrameLevel(4)
-	table.insert( N.statusBars, Experience.Rested)
+	table.insert( n.statusBars, Experience.Rested)
 	CreateStyle( Experience)
 
 	f.Experience = Experience
@@ -129,6 +131,6 @@ logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if (UnitLevel('player') == MAX_PLAYER_LEVEL) then return end  -- not yo["Addons"].Experience or
 
-	Experience( plFrame)
-	EnableExp( plFrame)
+	Experience( yoUF.player)
+	EnableExp( yoUF.player)
 end)

@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Addons.RaidCoolDowns then return end
 
@@ -197,22 +197,22 @@ local OnEvent = function(self, event, ...)
 
 	elseif event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
 
-		if UnitInRaid("player") and yo_Raid and not yo.Raid.raidTemplate == 3 then
-			yo_RaidCD:ClearAllPoints()
-			yo_RaidCD:SetPoint("TOPLEFT", yo_Raid, "BOTTOMLEFT", 25, -30)
+		--if UnitInRaid("player") and yo_Raid and not yo.Raid.raidTemplate == 3 then
+		--	yo_RaidCD:ClearAllPoints()
+		--	yo_RaidCD:SetPoint("TOPLEFT", yo_Raid, "BOTTOMLEFT", 25, -30)
 
-		elseif UnitInParty("player") and yo_Party and not yo.Raid.raidTemplate == 3 then
-			yo_RaidCD:ClearAllPoints()
-			yo_RaidCD:SetPoint("TOPLEFT", yo_Party, "BOTTOMLEFT", 25, -30)
+		--elseif UnitInParty("player") and yo_Party and not yo.Raid.raidTemplate == 3 then
+		--	yo_RaidCD:ClearAllPoints()
+		--	yo_RaidCD:SetPoint("TOPLEFT", yo_Party, "BOTTOMLEFT", 25, -30)
 
-		else
+		--else
 			yo_RaidCD:ClearAllPoints()
 			yo_RaidCD:SetPoint("BOTTOM", yoMoveRaidCD)
-		end
+		--end
 	end
 end
 
-CreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 27, 150, "LEFT", "LEFT")
+CreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 27, 250, "LEFT", "LEFT")
 
 local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
 RaidCDAnchor:SetPoint("BOTTOM", "yoMoveRaidCD")

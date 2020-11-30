@@ -1,20 +1,26 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.Chat.EnableChat then return end
 
+local _G = _G
+local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
+local yoEF = n.elemFrames
 
-RGBToHex1 = function(r, g, b)
+local hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print
+	= hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print
+
+local RGBToHex1 = function(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
 	g = g <= 1 and g >= 0 and g or 0
 	b = b <= 1 and b >= 0 and b or 0
-	return string.format("|cff%02x%02x%02x", r*255, g*255, b*255)
+	return format("|cff%02x%02x%02x", r*255, g*255, b*255)
 end
 
 local origs = {}
 
 local function Strip(info, name)
-	return string.format("|Hplayer:%s|h[%s]|h", info, name:gsub("%-[^|]+", ""))
+	return format("|Hplayer:%s|h[%s]|h", info, name:gsub("%-[^|]+", ""))
 end
 
 -------------------------------------------------------------------------------------------------------
@@ -347,13 +353,13 @@ local function SetupChatPosAndFont(self)
 	local wimButton = CreateFrame("Button", nil, LeftDataPanel)
 	wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
 	wimButton:SetSize( 1, 1)
-	if yo_WIM and yo.Chat.wim then
+	if yoEF.wim and yo.Chat.wim then
 		wimButton:SetSize( 28, 28)
 		wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
 		wimButton:SetNormalTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat")
 		wimButton:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-		wimButton:SetScript("OnClick", function() ns:wimToggle() yo_WIM:stopFlash( wimButton) end)
-		yo_WIM.wimButton = wimButton
+		wimButton:SetScript("OnClick", function() ns:wimToggle() yoEF.wim:stopFlash( wimButton) end)
+		yoEF.wim.wimButton = wimButton
 	end
 
 	if yo.Chat.showVoice then
@@ -362,7 +368,7 @@ local function SetupChatPosAndFont(self)
 		ChatFrameMenuButton:SetNormalTexture( nil)
 		ChatFrameMenuButton:SetPushedTexture(nil)
 		ChatFrameMenuButton:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-		if yo_WIM then
+		if yoEF.wim then
 			ChatFrameMenuButton:SetPoint( "RIGHT", wimButton, "LEFT", 6, 0)
 		else
 			ChatFrameMenuButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)

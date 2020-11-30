@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
@@ -88,7 +88,7 @@ local function ArtifactPower( f)
 	ArtifactPower:SetSize( yoMoveArtifact:GetSize())
 	ArtifactPower:SetOrientation("VERTICAL")
 	ArtifactPower:SetFrameLevel(2)
-	table.insert( N.statusBars, ArtifactPower)
+	table.insert( n.statusBars, ArtifactPower)
 	CreateStyle( ArtifactPower)
 
 	f.ArtifactPower = ArtifactPower
@@ -101,6 +101,6 @@ logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.ArtifactPowerbar then return end
 
-	ArtifactPower( plFrame)
-	EnableAP( plFrame)
+	ArtifactPower( player)
+	EnableAP( player)
 end)

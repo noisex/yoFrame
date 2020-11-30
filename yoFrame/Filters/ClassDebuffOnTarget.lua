@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local function SpellName(id)
 	local name = GetSpellInfo(id)
@@ -10,9 +10,9 @@ local function SpellName(id)
 	end
 end
 
-N.DebuffWhiteList 	= {}
+n.DebuffWhiteList 	= {}
 
-N.tankSpecIDs			= {
+n.tankSpecIDs			= {
 	["250"]		= true, 	-- DEATHKNIGHT
 	["104"]		= true,		-- DRUID
 	["268"]		= true,		-- MONK
@@ -137,7 +137,7 @@ DebuffWhiteListTemplate = {
 }
 
 
-N.BuffWhiteList ={}
+n.BuffWhiteList ={}
 local BuffWhiteListTemplate = {	-- ElvUI
 	["ALL"] = {
 	},
@@ -211,32 +211,32 @@ logan:RegisterEvent("PLAYER_LOGIN")
 logan:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 logan:SetScript("OnEvent", function(self, ...)
-	N.DebuffWhiteList 	= DebuffWhiteListTemplate[myClass]
-	N.BuffWhiteList   	= BuffWhiteListTemplate[myClass]
-	N.tauntsSpell		= {}
-	wipe( N.tauntsSpell)
+	n.DebuffWhiteList 	= DebuffWhiteListTemplate[myClass]
+	n.BuffWhiteList   	= BuffWhiteListTemplate[myClass]
+	n.tauntsSpell		= {}
+	wipe( n.tauntsSpell)
 	--wipe( DebuffWhiteListTemplate)
 	--wipe( BuffWhiteListTemplate)
 
 	local id, name, _, icon = GetSpecializationInfo( GetSpecialization())
 	mySpec = id
 
-	if yo.NamePlates.showTauntDebuff or N.tankSpecIDs[mySpec] then
+	if yo.NamePlates.showTauntDebuff or n.tankSpecIDs[mySpec] then
 		for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do
 			if k and v then
-				N.tauntsSpell[k] = v
+				n.tauntsSpell[k] = v
 			end
 		end
 	end
 
 	for k,v in pairs( BuffWhiteListTemplate["ALL"])   do
 		if k and v then
-			N.BuffWhiteList[k]   = v
+			n.BuffWhiteList[k]   = v
 		end
 	end
 end)
 
-N.PlayerBuffWhiteList = {
+n.PlayerBuffWhiteList = {
 	--Consumables
 		[SpellName(251231)] = true, -- Steelskin Potion (BfA Armor)
 		[SpellName(251316)] = true, -- Potion of Bursting Blood (BfA Melee)

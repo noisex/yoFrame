@@ -1,24 +1,25 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
 --local colors = oUF.colors
-local L, yo, N = ns[1], ns[2], ns[3]
+local L, yo, n = ns[1], ns[2], ns[3]
 local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
 
-local _G= _G
+local _G = _G
+local yoUF = n.unitFrames
+local MAX_BOSS_FRAMES= MAX_BOSS_FRAMES
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font
-	= GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font
+local GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font, tinsert
+	= GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font, tinsert
 
 local updateAllElements = function(frame)
 	for _, v in ipairs(frame.__elements) do
 		v(frame, "UpdateElement", frame.unit)
 	end
 end
-
 
 ------------------------------------------------------------------------------------------------------
 ---											BEGIN
@@ -78,18 +79,15 @@ local function unitShared(self, unit)
 	self.Health:SetStatusBarTexture( yo.texture)
 	self.Health:SetFrameLevel( 1)
 	self.Health:GetStatusBarTexture():SetHorizTile(false)
-	table.insert( N.statusBars, self.Health)
+	tinsert( n.statusBars, self.Health)
 
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
 	self.Health.hbg:SetTexture( yo.texture)
 
-	--if yo.Raid.hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
-	--if yo.Raid.hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
-
 	if unit == "player" or unit == "target" or unit == "pet" then
-		self.Health.AbsorbBar = self:addAbsorbBar( self)
-		self.Health.healPred  = self:addHealPred( self)
+		self.Health.AbsorbBar = self:addAbsorbBar()
+		self.Health.healPred  = self:addHealPred()
 		self.Health.Override  = self.updateHealth
 	end
 	if unit == "player" then
@@ -110,7 +108,7 @@ local function unitShared(self, unit)
 		self.Health.stoper:SetFrameLevel( 5)
 		self.Health.stoper:SetWidth( 1)
 		self.Health.stoper:SetHeight( 4)
-		table.insert( N.statusBars, self.Health.stoper)
+		tinsert( n.statusBars, self.Health.stoper)
 		CreateStyle( self.Health.stoper, 2, 4, .3, .9)
 
 		--self.Health.stoper.bg = self.Health.stoper:CreateTexture(nil, 'BORDER')
@@ -140,7 +138,7 @@ local function unitShared(self, unit)
 		self.Power:SetFrameLevel( 5)
 		self.Power:SetWidth( width - 10)
 		self.Power:SetHeight( powerHeight)
-		table.insert( N.statusBars, self.Power)
+		tinsert( n.statusBars, self.Power)
 
 		self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
 		self.Power.bg:SetAllPoints( self.Power)
@@ -160,7 +158,7 @@ local function unitShared(self, unit)
 			powerFlashBar:SetValue( 0)
 			self.Power.powerFlashBar = powerFlashBar
 			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", self.updateManaCost)
-			table.insert( N.statusBars, self.Power.powerFlashBar)
+			tinsert( n.statusBars, self.Power.powerFlashBar)
 
 		elseif unit == "targettarget" then
 			self.Power.pDebuff = CreateFrame("Frame", nil, self)
@@ -173,7 +171,7 @@ local function unitShared(self, unit)
 			self.Power.tickTOT 				= GetTime()
 		end
 
-		self.Power.frequentUpdates = false
+		self.Power.frequentUpdates = true
     	self.Power.UpdateColor = dummy
     	self.Power.PostUpdate = self.updatePower
     	CreateStyle( self.Power, 2, 4, .3, .9)
@@ -192,20 +190,20 @@ local function unitShared(self, unit)
 	if unit == "targettarget" or unit == "focustarget" or unit == "focus" or unit == "pet" then
 			self:Tag( self.nameText, "[GetNameColor][unitLevel][nameshort][afk]")
 	else	self:Tag( self.nameText, "[GetNameColor][unitLevel][".. nameLeight .."][afk]")end
-	table.insert( N.strings, self.nameText)
+	tinsert( n.strings, self.nameText)
 
 	if unit ~= "pet" or unit ~= "targettarget" or unit ~= "focus" or unit ~= "focustarget" then
 
 		self.Health.healthText =  self.Overlay:CreateFontString(nil ,"OVERLAY", 8)
 		self.Health.healthText:SetFont( font, fontsize -1, "OUTLINE")
 		self.Health.healthText:SetPoint( unpack( healthTextPos))
-		table.insert( N.strings, self.Health.healthText)
+		tinsert( n.strings, self.Health.healthText)
 
 		if enablePower and enablePowerText then
 			self.Power.powerText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
 			self.Power.powerText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
 			self.Power.powerText:SetPoint("TOPRIGHT", self.Health.healthText, "BOTTOMRIGHT", 0, -3)
-			table.insert( N.strings, self.Power.powerText)
+			tinsert( n.strings, self.Power.powerText)
 		end
 		if showLeader then
 			self.rText =  self:CreateFontString(nil ,"OVERLAY")
@@ -294,7 +292,7 @@ local function unitShared(self, unit)
 		end
 
 	elseif unit == "target" and yo.healBotka.enable then
-		--N.makeQuiButton(self)
+		--n.makeQuiButton(self)
 
 	elseif cunit == "boss" then
 		self.tarBorder = self:CreateFontString(nil ,"OVERLAY", 'GameFontNormal')
@@ -313,8 +311,16 @@ local function unitShared(self, unit)
 	self:SetAlpha(1)
 	self:SetFrameStrata("BACKGROUND")
 	self:RegisterForClicks("AnyDown")
-	self:SetScript("OnEnter", self.frameOnEnter)
-	self:SetScript("OnLeave", self.frameOnLeave)
+
+	if yo.healBotka.enable and unit ~= "player" then
+		self:addQliqueButton()
+		self:HookScript("OnEnter", self.frameOnEnter)
+		self:HookScript("OnLeave", self.frameOnLeave)
+	else
+		self:SetScript("OnEnter", self.frameOnEnter)
+		self:SetScript("OnLeave", self.frameOnLeave)
+	end
+
 	CreateStyle( self, 4)
 	--self.updateAllElements( self)
 end
@@ -334,41 +340,43 @@ logan:SetScript("OnEvent", function(self, event)
 		oUF:RegisterStyle("yoFrames", unitShared)
 		oUF:SetActiveStyle("yoFrames")
 
-		plFrame = oUF:Spawn("player", "yo_Player")
-		if yo.UF.simpleUF then 	plFrame:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPRIGHT", 15, 40)
-		else 					plFrame:SetPoint( "CENTER", yoMoveplayer, "CENTER", 0 , 0)
+		yoUF.player = oUF:Spawn("player", "yo_Player")
+		if yo.UF.simpleUF then 	yoUF.player:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPRIGHT", 15, 40)
+		else 					yoUF.player:SetPoint( "CENTER", yoMoveplayer, "CENTER", 0 , 0)
 		end
 
-		tarFrame = oUF:Spawn("target", "yo_Target")
-		if yo.UF.simpleUF then 	tarFrame:SetPoint( "TOPLEFT", yoMovetarget, "TOPLEFT", -15, 40)
-		else					tarFrame:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
+		yoUF.target = oUF:Spawn("target", "yo_Target")
+
+		if yo.UF.simpleUF then 	yoUF.target:SetPoint( "TOPLEFT", yoMovetarget, "TOPLEFT", -15, 40)
+		else					yoUF.target:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
 		end
 
-		totFrame = oUF:Spawn("targettarget", "yo_ToT")
-		totFrame:SetPoint( "TOPLEFT", tarFrame, "TOPRIGHT", 8 , 0)
+		yoUF.targetTarget = oUF:Spawn("targettarget", "yo_ToT")
+		yoUF.targetTarget:SetPoint( "TOPLEFT", yoUF.target, "TOPRIGHT", 8 , 0)
 
-		fcFrame = oUF:Spawn("focus", "yo_Focus")
-		fcFrame:SetPoint( "CENTER", yoMovefocus, "CENTER", 0 , 0)
+		yoUF.focus = oUF:Spawn("focus", "yo_Focus")
+		yoUF.focus:SetPoint( "CENTER", yoMovefocus, "CENTER", 0 , 0)
 
-		fctFrame = oUF:Spawn("focustarget", "yo_FocusTarget")
-		fctFrame:SetPoint( "TOPLEFT", fcFrame, "TOPRIGHT", 7 , 0)
+		yoUF.focusTarget = oUF:Spawn("focustarget", "yo_FocusTarget")
+		yoUF.focusTarget:SetPoint( "TOPLEFT", yoUF.focus, "TOPRIGHT", 7 , 0)
 
-		petFrame = oUF:Spawn("pet", "yo_Pet")
-		petFrame:SetPoint( "TOPRIGHT", plFrame, "TOPLEFT", -8 , 0)
+		yoUF.pet = oUF:Spawn("pet", "yo_Pet")
+		yoUF.pet:SetPoint( "TOPRIGHT", yoUF.player, "TOPLEFT", -8 , 0)
 
-		local boses = {}
+		--local boses = {}
 		for i = 1, MAX_BOSS_FRAMES do
 			--boses[i] = "boss"..i.."Frame"
-			boses[i] = oUF:Spawn( "boss" .. i, "yo_Boss" .. i)
-			boses[i]:SetPoint( "CENTER", yoMoveboss, "CENTER", 0 , -(i -1) * 65)
+			yoUF["boss" .. i] = oUF:Spawn( "boss" .. i, "yo_Boss" .. i)
+			yoUF["boss" .. i]:SetPoint( "CENTER", yoMoveboss, "CENTER", 0 , -(i -1) * 65)
+			--yoUF["boss" .. i] = boses[i]
 
-			updateAllElements( boses[i])
+			updateAllElements( yoUF["boss" .. i])
 		end
 
-		updateAllElements( plFrame)
-		updateAllElements( tarFrame)
-		updateAllElements( petFrame)
-		--UpdateAllElements( fcFrame)
+		updateAllElements( yoUF.player)
+		updateAllElements( yoUF.target)
+		updateAllElements( yoUF.pet)
+		--UpdateAllElements( focus)
 	end
 end)
 

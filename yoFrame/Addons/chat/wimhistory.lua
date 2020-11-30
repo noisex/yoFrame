@@ -1,8 +1,10 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
-local wim = yo_WIM
+local yoEF = n.elemFrames
+local wim = yoEF.wim
+
 if not wim then return end
 
 local _G = _G
@@ -83,7 +85,7 @@ local function CreateUserListButton( self, ind)
 		if #logArray > 0 then
 			local oldDate
 			for ind, info in ipairs( logArray) do
-				local col 		= yo_WIM.cols[info.event]
+				local col 		= yoEF.wim.cols[info.event]
 				local newDate 	= date("%d.%m.%Y", info.time)
 				local time 		= date("%H:%M", info.time)
 

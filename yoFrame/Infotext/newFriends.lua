@@ -1,9 +1,10 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
 -- собрать таблицу бнет, выловить ключи вмелто флист, сорт и по ней вывод. вов в топ
-local infoText = N.infoTexts
+local yoEF = n.elemFrames
+local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local displayString = "%s: ".. myColorStr .. "%d|r"
@@ -120,8 +121,8 @@ local function makeWOWName( accTable, fdTable)
 		menuList[2].menuList[#menuList[2].menuList + 1] = {text = retSrt .. invFunc, arg1 = uName, notCheckable=true, func = inviteClick} end
 	if myRealmID == realmID or fdTable then
 		menuList[3].menuList[#menuList[3].menuList + 1] = {text = retSrt, arg1 = uName, notCheckable=true, func = whisperClick}
-		if yo_WIM and yo_WIM.menuWIM then
-			yo_WIM.menuWIM[#yo_WIM.menuWIM+1] = {text = retSrt, arg1 = uName, notCheckable=true, func = whisperClick}
+		if yoEF.wim and yoEF.wim.menuWIM then
+			yoEF.wim.menuWIM[#yoEF.wim.menuWIM+1] = {text = retSrt, arg1 = uName, notCheckable=true, func = whisperClick}
 		end
 	end
 
@@ -131,7 +132,7 @@ end
 function Stat:onMouseDown( btn)
 	GameTooltip:Hide()
 	if btn == "RightButton" then
-		EasyMenu(menuList, N.menuFrame, "cursor", -50, 110, "MENU", 2)
+		EasyMenu(menuList, n.menuFrame, "cursor", -50, 110, "MENU", 2)
 	else
 		ToggleFriendsFrame()
 	end

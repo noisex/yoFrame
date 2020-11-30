@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.UF.unitFrames then return end
 
@@ -6,6 +6,7 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
 local _G = _G
+local yoUF = n.unitFrames
 
 local myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
 	= myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
@@ -229,7 +230,7 @@ end
 
 local function makeTicks( self, empty, spellID)
 
-	self.numTicks = N.channelTicks[spellID] and N.channelTicks[spellID] or 0
+	self.numTicks = n.channelTicks[spellID] and n.channelTicks[spellID] or 0
 	hideTicks( self)
 
 	if self.numTicks > 0 then
@@ -351,7 +352,7 @@ function CreateCastBar( frame, cfg)
 	bar.castBar:SetHeight( height)
 	bar.castBar:SetWidth( width)
 	bar.castBar:SetFrameLevel( 12)
-	table.insert( N.statusBars, bar.castBar)
+	table.insert( n.statusBars, bar.castBar)
 
 	bar.castBar.unit 		= unit
 	bar.castBar.noLag 		= noLag
@@ -501,9 +502,9 @@ logan:SetScript("OnEvent", function(self, event)
 	if not yo.UF.unitFrames or not yo_Player then return end
 
 	cfg 		= yo.CastBar.target
-	cfg.width	= tarFrame:GetWidth()
-	cfg.point	= { "BOTTOM", tarFrame, "TOP", 0, 8}
-	CreateCastBar( tarFrame, cfg)
+	cfg.width	= yoUF.target:GetWidth()
+	cfg.point	= { "BOTTOM", yoUF.target, "TOP", 0, 8}
+	CreateCastBar( yoUF.target, cfg)
 
 	if yo.CastBar.player.bigBar then
 		cfg 		= yo.CastBar.player
@@ -512,19 +513,19 @@ logan:SetScript("OnEvent", function(self, event)
 		cfg.point 	= { "CENTER", yoMovePlayerCastBar, "CENTER", 0, 0}
 	else
 		cfg 			= yo.CastBar.target
-		cfg.width		= plFrame:GetWidth()
+		cfg.width		= yoUF.player:GetWidth()
 		cfg.unit 		= "player"
-		cfg.point		= { "BOTTOM", plFrame, "TOP", 0, 8}
+		cfg.point		= { "BOTTOM", yoUF.player, "TOP", 0, 8}
 		cfg.classcolor	= yo.CastBar.player.classcolor
 		cfg.icon 		= yo.CastBar.player.icon
 		cfg.iconincombat= yo.CastBar.player.iconincombat
 	end
-	CreateCastBar( plFrame, cfg)
+	CreateCastBar( yoUF.player, cfg)
 
 	cfg 		= yo.CastBar.focus
-	cfg.width	= fcFrame:GetWidth()
-	cfg.point 	= { "BOTTOM", fcFrame, "TOP", 0, 8}
-	CreateCastBar( fcFrame, cfg)
+	cfg.width	= yoUF.focus:GetWidth()
+	cfg.point 	= { "BOTTOM", focus, "TOP", 0, 8}
+	CreateCastBar( yoUF.focus, cfg)
 
 	cfg 		= yo.CastBar.BCB
 	cfg.cfgname = "BCB"
@@ -535,7 +536,7 @@ logan:SetScript("OnEvent", function(self, event)
 	cfg 		= yo.CastBar.boss
 	--cfg.width 	= yoMoveboss:GetWidth()
 	for i = 1, MAX_BOSS_FRAMES do
-		local bFrame = _G["yo_Boss"..i]
+		local bFrame = yoUF["boss" .. i]
 		cfg.width 	= bFrame:GetWidth()
 		cfg.point	= { "BOTTOM", bFrame, "TOP", 0, 6}
 		cfg.unit	= "boss"..i

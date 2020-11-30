@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 -- if not yo.InfoTexts.enable then return end
 
@@ -8,14 +8,14 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, myColorStr, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
 	= GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, myColorStr, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
 
-N.infoTexts["infos"] = {}
+n.infoTexts["infos"] = {}
 
 local statColor
 local MAINMENUBAR_LATENCY_LABEL = MAINMENUBAR_LATENCY_LABEL
 --------------------------------------------------------------------
 -- System Stats
 --------------------------------------------------------------------
-local infoText = N.infoTexts
+local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
 local colorme = string.format("%02x%02x%02x", 1*255, 1*255, 1*255)

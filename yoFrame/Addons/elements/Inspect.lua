@@ -1,5 +1,13 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 --wearBySlot = {}
+
+local _G = _G
+
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, GetTime
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, GetTime
+
+local UIParent, GetItemInfo, GetInventoryItemLink, GetDetailedItemLevelInfo, CreateFrame, GetInventorySlotInfo, GetAverageItemLevel, GetInventoryItemsForSlot, strmatch
+	= UIParent, GetItemInfo, GetInventoryItemLink, GetDetailedItemLevelInfo, CreateFrame, GetInventorySlotInfo, GetAverageItemLevel, GetInventoryItemsForSlot, strmatch
 
 local slotsRight = {
 	["MainHandSlot"] = 1,
@@ -28,7 +36,7 @@ local MATCH_ENCHANT = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')
 --Trinket1Slot бесцветное гнездо
 
 local function CreateButtonsText(frame)
-	for _, slot in pairs(N.slots) do
+	for _, slot in pairs(n.slots) do
 		local button = _G[frame..slot]
 		button.textLVL = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
 		button.textLVL:SetPoint("TOP", button, "TOP", 0, -2)
@@ -55,11 +63,11 @@ local function UpdateButtonsText(frame)
 	if frame == "Inspect" and InspectFrame:IsShown() == false then return end
 	if frame == "Inspect" then unit = InspectFrame.unit end
 
-	for _, slot in pairs(N.slots) do
+	for _, slot in pairs(n.slots) do
 		local id = GetInventorySlotInfo(slot)
 		--print(id, slot, slotsRight[slot])
 
-		local tt = CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate") --N.scanTooltip --
+		local tt = CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate") --n.scanTooltip --
 		tt:SetOwner( UIParent, "ANCHOR_NONE")
 		tt:SetInventoryItem( unit, id)
 		tt:Show()
@@ -161,7 +169,7 @@ local function CheckSlotLocationUpgrade( self, slotID, itemLocation, bags)
 		local locTypeLoc = select( 9, GetItemInfo( linkLoc))
 
 		if slotArmorTypeCheck[locTypeLoc] then
-			if N.classEquipMap[myClass] == subTypeLoc then
+			if n.classEquipMap[myClass] == subTypeLoc then
 				upgrade = true
 			end
 		else
@@ -175,7 +183,7 @@ end
 function MultiCheckLockation( self, itemLocation, itemEquipLoc, BagID, SlotID)
 	local needUp = false
 
-	local slotIndexes = N.slotEquipType[itemEquipLoc]
+	local slotIndexes = n.slotEquipType[itemEquipLoc]
 	if slotIndexes then
 		--print(itemLocation, locTypeLoc)
 
@@ -269,8 +277,8 @@ hooksecurefunc("PaperDollFrame_SetItemLevel", function(self, unit)
 	if unit ~= "player" then return end
 
 	local total, equip = GetAverageItemLevel()
-	if total > 0 then total = string.format("%.1f", total) end
-	if equip > 0 then equip = string.format("%.1f", equip) end
+	if total > 0 then total = format("%.1f", total) end
+	if equip > 0 then equip = format("%.1f", equip) end
 
 	local ilvl = equip
 	if equip ~= total then

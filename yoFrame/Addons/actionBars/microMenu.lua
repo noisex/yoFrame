@@ -1,15 +1,15 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 
 function ActionBars:CreateMicroBar()
 	local Size = yo.ActionBar.buttonsSize
 	local Spacing = 0
 
-	local MicroMenu = CreateFrame("Frame", "yoMicroMenuBar", N.PetHider, "SecureHandlerStateTemplate")
+	local MicroMenu = CreateFrame("Frame", "yoMicroMenuBar", n.PetHider, "SecureHandlerStateTemplate")
 	MicroMenu:SetFrameStrata("LOW")
 	MicroMenu:SetFrameLevel(10)
 	MicroMenu:SetScale( yo.ActionBar.MicroScale)

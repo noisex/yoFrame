@@ -1,9 +1,9 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = N["ActionBars"]
+local ActionBars = n["ActionBars"]
 local MAX_TOTEMS = MAX_TOTEMS
 
 function ActionBars:CreateTotemBar()
@@ -20,7 +20,7 @@ function ActionBars:CreateTotemBar()
 	local ButtonsPerRow = 10
 	local NumRow = ceil(10 / ButtonsPerRow)
 
-	local Bar = CreateFrame("Frame", "yoTotemBar", N.PetHider, "SecureHandlerStateTemplate")
+	local Bar = CreateFrame("Frame", "yoTotemBar", n.PetHider, "SecureHandlerStateTemplate")
 	Bar:SetPoint("RIGHT", yoMovePetBar, "RIGHT")
 	Bar:SetFrameStrata("LOW")
 	Bar:SetFrameLevel(10)
@@ -34,7 +34,7 @@ function ActionBars:CreateTotemBar()
 
 	PetActionBarFrame:EnableMouse(0)
 	PetActionBarFrame:ClearAllPoints()
-	PetActionBarFrame:SetParent( N.Hider)
+	PetActionBarFrame:SetParent( n.Hider)
 
 	local NumPerRows = ButtonsPerRow
 	local NextRowButtonAnchor = _G["TotemFrameTotem1"]

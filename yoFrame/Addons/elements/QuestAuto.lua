@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Addons.AutoQuest then return end
 
@@ -74,7 +74,8 @@ end
 
 local function GetActiveOptions(...)
 	local _, instance, _, _, _, _, _, mapID = GetInstanceInfo()
-	if ( autoGossipInstance[instance] or autoGossipNPC[GetNPCID()]) and GetNumGossipOptions() == 1 then
+	if --( autoGossipInstance[instance] or autoGossipNPC[GetNPCID()]) and
+		myLevel ~= MAX_PLAYER_LEVEL and C_GossipInfo.GetNumOptions() == 1 then
 		C_GossipInfo.SelectOption(1, "", true)
 	end
 end
@@ -257,7 +258,7 @@ local function OnEvent( self, event, ...)
 
 		GetAvailableQuests1( C_GossipInfo.GetAvailableQuests()) 	--GetGossipAvailableQuests())
 		GetActiveQuests1( C_GossipInfo.GetActiveQuests())		--GetGossipActiveQuests())
-		--GetActiveOptions( GetGossipOptions())
+		GetActiveOptions( C_GossipInfo.GetOptions())
 
 	elseif	event == "QUEST_GREETING" then
 		if IsShiftKeyDown() == true then return end

@@ -1,8 +1,9 @@
 local addon, ns = ...
-local L, yo, N = unpack( ns)
+local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 local _G = _G
+local yoEF = n.elemFrames
 local minAlpha 	= 1
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
@@ -159,12 +160,12 @@ local function CreateTabs(self, ID)
 	textBox:SetScript("OnHyperlinkEnter", OnHyperlinkEnter) 	-- from Chat.lua
 	textBox:SetScript("OnHyperlinkLeave", OnHyperlinkLeave)
 
-	textBox:SetScript("OnDragStart", function() yo_WIM:StartMoving() end)
+	textBox:SetScript("OnDragStart", function() yoEF.wim:StartMoving() end)
 	textBox:SetScript("OnDragStop", function()
-		yo_WIM:StopMovingOrSizing()
+		yoEF.wim:StopMovingOrSizing()
 		yoMoveWIM:ClearAllPoints()
 		yoMoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yoMoveWIM, yo_WIM)
+		SetAnchPosition( yoMoveWIM, yoEF.wim)
 	end)
 	tab.textBox = textBox
 
@@ -330,7 +331,7 @@ local function CreateWIM( self)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
 		yoMoveWIM:ClearAllPoints()
 		yoMoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yoMoveWIM, yo_WIM)
+		SetAnchPosition( yoMoveWIM, yoEF.wim)
 	end)
 	--self:SetScript("OnEscapePressed", function(self) self:Hide() end)
 
@@ -364,7 +365,7 @@ local function CreateWIM( self)
 	guild:SetNormalTexture( 	"Interface\\Addons\\yoFrame\\Media\\Guild-UI-SquareButton-Up")
 	guild:SetPushedTexture( 	"Interface\\Addons\\yoFrame\\Media\\Guild-UI-SquareButton-Down")
 	guild:SetHighlightTexture( 	"Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
-	guild:SetScript("OnMouseDown", function(self, button) N.infoTexts.infos.guild:ShowGuild( button, guild) end)
+	guild:SetScript("OnMouseDown", function(self, button) n.infoTexts.infos.guild:ShowGuild( button, guild) end)
 	guild:SetScript("OnEnter", self.tooltipShow)
 	guild:SetScript("OnLeave", self.tooltipHide)
 	self.buttons.guild = guild
@@ -378,10 +379,10 @@ local function CreateWIM( self)
 	friends:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	friends:SetScript("OnMouseDown", function( f, button)
 		self.menuWIM = { { text = "Дружеский шептун", isTitle = true,notCheckable=true}, }
-		N.infoTexts.infos.friend:onEnter( nil, "fomWIM")
-		EasyMenu( self.menuWIM, N.menuFrame, f, 25, 50, "MENU", 2)
+		n.infoTexts.infos.friend:onEnter( nil, "fomWIM")
+		EasyMenu( self.menuWIM, n.menuFrame, f, 25, 50, "MENU", 2)
 	end)
-	--friends:SetScript("OnMouseDown", function(self, button) N.InfoFriend:ShowFiends( button)
+	--friends:SetScript("OnMouseDown", function(self, button) n.InfoFriend:ShowFiends( button)
 
 	friends:SetScript("OnEnter", self.tooltipShow)
 	friends:SetScript("OnLeave", self.tooltipHide)
@@ -599,6 +600,7 @@ end
 local wim = CreateFrame("Frame", "yo_WIM", UIParent)
 wim:RegisterEvent("PLAYER_ENTERING_WORLD")
 wim:SetScript("OnEvent", OnEvent)
+yoEF.wim = wim
 
 -----------------------------------------------------------------------------------
 --		local functions
@@ -971,13 +973,13 @@ SlashCmdList.TELLTARGET = function(msg)
 end
 
 ns.wimToggle = function(...)
-	if not yo_WIM:IsShown() then
+	if not yoEF.wim:IsShown() then
 		PlaySound(SOUNDKIT.IG_QUEST_LOG_OPEN);
 	else
 		PlaySound(SOUNDKIT.IG_QUEST_LOG_CLOSE);
 	end
 
-	yo_WIM:SetShown( not yo_WIM:IsShown())
+	yoEF.wim:SetShown( not yoEF.wim:IsShown())
 end
 
 

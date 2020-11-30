@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.InfoTexts.enable then return end
 
@@ -578,4 +578,4 @@ Stat:RegisterEvent("PLAYER_ENTERING_WORLD")
 Stat:SetScript("OnLeave", function() GameTooltip:Hide() end)
 Stat:SetScript("OnEvent", Update)
 --end
-N.InfoFriend = Stat
+n.InfoFriend = Stat

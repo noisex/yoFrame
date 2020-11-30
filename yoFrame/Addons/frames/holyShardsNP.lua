@@ -1,4 +1,4 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.NamePlates.enable or not yo.NamePlates.showResourses then return end
 
@@ -94,8 +94,8 @@ local function OnCPEvent( self, event, unit, powerType)
 end
 
 function CreateCPpoints( f)
-	if not N.pType[myClass].powerID then return end
-	if N.pType[myClass].spec and N.pType[myClass].spec ~= GetSpecialization() then return end
+	if not n.pType[myClass].powerID then return end
+	if n.pType[myClass].spec and n.pType[myClass].spec ~= GetSpecialization() then return end
 
 	if not f.classPower then
 		f.classPower = CreateFrame("Frame", nil, f)
@@ -105,8 +105,8 @@ function CreateCPpoints( f)
 		f.classPower:SetFrameLevel(100)
 		f.classPower.TurnOff 	= ClassPowerBar.TurnOff
 		f.classPower.TurnOn 	= ClassPowerBar.TurnOn
-		f.classPower.powerID 	= N.pType[myClass].powerID
-		f.classPower.powerType	= N.pType[myClass].powerType
+		f.classPower.powerID 	= n.pType[myClass].powerID
+		f.classPower.powerType	= n.pType[myClass].powerType
 
 		f.classPower:SetScript("OnEvent", OnCPEvent)
 	end

@@ -1,6 +1,8 @@
-local L, yo, N = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.UF.unitFrames or not yo.UF.showShards	then return end
+
+local yoUF = n.unitFrames
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -58,7 +60,7 @@ end
 	if not self.powerID or ( self.spec and self.spec ~= GetSpecialization()) then return end
 
 	self.idx = UnitPowerMax( self.unit, self.powerID)
-	self:SetWidth( plFrame:GetWidth() / 2)
+	self:SetWidth( yoUF.player:GetWidth() / 2)
 
 	if not self.cols then
 		self.cols = {}
@@ -75,7 +77,7 @@ end
 		self[i]:SetWidth(self:GetWidth() / self.idx)
 		self[i]:SetAlpha( self.minAlpha)
 		self[i]:SetFrameLevel(10)
-		table.insert( N.statusBars, self[i])
+		tinsert( n.statusBars, self[i])
 
 		if i == 1 then
 			self[i]:SetPoint('LEFT', self, 'LEFT', 1, 0)
@@ -95,7 +97,7 @@ end
 end
 
 local function OnEvent( self, event, unit, pToken, ...)
-	--print( event, " ptoken: ", pToken, " Type: ", N.pType[myClass].powerID, unit)
+	--print( event, " ptoken: ", pToken, " Type: ", n.pType[myClass].powerID, unit)
 
 	if event == "RUNE_POWER_UPDATE" then
 
@@ -131,13 +133,14 @@ local function OnEvent( self, event, unit, pToken, ...)
 		self:SetShown( isDruid( self))
 		--isDruid( self)
 
-	elseif self.powerType and self.powerType == pToken then
+	elseif event == "UNIT_POWER_UPDATE" and self.powerType and self.powerType == pToken then
 		pwUpdate( self, self.powerID, ...)
 
 	elseif event == "UNIT_ENTERED_VEHICLE" then
 		self:Hide()
 
 	elseif event == "UNIT_EXITED_VEHICLE" then
+		--self:Show()
 		CreateShards( self)
 	end
  end
@@ -169,9 +172,9 @@ local function CreateShardsBar( f)
 	CreateStyle( holyShards, 2, 5, 0.6)
 
 	holyShards.colr, holyShards.colg, holyShards.colb = f.colr, f.colg, f.colb
-	holyShards.powerID 	= N.pType[myClass].powerID
-	holyShards.powerType= N.pType[myClass].powerType
-	holyShards.spec 	= N.pType[myClass].spec
+	holyShards.powerID 	= n.pType[myClass].powerID
+	holyShards.powerType= n.pType[myClass].powerType
+	holyShards.spec 	= n.pType[myClass].spec
 	holyShards.minAlpha = 0.2
 	holyShards.maxAlpha = 0.9
 	holyShards.TurnOff 	= ClassPowerBar.TurnOff
@@ -190,5 +193,5 @@ logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	--if not yo.UF.simpleUF then return end
-	if N.pType[myClass] and N.pType[myClass].powerID then CreateShardsBar( plFrame) end
+	if n.pType[myClass] and n.pType[myClass].powerID then CreateShardsBar( yoUF.player) end
 end)

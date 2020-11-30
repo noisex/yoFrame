@@ -1,4 +1,6 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
+
+local yoUF = n.unitFrames
 
 local function OnEvent( f)
 	local uhpm = UnitHealthMax( "player")
@@ -46,5 +48,5 @@ logan:SetScript("OnEvent", function(self, event)
 
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	if not yo.Addons.PredictionHealth then return end
-	CreatePred( plFrame)
+	CreatePred( yoUF.player)
 end)
