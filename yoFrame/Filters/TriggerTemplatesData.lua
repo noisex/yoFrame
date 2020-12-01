@@ -3257,16 +3257,16 @@ n.PlayerBuffWhiteListAll= {
 	  [1] = {
 		title = L["Buffs"],
 		args = {
-		  { spell = 768, type = "buff", unit = "player"}, -- Cat Form
+		  --{ spell = 768, type = "buff", unit = "player"}, -- Cat Form
 		  { spell = 774, type = "buff", unit = "player", talent = 9 }, -- Rejuvenation
-		  { spell = 783, type = "buff", unit = "player"}, -- Travel Form
+		  --{ spell = 783, type = "buff", unit = "player"}, -- Travel Form
 		  { spell = 1850, type = "buff", unit = "player"}, -- Dash
 		  { spell = 5215, type = "buff", unit = "player"}, -- Prowl
-		  { spell = 5487, type = "buff", unit = "player"}, -- Bear Form
+		  --{ spell = 5487, type = "buff", unit = "player"}, -- Bear Form
 		  { spell = 8936, type = "buff", unit = "player"}, -- Regrowth
 		  { spell = 22812, type = "buff", unit = "player"}, -- Barkskin
 		  { spell = 22842, type = "buff", unit = "player", talent = 8 }, -- Frenzied Regeneration
-		  { spell = 24858, type = "buff", unit = "player"}, -- Moonkin Form
+		  --{ spell = 24858, type = "buff", unit = "player"}, -- Moonkin Form
 		  { spell = 29166, type = "buff", unit = "group"}, -- Innervate
 		  { spell = 48517, type = "buff", unit = "player" }, -- Eclipse (Solar)
 		  { spell = 48438, type = "buff", unit = "player", talent = 9 }, -- Wild Growth
@@ -3310,8 +3310,8 @@ n.PlayerBuffWhiteListAll= {
 		args = {
 		  { spell = 99, type = "ability", talent = 8}, -- Incapacitating Roar
 		  { spell = 339, type = "ability", debuff = true}, -- Entangling Roots
-		  { spell = 768, type = "ability"}, -- Cat Form
-		  { spell = 783, type = "ability"}, -- Travel Form
+		  --{ spell = 768, type = "ability"}, -- Cat Form
+		  --{ spell = 783, type = "ability"}, -- Travel Form
 		  { spell = 1079, type = "ability", talent = 7}, -- Rip
 		  { spell = 1822, type = "ability", debuff = true, talent = 7}, -- Rake
 		  { spell = 1850, type = "ability", buff = true}, -- Dash
@@ -3321,7 +3321,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
 		  { spell = 5215, type = "ability", buff = true}, -- Prowl
 		  { spell = 5221, type = "ability"}, -- Shred
-		  { spell = 5487, type = "ability"}, -- Bear Form
+		  --{ spell = 5487, type = "ability"}, -- Bear Form
 		  { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
 		  { spell = 8921, type = "ability", requiresTarget = true, debuff = true}, -- Moonfire
 		  { spell = 8936, type = "ability"}, -- Regrowth
@@ -3332,7 +3332,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 22570, type = "ability", requiresTarget = true, talent = 7}, -- Maim
 		  { spell = 22812, type = "ability", buff = true}, -- Barkskin
 		  { spell = 22842, type = "ability", buff = true, talent = 8 }, -- Frenzied Regeneration
-		  { spell = 24858, type = "ability"}, -- Moonkin Form
+		  --{ spell = 24858, type = "ability"}, -- Moonkin Form
 		  { spell = 29166, type = "ability"}, -- Innervate
 		  { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
 		  { spell = 33786, type = "ability", requiresTarget = true, debuff = true}, -- Cyclone
@@ -3394,13 +3394,13 @@ n.PlayerBuffWhiteListAll= {
 	  [1] = {
 		title = L["Buffs"],
 		args = {
-		  { spell = 768, type = "buff", unit = "player"}, -- Cat Form
+		  --{ spell = 768, type = "buff", unit = "player"}, -- Cat Form
 		  { spell = 774, type = "buff", unit = "player", talent = 9 }, -- Rejuvenation
-		  { spell = 783, type = "buff", unit = "player"}, -- Travel Form
+		  --{ spell = 783, type = "buff", unit = "player"}, -- Travel Form
 		  { spell = 1850, type = "buff", unit = "player"}, -- Dash
 		  { spell = 5215, type = "buff", unit = "player"}, -- Prowl
 		  { spell = 5217, type = "buff", unit = "player"}, -- Tiger's Fury
-		  { spell = 5487, type = "buff", unit = "player"}, -- Bear Form
+		  --{ spell = 5487, type = "buff", unit = "player"}, -- Bear Form
 		  { spell = 8936, type = "buff", unit = "player"}, -- Regrowth
 		  { spell = 22812, type = "buff", unit = "player" }, -- Barkskin
 		  { spell = 22842, type = "buff", unit = "player", talent = 8 }, -- Frenzied Regeneration
@@ -3415,7 +3415,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 135700, type = "buff", unit = "player"}, -- Clearcastingp
 		  { spell = 145152, type = "buff", unit = "player", talent = 20 }, -- Bloodtalons
 		  { spell = 192081, type = "buff", unit = "player" }, -- Ironfur
-		  { spell = 197625, type = "buff", unit = "player", talent = 7 }, -- Moonkin Form
+		  --{ spell = 197625, type = "buff", unit = "player", talent = 7 }, -- Moonkin Form
 		  { spell = 252071, type = "buff", unit = "player", talent = 15 }, -- Jungle Stalker
 		  { spell = 252216, type = "buff", unit = "player", talent = 4 }, -- Tiger Dash
 		  { spell = 285646, type = "buff", unit = "player", talent = 16 }, -- Scent of Blood
@@ -3534,11 +3534,11 @@ n.PlayerBuffWhiteListAll= {
 		title = L["Buffs"],
 		args = {
 		  { spell = 774, type = "buff", unit = "player", talent = 9 }, -- Rejuvenation
-		  { spell = 768, type = "buff", unit = "player"}, -- Cat Form
-		  { spell = 783, type = "buff", unit = "player"}, -- Travel Form
+		  --{ spell = 768, type = "buff", unit = "player"}, -- Cat Form
+		  --{ spell = 783, type = "buff", unit = "player"}, -- Travel Form
 		  { spell = 1850, type = "buff", unit = "player"}, -- Dash
 		  { spell = 5215, type = "buff", unit = "player"}, -- Prowl
-		  { spell = 5487, type = "buff", unit = "player"}, -- Bear Form
+		  --{ spell = 5487, type = "buff", unit = "player"}, -- Bear Form
 		  { spell = 8936, type = "buff", unit = "player"}, -- Regrowth
 		  { spell = 22812, type = "buff", unit = "player"}, -- Barkskin
 		  { spell = 22842, type = "buff", unit = "player"}, -- Frenzied Regeneration
@@ -3551,7 +3551,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 135286, type = "buff", unit = "player", talent = 20 }, -- Tooth and Claw
 		  { spell = 155835, type = "buff", unit = "player", talent = 3 }, -- Bristling Fur
 		  { spell = 192081, type = "buff", unit = "player"}, -- Ironfur
-		  { spell = 197625, type = "buff", unit = "player", talent = 7 }, -- Moonkin Form
+		  --{ spell = 197625, type = "buff", unit = "player", talent = 7 }, -- Moonkin Form
 		  { spell = 203975, type = "buff", unit = "player", talent = 16 }, -- Earthwarden
 		  { spell = 213680, type = "buff", unit = "player", talent = 18 }, -- Guardian of Elune
 		  { spell = 213708, type = "buff", unit = "player", talent = 14 }, -- Galactic Guardian

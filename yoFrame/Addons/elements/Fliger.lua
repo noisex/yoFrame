@@ -161,7 +161,7 @@ local function MakeFligerFrame( self)
 	local cdSize		= yo.fliger.pCDSize
 
 	if yo.fliger.tDebuffEnable then
-		CreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	450, 	0, 		"CENTER", "CENTER")
+		CreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	250, 	0, 		"CENTER", "CENTER")
 		local tDebuff = CreateFrame("Frame", nil, self)
 		tDebuff:SetPoint("CENTER", T_DEBUFF, "CENTER",  0, 0)
 		tDebuff:SetWidth( tdebuffSize)
@@ -172,7 +172,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pProcEnable then
-		CreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-450, 	-100, 	"CENTER", "CENTER")
+		CreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-250, 	-50, 	"CENTER", "CENTER")
 		local pProc = CreateFrame("Frame", nil, self)
 		pProc:SetPoint("CENTER", P_PROC, "CENTER",  0, 0)
 		pProc:SetWidth( pProcSize)
@@ -183,7 +183,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pBuffEnable then
-		CreateAnchor("P_BUFF", 				"Player Buff", 				pbuffSize, pbuffSize,	-450, 	0, 		"CENTER", "CENTER")
+		CreateAnchor("P_BUFF", 				"Player Buff", 				pbuffSize, pbuffSize,	-250, 	50, 		"CENTER", "CENTER")
 		local pBuff = CreateFrame("Frame", nil, self)
 		pBuff:SetPoint("CENTER", P_BUFF, "CENTER",  0, 0)
 		pBuff:SetWidth( pbuffSize)
@@ -200,7 +200,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pDebuffEnable then
-		CreateAnchor("P_DEBUFF",			"Player Debuff",			pdebuffSize,	pdebuffSize,-450, 	150, 	"CENTER", "CENTER")
+		CreateAnchor("P_DEBUFF",			"Player Debuff",			pdebuffSize,	pdebuffSize,-250, 	150, 	"CENTER", "CENTER")
 		local pDebuff = CreateFrame("Frame", nil, self)
 		pDebuff:SetPoint("CENTER", P_DEBUFF, "CENTER",  0, 0)
 		pDebuff:SetWidth( pdebuffSize)
@@ -304,7 +304,7 @@ local function OnEvent( self, event, ...)
 
 		MakeFligerFrame( self)
 		CheckTemplates( myClass, GetSpecialization())
-		--checkAnimeSpells()
+		checkAnimeSpells()
 
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterUnitEvent("UNIT_AURA", "player", "target")

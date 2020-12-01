@@ -312,7 +312,7 @@ local function unitShared(self, unit)
 	self:SetFrameStrata("BACKGROUND")
 	self:RegisterForClicks("AnyDown")
 
-	if yo.healBotka.enable and unit ~= "player" then
+	if yo.healBotka.enable and unit == "target" then
 		self:addQliqueButton()
 		self:HookScript("OnEnter", self.frameOnEnter)
 		self:HookScript("OnLeave", self.frameOnLeave)

@@ -593,6 +593,7 @@ local function createNP(self, unit)
 	self.tick = 1
 	self:SetScript("OnUpdate", updateHealthColor)
 
+	--tinsert(self.__elements, self.onChangeTarget)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", updateName, true)
 	self:RegisterEvent("UNIT_AURA", UpdateBuffs)
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", onEvent, true)

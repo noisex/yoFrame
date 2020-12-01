@@ -509,7 +509,9 @@ end
 local function updateHealthColor( f, event, unit, ...)
 
 	if f.Power and unit == "targettarget" and event == "OnUpdate" then f:updateTOTAuras( f.Power, unit) end--return
-	if event == "UNIT_HEALTH" or event == "UNIT_MAXHEALTH" then return end
+	if event == "UNIT_HEALTH"
+		--or event == "UNIT_MAXHEALTH"
+		then return end
 
 	local cols = f.colors.disconnected or ( { 1, 1, 1} )
 

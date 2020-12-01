@@ -459,7 +459,7 @@ end
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if not yo.CTA.enable then return end
-		CreateAnchor("yoMoveCTA",	"Move CTA", 220, 25,	-255, -175, "TOPRIGHT", "TOPRIGHT")
+		CreateAnchor("yoMoveCTA",	"Move CTA", 220, 25,	-150, 0, "TOPRIGHT", "LEFT", Minimap)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent("LFG_ROLE_UPDATE");
 		self:RegisterEvent("LFG_UPDATE");

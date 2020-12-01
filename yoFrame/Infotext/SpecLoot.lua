@@ -35,7 +35,7 @@ function Stat:specOnClick( button)
 	end
 
 	if button == 'LeftButton' then
-		EasyMenu(menuList, menuFrame, "cursor", -50, 100, "MENU", 2)
+		EasyMenu(menuList, menuFrame, "cursor", -75, 150, "MENU", 2)
 	else
 		ToggleTalentFrame()
 	end

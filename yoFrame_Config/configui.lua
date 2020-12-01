@@ -638,12 +638,12 @@ function InitOptions()
 					enable 			= { width = "full",	order = 1, type = "toggle",	name = L["FLGenable"], disabled = false, },
 					--desc01			= {	order = 2, type = "description", name = L["DESC_FILGER"], width = "full"},
 
-					--fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					--fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					--fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 
-					--fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
-					--fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.5,},
+					fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
+					fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.5,},
 
 					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
