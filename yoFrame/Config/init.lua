@@ -38,3 +38,54 @@ _G ["BINDING_NAME_TAR_MARK_0"] 	= "Очистителька"
 
 --_G ["BINDING_NAME_DETAILS_SCROLL_UP"] = Loc ["STRING_KEYBIND_SCROLL_UP"]
 --_G ["BINDING_NAME_DETAILS_SCROLL_DOWN"] = Loc ["STRING_KEYBIND_SCROLL_DOWN"]
+
+--<Layer level="OVERLAY" textureSubLevel="2">
+--	<Texture parentKey="IconOverlay2" hidden="true">
+--		<Size x="37" y="37"/>
+--		<Anchors>
+--			<Anchor point="CENTER"/>
+--		</Anchors>
+--	</Texture>
+--</Layer>
+
+local originalSetItemButtonOverlay = SetItemButtonOverlay
+
+function SetItemButtonOverlay(button, itemIDOrLink, quality, isBound)
+
+	if not button.IconOverlay2 then
+		button.IconOverlay2 = button:CreateTexture(nil, "OVERLAY", nil, 2)
+		button.IconOverlay2:SetAllPoints( button)
+		button.IconOverlay2:Hide()
+	end
+
+	originalSetItemButtonOverlay(button, itemIDOrLink, quality, isBound)
+	--button.IconOverlay:SetVertexColor(1,1,1);
+	--if button.IconOverlay2 then
+	--	button.IconOverlay2:Hide();
+	--end
+
+	--if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemIDOrLink) then
+	--	button.IconOverlay:SetAtlas("AzeriteIconFrame");
+	--	button.IconOverlay:Show();
+	--elseif IsCorruptedItem(itemIDOrLink) then
+	--	button.IconOverlay:SetAtlas("Nzoth-inventory-icon");
+	--	button.IconOverlay:Show();
+	--elseif IsCosmeticItem(itemIDOrLink) and not isBound then
+	--	button.IconOverlay:SetAtlas("CosmeticIconFrame");
+	--	button.IconOverlay:Show();
+	--elseif C_Soulbinds.IsItemConduitByItemInfo(itemIDOrLink) then
+	--	if not quality or not BAG_ITEM_QUALITY_COLORS[quality] then
+	--		quality = Enum.ItemQuality.Common;
+	--	end
+	--	local color = BAG_ITEM_QUALITY_COLORS[quality];
+	--	button.IconOverlay:SetVertexColor(color.r, color.g, color.b);
+	--	button.IconOverlay:SetAtlas("ConduitIconFrame");
+	--	button.IconOverlay:Show();
+	--	if button.IconOverlay2 then
+	--		button.IconOverlay2:SetAtlas("ConduitIconFrame-Corners");
+	--		button.IconOverlay2:Show();
+	--	end
+	--else
+	--	button.IconOverlay:Hide();
+	--end
+end

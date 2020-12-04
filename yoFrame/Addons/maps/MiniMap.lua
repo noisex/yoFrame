@@ -57,8 +57,8 @@ local function MiniInit()
 	DurabilityFrame:ClearAllPoints()
 	DurabilityFrame:SetPoint("BOTTOM", yoUF.player, "TOP", 0, 20)
 	--DurabilityFrame:SetFrameLevel( 10)
-	DurabilityFrame.ClearAllPoints = dummy
-	DurabilityFrame.SetPoint = dummy
+	DurabilityFrame.ClearAllPoints = n.dummy
+	DurabilityFrame.SetPoint = n.dummy
 
 
 	--MinimapCluster
@@ -122,11 +122,11 @@ local function MiniInit()
 	GarrisonLandingPageMinimapButton:SetSize( 28, 28)
 	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", -0, -0)
 	GarrisonLandingPageMinimapButton:SetAlpha( 0.6)
-	GarrisonLandingPageMinimapButton.ClearAllPoints = dummy
-	GarrisonLandingPageMinimapButton.SetSize 	= dummy
-	GarrisonLandingPageMinimapButton.SetWidth 	= dummy
-	GarrisonLandingPageMinimapButton.SetHeight 	= dummy
-	GarrisonLandingPageMinimapButton.SetPoint 	= dummy
+	GarrisonLandingPageMinimapButton.ClearAllPoints = n.dummy
+	GarrisonLandingPageMinimapButton.SetSize 	= n.dummy
+	GarrisonLandingPageMinimapButton.SetWidth 	= n.dummy
+	GarrisonLandingPageMinimapButton.SetHeight 	= n.dummy
+	GarrisonLandingPageMinimapButton.SetPoint 	= n.dummy
 
 	--mail
 	MiniMapMailFrame:ClearAllPoints()

@@ -144,7 +144,7 @@ end
 local function CombatLogEvent( self, ...)
 	local sourceName = select( 5, ...)
 
-	if sourceName == myName or sourceName == myPet then
+	if sourceName == yo.myName or sourceName == myPet then
 		local subEvent = select( 2, ...)
 
 		if subEvent == "SPELL_DAMAGE"

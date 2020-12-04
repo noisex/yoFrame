@@ -77,8 +77,6 @@ local media = {
 	["glow"] = "Interface\\AddOns\\yoFrame\\Root\\Media\\glowTex",
 }
 
-local dummy = function() end
-
 local CreateBD = function(f, a)
 	local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
 	if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end

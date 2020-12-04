@@ -8,14 +8,10 @@ local GetContainerItemInfo, GetItemCount, GetContainerNumSlots, GetNumGuildBankT
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
-	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
---local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
---local strlower, strsub, strlen, strupper, strtrim, strmatch = strlower, strsub, strlen, strupper, strtrim, strmatch
+local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
 
---local yo_AllData, yo_BBCount, yo_BB, yo_Bags
---	= yo_AllData, yo_BBCount, yo_BB, yo_Bags
-
+local yo_Bags = yo_Bags
 -- GLOBALS: yo_BBFrame
 
 local COMPLETE_LINK 	= '|c.+|H.+|h.+|h|r'
@@ -223,7 +219,7 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag.text:SetPoint("TOPLEFT", self.bag, "TOPLEFT", 30, -6)
 
 		self.bag.header = self.bag:CreateFontString(nil, "OVERLAY")
-		self.bag.header:SetFont( font, fontsize+ 2, "OUTLINE")
+		self.bag.header:SetFont( yo.font, yo.fontsize+ 2, "OUTLINE")
 		self.bag.header:SetPoint("TOP", self.bag, "TOP", 0, -3)
 
 		self.bag.close = CreateFrame("Button", nil, self.bag, "UIPanelCloseButton")
@@ -292,7 +288,7 @@ local function CreateBag( self, name, bank, gtab)
 		containerWidth 	= 570
 		maxSlots = 98
 		bankList = { gtab}
-		self.nameColor 	= self.myColor
+		self.nameColor 	= self.yo.myColor
 
 		if not self.bag.gtab then
 			self.bag.gtab = CreateFrame("Frame", nil, self.bag)
@@ -316,26 +312,26 @@ local function CreateBag( self, name, bank, gtab)
 			self.bag.gtab.icons[i]:SetChecked( i == gtab)
 		end
 
-		self.bag.header:SetTextColor( myColor.r, myColor.g, myColor.b)
+		self.bag.header:SetTextColor( yo.myColor.r, yo.myColor.g, yo.myColor.b)
 		self.bag.header:SetText( name .. " : " .. self.bag.gtab.icons[gtab].text)
 
 		self.bag.text:SetText( date( "%d.%m.%y %H:%M", self.Realm[name][gtab].lgbtime))
-		self.bag.text:SetTextColor( myColor.r, myColor.g, myColor.b)
+		self.bag.text:SetTextColor( yo.myColor.r, yo.myColor.g, yo.myColor.b)
 
-		self.bag.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[yo_AllData[myRealm][myName].Sex], yo_AllData[myRealm][myName].Race))
+		self.bag.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[yo_AllData[yo.myRealm][yo.myName].Sex], yo_AllData[yo.myRealm][yo.myName].Race))
 		self.bag.gtab:Show()
 	else
 		maxSlots = GetMaxSlots( self, name, bank)
 		if maxSlots == 0 then return end
 
 		bankList = bankas[bank]
-		self.nameColor = yo_AllData[myRealm][name].Color
+		self.nameColor = yo_AllData[yo.myRealm][name].Color
 
 		if self.bag.gtab then self.bag.gtab:Hide() end
 		self.bag.header:SetTextColor( self.nameColor.r, self.nameColor.g, self.nameColor.b)
 		self.bag.header:SetText( name .. " : " .. L[bank])
 		self.bag.text:SetText("")
-		self.bag.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[yo_AllData[myRealm][name].Sex], yo_AllData[myRealm][name].Race))
+		self.bag.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[yo_AllData[yo.myRealm][name].Sex], yo_AllData[yo.myRealm][name].Race))
 	end
 
 	if maxSlots == 0 then return end
@@ -354,7 +350,7 @@ local function CreateBag( self, name, bank, gtab)
 
 	self.bag:SetSize( holderWidth + 20, holderHeight + 35)
 
-	local buttonName 		= gtab and myName or name
+	local buttonName 		= gtab and yo.myName or name
 	self.bag.bank.ttText 	= buttonName .. ": " .. BANK
 	self.bag.bag.ttText 	= buttonName .. ": " .. BAGSLOT
 	self.bag.regs.ttText 	= buttonName .. ": " .. REAGENT_BANK
@@ -472,7 +468,7 @@ function bagBro:CreateBagIconButton( self, parent)
 	self.bagButton:SetSize(22, 22)
 	self.bagButton:SetPoint("TOPLEFT", parent, "TOPLEFT", 1, -1)
 	self.bagButton:SetParent( parent)
-	self.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[mySex], myRace))
+	self.bagButton:SetNormalTexture( format( RACE_PORTRAITS, gender[yo.mySex], yo.myRace))
 
 	if parent.editBox then
 		local a1, p, a2, x, y = parent.editBox:GetPoint(1)
@@ -490,13 +486,13 @@ function bagBro:CreateBagIconButton( self, parent)
 	self.bagButton:SetScript("OnClick", function(self, ...)
 		local index = 2
 
-		for name, player in pairs( yo_BB[myRealm]) do
+		for name, player in pairs( yo_BB[yo.myRealm]) do
 			if not name:match( "*") then
 				local iconPers
-				if not yo_AllData[myRealm][name].Sex or not yo_AllData[myRealm][name].Race then
+				if not yo_AllData[yo.myRealm][name].Sex or not yo_AllData[yo.myRealm][name].Race then
 					iconPers = RACE_TEMP
 				else
-					iconPers = format( RACE_PORTRAITS, gender[yo_AllData[myRealm][name].Sex], yo_AllData[myRealm][name].Race)
+					iconPers = format( RACE_PORTRAITS, gender[yo_AllData[yo.myRealm][name].Sex], yo_AllData[yo.myRealm][name].Race)
 				end
 
 				menuList[index] = {text = "|T" .. iconPers .. ":24:24:-5:0|t" .. name, notCheckable=true, hasArrow = true, func = function() CreateBag( yo_BBFrame, name, "bags") end,
@@ -542,7 +538,7 @@ local function SaveBags( self, bag)
 
 			if itemID and count > 0 then
 				--print( link, itemID, GetItemCount( itemID, true))
-				yo_BBCount[myRealm][myName][itemID] = GetItemCount( itemID, true)
+				yo_BBCount[yo.myRealm][yo.myName][itemID] = GetItemCount( itemID, true)
 				if self.tempBags and self.tempBags[bag] then
 					self.tempBags[bag][itemID] = nil
 				end
@@ -582,7 +578,7 @@ local function SaveGuilds( self)
 	end
 
 	self.Realm[id] = guild
-	yo_AllData[myRealm][myName]["LGBTime"] = time()
+	yo_AllData[yo.myRealm][yo.myName]["LGBTime"] = time()
 end
 
 function bagBro:CheckForClean( self)
@@ -593,10 +589,10 @@ function bagBro:CheckForClean( self)
 			--print(itemID, count)
 			if count > 0 then
 
-				yo_BBCount[myRealm][myName][itemID] = count
+				yo_BBCount[yo.myRealm][yo.myName][itemID] = count
 			else
-				if itemID and yo_BBCount[myRealm][myName][itemID] then
-					yo_BBCount[myRealm][myName][itemID] = nil
+				if itemID and yo_BBCount[yo.myRealm][yo.myName][itemID] then
+					yo_BBCount[yo.myRealm][yo.myName][itemID] = nil
 				end
 			end
 		end
@@ -611,19 +607,19 @@ local function OnEvent( self, event, change)
 
 		local firstRun
 		if not yo_BB then yo_BB = {} end
-		if not yo_BB[myRealm] then yo_BB[myRealm] = {} end
-		if not yo_BB[myRealm][myName] then yo_BB[myRealm][myName] = {} firstRun = true end
+		if not yo_BB[yo.myRealm] then yo_BB[yo.myRealm] = {} end
+		if not yo_BB[yo.myRealm][yo.myName] then yo_BB[yo.myRealm][yo.myName] = {} firstRun = true end
 
 		if not yo_BBCount then yo_BBCount = {} end
-		if not yo_BBCount[myRealm] then yo_BBCount[myRealm] = {} end
-		if not yo_BBCount[myRealm][myName] then yo_BBCount[myRealm][myName] = {} end
+		if not yo_BBCount[yo.myRealm] then yo_BBCount[yo.myRealm] = {} end
+		if not yo_BBCount[yo.myRealm][yo.myName] then yo_BBCount[yo.myRealm][yo.myName] = {} end
 
 		self.needUpBag 	= {}
-		self.Realm  	= yo_BB[myRealm]
-		self.Player 	= yo_BB[myRealm][myName]
-		self.myColor 	= yo_AllData[myRealm][myName].Color
-		--self.iRealm 	= yo_BBCount[myRealm]
-		--self.iPlayer 	= yo_BBCount[myRealm][myName]
+		self.Realm  	= yo_BB[yo.myRealm]
+		self.Player 	= yo_BB[yo.myRealm][yo.myName]
+		self.myColor 	= yo_AllData[yo.myRealm][yo.myName].Color
+		--self.iRealm 	= yo_BBCount[yo.myRealm]
+		--self.iPlayer 	= yo_BBCount[yo.myRealm][yo.myName]
 
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent('BAG_UPDATE')

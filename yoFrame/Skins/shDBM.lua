@@ -55,7 +55,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							icon2.overlay:SetFrameStrata("BACKGROUND")
 							icon2.overlay:SetPoint("BOTTOMLEFT", tbar, "BOTTOMRIGHT", 3, -2)
 							--icon2.overlay:SetTemplate("Transparent")
-							CreateStyle( icon2.overlay, 2) 
+							CreateStyle( icon2.overlay, 2)
 						end
 
 						--if bar.color then
@@ -120,7 +120,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							--name:SetShadowOffset( 1 , -1)
 							--name:SetShadowColor(0.5, 0.5, 0.5, 0.9)
 							name:SetJustifyH("LEFT")
-							name.SetFont = dummy
+							name.SetFont = n.dummy
 							name.styled = true
 						end
 
@@ -131,7 +131,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							--timer:SetShadowOffset( 1, -1)
 							--timer:SetShadowColor(0.5, 0.7, 0.7)
 							timer:SetJustifyH("RIGHT")
-							timer.SetFont = dummy
+							timer.SetFont = n.dummy
 							timer.styled = true
 						end
 
@@ -206,11 +206,11 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 		_G["DBM_GUI_OptionsFrameTab2"]:ClearAllPoints()
 		_G["DBM_GUI_OptionsFrameTab2"]:SetPoint("TOPLEFT", _G["DBM_GUI_OptionsFrameTab1"], "TOPRIGHT", 6, 0)
 
-		_G["DBM_GUI_OptionsFrameBossMods"]:HookScript("OnShow", function(self) 
-			CreateStyle( self, 3)	--:SetTemplate("Overlay") 
+		_G["DBM_GUI_OptionsFrameBossMods"]:HookScript("OnShow", function(self)
+			CreateStyle( self, 3)	--:SetTemplate("Overlay")
 		end)
-		_G["DBM_GUI_OptionsFrameDBMOptions"]:HookScript("OnShow", function(self) 
-			CreateStyle(  self, 3)	--:SetTemplate("Overlay") 
+		_G["DBM_GUI_OptionsFrameDBMOptions"]:HookScript("OnShow", function(self)
+			CreateStyle(  self, 3)	--:SetTemplate("Overlay")
 		end)
 		_G["DBM_GUI_OptionsFrameHeader"]:SetTexture("")
 		_G["DBM_GUI_OptionsFrameHeader"]:ClearAllPoints()
@@ -237,10 +237,10 @@ end)
 ----------------------------------------------------------------------------------------
 function UploadDBM()
 	if IsAddOnLoaded("DBM-Core") then
-		local T = { 
+		local T = {
 			["color"] = {
-				["b"] = 1, 
-				["g"] = 1, 
+				["b"] = 1,
+				["g"] = 1,
 				["b"] = 1}
 		}
 

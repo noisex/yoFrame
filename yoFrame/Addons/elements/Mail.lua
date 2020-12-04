@@ -1,3 +1,5 @@
+local addon, ns = ...
+local L, yo, n = unpack( ns)
 
 local deletedelay, t = 0.5, 0
 local takingOnlyCash = false
@@ -10,7 +12,7 @@ function openAll()
 	if GetInboxNumItems() == 0 then return end
 	button2:SetScript("OnClick", nil)
 	baseInboxFrame_OnClick = InboxFrame_OnClick
-	InboxFrame_OnClick = dummy
+	InboxFrame_OnClick = n.dummy
 	openMail(GetInboxNumItems())
 end
 

@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.CTA.enable then return end
 
@@ -7,8 +7,8 @@ local yo_CTA = {}
 local tRole, hRole, dRole, timer
 local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
 
-local CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, myColor, GetTime, format, GetLFGMode, GetLFGCategoryForID
-	= CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, myColor, GetTime, format, GetLFGMode, GetLFGCategoryForID
+local CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, GetTime, format, GetLFGMode, GetLFGCategoryForID
+	= CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, GetTime, format, GetLFGMode, GetLFGCategoryForID
 
 local function isRaidFinderDungeonDisplayable(id)
 
@@ -18,8 +18,7 @@ local function isRaidFinderDungeonDisplayable(id)
 	end
 
 	local name, typeID, subtypeID, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(id);
-	local myLevel = UnitLevel("player");
-	return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel;
+	return yo.myLevel >= minLevel and yo.myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel;
 end
 
 local function CheckLFGQueueMode( self, id, modeLFG)
@@ -288,8 +287,8 @@ local function CreateLFRStrings( parent, id)
 		end
 
 		GameTooltip:Show()
-		--self.name:SetTextColor(myColor.r, myColor.g, myColor.b, .9)
-		self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b, .9)
+		--self.name:SetTextColor(yo.myColor.r, yo.myColor.g, yo.myColor.b, .9)
+		self:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b, .9)
 	end)
 
 	button:SetScript("OnLeave", function(self, ...)
@@ -432,13 +431,13 @@ local function CheckLFR( self, ...)
 		end
 	end
 
-	if index == 0 or UnitInParty("player") or UnitInRaid("player") or yo.CTA.hide then
+	if index == 0 or not n.IsSoloFree or yo.CTA.hide then
 		self.LFRFrame:Hide()
 	else
 		self.LFRFrame:Show()
 	end
 
-   if newDate and ( not UnitInParty("player") or not UnitInRaid("player")) and not yo.CTA.nosound then
+   if newDate and n.IsSoloFree and not yo.CTA.nosound then
 		PlaySoundFile( LSM:Fetch( "sound", yo.CTA.sound))
    end
 

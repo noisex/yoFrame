@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.ActionBar.enable then return end
 
@@ -101,10 +101,10 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local disabled = m:GetDisabledTexture()
 
 		m:SetParent(frame)
-		m.SetParent = dummy
+		m.SetParent = n.dummy
 		_G[name.."Flash"]:SetTexture("")
 		m:SetHighlightTexture("")
-		m.SetHighlightTexture = dummy
+		m.SetHighlightTexture = n.dummy
 
 		local f = CreateFrame("Frame", nil, m)
 		f:SetFrameLevel(1)
@@ -147,7 +147,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 	elseif 	name:match("ExtraActionButton") then
 
 		button.style:Hide()
-		button.style.Show = dummy
+		button.style.Show = n.dummy
 
 		button:SetScale( 0.9)
 		button.Count:Hide()
@@ -208,8 +208,8 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		button.HotKey:ClearAllPoints()
 		button.HotKey:SetPoint("TOPRIGHT", 0, 0)
 		button.HotKey:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
-		button.HotKey.ClearAllPoints = dummy
-		button.HotKey.SetPoint = dummy
+		button.HotKey.ClearAllPoints = n.dummy
+		button.HotKey.SetPoint = n.dummy
 
 		if yo.ActionBar.HideHotKey 		then button.HotKey:Hide() end
 		if button.SetHighlightTexture 	then button:SetHighlightTexture( 	myButtonBorder( button, "hover", shift, alpfa, { 0, 1, 0})) end
@@ -289,12 +289,12 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 		if Border then
 			Border:Hide()
-			Border = dummy
+			Border = n.dummy
 		end
 
 		--if float then
 		--	float:Hide()
-		--	float = dummy
+		--	float = n.dummy
 		--end
 
 		local countFrame = CreateFrame( "Frame", nil, button)
@@ -336,8 +336,8 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		HotKey:ClearAllPoints()
 		HotKey:SetPoint("TOPRIGHT", 0, 0)
 		HotKey:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
-		HotKey.ClearAllPoints = dummy
-		HotKey.SetPoint = dummy
+		HotKey.ClearAllPoints = n.dummy
+		HotKey.SetPoint = n.dummy
 
 		if yo.ActionBar.HideHotKey then
 			HotKey:SetText("")
@@ -501,7 +501,7 @@ end
 --	end
 
 --	if yo.ActionBar.ShowGrid == true then
---		ActionButton_HideGrid = dummy
+--		ActionButton_HideGrid = n.dummy
 --		for i = 1, 12 do
 --			local button = _G[format("ActionButton%d", i)]
 --			button:SetAttribute("showgrid", 1)

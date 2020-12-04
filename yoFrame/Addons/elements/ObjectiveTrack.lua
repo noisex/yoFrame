@@ -156,6 +156,10 @@ local function ShowQuestLevelInWatchFrame()
 
 					local questInfo = C_QuestLog.GetInfo( questLogIndex)
 
+--if questInfo.questID == 60457 then
+
+--end
+
 					if ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then
 						local questTypeIndex = GetQuestLogQuestType(questLogIndex)
 						local tagString = n.questTypesIndex[questTypeIndex] or ""
@@ -316,8 +320,8 @@ yoMoveQuestFrame:SetHeight( yo["Addons"].ObjectiveHeight )
 ObjectiveTrackerFrame:SetSize( yoMoveQuestFrame:GetSize())
 ObjectiveTrackerFrame:ClearAllPoints()
 ObjectiveTrackerFrame:SetPoint("TOPLEFT", yoMoveQuestFrame, "TOPLEFT", -2, 2)
-ObjectiveTrackerFrame.ClearAllPoints = dummy
-ObjectiveTrackerFrame.SetPoint = dummy
+ObjectiveTrackerFrame.ClearAllPoints = n.dummy
+ObjectiveTrackerFrame.SetPoint = n.dummy
 
 
 --hooksecurefunc(ObjectiveTrackerFrame, "SetPoint", function(_, _, parent)

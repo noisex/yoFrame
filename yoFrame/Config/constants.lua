@@ -3,21 +3,21 @@ local L, yo, n = unpack( ns)
 
 -- название школы по индексу  _G.CombatLog_String_SchoolString(key))
 
-myClass 	= select( 2, UnitClass( "player"))
-mySpec 		= GetSpecialization()
-myGUID		= UnitGUID('player')
---mySpeClass	= myClass .. mySpec
-myColor 	= RAID_CLASS_COLORS[myClass]
-myColorStr 	= "|c" .. RAID_CLASS_COLORS[myClass].colorStr
-myName		= UnitName( "player")
-myRealm 	= GetRealmName()
-myRealmShort= select( 2, UnitFullName("player"))
-myLogin 	= GetTime()
-myClient 	= GetLocale()
-myFaction 	= UnitFactionGroup("player")
-myLevel 	= UnitLevel( "player")
-myRace		= select(2, UnitRace('player'))
-mySex		= UnitSex('player')
+yo.myClass 	= select( 2, UnitClass( "player"))
+yo.mySpec 		= GetSpecialization()
+yo.myGUID		= UnitGUID('player')
+--mySpeClass	= yo.myClass .. yo.mySpec
+yo.myColor 	= RAID_CLASS_COLORS[yo.myClass]
+yo.myColorStr 	= "|c" .. RAID_CLASS_COLORS[yo.myClass].colorStr
+yo.myName		= UnitName( "player")
+yo.myRealm 	= GetRealmName()
+yo.myRealmShort= select( 2, UnitFullName("player"))
+yo.myLogin 	= GetTime()
+yo.myClient 	= GetLocale()
+yo.myFaction 	= UnitFactionGroup("player")
+yo.myLevel 	= UnitLevel( "player")
+yo.myRace		= select(2, UnitRace('player'))
+yo.mySex		= UnitSex('player')
 
 
 yo["InfoTexts"] = {
@@ -444,7 +444,30 @@ yo["healBotka"] = {
 	["hScale3"] = 1,
 	["hScale4"] = 1,
 	["hScale5"] = 1,
-
+	["bStop1"]	= false,
+	["bStop2"]	= false,
+	["bStop3"]	= false,
+	["bStop4"]	= false,
+	["bStop5"]	= false,
+	["bStop6"]	= false,
+	["bStop7"]	= false,
+	["bStop8"]	= false,
+	["bStop9"]	= false,
+	["bStop10"]	= false,
+	["bStop11"]	= false,
+	["bStop12"]	= false,
+	["bTrink1"] = false,
+	["bTrink2"] = false,
+	["bTrink3"] = false,
+	["bTrink4"] = false,
+	["bTrink5"] = false,
+	["bTrink6"] = false,
+	["bTrink7"] = false,
+	["bTrink8"] = false,
+	["bTrink9"] = false,
+	["bTrink10"] = false,
+	["bTrink11"] = false,
+	["bTrink12"] = false,
 }
 
 yo["fliger"] = {

@@ -65,7 +65,7 @@ function Setlers( path, val, ...)
 	--local aConf = {}
 	local p1, p2, p3, p4 = strsplit("#", path)
 
-	--if yo_AllData[myRealm][myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
+	--if yo_AllData[yo.myRealm][yo.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
 	--else												aConf = _G["yo_AllConfig"]	end
 
 	if p4 then
@@ -100,7 +100,7 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
   	button1 = "Yes",
   	button2 = "No",
   	OnAccept = function()
-		yo_AllData[myRealm][myName].PersonalConfig = not yo_AllData[myRealm][myName].PersonalConfig
+		yo_AllData[yo.myRealm][yo.myName].PersonalConfig = not yo_AllData[yo.myRealm][yo.myName].PersonalConfig
      	ReloadUI()
   	end,
   	timeout = 0,
@@ -130,7 +130,7 @@ function InitOptions()
 					PersonalConfig = {
 						order = 1, type = "toggle", width = "full",	name = function(info) return tr( info[#info]) end,
 						desc = L["PERSONAL_DESC"],	descStyle = "inline",
-						get = function(info) return yo_AllData[myRealm][myName].PersonalConfig end,
+						get = function(info) return yo_AllData[yo.myRealm][yo.myName].PersonalConfig end,
 						set = function(info,val) StaticPopup_Show ("CONFIRM_PERSONAL") end,	},
 					scriptErrors= {
 						name = function(info) return tr( info[#info]) end,
@@ -206,7 +206,7 @@ function InitOptions()
 						get = function(info, r, g, b)  return strsplit( ",", yo.Media.shadowColor)	end,
 						set = function(info, r, g, b) --[[Setlers( "Media#shadowColor", strjoin(",", r, g, b))]] UpdateShadows(  r, g, b) end,},
 					classBorder	= {	order = 74, type = "execute", name = "Shadow classColor", desc = "JUST FOR FUN",
-           				func = function() UpdateShadows( myColor.r, myColor.g, myColor.b) end,},
+           				func = function() UpdateShadows( yo.myColor.r, yo.myColor.g, yo.myColor.b) end,},
            			borderReset	= {	order = 76, type = "execute", name = "Shadow Reset", desc = "JUST FOR FUN",
            				func = function() UpdateShadows( strsplit( ",", yo.Media.shadowColor)) end,},
 			 	},
@@ -731,33 +731,60 @@ function InitOptions()
 							set00	= {	order = 08, type = "description", 	name = "Маус ор клавабатон", width = 1.2,},
 							set01	= {	order = 09, type = "description", 	name = "Спелл фор биндинг", width = 1,},
 
-							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", width = 1.1, desc = L["DESC_KEY"],},
-							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",   width = 1.1, desc = L["DESC_KEY"],},
+							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", width = 0.9, desc = L["DESC_KEY"],},
+							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",   width = 0.9, desc = L["DESC_KEY"],},
 
-							key1	= {	order = 10, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key2	= {	order = 14, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell2	= { order = 16, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key3	= {	order = 18, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell3	= { order = 20, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key4	= {	order = 22, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell4	= { order = 24, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key5	= {	order = 26, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell5	= { order = 28, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key6	= {	order = 30, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell6	= { order = 32, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key7	= {	order = 34, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell7	= { order = 36, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key8	= {	order = 38, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell8	= { order = 40, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key9	= {	order = 42, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell9	= { order = 44, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key10	= {	order = 46, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell10	= { order = 48, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key11	= {	order = 50, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell11	= { order = 52, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							key12	= {	order = 54, type = "keybinding",	name = "", width = 1.1, desc = L["DESC_KEY"],},
-							spell12	= { order = 56, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							key1	= {	order = 10, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key2	= {	order = 20, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key3	= {	order = 30, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key4	= {	order = 40, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key5	= {	order = 50, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key6	= {	order = 60, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key7	= {	order = 70, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key8	= {	order = 80, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key9	= {	order = 90, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key10	= {	order =100, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key11	= {	order =110, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+							key12	= {	order =120, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
+
+							spell1	= { order = 12, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell2	= { order = 22, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell3	= { order = 32, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell4	= { order = 42, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell5	= { order = 52, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell6	= { order = 62, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell7	= { order = 72, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell8	= { order = 82, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell9	= { order = 92, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell10	= { order =102, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell11	= { order =112, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell12	= { order =122, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+
+							bTrink1	= {	order = 14, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink2	= {	order = 24, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink3	= {	order = 34, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink4	= {	order = 44, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink5	= {	order = 54, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink6	= {	order = 64, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink7	= {	order = 74, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink8	= {	order = 84, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink9 = {	order = 94, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink10= {	order =104, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink11= {	order =114, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink12= {	order =124, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+
+							bStop1	= {	order = 16, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop2	= {	order = 26, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop3	= {	order = 36, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop4	= {	order = 46, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop5	= {	order = 56, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop6	= {	order = 66, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop7	= {	order = 76, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop8	= {	order = 86, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop9	= {	order = 96, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop10 = {	order =106, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop11 = {	order =116, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop12 = {	order =126, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
 						},
 					},
 					heneral = {
@@ -1025,6 +1052,6 @@ init:SetScript("OnEvent", function()
 
 	_, yo, n = unpack( _G["yoFrame"])
 
-	if _G["yo_AllData"][myRealm][myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
+	if _G["yo_AllData"][yo.myRealm][yo.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
 	else														aConf = _G["yo_AllConfig"]	end
 end)

@@ -7,14 +7,14 @@ local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs, type, sele
 	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs, type, select, unpack, tremove, max
 local texture, texglow = yo.texture, yo.texglow
 
---local myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, myName
---	= myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, myName
+--local yo.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, yo.myName
+--	= yo.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, yo.myName
 
 local GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
 	= GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
 
 function isDruid( self)
-	if myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
+	if yo.myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
 		--self:Hide()
 		return false
 	else
@@ -32,14 +32,11 @@ myDev = {
 	--["Твитти"] 		= true,
 }
 
-dummy = function() return end
-
 dprint = function(...)
-	if myDev[myName] then
+	if myDev[yo.myName] then
 		print( time(), "|cff33ff99yoDev:|cff999999", ... )
 	end
 end
-
 
 -------------------------------------------------------------------------------------------
 -- 						Where are my point
@@ -168,7 +165,7 @@ function Kill(object)
 		object:UnregisterAllEvents()
 		object:SetParent(HiddenFrame)
 	else
-		object.Show = dummy
+		object.Show = n.dummy
 	end
 	object:Hide()
 end
@@ -330,7 +327,7 @@ function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	})
 	f:SetBackdropColor(.07,.07,.07, alpha or .9)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
-	--if yo.Media.classBorder then r, g, b = myColor.r, myColor.g, myColor.b end
+	--if yo.Media.classBorder then r, g, b = yo.myColor.r, yo.myColor.g, yo.myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0)	--(.15,.15,.15, alphaborder  or 0)
 	--table.insert( n["shadows"], f)
 	return f
@@ -366,7 +363,7 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	})
 	f:SetBackdropColor(.07,.07,.07, alpha or 0.9)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
-	--if yo.Media.classBorder then r, g, b = myColor.r, myColor.g, myColor.b end
+	--if yo.Media.classBorder then r, g, b = yo.myColor.r, yo.myColor.g, yo.myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0) --(0, 0, 0, alphaborder or 1)
 	--table.insert( n["shadows"], f)
 end

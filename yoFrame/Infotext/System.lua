@@ -5,8 +5,8 @@ local L, yo, n = unpack( select( 2, ...))
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, myColorStr, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
-	= GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, myColorStr, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
+local GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
+	= GetNetStats, GameTooltip, GetNumAddOns, GetFramerate, IsAddOnLoaded, collectgarbage, GetAddOnMemoryUsage, GetAddOnInfo, UpdateAddOnMemoryUsage
 
 n.infoTexts["infos"] = {}
 
@@ -102,7 +102,7 @@ function Stat:onEnter()
 	GameTooltip:ClearLines()
 	local _, _, latencyHome, latencyWorld = GetNetStats()
 	local latency = format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld)
-	GameTooltip:AddLine(myColorStr..latency)
+	GameTooltip:AddLine(yo.myColorStr..latency)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddDoubleLine("Total Memory Usage:", Stat:formatMem(Total), 0, 0.6, 1, 1, 1, 1)
 	GameTooltip:AddLine(" ")

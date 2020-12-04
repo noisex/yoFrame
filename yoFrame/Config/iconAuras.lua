@@ -2,8 +2,8 @@ local addon, ns = ...
 
 local L, yo, n = unpack( ns)
 
-local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall, min, floor, texture
-	= GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall, math.min, floor, texture
+local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall, min, floor, SetUpAnimGroup
+	= GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ceil, UIParent, formatTimeSec, formatTime, CreateStyleSmall, math.min, floor, SetUpAnimGroup
 -----------------------------------------------------------------------------------------------
 --	AURAS
 -----------------------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ function n.createAuraIcon( parent, index)
 	if button.countColor then
 		button.countColor = button:CreateTexture(nil, "OVERLAY")
 		button.countColor:SetAllPoints( button)
-		button.countColor:SetTexture( texture)  --texhl
+		button.countColor:SetTexture( yo.texture)  --texhl
 		button.countColor:SetBlendMode("ADD")
 		button.countColor:SetColorTexture( 1, 0, 0, 1) -- SetColorTexture SetVertexColor
 		button.countColor:SetAlpha( 0)

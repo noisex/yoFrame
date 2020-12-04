@@ -7,8 +7,8 @@ local infoText 	= n.infoTexts
 local Stat 		= CreateFrame("Frame", nil, UIParent)
 local aaName 	= GetSpellInfo( 6603)
 
-local time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID, myGUID, GameTooltip, type
-	= time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID, myGUID, GameTooltip, type
+local time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID, GameTooltip, type
+	= time, max, strjoin, CombatLogGetCurrentEventInfo, UnitGUID, GameTooltip, type
 
 --bit.band (flag, 0x2000) ~= 0)
 --https://github.com/Gethe/wow-ui-source/blob/live/FrameXML/Constants.lua
@@ -55,7 +55,7 @@ function Stat:onEvent( event, ...)
 
 		if ( sourceMask == 4369 or sourceMask == 8465) and not infoText.petBlacklist[sourceGUID] then infoText:checkPets( sourceGUID)	end
 
-		if sourceGUID == myGUID or infoText.pets[sourceGUID] then
+		if sourceGUID == yo.myGUID or infoText.pets[sourceGUID] then
 
 			local spellID 		= cleuInfo[12]
 			local spellName 	= cleuInfo[13]
@@ -81,7 +81,7 @@ function Stat:onEvent( event, ...)
 			--over 		= events[Event] == true and cleuInfo[ defaultArgs.arg4 ] or cleuInfo[ events[Event].arg4] or events[Event].val4 or 0
 			--spellSchool = events[Event] == true and cleuInfo[ defaultArgs.arg5 ] or cleuInfo[ events[Event].arg5] or events[Event].val5
 
-			infoText.checkNewSpell( self, myGUID, spellID, spellName, spellDMG, spellOver, spellSchool, spellCrit)
+			infoText.checkNewSpell( self, yo.myGUID, spellID, spellName, spellDMG, spellOver, spellSchool, spellCrit)
 		end
 
 	elseif event == 'UNIT_PET' then

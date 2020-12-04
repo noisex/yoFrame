@@ -75,7 +75,7 @@ end
 local function GetActiveOptions(...)
 	local _, instance, _, _, _, _, _, mapID = GetInstanceInfo()
 	if --( autoGossipInstance[instance] or autoGossipNPC[GetNPCID()]) and
-		myLevel ~= MAX_PLAYER_LEVEL and C_GossipInfo.GetNumOptions() == 1 then
+		yo.myLevel ~= MAX_PLAYER_LEVEL and C_GossipInfo.GetNumOptions() == 1 then
 		C_GossipInfo.SelectOption(1, "", true)
 	end
 end
@@ -300,7 +300,7 @@ local function OnEvent( self, event, ...)
 
 		if questObjectives and #questObjectives > 5 then
 			if watchType then
-				print( format( strQuestObjectives, questID, myLevel, questObjectives))
+				print( format( strQuestObjectives, questID, yo.myLevel, questObjectives))
 			elseif yo.Addons.showToday then
 				print( "|cffffff00Тудейки: |cff0080ff" .. questObjectives)
 			end

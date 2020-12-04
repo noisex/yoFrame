@@ -12,8 +12,8 @@ local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
 local C_NewItems_IsNewItem = C_NewItems.IsNewItem
 local Search = LibStub('LibItemSearch-1.2')
 local defcol = 0.17
-local CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, myColor, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
-	= CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, myColor, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
+local CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
+	= CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
 
 local addon = CreateFrame("Frame", "yo_Bags", UIParent)
 	--addon:RegisterEvent("ADDON_LOADED")
@@ -336,7 +336,7 @@ function addon:Tooltip_Show()
 	end
 
 	GameTooltip:Show()
-	if self.shadow then self.shadow:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b, 1) end
+	if self.shadow then self.shadow:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b, 1) end
 end
 
 function addon:Tooltip_Hide()
@@ -574,7 +574,7 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 			--tprint( item)
 			--print( locSlotID, clink, item:GetItemLink(), item:GetInventoryTypeName(), weapon2H)
 
-			if itemSubClassID == n.classEquipMap[myClass] or itemEquipLoc == "INVTYPE_FINGER" or itemEquipLoc == "INVTYPE_TRINKET" then
+			if itemSubClassID == n.classEquipMap[yo.myClass] or itemEquipLoc == "INVTYPE_FINGER" or itemEquipLoc == "INVTYPE_TRINKET" then
 				canWear = true
 			else
 				wipe( itemTable)
@@ -930,6 +930,10 @@ function addon:CreateFilterIcon(parent)
 	parent.ElvUIFilterIcon:SetSize(14, 14)
 end
 
+function yoReagentSplitStack(split)
+	SplitContainerItem(REAGENTBANK_CONTAINER, self:GetID(), split)
+end
+
 function addon:CreateLayout( isBank)
 	local f = self:GetContainerFrame(isBank);
 	if not f then return; end
@@ -1099,8 +1103,8 @@ function addon:CreateLayout( isBank)
 					if f.Bags[bagID][slotID].UpgradeIcon then
 						f.Bags[bagID][slotID].UpgradeIcon:ClearAllPoints()
 						f.Bags[bagID][slotID].UpgradeIcon:SetPoint("BOTTOMRIGHT", f.Bags[bagID][slotID], "BOTTOMRIGHT", 8, -7)
-						f.Bags[bagID][slotID].UpgradeIcon.ClearAllPoints 	= dummy
-						f.Bags[bagID][slotID].UpgradeIcon.SetPoint 			= dummy
+						f.Bags[bagID][slotID].UpgradeIcon.ClearAllPoints 	= n.dummy
+						f.Bags[bagID][slotID].UpgradeIcon.SetPoint 			= n.dummy
 						f.Bags[bagID][slotID].UpgradeIcon:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagUpgradeIcon");
 						f.Bags[bagID][slotID].UpgradeIcon:SetTexCoord(0,1,0,1);
 						f.Bags[bagID][slotID].UpgradeIcon:Hide();
@@ -1134,7 +1138,7 @@ function addon:CreateLayout( isBank)
 					f.Bags[bagID][slotID].icon:ClearAllPoints()
 					f.Bags[bagID][slotID].icon:SetPoint("CENTER", f.Bags[bagID][slotID])
 					f.Bags[bagID][slotID].icon:SetSize(f.Bags[bagID][slotID]:GetWidth() -8, f.Bags[bagID][slotID]:GetHeight() -8)
-					f.Bags[bagID][slotID].icon.ClearAllPoints = dummy
+					f.Bags[bagID][slotID].icon.ClearAllPoints = n.dummy
 
 
 					f.Bags[bagID][slotID].cooldown = _G[f.Bags[bagID][slotID]:GetName()..'Cooldown'];
@@ -1234,8 +1238,9 @@ function addon:CreateLayout( isBank)
 			totalSlots = totalSlots + 1;
 
 			if(not f.reagentFrame.slots[i]) then
-				f.reagentFrame.slots[i] = f.reagentFrame.slots[i] or CreateFrame("ItemButton", "ReagentBankFrameItem"..i, f.reagentFrame, "BankItemButtonGenericTemplate, BackdropTemplate");
+				f.reagentFrame.slots[i] = f.reagentFrame.slots[i] or CreateFrame("ItemButton", "ReagentBankFrameItem"..i, f.reagentFrame, "BackdropTemplate, BankItemButtonGenericTemplate");
 				f.reagentFrame.slots[i]:SetID(i)
+				f.reagentFrame.slots[i].isReagent = true
 
 				StyleButton( f.reagentFrame.slots[i])
 				if not f.reagentFrame.slots[i].shadow then
@@ -1255,6 +1260,12 @@ function addon:CreateLayout( isBank)
 				f.reagentFrame.slots[i].icon:SetAllPoints( f.reagentFrame.slots[i])
 				f.reagentFrame.slots[i].icon:SetTexCoord( unpack( f.texCoord))
 				f.reagentFrame.slots[i].IconBorder:SetAlpha(0)
+
+				f.reagentFrame.slots[i]:RegisterForDrag('LeftButton')
+				f.reagentFrame.slots[i]:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
+				f.reagentFrame.slots[i].GetInventorySlot = ReagentButtonInventorySlot
+				f.reagentFrame.slots[i].UpdateTooltip = BankFrameItemButton_OnEnter
+				f.reagentFrame.slots[i].SplitStack = yoReagentSplitStack
 			end
 
 			f.reagentFrame.slots[i]:ClearAllPoints()
@@ -1683,7 +1694,7 @@ function OnEvent( self, event, ...)
 		doEquip = false
 		--dprint( "event =", event, doEquip)
 	elseif event == "PLAYERREAGENTBANKSLOTS_CHANGED" then
-		addon:UpdateReagentSlot( self, ...)
+		addon:UpdateReagentSlot( ...)
 	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED") and self:IsShown() then
 		UpdateAllSlots( self, ...)
 	elseif event == "BANK_BAG_SLOT_FLAGS_UPDATED" then
@@ -1746,17 +1757,6 @@ HiddenFrame:Hide()
 function addon:PLAYERBANKBAGSLOTS_CHANGED( ...)
 	--print( "PLAYERBANKBAGSLOTS_CHANGED", ...)
 	self:CreateLayout( true)
-end
-
-local function Kill(object)
-	if object.UnregisterAllEvents then
-		object:UnregisterAllEvents()
-		object:SetParent( HiddenFrame)
-	else
-		object.Show = object.Hide
-	end
-
-	object:Hide()
 end
 
 function addon:ADDON_LOADED( addon)

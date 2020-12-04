@@ -20,7 +20,7 @@ function Stat:onEvent(event)
 	if free <= 5 then
 		self.Text:SetText( "|cffff0000Bags: ".. free .. "/" .. total)
 	else
-		self.Text:SetText( BAGSLOT .. ": ".. myColorStr .. free .. "/" .. total)
+		self.Text:SetText( BAGSLOT .. ": ".. yo.myColorStr .. free .. "/" .. total)
 	end
 	--self:SetWidth( self.Text:GetWidth())
 end

@@ -6,7 +6,7 @@ local height = 13
 
 local function BEnter(self)
 	--local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
-	self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b)
+	self:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
 	self:GetParent():SetAlpha(1)
 end
 

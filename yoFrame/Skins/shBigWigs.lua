@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 ----------------------------------------------------------------------------------------
 --	BigWigs skin(by Affli)
@@ -74,7 +74,7 @@ local applystyle = function(bar)
 	bar:SetHeight(20)
 	bar:SetScale(1)
 	bar.OldSetScale = bar.SetScale
-	bar.SetScale = dummy
+	bar.SetScale = n.dummy
 
 	-- Create or reparent and use bar background
 	local bg = nil
@@ -126,7 +126,7 @@ local applystyle = function(bar)
 	bar.candyBarBar:ClearAllPoints()
 	bar.candyBarBar:SetAllPoints(bar)
 	bar.candyBarBar.OldSetPoint = bar.candyBarBar.SetPoint
-	bar.candyBarBar.SetPoint = dummy
+	bar.candyBarBar.SetPoint = n.dummy
 	bar.candyBarBar:SetStatusBarTexture( texture)
 	--if not bar.data["bigwigs:emphasized"] == true then
 	--	bar.candyBarBar:SetStatusBarColor( 1, 1, 1, 1)
@@ -140,7 +140,7 @@ local applystyle = function(bar)
 	bar.candyBarIconFrame:SetPoint("RIGHT", bar, "LEFT", -6, 0)
 	bar.candyBarIconFrame:SetSize( bar:GetHeight(), bar:GetHeight())
 	bar.candyBarIconFrame.OldSetWidth = bar.candyBarIconFrame.SetWidth
-	bar.candyBarIconFrame.SetWidth = dummy
+	bar.candyBarIconFrame.SetWidth = n.dummy
 	bar.candyBarIconFrame:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 end
 

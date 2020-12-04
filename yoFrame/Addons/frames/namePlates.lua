@@ -5,10 +5,13 @@ local oUF = ns.oUF
 
 if not yo.NamePlates.enable then return end
 
+n.namePlates = {}
+local np = n.namePlates
+
 local _G = _G
 
-local CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert
-	= CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert
+local CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
+	= CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -19,8 +22,8 @@ local GetTime, UnitIsPlayer, UnitAura, UnitIsPlayer, SetRaidTarget, UnitIsUnit, 
 local GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo, UnitGUID, UIParent
 	= GetRuneCooldown, UnitPower, GetSpecialization, UnitPowerMax, GetQuestDifficultyColor, GetUnitName, UnitLevel, UnitClassification, UnitChannelInfo, UnitCastingInfo, UnitGUID, UIParent
 
-local UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, myColor, myClass, isDruid
-	= UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, myColor, myClass, isDruid
+local UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, isDruid
+	= UnitExists, UnitInRaid, UnitPlayerControlled, UnitInParty, UnitGroupRolesAssigned, UnitReaction, UnitIsOtherPlayersPet, UnitDetailedThreatSituation, SetCVar, CreateFrame, GetCVar, Round, isDruid
 
 local nameplateheight 	= yo.NamePlates.height
 local nameplatewidth 	= yo.NamePlates.width
@@ -40,36 +43,30 @@ local auraFilter = { "HARMFUL", "HELPFUL"}
 --glowColor, glowN, glowLength, glowBadStart, glowBadStop
 
 local aGlow 			= LibStub("LibCustomGlow-1.0", true)
-local glowStart 		= aGlow.PixelGlow_Start
-local glowStop 			= aGlow.PixelGlow_Stop
-local castStart 		= aGlow.AutoCastGlow_Start
-local castStop 			= aGlow.AutoCastGlow_Stop
-local buttonStart 		= aGlow.ButtonGlow_Start
-local buttonStop 		= aGlow.ButtonGlow_Stop
 
-glowTargetStart	= yo.NamePlates.glowTarget and glowStart or dummy
-glowTargetStop 	= yo.NamePlates.glowTarget and glowStop  or dummy
+np.glowTargetStart		= yo.NamePlates.glowTarget and aGlow.PixelGlow_Start or n.dummy
+np.glowTargetStop 		= yo.NamePlates.glowTarget and aGlow.PixelGlow_Stop  or n.dummy
 
 if yo.NamePlates.glowBadType == "pixel" then
-	glowBadStart 	= glowStart
-	glowBadStop  	= glowStop
-	glowColor 		= { 0.95, 0.1, 0.1, 1}
-	glowN			= 12
-	glowLength		= 12
+	np.glowBadStart 	= aGlow.PixelGlow_Start
+	np.glowBadStop  	= aGlow.PixelGlow_Stop
+	np.glowColor 		= { 0.95, 0.1, 0.1, 1}
+	np.glowN			= 12
+	np.glowLength		= 12
 elseif yo.NamePlates.glowBadType == "button" then
-	glowBadStart 	= buttonStart
-	glowBadStop  	= buttonStop
-	glowColor 		= { 1, 0.75, 0, 1}
-	glowN			= 2
+	np.glowBadStart 	= aGlow.ButtonGlow_Start
+	np.glowBadStop  	= aGlow.ButtonGlow_Stop
+	np.glowColor 		= { 1, 0.75, 0, 1}
+	np.glowN			= 2
 elseif yo.NamePlates.glowBadType == "cast" then
-	glowBadStart 	= castStart
-	glowBadStop  	= castStop
-	glowColor 		= { 1, 0.75, 0, 1}
-	glowN			= 8
-	glowLength		= 1
+	np.glowBadStart 	= aGlow.AutoCastGlow_Start
+	np.glowBadStop  	= aGlow.AutoCastGlow_Stop
+	np.glowColor 		= { 1, 0.75, 0, 1}
+	np.glowN			= 8
+	np.glowLength		= 1
 else
-	glowBadStart = dummy
-	glowBadStop  = dummy
+	np.glowBadStart = n.dummy
+	np.glowBadStop  = n.dummy
 end
 
 local badClassTypes = {
@@ -88,7 +85,7 @@ local badClassTypes = {
 	["DEMONHUNTER"]	=	{},
 }
 
-local badTypes = classDispell and badClassTypes[myClass] or badClassTypes["HUNTER"]
+local badTypes = classDispell and badClassTypes[yo.myClass] or badClassTypes["HUNTER"]
 
 local badMobes = {
 	--[130771] = true,	--	Дамми у ханта
@@ -121,12 +118,22 @@ local treatColor = {
 
 local br, bg, bb = strsplit( ",", yo.Media.shadowColor)
 if yo.Media.classBorder then
-	br, bg, bb = myColor.r, myColor.g, myColor.b
+	br, bg, bb = yo.myColor.r, yo.myColor.g, yo.myColor.b
 end
 DebuffTypeColor.none = { r = br, g = bg, b = bb}
 
+local function updateMarks( self)
+	local index = GetRaidTargetIndex( self.unit)
 
-local function UpdateBuffs(self)
+	if(index) then
+		SetRaidTargetIconTexture( self.RaidTargetIndicator, index)
+		self.RaidTargetIndicator:Show()
+	else
+		self.RaidTargetIndicator:Hide()
+	end
+end
+
+local function updateBuffs(self)
 	if not self.unit then return end
 
 	local unit, showGuune = self.unit, nil
@@ -155,7 +162,7 @@ local function UpdateBuffs(self)
 			elseif ( filter == "HELPFUL" and not isPlayer and not n.blackSpells[spellID]) then
 
 				if dissIcons ~= "none"	or iDisp > 2 then
-					if ( dissIcons == "dispell" and badClassTypes[myClass][debuffType])
+					if ( dissIcons == "dispell" and badClassTypes[yo.myClass][debuffType])
 						or ( dissIcons == "all" and debuffType) then
 
 						local aIcon = n.createAuraIcon( self.disIcons, iDisp)
@@ -254,7 +261,7 @@ local function updateName( self)
 			r, g, b = color.r, color.g, color.b
 		end
 
-		if level == UnitLevel( "player") then --myLevel then
+		if level == UnitLevel( "player") then --yo.myLevel then
 			level = ""
 		end
 
@@ -273,15 +280,15 @@ local function updateName( self)
 		self.level:SetTextColor(r, g, b)
 
 		if UnitIsUnit( self.unit, "target") then
-			glowTargetStart( self.Health, {0.95, 0.95, 0.32, 1}, 20, 0.125, 4, 2, 0, 0, false, 1, 3)
+			np.glowTargetStart( self.Health, {0.95, 0.95, 0.32, 1}, 20, 0.125, 4, 2, 0, 0, false, 1, 3)
 			if showArrows then self.arrows:Show() end
 			if self.classPower then
-				UpdateUnitPower( self.classPower)
+				n.updateUnitPower( self.classPower)
 				self.classPower:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 				self.classPower:SetShown( isDruid())
 			end
 		else
-			glowTargetStop( self.Health, 1)
+			np.glowTargetStop( self.Health, 1)
 			if showArrows then self.arrows:Hide() end
 			if self.classPower and self.classPower:IsVisible() then
 				self.classPower:Hide()
@@ -294,9 +301,9 @@ local function updateName( self)
 
 		if mobID and badMobes[mobID] then
 			--lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key)
-			glowBadStart( self.Health, glowColor, glowN, 0.2, glowLength, 3, 0, 0, false, 2)
+			np.glowBadStart( self.Health, np.glowColor, np.glowN, 0.2, np.glowLength, 3, 0, 0, false, 2)
 		else
-			glowBadStop( self.Health, 2)
+			np.glowBadStop( self.Health, 2)
 		end
 
 		--if 	--UnitClass( self.unit)
@@ -426,8 +433,9 @@ local function updateAll(self, event, unit)
 		updateName(self)
 		updateHealthColor(self, 1)
 		updateHealth(self)
-		UpdateBuffs(self)
+		updateBuffs(self)
 		scanToQuest( self, unit)
+		updateMarks( self)
 
 		if self.Castbar then
 			self.Castbar:ForceUpdate( self)
@@ -478,7 +486,7 @@ local function createNP(self, unit)
 	tinsert( n.statusBars, self.Health)
 
 	self.Health.frequentUpdates = true
-	self.Health.Override = updateHealth --dummy
+	self.Health.Override = updateHealth --n.dummy
 	CreateStyle( self.Health, 2)
 
 	self.Health.Background = self.Health:CreateTexture(nil, "BACKGROUND")
@@ -586,7 +594,7 @@ local function createNP(self, unit)
 	self.questIcon:SetSize( 18, 18)
 	self.questIcon:Hide()
 
-	createCastBarNP( self)
+	n.createCastBarNP( self)
 
 	self.UpdateAllElements = updateAll
 
@@ -595,7 +603,7 @@ local function createNP(self, unit)
 
 	--tinsert(self.__elements, self.onChangeTarget)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", updateName, true)
-	self:RegisterEvent("UNIT_AURA", UpdateBuffs)
+	self:RegisterEvent("UNIT_AURA", updateBuffs)
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", onEvent, true)
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", onEvent, true)
 	self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", onEvent)
@@ -607,7 +615,7 @@ local function createNP(self, unit)
 	--self.castBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", self.castBar.castOnEven, unit)
 	--self.castBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", self.castBar.castOnEven, unit)
 
-	if yo.NamePlates.showResourses and n.pType[myClass] then CreateCPpoints( self) end
+	if yo.NamePlates.showResourses and n.pType[yo.myClass] then n.createCPpoints( self) end
 end
 
 oUF:RegisterStyle(	"yo", createNP)

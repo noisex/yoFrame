@@ -7,7 +7,7 @@ local yoEF = n.elemFrames
 local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
-local displayString = "%s: ".. myColorStr .. "%d|r"
+local displayString = "%s: ".. yo.myColorStr .. "%d|r"
 local appTitle 	= "|T%s:24:24:0:0:64:64:10:54:10:54|t"	-- иконка приложения
 local gold 		= "|cffffff00"
 local grey 		= "|cff888888"

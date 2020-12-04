@@ -31,14 +31,14 @@ function Stat:onEvent( event, ...)
 		if Event == "SPELL_ABSORBED" then
 			local cleuInfo 		= {CombatLogGetCurrentEventInfo()}
 			--tprint(cleuInfo)
-			if spellID == myGUID then 		-- arg12
+			if spellID == yo.myGUID then 		-- arg12
 				sourceGUID 		= spellID
 				spellID 		= overHeal 	-- arg16
 				spellSchool		= arg18
 				spellDMG		= arg19
 				overHeal 		= 0
 				spellName		= school
-			elseif spellDMG == myGUID then 	-- arg15
+			elseif spellDMG == yo.myGUID then 	-- arg15
 				sourceGUID 		= spellDMG
 				spellID 		= arg19
 				spellSchool		= arg21
@@ -50,8 +50,8 @@ function Stat:onEvent( event, ...)
 			end
 		end
 
-		if sourceGUID == myGUID or infoText.pets[sourceGUID] then
-			infoText.checkNewSpell( self, myGUID, spellID, spellName, spellDMG, overHeal, spellSchool, arg18)
+		if sourceGUID == yo.myGUID or infoText.pets[sourceGUID] then
+			infoText.checkNewSpell( self, yo.myGUID, spellID, spellName, spellDMG, overHeal, spellSchool, arg18)
 		end
 
 	elseif event == 'UNIT_PET' then

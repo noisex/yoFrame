@@ -166,7 +166,7 @@ local frame = CreateFrame("Frame")
 
 CreateAnchor("yoMoveplayer", 		"Move Player", 		200, 40, 500, 270, 	"BOTTOMLEFT", "BOTTOMLEFT")
 CreateAnchor("yoMovetarget", 		"Move Target", 		200, 40, -500, 270, "BOTTOMRIGHT", "BOTTOMRIGHT")
-CreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 5, 0, 		"LEFT","LEFT")
+CreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 5, 320, 	"TOPLEFT", "BOTTOMLEFT")
 CreateAnchor("yoMovefocustarget", 	"Move FocusTarget", 110, 25, 5, -1000)
 CreateAnchor("yoMovetargettarget", 	"Move Tar-Tar", 	100, 25, 0, -1000)
 CreateAnchor("yoMovepet", 			"Move Pet", 		100, 25, 00, -1000)

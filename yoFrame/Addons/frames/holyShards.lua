@@ -7,19 +7,15 @@ local yoUF = n.unitFrames
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown, myClass, CreateFrame, isDruid, GetTime, mySpec, CreateStyle
-	= GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown, myClass, CreateFrame, isDruid, GetTime, mySpec, CreateStyle
+local GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown, CreateFrame, isDruid, GetTime, CreateStyle, tinsert, SetUpAnimGroup
+	= GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCooldown, CreateFrame, isDruid, GetTime, CreateStyle, tinsert, SetUpAnimGroup
 
 local recolorShards = function(self, cols)
-	self.cols = cols
+	self.cols = cols or self.cols
+	--tprint(...)
 	for i = 1, self.idx do
 		self[i]:SetStatusBarColor( cols[1], cols[2], cols[3], 1)
 	end
-	--if yo.Raid.classcolor == 1 then
-	--	self.shadow:SetBackdropBorderColor( 0.3, 0.3, 0.3, 0.9)
-	--else
-	--	self.shadow:SetBackdropBorderColor( cols[1], cols[2], cols[3], 0.6)
-	--end
 end
 
 local function pwUpdate( self, powerID)
@@ -30,13 +26,13 @@ local function pwUpdate( self, powerID)
 			self:TurnOn( self[i], self[i], self.maxAlpha)
 		end
 	end
-	for i = unitPower + 1, #self do
+	for i = unitPower + 1, self.idx do
 		if self[i].on then
 			self:TurnOff( self[i], self[i], self.minAlpha);
 		end
 	end
 
-	if unitPower == self.idx and myClass ~= "DEATHKNIGHT" then
+	if unitPower == self.idx and yo.myClass ~= "DEATHKNIGHT" then
 		if yo.Raid.classcolor < 3 then
 			local f = 0.7
 			self.shadow:SetBackdropBorderColor( self.cols[1] *f, self.cols[2] *f, self.cols[3] *f, 0.99)
@@ -50,17 +46,10 @@ end
 
  local function CreateShards( self)
 
-	if #self then
-		for i = 1, #self do
-			Kill( self[i])
-		end
-	end
-	self.shadow:Hide()
-
 	if not self.powerID or ( self.spec and self.spec ~= GetSpecialization()) then return end
 
 	self.idx = UnitPowerMax( self.unit, self.powerID)
-	self:SetWidth( yoUF.player:GetWidth() / 2)
+	self:SetWidth( self:GetParent():GetWidth() / 2)
 
 	if not self.cols then
 		self.cols = {}
@@ -70,14 +59,15 @@ end
 	end
 
 	for i = 1, self.idx do
-		self[i] = CreateFrame('StatusBar', nil, self)
+		self[i] = self[i] or CreateFrame('StatusBar', nil, self)
 		self[i]:SetStatusBarTexture( yo.texture)
 		self[i]:SetStatusBarColor( self.cols[1], self.cols[2], self.cols[3],  1)
 		self[i]:SetHeight( self:GetHeight() -2)
 		self[i]:SetWidth(self:GetWidth() / self.idx)
 		self[i]:SetAlpha( self.minAlpha)
 		self[i]:SetFrameLevel(10)
-		tinsert( n.statusBars, self[i])
+		self[i]:Show()
+		--tinsert( n.statusBars, self[i])
 
 		if i == 1 then
 			self[i]:SetPoint('LEFT', self, 'LEFT', 1, 0)
@@ -85,9 +75,13 @@ end
 			self[i]:SetPoint('LEFT', self[i-1], 'RIGHT', 1, 0)
 		end
 
-		SetUpAnimGroup( self[i], "Fadein", 0.2, 0.9, 0.4, true)
-		SetUpAnimGroup( self[i], "Fadeout", 0.2, 0.9, 0.7, true)
+		if not self[i].Fadein then
+			SetUpAnimGroup( self[i], "Fadein", 0.2, 0.9, 0.4, true)
+			SetUpAnimGroup( self[i], "Fadeout", 0.2, 0.9, 0.7, true)
+		end
 	end
+
+	for i = self.idx +1, #self do self[i]:Hide() end
 
 	self:SetWidth( self:GetWidth() + self.idx + 1)
 	self.shadow:Show()
@@ -97,7 +91,7 @@ end
 end
 
 local function OnEvent( self, event, unit, pToken, ...)
-	--print( event, " ptoken: ", pToken, " Type: ", n.pType[myClass].powerID, unit)
+	--print( event, " ptoken: ", pToken, " Type: ", n.pType[yo.myClass].powerID, unit)
 
 	if event == "RUNE_POWER_UPDATE" then
 
@@ -126,7 +120,7 @@ local function OnEvent( self, event, unit, pToken, ...)
 		end
 
 	elseif event == "UNIT_MAXPOWER" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		mySpec = GetSpecialization()
+		yo.mySpec = GetSpecialization()
 		CreateShards( self)
 
 	elseif event == "UNIT_DISPLAYPOWER" then
@@ -145,7 +139,7 @@ local function OnEvent( self, event, unit, pToken, ...)
 	end
  end
 
-local function CreateShardsBar( f)
+function n.createShardsBar( f)
 	local holyShards = f.holyShards or CreateFrame( "Frame", nil, f)
 
 	if yo.UF.simpleUF then
@@ -172,9 +166,9 @@ local function CreateShardsBar( f)
 	CreateStyle( holyShards, 2, 5, 0.6)
 
 	holyShards.colr, holyShards.colg, holyShards.colb = f.colr, f.colg, f.colb
-	holyShards.powerID 	= n.pType[myClass].powerID
-	holyShards.powerType= n.pType[myClass].powerType
-	holyShards.spec 	= n.pType[myClass].spec
+	holyShards.powerID 	= n.pType[yo.myClass].powerID
+	holyShards.powerType= n.pType[yo.myClass].powerType
+	holyShards.spec 	= n.pType[yo.myClass].spec
 	holyShards.minAlpha = 0.2
 	holyShards.maxAlpha = 0.9
 	holyShards.TurnOff 	= ClassPowerBar.TurnOff
@@ -187,11 +181,11 @@ local function CreateShardsBar( f)
 	CreateShards( f.holyShards)
 end
 
-local logan = CreateFrame("Frame")
-logan:RegisterEvent("PLAYER_ENTERING_WORLD")
+--local logan = CreateFrame("Frame")
+--logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-logan:SetScript("OnEvent", function(self, event)
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+--logan:SetScript("OnEvent", function(self, event)
+--	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	--if not yo.UF.simpleUF then return end
-	if n.pType[myClass] and n.pType[myClass].powerID then CreateShardsBar( yoUF.player) end
-end)
+
+--end)

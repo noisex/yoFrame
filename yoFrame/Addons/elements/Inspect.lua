@@ -142,8 +142,8 @@ local function CreateFlyoutText( self)
 	if self.UpgradeIcon and not self.UpgradeMoved then
 		self.UpgradeIcon:ClearAllPoints()
 		self.UpgradeIcon:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, -7)
-		self.UpgradeIcon.ClearAllPoints 	= dummy
-		self.UpgradeIcon.SetPoint 			= dummy
+		self.UpgradeIcon.ClearAllPoints 	= n.dummy
+		self.UpgradeIcon.SetPoint 			= n.dummy
 		self.UpgradeIcon:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagUpgradeIcon");
 		self.UpgradeIcon:SetTexCoord(0,1,0,1);
 		self.UpgradeMoved = true
@@ -169,7 +169,7 @@ local function CheckSlotLocationUpgrade( self, slotID, itemLocation, bags)
 		local locTypeLoc = select( 9, GetItemInfo( linkLoc))
 
 		if slotArmorTypeCheck[locTypeLoc] then
-			if n.classEquipMap[myClass] == subTypeLoc then
+			if n.classEquipMap[yo.myClass] == subTypeLoc then
 				upgrade = true
 			end
 		else

@@ -211,17 +211,17 @@ logan:RegisterEvent("PLAYER_LOGIN")
 logan:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 logan:SetScript("OnEvent", function(self, ...)
-	n.DebuffWhiteList 	= DebuffWhiteListTemplate[myClass]
-	n.BuffWhiteList   	= BuffWhiteListTemplate[myClass]
+	n.DebuffWhiteList 	= DebuffWhiteListTemplate[yo.myClass]
+	n.BuffWhiteList   	= BuffWhiteListTemplate[yo.myClass]
 	n.tauntsSpell		= {}
 	wipe( n.tauntsSpell)
 	--wipe( DebuffWhiteListTemplate)
 	--wipe( BuffWhiteListTemplate)
 
 	local id, name, _, icon = GetSpecializationInfo( GetSpecialization())
-	mySpec = id
+	yo.mySpec = id
 
-	if yo.NamePlates.showTauntDebuff or n.tankSpecIDs[mySpec] then
+	if yo.NamePlates.showTauntDebuff or n.tankSpecIDs[yo.mySpec] then
 		for k,v in pairs( DebuffWhiteListTemplate["ALL"]) do
 			if k and v then
 				n.tauntsSpell[k] = v

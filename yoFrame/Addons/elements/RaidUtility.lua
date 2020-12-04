@@ -8,7 +8,7 @@ local function DisbandRaidGroup()
 	if UnitInRaid("player") then
 		for i = 1, GetNumGroupMembers() do
 			local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
-			if online and name ~= myName then
+			if online and name ~= yo.myName then
 				UninviteUnit(name)
 			end
 		end
@@ -47,7 +47,7 @@ local function doRUP()
 	RUPanel:Hide()
 
 	local function ButtonEnter(self)
-		self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b)
+		self:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
 	end
 
 	local function ButtonLeave(self)
@@ -57,11 +57,11 @@ local function doRUP()
 
 	local function BEnter(self)
 		if self.shadow then
-			local r, g, b = myColor.r, myColor.g, myColor.b
+			local r, g, b = yo.myColor.r, yo.myColor.g, yo.myColor.b
     		self.shadow:SetBackdropColor(.07,.07,.07, .9)
 			self.shadow:SetBackdropBorderColor( r, g, b, 1)
 		else
-			self:SetBackdropBorderColor(myColor.r, myColor.g, myColor.b)
+			self:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
 		end
 	end
 

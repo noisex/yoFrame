@@ -3449,9 +3449,9 @@ n.PlayerBuffWhiteListAll= {
 		args = {
 		  { spell = 99, type = "ability", talent = 8}, -- Incapacitating Roar
 		  { spell = 339, type = "ability", requiresTarget = true, overlayGlow = true}, -- Entangling Roots
-		  { spell = 768, type = "ability"}, -- Cat Form
+		  --{ spell = 768, type = "ability"}, -- Cat Form
 		  { spell = 774, type = "ability", buff = true, talent = 9}, -- Rejuvenation
-		  { spell = 783, type = "ability"}, -- Travel Form
+		  --{ spell = 783, type = "ability"}, -- Travel Form
 		  { spell = 1079, type = "ability", debuff = true, requiresTarget = true}, -- Rip
 		  { spell = 1822, type = "ability", debuff = true, requiresTarget = true}, -- Rake
 		  { spell = 1850, type = "ability", buff = true}, -- Dash
@@ -3463,7 +3463,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 5215, type = "ability", buff = true}, -- Prowl
 		  { spell = 5217, type = "ability", buff = true}, -- Tiger's Fury
 		  { spell = 5221, type = "ability", requiresTarget = true, overlayGlow = true}, -- Shred
-		  { spell = 5487, type = "ability"}, -- Bear Form
+		  --{ spell = 5487, type = "ability"}, -- Bear Form
 		  { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
 		  { spell = 8921, type = "ability", debuff = true, requiresTarget = true}, -- Moonfire
 		  { spell = 8936, type = "ability", overlayGlow = true}, -- Regrowth
@@ -3491,7 +3491,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 108238, type = "ability", talent = 5 }, -- Renewal
 		  { spell = 132469, type = "ability", talent = 7 }, -- Typhoon
 		  { spell = 192081, type = "ability", buff = true }, -- Ironfur
-		  { spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
+		  --{ spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
 		  { spell = 197626, type = "ability", requiresTarget = true, talent = 7 }, -- Starsurge
 		  { spell = 197628, type = "ability", requiresTarget = true, talent = 7 }, -- Starfire
 		  { spell = 197630, type = "ability", debuff = true, requiresTarget = true, talent = 7 }, -- Sunfire
@@ -3587,9 +3587,9 @@ n.PlayerBuffWhiteListAll= {
 		args = {
 		  { spell = 99, type = "ability"}, -- Incapacitating Roar
 		  { spell = 339, type = "ability"}, -- Entangling Roots
-		  { spell = 768, type = "ability"}, -- Cat Form
+		  --{ spell = 768, type = "ability"}, -- Cat Form
 		  { spell = 774, type = "ability", buff = true, talent = 9}, -- Rejuvenation
-		  { spell = 783, type = "ability"}, -- Travel Form
+		  --{ spell = 783, type = "ability"}, -- Travel Form
 		  { spell = 1079, type = "ability", debuff = true, talent = 8}, -- Rip
 		  { spell = 1850, type = "ability", buff = true}, -- Dash
 		  { spell = 2782, type = "ability"}, -- Remove Corruption
@@ -3597,7 +3597,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
 		  { spell = 5215, type = "ability", buff = true}, -- Prowl
 		  { spell = 5221, type = "ability"}, -- Shred
-		  { spell = 5487, type = "ability"}, -- Bear Form
+		  --{ spell = 5487, type = "ability"}, -- Bear Form
 		  { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
 		  { spell = 6807, type = "ability", requiresTarget = true}, -- Maul
 		  { spell = 8921, type = "ability", debuff = true, requiresTarget = true, overlayGlow = true}, -- Moonfire
@@ -3674,12 +3674,12 @@ n.PlayerBuffWhiteListAll= {
 	  [1] = {
 		title = L["Buffs"],
 		args = {
-		  { spell = 768, type = "buff", unit = "player"}, -- Cat Form
+		  --{ spell = 768, type = "buff", unit = "player"}, -- Cat Form
 		  { spell = 774, type = "buff", unit = "target"}, -- Rejuvenation
-		  { spell = 783, type = "buff", unit = "player"}, -- Travel Form
+		  --{ spell = 783, type = "buff", unit = "player"}, -- Travel Form
 		  { spell = 1850, type = "buff", unit = "player"}, -- Dash
 		  { spell = 5215, type = "buff", unit = "player"}, -- Prowl
-		  { spell = 5487, type = "buff", unit = "player"}, -- Bear Form
+		  --{ spell = 5487, type = "buff", unit = "player"}, -- Bear Form
 		  { spell = 8936, type = "buff", unit = "target"}, -- Regrowth
 		  { spell = 16870, type = "buff", unit = "player"}, -- Clearcasting
 		  { spell = 22812, type = "buff", unit = "target"}, -- Barkskin
@@ -3697,7 +3697,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 155777, type = "buff", unit = "target", talent = 20 }, -- Rejuvenation (Germination)
 		  { spell = 157982, type = "buff", unit = "player"}, -- Tranquility
 		  { spell = 192081, type = "buff", unit = "player" }, -- Ironfur
-		  { spell = 197625, type = "buff", unit = "player", talent = 7 }, -- Moonkin Form
+		  --{ spell = 197625, type = "buff", unit = "player", talent = 7 }, -- Moonkin Form
 		  { spell = 197721, type = "buff", unit = "target", talent = 21 }, -- Flourish
 		  { spell = 200389, type = "buff", unit = "player", talent = 14 }, -- Cultivation
 		  { spell = 207640, type = "buff", unit = "player", talent = 1 }, -- Abundance
@@ -3733,9 +3733,9 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 99, type = "ability", debuff = true, talent = 9}, -- Incapacitating Roar
 		  { spell = 339, type = "ability", debuff = true}, -- Entangling Roots
 		  { spell = 740, type = "ability"}, -- Tranquility
-		  { spell = 768, type = "ability"}, -- Cat Form
+		  --{ spell = 768, type = "ability"}, -- Cat Form
 		  { spell = 774, type = "ability"}, -- Rejuvenation
-		  { spell = 783, type = "ability"}, -- Travel Form
+		  --{ spell = 783, type = "ability"}, -- Travel Form
 		  { spell = 1079, type = "ability", debuff = true, talent = 8}, -- Rip
 		  { spell = 1822, type = "ability", debuff = true, talent = 8}, -- Rake
 		  { spell = 1850, type = "ability", buff = true}, -- Dash
@@ -3745,7 +3745,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
 		  { spell = 5215, type = "ability", buff = true}, -- Prowl
 		  { spell = 5221, type = "ability"}, -- Shred
-		  { spell = 5487, type = "ability"}, -- Bear Form
+		  --{ spell = 5487, type = "ability"}, -- Bear Form
 		  { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
 		  { spell = 8921, type = "ability", requiresTarget = true, debuff = true}, -- Moonfire
 		  { spell = 8936, type = "ability"}, -- Regrowth
@@ -3776,7 +3776,7 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 132158, type = "ability" }, -- Nature's Swiftness
 		  { spell = 132469, type = "ability", talent = 7 }, -- Typhoon
 		  { spell = 192081, type = "ability", buff = true }, -- Ironfur
-		  { spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
+		  --{ spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
 		  { spell = 197626, type = "ability", requiresTarget = true, talent = 7 }, -- Starsurge
 		  { spell = 197628, type = "ability", requiresTarget = true, talent = 7 }, -- Starfire
 		  { spell = 197721, type = "ability", talent = 21 }, -- Flourish
@@ -4709,7 +4709,7 @@ itemInfoReceived:SetScript("OnEvent", function( self, event)
 	--}
 
 	for k,v in pairs( templates.class) do
-	  if k ~= myClass then
+	  if k ~= yo.myClass then
 		templates.class[k] = nil
 	  end
 	end
@@ -4717,7 +4717,7 @@ itemInfoReceived:SetScript("OnEvent", function( self, event)
 	n.templates = templates
   end
 
- -- for k , specList in pairs( n.templates.class[myClass]) do
+ -- for k , specList in pairs( n.templates.class[yo.myClass]) do
 	----for k, specData in pairs(specList) do
 	--for i = 1, 3 do
 	--		--print(k, specData)

@@ -155,7 +155,7 @@ local function checkDungeLoot( filterType)
 	local class, _, classID = UnitClass('player')
 	local frame = yoEF.duLoot
 	frame.filterType = filterType
-	frame.headerKeeper.textHeader:SetText( myColorStr .. class .. " | " .. frame.specLootName )
+	frame.headerKeeper.textHeader:SetText( yo.myColorStr .. class .. " | " .. frame.specLootName )
 
 	EJ_SetLootFilter(classID, frame.specLootID )
 	--EJ_SetDifficulty( DifficultyUtil.ID.PrimaryRaidMythic)

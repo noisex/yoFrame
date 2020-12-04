@@ -88,7 +88,7 @@ end
 local function getMyColor()
 	local R, G, B = 0.3, 0.3, 0.3
 	if yo.ToolTip.borderClass then
-		R, G, B = myColor.r, myColor.g, myColor.b
+		R, G, B = yo.myColor.r, yo.myColor.g, yo.myColor.b
 	end
 	return R, G, B
 end

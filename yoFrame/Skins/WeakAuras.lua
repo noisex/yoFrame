@@ -1,7 +1,11 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local aGlow = LibStub("LibCustomGlow-1.0", true)
 --local dynamicRegions = {}
+local CreateFrame, Round, pairs, CreateNewBorder, CreateVirtualFrame, hooksecurefunc
+	= CreateFrame, Round, pairs, CreateNewBorder, CreateVirtualFrame, hooksecurefunc
+
+local WeakAuras = WeakAuras
 
 local function styleIcon( region)
 
@@ -34,9 +38,9 @@ local function styleIcon( region)
 		else
 			region:SetHeight( region:GetHeight() * 0.8)
 			region:SetWidth( region:GetWidth() * 0.8)
-			region.SetWidth = dummy
-			region.SetHeight = dummy
-			region.SetSize = dummy
+			region.SetWidth = n.dummy
+			region.SetHeight= n.dummy
+			region.SetSize 	= n.dummy
 
 			CreateNewBorder( region)
 
@@ -64,15 +68,15 @@ local function styleIcon( region)
 	end
 
 	region.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)	--(0.1, 0.9, 0.1, 0.9) --(unpack( yo.tCoord))
-	--region.icon.SetTexCoord = dummy
+	region.icon.SetTexCoord = n.dummy
 
 	if region.bar then
 		if not region.bar.bordertop then
 			CreateVirtualFrame( region, region.bar)
 		end
 
-		region.bar.bg:SetTexture( texture)
-		region.bar.fg:SetTexture( texture)
+		region.bar.bg:SetTexture( yo.texture)
+		region.bar.fg:SetTexture( yo.texture)
 	end
 end
 
@@ -80,12 +84,12 @@ local function styleText( regFrame)
 
 	if regFrame.text then
 		local t0, t1, t2 = regFrame.text:GetFont()
-		if t0 then regFrame.text:SetFont( font, t1, t2) end
+		if t0 then regFrame.text:SetFont( yo.font, t1, t2) end
 	end
 
 	if regFrame.text2 then
 		local t0, t1, t2 = regFrame.text2:GetFont()
-		if t0 then regFrame.text2:SetFont( font, t1, t2) end
+		if t0 then regFrame.text2:SetFont( yo.font, t1, t2) end
 	end
 
 	if regFrame.timer then

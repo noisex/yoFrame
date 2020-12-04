@@ -2,7 +2,9 @@
 -- FreebAutoRez, by Freebaser
 -- NDui MOD
 --------------------------------
-local B, C, L, DB = unpack(select(2, ...))
+--local B, C, L, DB = unpack(select(2, ...))
+local L, yo, n = unpack( select( 2, ...))
+
 local _, ns = ...
 local oUF = ns.oUF
 
@@ -80,9 +82,9 @@ end
 local function setupAttribute(self)
 	if InCombatLockdown() then return end
 
-	if classList[myClass] and not IsAddOnLoaded("Clique") then
+	if classList[yo.myClass] and not IsAddOnLoaded("Clique") then
 		self:SetAttribute("*type3", "macro")
-		self:SetAttribute("macrotext3", macroBody(myClass))
+		self:SetAttribute("macrotext3", macroBody(yo.myClass))
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
 	end
 end

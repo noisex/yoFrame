@@ -27,12 +27,12 @@ if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
 
 AlertFrame:ClearAllPoints()
 AlertFrame:SetPoint("TOPLEFT", UIParent, "CENTER", 0, -150)
-AlertFrame.ClearAllPoints = dummy
-AlertFrame.SetPoint = dummy
+AlertFrame.ClearAllPoints = n.dummy
+AlertFrame.SetPoint = n.dummy
 
 local function enterEvent( self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	mySpec = GetSpecialization()
+	yo.mySpec = GetSpecialization()
 	myRole = UnitGroupRolesAssigned( "player")
 
 	SetCVar("countdownForCooldowns", 0)
@@ -83,9 +83,9 @@ local function enterEvent( self)
 	UIWidgetTopCenterContainerFrame:ClearAllPoints()
 	UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 200, -15)
 
-	UIWidgetTopCenterContainerFrame.SetScale = dummy
-	UIWidgetTopCenterContainerFrame.ClearAllPoints = dummy
-	UIWidgetTopCenterContainerFrame.SetPoint = dummy
+	UIWidgetTopCenterContainerFrame.SetScale = n.dummy
+	UIWidgetTopCenterContainerFrame.ClearAllPoints = n.dummy
+	UIWidgetTopCenterContainerFrame.SetPoint = n.dummy
 
 	--UIWidgetTopCenterContainerFrame:HookScript("OnShow", function(self, ...) print("...") end)
 end
@@ -99,7 +99,7 @@ local function OnEvent( self, event, ...)
 	elseif event == "ADDON_ACTION_BLOCKED" or event == "ADDON_ACTION_FORBIDDEN" then
 		--dprint(event, ...)
 	elseif event == "PLAYER_LEVEL_UP" then
-		myLevel = UnitLevel("player")
+		yo.myLevel = UnitLevel("player")
 	end
 
 end

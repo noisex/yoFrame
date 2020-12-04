@@ -27,16 +27,16 @@ local yo_tCfg = {}
 if yo_AllData 					== nil	then yo_AllData = {} end
 if yo_AllConfig 				== nil 	then yo_AllConfig = {} end
 --if yo_PersonalConfig			== nil	then yo_PersonalConfig = {} end
-if yo_AllData[myRealm] 			== nil	then yo_AllData[myRealm] = {} end
-if yo_AllData[myRealm][myName] 	== nil 	then yo_AllData[myRealm][myName] = {} end
+if yo_AllData[yo.myRealm] 			== nil	then yo_AllData[yo.myRealm] = {} end
+if yo_AllData[yo.myRealm][yo.myName] 	== nil 	then yo_AllData[yo.myRealm][yo.myName] = {} end
 
 if yo_AllData["configData"]			 			== nil	then yo_AllData["configData"] = {} end
-if yo_AllData["configData"][myRealm] 			== nil	then yo_AllData["configData"][myRealm] = {} end
-if yo_AllData["configData"][myRealm][myName]	== nil 	then yo_AllData["configData"][myRealm][myName] = {} end
+if yo_AllData["configData"][yo.myRealm] 			== nil	then yo_AllData["configData"][yo.myRealm] = {} end
+if yo_AllData["configData"][yo.myRealm][yo.myName]	== nil 	then yo_AllData["configData"][yo.myRealm][yo.myName] = {} end
 
-yo_PersonalConfig = yo_AllData["configData"][myRealm][myName]
+yo_PersonalConfig = yo_AllData["configData"][yo.myRealm][yo.myName]
 
-if yo_AllData[myRealm][myName].PersonalConfig then
+if yo_AllData[yo.myRealm][yo.myName].PersonalConfig then
 	yo_tCfg = yo_PersonalConfig
 else
 	yo_tCfg = yo_AllConfig

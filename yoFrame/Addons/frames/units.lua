@@ -12,13 +12,15 @@ local MAX_BOSS_FRAMES= MAX_BOSS_FRAMES
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font, tinsert
-	= GetColors, fontsize, CreateFrame, CreateStyle, GetTime, texture, IsResting, font, tinsert
+local GetColors, CreateFrame, CreateStyle, GetTime, IsResting, tinsert
+	= GetColors, CreateFrame, CreateStyle, GetTime, IsResting, tinsert
 
 local updateAllElements = function(frame)
 	for _, v in ipairs(frame.__elements) do
 		v(frame, "UpdateElement", frame.unit)
 	end
+
+	if frame.holyShards then frame.holyShards:recolorShards( frame.holyShards.cols) end
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -31,7 +33,7 @@ local function unitShared(self, unit)
 	self.cunit 	= cunit
 
 	GetColors( self)
-	importAPI( self)
+	n.importUnitsAPI( self)
 
 	local height 			= _G["yoMove" .. cunit]:GetHeight()
 	local width 			= _G["yoMove" .. cunit]:GetWidth()
@@ -45,7 +47,7 @@ local function unitShared(self, unit)
 	local powerHeight		= 4
 	local showLeader 		= true
 	local combatPos 		= 6
-	local nameTextSize		= fontsize
+	local nameTextSize		= yo.fontsize
 
 	if yo.UF.simpleUF then
 		height 			= height / 1.8
@@ -55,7 +57,7 @@ local function unitShared(self, unit)
 		powerPos		= { "BOTTOM", self, "BOTTOM", 0, 2}
 		powerHeight		= 3
 		showLeader 		= false
-		nameTextSize	= fontsize + 0
+		nameTextSize	= yo.fontsize + 0
 		combatPos 		= 0
 		nameLeight		= "namemedium"
 		namePos			= { "LEFT", self, "TOPLEFT", 5, 1}
@@ -172,7 +174,7 @@ local function unitShared(self, unit)
 		end
 
 		self.Power.frequentUpdates = true
-    	self.Power.UpdateColor = dummy
+    	self.Power.UpdateColor = n.dummy
     	self.Power.PostUpdate = self.updatePower
     	CreateStyle( self.Power, 2, 4, .3, .9)
     end
@@ -185,7 +187,7 @@ local function unitShared(self, unit)
 	self.Overlay:SetFrameLevel( 10)
 
 	self.nameText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
-	self.nameText:SetFont( font, nameTextSize, "OUTLINE")
+	self.nameText:SetFont( yo.font, nameTextSize, "OUTLINE")
 	self.nameText:SetPoint(unpack( namePos))
 	if unit == "targettarget" or unit == "focustarget" or unit == "focus" or unit == "pet" then
 			self:Tag( self.nameText, "[GetNameColor][unitLevel][nameshort][afk]")
@@ -195,7 +197,7 @@ local function unitShared(self, unit)
 	if unit ~= "pet" or unit ~= "targettarget" or unit ~= "focus" or unit ~= "focustarget" then
 
 		self.Health.healthText =  self.Overlay:CreateFontString(nil ,"OVERLAY", 8)
-		self.Health.healthText:SetFont( font, fontsize -1, "OUTLINE")
+		self.Health.healthText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
 		self.Health.healthText:SetPoint( unpack( healthTextPos))
 		tinsert( n.strings, self.Health.healthText)
 
@@ -287,9 +289,10 @@ local function unitShared(self, unit)
 			self.GCD:SetWidth( width)
 			self.GCD:SetHeight( 2)
 			self.GCD:SetFrameLevel( 5)
-			self.GCD:SetStatusBarTexture( texture)
+			self.GCD:SetStatusBarTexture( yo.texture)
 			self.GCD:SetStatusBarColor( 1, 1, 1, 0)
 		end
+		if n.pType[yo.myClass] and n.pType[yo.myClass].powerID then n.createShardsBar( self) end
 
 	elseif unit == "target" and yo.healBotka.enable then
 		--n.makeQuiButton(self)

@@ -7,8 +7,8 @@ local _G = _G
 local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
 local yoEF = n.elemFrames
 
-local hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print
-	= hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print
+local hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print, Kill
+	= hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print, Kill
 
 local RGBToHex1 = function(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
@@ -105,15 +105,6 @@ function OnHyperlinkLeave(frame, refString)
 		hyperLinkEntered = nil;
 	end
 end
-
-local function Kill(object)
-	if object.UnregisterAllEvents then
-		object:UnregisterAllEvents()
-	end
-	object.Show = dummy
-	object:Hide()
-end
-dummy = function() return end
 
 if select(4, GetBuildInfo()) >= 70100 then
 	--Kill(QuickJoinToastButton)
@@ -335,9 +326,9 @@ local function SetupChatPosAndFont(self)
 				FCF_DockFrame(chat)
 				ChatFrame2Tab:EnableMouse(false)
 				ChatFrame2Tab:SetText("")
-				ChatFrame2Tab.SetText = dummy
+				ChatFrame2Tab.SetText = n.dummy
 				ChatFrame2Tab:SetWidth(0.001)
-				ChatFrame2Tab.SetWidth = dummy
+				ChatFrame2Tab.SetWidth = n.dummy
 			end
 		end
 	end
@@ -420,7 +411,7 @@ local function SetupChatPosAndFont(self)
 	ChatAlertFrame:ClearAllPoints()
 	ChatAlertFrame:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 0, 35)
 	--QuickJoinToastButton.FriendsButton:SetTexture("Interface\\CHATFRAME\\UI-ChatIcon-Battlenet.blp")
-	--QuickJoinToastButton.FriendsButton.SetTexture = dummy
+	--QuickJoinToastButton.FriendsButton.SetTexture = n.dummy
 	-- BNToastFrame:ClearAllPoints()
 	-- BNToastFrame:SetPoint("BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 5, 5)
 

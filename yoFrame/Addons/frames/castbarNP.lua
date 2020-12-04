@@ -8,16 +8,17 @@ if not yo.NamePlates.enable then return end
 -----------------------------------------------------------------------------------------------
 --	CASTBAR
 -----------------------------------------------------------------------------------------------
-local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
-	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, tinsert
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, tinsert
 
 local _G = _G
+local np = n.namePlates
 
-local myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
-	= myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+local CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+	= CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
 
-local UnitInRaid, UnitIsUnit, myColorStr, UnitName
-	= UnitInRaid, UnitIsUnit, myColorStr, UnitName
+local UnitInRaid, UnitIsUnit, UnitName
+	= UnitInRaid, UnitIsUnit, UnitName
 
 function updateCastColor(f, unit)
 	f.spellDelay = yo.General.spellDelay
@@ -69,7 +70,7 @@ function startCastBar( f, unit)
 					if UnitIsUnit("player", unit .. "target")
 						--and ( myRole == "HEALER" or myRole == "DAMAGER" )
 						then
-							print( myColorStr .. f.name .. " on me!")
+							print( yo.myColorStr .. f.name .. " on me!")
 					end
 				end
 				local uname = UnitName( unit .. "target")
@@ -85,23 +86,23 @@ function startCastBar( f, unit)
 
 	if yo.NamePlates.badCasts and n.badMobsCasts[f.spellID] then
 		f.spark:Show()
-		glowTargetStart( f.ibg, {0.95, 0.95, 0.32, 1}, 8, 0.5, 5, 2, 2, 2, false, 1, 11 )
+		np.glowTargetStart( f.ibg, {0.95, 0.95, 0.32, 1}, 8, 0.5, 5, 2, 2, 2, false, 1, 11 )
 	else
 		f.spark:Hide()
-		glowBadStop( f.ibg, 1)
+		np.glowBadStop( f.ibg, 1)
 	end
 
 	f.tick = GetTime()
 	f:updateCastColor( f, unit)
 end
 
-function createCastBarNP( f)
+n.createCastBarNP = function( f)
 	f.Castbar = CreateFrame("StatusBar", nil, f)
 	f.Castbar:SetPoint("TOP", f, "BOTTOM", 0, -2)
 	f.Castbar:SetSize( yo.NamePlates.width, 5)
 	f.Castbar:SetStatusBarTexture( yo.texture)
 	f.Castbar:SetStatusBarColor(1, 0.8, 0)
-	table.insert( n.statusBars, f.Castbar)
+	tinsert( n.statusBars, f.Castbar)
 	f.Castbar:SetFrameLevel( 12)
 
 	f.Castbar.bg = f.Castbar:CreateTexture(nil, "BACKGROUND")
@@ -114,14 +115,14 @@ function createCastBarNP( f)
 	f.Castbar.time:SetFont( yo.font, yo.fontsize - 1, "THINOUTLINE")
 	f.Castbar.time:SetShadowOffset(1, -1)
 	f.Castbar.time:SetTextColor(1, 1, 1)
-	table.insert( n.strings, f.Castbar.time)
+	tinsert( n.strings, f.Castbar.time)
 
 	f.Castbar.text = f.Castbar:CreateFontString(nil, "OVERLAY")
 	f.Castbar.text:SetPoint("TOP", f.Castbar, "BOTTOM", 0, -1)
 	f.Castbar.text:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
 	f.Castbar.text:SetTextColor(1, 1, 1)
 	f.Castbar.text:SetJustifyH("CENTER")
-	table.insert( n.strings, f.Castbar.text)
+	tinsert( n.strings, f.Castbar.text)
 
 	f.Castbar.ibg = CreateFrame("Frame", nil, f.Castbar)
    	f.Castbar.ibg:SetPoint("BOTTOM", f.Health,"CENTER", 0, 0);

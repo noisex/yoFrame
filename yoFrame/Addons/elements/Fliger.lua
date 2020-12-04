@@ -9,8 +9,8 @@ local _G = _G
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, myClass, mySpec, CreateFrame, tinsert
-	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, myClass, mySpec, CreateFrame, tinsert
+local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame, tinsert
+	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame, tinsert
 
 ------------------------------------------------------------------------------------------------------------
 ---								Buf Icons Anime
@@ -227,7 +227,7 @@ local function CheckClassTemplates( myClass, mySpec)
 
 	if mySpec == 5 then return 	end
 
-	for i,v in pairs( n.templates.class[myClass][mySpec][1]["args"]) do
+	for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][1]["args"]) do
 		local spellId = GetSpellInfo( v.spell)
 		if spellId then
 			n.PlayerBuffWhiteList[spellId] = true
@@ -236,8 +236,8 @@ local function CheckClassTemplates( myClass, mySpec)
 		end
 	end
 
-	if n.templates.class[myClass][mySpec][5]["args"] then
-		for i,v in pairs( n.templates.class[myClass][mySpec][5]["args"]) do
+	if n.templates.class[yo.myClass][yo.mySpec][5]["args"] then
+		for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][5]["args"]) do
 			local spellId = GetSpellInfo( v.spell)
 			if spellId then
 				n.PlayerBuffWhiteList[spellId] = true
@@ -250,9 +250,9 @@ local function CheckClassTemplates( myClass, mySpec)
 	end
 
 	n.DebuffPlayerTargetList = {}
-	for i,v in pairs( n.templates.class[myClass][mySpec][2]["args"]) do
+	for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][2]["args"]) do
 		if GetSpellInfo( v.spell) then
-			--print( v.spell, myClass, mySpec, GetSpellInfo( v.spell))
+			--print( v.spell, yo.myClass, yo.mySpec, GetSpellInfo( v.spell))
 			n.DebuffPlayerTargetList[GetSpellInfo( v.spell)] = true
 		end
 	end
@@ -281,7 +281,7 @@ local function CheckTemplates( myClass, mySpec)
 		if covaData.args then
 			for k, spellData in pairs( covaData.args) do
 
-				if spellData.class and spellData.class ~= myClass then
+				if spellData.class and spellData.class ~= yo.myClass then
 				else
 					if 		spellData.type == "buff" and 	spellData.unit == "player" then n.PlayerBuffWhiteList[ GetSpellInfo( spellData.spell)] = true
 					elseif 	spellData.type == "debuff" and 	spellData.unit == "target" then n.DebuffPlayerTargetList[ GetSpellInfo( spellData.spell)] = true
@@ -294,7 +294,7 @@ local function CheckTemplates( myClass, mySpec)
 		wipe( n.templates.covenants)
 	end
 
-	CheckClassTemplates( myClass, mySpec)
+	CheckClassTemplates( yo.myClass, yo.mySpec)
 end
 
 
@@ -303,7 +303,7 @@ local function OnEvent( self, event, ...)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
 		MakeFligerFrame( self)
-		CheckTemplates( myClass, GetSpecialization())
+		CheckTemplates( yo.myClass, GetSpecialization())
 		checkAnimeSpells()
 
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -320,8 +320,8 @@ local function OnEvent( self, event, ...)
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		UpdateAura( self, "target")
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		mySpec = GetSpecialization()
-		CheckClassTemplates( myClass, mySpec)
+		yo.mySpec = GetSpecialization()
+		CheckClassTemplates( yo.myClass, yo.mySpec)
 	end
 end
 

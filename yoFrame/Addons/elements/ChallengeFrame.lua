@@ -159,7 +159,7 @@ local function UpdateAffixes( self)
 		self.WeeklyInfo.Child.RunStatus:ClearAllPoints()
 		self.WeeklyInfo.Child.RunStatus:SetPoint("TOP", self, "TOP", 0, -150)
 		self.WeeklyInfo.Child.RunStatus:SetWidth( 250)
-		self.WeeklyInfo.Child.RunStatus.ClearAllPoints = dummy
+		self.WeeklyInfo.Child.RunStatus.ClearAllPoints = n.dummy
 	end
 
 	if self.WeeklyInfo.Child.Description then
@@ -167,7 +167,7 @@ local function UpdateAffixes( self)
 		self.WeeklyInfo.Child.Description:ClearAllPoints()
 		self.WeeklyInfo.Child.Description:SetPoint("TOP", self, "TOP", 0, -100)
 		self.WeeklyInfo.Child.Description:SetWidth( 250)
-		self.WeeklyInfo.Child.Description.ClearAllPoints = dummy
+		self.WeeklyInfo.Child.Description.ClearAllPoints = n.dummy
 	end
 
 	C_MythicPlus.RequestCurrentAffixes()

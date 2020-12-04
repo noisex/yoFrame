@@ -11,8 +11,8 @@ local _G = _G
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
-	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
 
 local wimH = CreateFrame("Frame", nil, wim)
 local userListCount
@@ -208,11 +208,11 @@ local function CreateHistoryFrame( self)
 
 	UIDropDownMenu_SetWidth( userMenu, 170)
 	UIDropDownMenu_Initialize( userMenu, userMenu.initialize)
-	if yo_WIMSTER[myRealm] and yo_WIMSTER[myRealm][myName] then
-		UIDropDownMenu_SetSelectedValue( userMenu, myRealm .. "/" .. myName)
+	if yo_WIMSTER[yo.myRealm] and yo_WIMSTER[yo.myRealm][yo.myName] then
+		UIDropDownMenu_SetSelectedValue( userMenu, yo.myRealm .. "/" .. yo.myName)
 		userList.updateUserListButtons()
-	elseif yo_WIMSTER[myRealm] then
-		UIDropDownMenu_SetSelectedValue( userMenu, myRealm)
+	elseif yo_WIMSTER[yo.myRealm] then
+		UIDropDownMenu_SetSelectedValue( userMenu, yo.myRealm)
 		userList.updateUserListButtons()
 	end
 
@@ -282,7 +282,7 @@ local function CreateHistoryFrame( self)
 	self.hider = hider
 
 	local viewText = CreateFrame("Button", nil, self)
-	viewText:SetScript("OnEnter", function(self) self:SetBackdropBorderColor( myColor.r, myColor.g, myColor.b) end)
+	viewText:SetScript("OnEnter", function(self) self:SetBackdropBorderColor( yo.myColor.r, yo.myColor.g, yo.myColor.b) end)
     viewText:SetScript("OnLeave", function(self) self:SetBackdropBorderColor(.15,.15,.15, 0) end)
     viewText:SetScript("OnClick", function(self) editBox:SetText("")
 		if not scrollArea:IsShown() then
@@ -306,14 +306,14 @@ local function CreateHistoryFrame( self)
 
     viewText.text = viewText:CreateFontString(nil, OVERLAY)
     viewText.text:SetFont( yo.font, yo.fontsize, "OUTLINE")
-    viewText.text:SetTextColor( myColor.r, myColor.g, myColor.b)
+    viewText.text:SetTextColor( yo.myColor.r, yo.myColor.g, yo.myColor.b)
     viewText.text:SetPoint("CENTER")
     viewText.text:SetText("Text")
 
     viewText.text2 = self:CreateFontString(ni, "OVERLAY")
 	viewText.text2:SetFont( yo.font, yo.fontsize, "OUTLINE")
 	viewText.text2:SetPoint("RIGHT", viewText, "LEFT", 0, 0)
-	viewText.text2:SetTextColor( myColor.r, myColor.g, myColor.b)
+	viewText.text2:SetTextColor( yo.myColor.r, yo.myColor.g, yo.myColor.b)
 	viewText.text2:SetText( "View as:")
     self.viewText = viewText
 end

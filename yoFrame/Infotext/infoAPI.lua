@@ -6,8 +6,8 @@ local _G = _G
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local myName, GameTooltip, Round, nums, wipe, IsShiftKeyDown, myColorStr, spairs, WorldFrame, SecondsToClocks, rawset
-	= myName, GameTooltip, Round, nums, wipe, IsShiftKeyDown, myColorStr, spairs, WorldFrame, SecondsToClocks, rawset
+local GameTooltip, Round, nums, wipe, IsShiftKeyDown, spairs, WorldFrame, SecondsToClocks, rawset
+	= GameTooltip, Round, nums, wipe, IsShiftKeyDown, spairs, WorldFrame, SecondsToClocks, rawset
 
 local infoText = n.infoTexts
 
@@ -29,7 +29,7 @@ infoText.pets = {}
 infoText.petBlacklist 	= {}
 infoText.strIcon 		= "|T%s:14:14:0:0:64:64:10:54:10:54|t %s %-3s" --|cff888888
 infoText.damag 			= "%s (%.1f%%)"
-infoText.displayString 	= "%s: ".. myColorStr .. "%s%s|r"
+infoText.displayString 	= "%s: ".. yo.myColorStr .. "%s%s|r"
 infoText.parentCount 	= yo.InfoTexts.countLeft
 infoText.shift 			= 0
 
@@ -126,7 +126,7 @@ function infoText:checkPets( serial)
 	local line1 = _G ["yoFrame_STTTextLeft2"]
 	local text1 = line1 and line1:GetText()
 	if (text1 and text1 ~= "") then
-		local playerName = myName
+		local playerName = yo.myName
 		playerName = playerName:gsub ("%-.*", "") --remove realm name
 		if text1:find( playerName) then
 			self.pets[serial] = true
@@ -136,7 +136,7 @@ function infoText:checkPets( serial)
 	local line2 = _G ["yoFrame_STTTextLeft3"]
 	local text2 = line2 and line2:GetText()
 	if (text2 and text2 ~= "") then
-		local playerName = myName
+		local playerName = yo.myName
 		playerName = playerName:gsub ("%-.*", "") --remove realm name
 		if text2:find( playerName) then
 			self.pets[serial] = true
@@ -164,7 +164,7 @@ end
 function infoText:onEnter( infos)
 	GameTooltip:SetOwner( infos, "ANCHOR_TOP", 0, 6);
 	GameTooltip:ClearLines()
-	GameTooltip:AddLine( myColorStr .. "Царский депс:")
+	GameTooltip:AddLine( yo.myColorStr .. "Царский депс:")
 	local ind = 1
 	local shift = 2.9
 	local stoPerc

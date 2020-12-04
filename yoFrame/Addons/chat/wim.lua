@@ -9,8 +9,8 @@ local minAlpha 	= 1
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
-	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, myColor, myName, myRealm, mySex, GetGuildInfo, myRace, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
 
 --https://wowwiki.fandom.com/wiki/UI_escape_sequences
 
@@ -250,11 +250,11 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 		local target = btag and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( unit, "none"))
 
 		if not yo_WIMSTER then yo_WIMSTER = {} end
-		if not yo_WIMSTER[myRealm] then yo_WIMSTER[myRealm] = {} end
-		if not yo_WIMSTER[myRealm][myName] then yo_WIMSTER[myRealm][myName] = {} end
+		if not yo_WIMSTER[yo.myRealm] then yo_WIMSTER[yo.myRealm] = {} end
+		if not yo_WIMSTER[yo.myRealm][yo.myName] then yo_WIMSTER[yo.myRealm][yo.myName] = {} end
 
-		if yo_WIMSTER[myRealm][myName][target] then
-			local logArray 	= yo_WIMSTER[myRealm][myName][target]
+		if yo_WIMSTER[yo.myRealm][yo.myName][target] then
+			local logArray 	= yo_WIMSTER[yo.myRealm][yo.myName][target]
 			local longArray = #logArray
 
 			if longArray > 0 then
@@ -485,10 +485,10 @@ local function SaveLines( self, msg, event, tabID, target, bnet, colorLine)
 	target = bnet and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( target, "none"))
 
 	if not yo_WIMSTER then yo_WIMSTER = {} end
-	if not yo_WIMSTER[myRealm] then yo_WIMSTER[myRealm] = {} end
-	if not yo_WIMSTER[myRealm][myName] then yo_WIMSTER[myRealm][myName] = {} end
-	if not yo_WIMSTER[myRealm][myName][target] then yo_WIMSTER[myRealm][myName][target] = {} end
-	local logArray = yo_WIMSTER[myRealm][myName][target]
+	if not yo_WIMSTER[yo.myRealm] then yo_WIMSTER[yo.myRealm] = {} end
+	if not yo_WIMSTER[yo.myRealm][yo.myName] then yo_WIMSTER[yo.myRealm][yo.myName] = {} end
+	if not yo_WIMSTER[yo.myRealm][yo.myName][target] then yo_WIMSTER[yo.myRealm][yo.myName][target] = {} end
+	local logArray = yo_WIMSTER[yo.myRealm][yo.myName][target]
 	--print( strfind( msg, "|K%a+%d+|k"), self.tabber.tabs[tabID].name)
 
 	local array = { msg = msg, time = time(), event = event}
@@ -517,8 +517,8 @@ local function OutString(self, event, text, unit, guid, btag)
 	end
 
 	if strfind( event, "INFORM") then
-		colStr 	= " |r[" .. myColorStr
-		unit 	= myName
+		colStr 	= " |r[" .. yo.myColorStr
+		unit 	= yo.myName
 		ender 	= "|r] "
 	elseif btag then
 		unit = unit:gsub( "|K%a+%d+|k", strsplit( "#", self.tabber.tabs[tabID].fullTag))

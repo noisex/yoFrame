@@ -8,8 +8,8 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local _G = _G
 local yoUF = n.unitFrames
 
-local myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
-	= myColor, CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+local CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+	= CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
 --/dump GetCVar("SpellQueueWindow") – чтобы узнать текущее значение
 --/console spellqueuewindow 200 – чтобы установить значение 200
 --/cqs
@@ -566,6 +566,6 @@ end)
 		CreateStyle( self, 4)
 	end
 
-	self.Text:SetTextColor(myColor.r, myColor.g, myColor.b)
-	self:SetStatusBarColor(myColor.r, myColor.g, myColor.b)
+	self.Text:SetTextColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
+	self:SetStatusBarColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
 end)

@@ -9,11 +9,11 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied, UnitGroupRolesAssigned
 	= GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, UnitHealthMax, UnitHealth, UnitGetTotalAbsorbs, UnitIsConnected, UnitIsDead, UnitIsGhost, UnitGetIncomingHeals, UnitIsTapDenied, UnitGroupRolesAssigned
 
-local UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, myClass, mySpec, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
-	= UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, myClass, mySpec, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
+local UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
+	= UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
 
-local texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell
-	= texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell
+local texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell, InCombatLockdown, GameTooltip_SetDefaultAnchor, CreateStyle
+	= texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell, InCombatLockdown, GameTooltip_SetDefaultAnchor, CreateStyle
 
 --local sIsSwiftmend, readyToSwift = false, false
 
@@ -55,9 +55,9 @@ local function updateBuffHost( self, event, unit, ...)
 
 	local buffHots = self.buffHots
 	if event == "UNIT_AURA" and self.unit == unit then --- remover GetParent().unit
-		local index, vkl = 0, {}
+		local index, vkl, hotBatShow = 0, {}, false
 
-		buffHots.sIsSwiftmend, buffHots.readyToSwift, hotBatShow = false, false, false
+		buffHots.sIsSwiftmend, buffHots.readyToSwift = false, false
 		while true do
 			index = index + 1
 			local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, "HELPFUL")
@@ -135,7 +135,7 @@ local function frameOnEnter(f, event)
 		f.bgHlight:Show()
 	end
 
-	if yo.Raid.raidTemplate == 3 and InCombatLockdown() then return end
+	if yo.Raid.raidTemplate == 3 and InCombatLockdown() and f.unit ~= "target" then return end
 
 	GameTooltip:SetOwner( f:GetParent(), "ANCHOR_NONE", 0, 0)
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
@@ -162,7 +162,7 @@ local function updatePowerBar ( power, event, unit)
 		end
 	else
 		power.Power:SetAlpha(0)
-		power.Power.Override = dummy
+		power.Power.Override = n.dummy
 	end
 end
 
@@ -204,7 +204,7 @@ local function updateFlash( self)
 end
 
 local function updateManaCost(self, event, _, _, spellID) -- 240022
-	if myClass == "WARLOCK" and mySpec == 3 or spellID == 240022 then return end
+	if yo.myClass == "WARLOCK" and yo.mySpec == 3 or spellID == 240022 then return end
 
 	local cost 		= 0;
 	local powerType = UnitPowerType("player")
@@ -304,7 +304,7 @@ local function addBuffHost( self)
 		self.buffHots.hotaBar:Hide()
 		self.buffHots.hotaBar:SetScript( "OnUpdate", function( bar, elapsed) bar:SetValue( bar.expirationTime - GetTime()) end)
 		CreateStyle( self.buffHots.hotaBar, 1, 9, 0.3)
-		table.insert( n.statusBars, self.buffHots.hotaBar)
+		tinsert( n.statusBars, self.buffHots.hotaBar)
 	end
 
 	self.buffHots.swift = self.buffHots.swift or self.buffHots:CreateTexture(nil, "OVERLAY")
@@ -334,7 +334,7 @@ end
 local function updatePower( f, unit, pmin, min, pmax)
 	local uPP, uPText
 
-	if myClass == "WARLOCK" and mySpec == 3 then
+	if yo.myClass == "WARLOCK" and yo.mySpec == 3 then
 		pmin, pmax = UnitPower( unit, 7, true), 10
 		pmin = mod( pmin, 10)
 	end
@@ -350,7 +350,7 @@ local function updatePower( f, unit, pmin, min, pmax)
     		if pmin == pmax then
     			uPText = nums( pmin)
     		else
-    			if myClass == "WARLOCK" and mySpec == 3 then
+    			if yo.myClass == "WARLOCK" and yo.mySpec == 3 then
 					uPText = nums( pmin) .. " | 10"
    				else
    					uPText = nums( pmin) .. " | " .. uPP .. "%"
@@ -584,7 +584,7 @@ local function updateHealthColor( f, event, unit, ...)
 	end
 end
 
-function importAPI( self)
+function n.importUnitsAPI( self)
 	self.updateHealthColor 	= updateHealthColor
 	self.updateHealth 		= updateHealth
 	self.updateAllTarget 	= updateAllTarget

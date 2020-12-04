@@ -62,10 +62,10 @@ local function OnEvent(self, event, ...)
 			name, _, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo( i)
 			if name and isEquipped then
 				self.id = i
-				eText:SetText("Equip: "..myColorStr..utf8sub( name, 12, false))
+				eText:SetText("Equip: "..yo.myColorStr..utf8sub( name, 12, false))
 				break
 			else
-				eText:SetText("Equip: "..myColorStr.." no Set")
+				eText:SetText("Equip: "..yo.myColorStr.." no Set")
 			end
 		end
 	end

@@ -89,7 +89,7 @@ local function raidShared(self, unit)
 	self.updateOptions = raidShared
 
 	GetColors( self)
-	importAPI( self)
+	n.importUnitsAPI( self)
 
 	self:RegisterForClicks("AnyUp")
 	--self.qwert = qwert
@@ -642,8 +642,8 @@ end
 ---										MAKE RAID/PARTY FRAMES
 ------------------------------------------------------------------------------------------------------
 --   groupheader:SetFrameRef("clickcast_header", addon.header)
-CreateAnchor("yoMoveRaid", 		"Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
-CreateAnchor("yoMoveTanks", 		"Move Raid Tanks Frame", 200, 55, 5, 320, 	"TOPLEFT", "BOTTOMLEFT")
+CreateAnchor("yoMoveRaid", 	"Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
+CreateAnchor("yoMoveTanks", "Move Raid Tanks Frame", 200, 55, 5, 400, 	"TOPLEFT", "BOTTOMLEFT")
 
 local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -677,11 +677,11 @@ logan:SetScript("OnEvent", function(self, event)
 		Kill(CompactRaidFrameManager)
 		Kill(CompactRaidFrameContainer)
 	end
-	ShowPartyFrame = dummy
-	HidePartyFrame = dummy
-	CompactUnitFrameProfiles_ApplyProfile = dummy
-	CompactRaidFrameManager_UpdateShown = dummy
-	CompactRaidFrameManager_UpdateOptionsFlowContainer = dummy
+	ShowPartyFrame = n.dummy
+	HidePartyFrame = n.dummy
+	CompactUnitFrameProfiles_ApplyProfile = n.dummy
+	CompactRaidFrameManager_UpdateShown = n.dummy
+	CompactRaidFrameManager_UpdateOptionsFlowContainer = n.dummy
 
 	oUF:RegisterStyle("Raid", raidShared)
 	oUF:Factory(function(self)

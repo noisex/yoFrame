@@ -128,9 +128,9 @@ local blast = { 1, 1}
 local function BuffDEbuffDesign(...)
 	if BuffFrame and BuffFrame.moved ~= true then
 		BuffFrame:ClearAllPoints()
-		BuffFrame.ClearAllPoints = dummy
+		BuffFrame.ClearAllPoints = n.dummy
 		BuffFrame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -10, 0)
-		BuffFrame.SetPoint = dummy
+		BuffFrame.SetPoint = n.dummy
 		BuffFrame.moved = true
 	end
 

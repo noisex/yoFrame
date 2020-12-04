@@ -5,27 +5,11 @@ if not yo.NamePlates.enable or not yo.NamePlates.showResourses then return end
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local myClass, C_NamePlate, UnitPower, isDruid, GetSpecialization, CreateFrame, UnitPowerMax, GetRuneCooldown
-	= myClass, C_NamePlate, UnitPower, isDruid, GetSpecialization, CreateFrame, UnitPowerMax, GetRuneCooldown
+local C_NamePlate, UnitPower, isDruid, GetSpecialization, CreateFrame, UnitPowerMax, GetRuneCooldown, SetUpAnimGroup
+	= C_NamePlate, UnitPower, isDruid, GetSpecialization, CreateFrame, UnitPowerMax, GetRuneCooldown, SetUpAnimGroup
 -----------------------------------------------------------------------------------
 --- COMBO POINTS
 -----------------------------------------------------------------------------------
-local function ClearCPoints( self)
-	if self.cPoints then
-		for i = 1, #self.cPoints do
-			Kill( self.cPoints[i])
-		end
-	end
-
-	if myClass == "DEATHKNIGHT" then
-		self:UnregisterEvent("RUNE_POWER_UPDATE")
-	else
-		self:UnregisterEvent("UNIT_POWER_UPDATE", "player")
-		self:UnregisterEvent("UNIT_MAXPOWER", "player")
-		--self:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-		self:UnregisterEvent("UNIT_DISPLAYPOWER", "player")
-	end
-end
 
 local function UpdateRunes( self)
 	for i = 1, 6 do
@@ -38,9 +22,9 @@ local function UpdateRunes( self)
 	end
 end
 
-function UpdateUnitPower( self)
+n.updateUnitPower = function ( self)
 
-	if myClass == "DEATHKNIGHT" then
+	if yo.myClass == "DEATHKNIGHT" then
 		UpdateRunes( self)
 		return
 	end
@@ -75,8 +59,11 @@ local function OnCPEvent( self, event, unit, powerType)
 
 	elseif event == "UNIT_MAXPOWER" then  --PLAYER_TALENT_UPDATE
 		if powerType == self.powerType then
+
+			local maxComboPoints = UnitPowerMax("player", self.powerID);
+
 			for idx, frame in pairs(C_NamePlate.GetNamePlates()) do
-        		CreateCPpoints( frame.UnitFrame)
+        		n.createCPpoints( frame.unitFrame, maxComboPoints)
         	end
         end
 
@@ -86,89 +73,90 @@ local function OnCPEvent( self, event, unit, powerType)
         	--isDruid( self)
         end
 
-	elseif myClass == "DEATHKNIGHT" then
+	elseif yo.myClass == "DEATHKNIGHT" then
 		UpdateRunes( self)
 	else
-		UpdateUnitPower( self)
+		n.updateUnitPower( self)
 	end
 end
 
-function CreateCPpoints( f)
-	if not n.pType[myClass].powerID then return end
-	if n.pType[myClass].spec and n.pType[myClass].spec ~= GetSpecialization() then return end
+n.createCPpoints = function ( f, maxComboPoints)
+
+	if not n.pType[yo.myClass].powerID then return end
+	if n.pType[yo.myClass].spec and n.pType[yo.myClass].spec ~= GetSpecialization() then return end
 
 	if not f.classPower then
-		f.classPower = CreateFrame("Frame", nil, f)
+		f.classPower = f.classPower or CreateFrame("Frame", nil, f)
 		f.classPower:SetPoint("CENTER", f.Health, "BOTTOM", 0, 0)
 		f.classPower:SetSize(60, 13)
 		f.classPower:SetFrameStrata("MEDIUM")
 		f.classPower:SetFrameLevel(100)
 		f.classPower.TurnOff 	= ClassPowerBar.TurnOff
 		f.classPower.TurnOn 	= ClassPowerBar.TurnOn
-		f.classPower.powerID 	= n.pType[myClass].powerID
-		f.classPower.powerType	= n.pType[myClass].powerType
+		f.classPower.powerID 	= n.pType[yo.myClass].powerID
+		f.classPower.powerType	= n.pType[yo.myClass].powerType
 
 		f.classPower:SetScript("OnEvent", OnCPEvent)
+
+		if yo.myClass == "DEATHKNIGHT" then
+			f.classPower:RegisterEvent("RUNE_POWER_UPDATE")
+		else
+			f.classPower:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+			f.classPower:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+			f.classPower:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
+			--f.classPower:RegisterEvent("PLAYER_TALENT_UPDATE");
+			--f.classPower:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+		end
 	end
 
 	local self = f.classPower
 
 	local size = 8
-	local maxComboPoints = UnitPowerMax("player", self.powerID);
-	--print( maxComboPoints, self.powerID, UnitPowerMax("player", self.powerID))
-	--if maxComboPoints == self.maxComboPoints then return end
 
-	ClearCPoints( self)
+	self.maxComboPoints = maxComboPoints or UnitPowerMax("player", self.powerID);
 
-	self.maxComboPoints = maxComboPoints or 0
-
-	self.cPoints = CreateFrame("Frame", nil, self)
+	self.cPoints = self.cPoints or CreateFrame("Frame", nil, self)
 	self.cPoints:SetAllPoints()
 
-	for i = 1, maxComboPoints do
-		self.cPoints[i] = CreateFrame("Frame", nil, self) --, "ClassNameplateBarComboPointFrameYo")
-		self.cPoints[i]:SetParent( self)
-		self.cPoints[i]:SetSize( size, size)
+	for i = 1, self.maxComboPoints do
+		if not self.cPoints[i] then
+			self.cPoints[i] = CreateFrame("Frame", nil, self) --, "ClassNameplateBarComboPointFrameYo")
+			self.cPoints[i]:SetParent( self)
+			self.cPoints[i]:SetSize( size, size)
+			self.cPoints[i]:Show()
 
-		self.cPoints[i].Back = self.cPoints[i]:CreateTexture(nil, "BACKGROUND")
-		self.cPoints[i].Back:SetPoint( "CENTER")
-		self.cPoints[i].Back:SetSize(10, 10)
-		self.cPoints[i].Back:SetAtlas( "ClassOverlay-ComboPoint-Off")
-		self.cPoints[i].Back:SetAlpha( 1)
+			self.cPoints[i].Back = self.cPoints[i]:CreateTexture(nil, "BACKGROUND")
+			self.cPoints[i].Back:SetPoint( "CENTER")
+			self.cPoints[i].Back:SetSize(10, 10)
+			self.cPoints[i].Back:SetAtlas( "ClassOverlay-ComboPoint-Off")
+			self.cPoints[i].Back:SetAlpha( 1)
 
-		self.cPoints[i].Point = self.cPoints[i]:CreateTexture(nil, "ARTWORK")
-		self.cPoints[i].Point:SetPoint( "CENTER")
-		self.cPoints[i].Point:SetSize(10, 10)
-		self.cPoints[i].Point:SetAtlas( "ClassOverlay-ComboPoint")
-		self.cPoints[i].Point:SetAlpha( 0)
+			self.cPoints[i].Point = self.cPoints[i]:CreateTexture(nil, "ARTWORK")
+			self.cPoints[i].Point:SetPoint( "CENTER")
+			self.cPoints[i].Point:SetSize(10, 10)
+			self.cPoints[i].Point:SetAtlas( "ClassOverlay-ComboPoint")
+			self.cPoints[i].Point:SetAlpha( 0)
 
-		self.cPoints[i].BackFX = self.cPoints[i]:CreateTexture(nil, "OVERLAY")
-		self.cPoints[i].BackFX:SetPoint( "CENTER")
-		self.cPoints[i].BackFX:SetSize( 13, 13)
-		self.cPoints[i].BackFX:SetAtlas( "ComboPoints-FX-Circle")
-		self.cPoints[i].BackFX:SetAlpha( 0.8)
-		self.cPoints[i].BackFX:Hide()
+			self.cPoints[i].BackFX = self.cPoints[i]:CreateTexture(nil, "OVERLAY")
+			self.cPoints[i].BackFX:SetPoint( "CENTER")
+			self.cPoints[i].BackFX:SetSize( 13, 13)
+			self.cPoints[i].BackFX:SetAtlas( "ComboPoints-FX-Circle")
+			self.cPoints[i].BackFX:SetAlpha( 0.8)
+			self.cPoints[i].BackFX:Hide()
 
-		SetUpAnimGroup( self.cPoints[i], "Fadein", 0, 1, 0.2, true, self.cPoints[i].Point)
-		SetUpAnimGroup( self.cPoints[i], "Fadeout", 0, 1, 0.3, true, self.cPoints[i].Point)
+			SetUpAnimGroup( self.cPoints[i], "Fadein", 0, 1, 0.2, true, self.cPoints[i].Point)
+			SetUpAnimGroup( self.cPoints[i], "Fadeout", 0, 1, 0.3, true, self.cPoints[i].Point)
 
-		if i == 1 then
-			self.cPoints[i]:SetPoint("LEFT", self, "LEFT", 0, 0)
-		else
-			self.cPoints[i]:SetPoint("LEFT", self.cPoints[i-1], "RIGHT", 1, 0)
+			if i == 1 then
+				self.cPoints[i]:SetPoint("LEFT", self, "LEFT", 0, 0)
+			else
+				self.cPoints[i]:SetPoint("LEFT", self.cPoints[i-1], "RIGHT", 1, 0)
+			end
 		end
 	end
-	self:SetWidth( size * maxComboPoints)
 
-	if myClass == "DEATHKNIGHT" then
-		self:RegisterEvent("RUNE_POWER_UPDATE")
-	else
-		self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
-		self:RegisterUnitEvent("UNIT_MAXPOWER", "player")
-		self:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
-		--self:RegisterEvent("PLAYER_TALENT_UPDATE");
-		--self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-	end
+	for i = self.maxComboPoints +1, #self.cPoints do self.cPoints[i]:Hide() end
 
+	self:SetWidth( size * self.maxComboPoints)
 	OnCPEvent( self)
 end

@@ -92,24 +92,24 @@ end
 
 local function newConfigData( personalConfig)
 
-	yo_AllData[myRealm][myName]["Money"] 	= GetMoney()
-	yo_AllData[myRealm][myName]["MoneyDay"] = date()
-	yo_AllData[myRealm][myName]["MoneyTime"]= time()
-	yo_AllData[myRealm][myName]["Class"] 	= myClass
-	yo_AllData[myRealm][myName]["Race"]		= select(2, UnitRace('player'))
-	yo_AllData[myRealm][myName]["Sex"]		= UnitSex('player')
-	yo_AllData[myRealm][myName]["Color"] = { ["r"] = myColor.r, ["g"] = myColor.g, ["b"] = myColor.b, ["colorStr"] = myColor.colorStr}
-	yo_AllData[myRealm][myName]["ColorStr"] = myColorStr
-	yo_AllData[myRealm][myName]["PersonalConfig"] = yo_AllData[myRealm][myName].PersonalConfig or personalConfig
-	yo_AllData[myRealm][myName]["WorldBoss"] =  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
+	yo_AllData[yo.myRealm][yo.myName]["Money"] 	= GetMoney()
+	yo_AllData[yo.myRealm][yo.myName]["MoneyDay"] = date()
+	yo_AllData[yo.myRealm][yo.myName]["MoneyTime"]= time()
+	yo_AllData[yo.myRealm][yo.myName]["Class"] 	= yo.myClass
+	yo_AllData[yo.myRealm][yo.myName]["Race"]		= select(2, UnitRace('player'))
+	yo_AllData[yo.myRealm][yo.myName]["Sex"]		= UnitSex('player')
+	yo_AllData[yo.myRealm][yo.myName]["Color"] = { ["r"] = yo.myColor.r, ["g"] = yo.myColor.g, ["b"] = yo.myColor.b, ["colorStr"] = yo.myColor.colorStr}
+	yo_AllData[yo.myRealm][yo.myName]["ColorStr"] = yo.myColorStr
+	yo_AllData[yo.myRealm][yo.myName]["PersonalConfig"] = yo_AllData[yo.myRealm][yo.myName].PersonalConfig or personalConfig
+	yo_AllData[yo.myRealm][yo.myName]["WorldBoss"] =  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
 end
 
 function Stat:onEvent( event, ...)
 
 	if event == "TIME_PLAYED_MSG" then
 		local playedtotal, playedlevel = ...
-		yo_AllData[myRealm][myName]["Played"] = playedtotal
-		yo_AllData[myRealm][myName]["PlayedLvl"] = playedlevel
+		yo_AllData[yo.myRealm][yo.myName]["Played"] = playedtotal
+		yo_AllData[yo.myRealm][yo.myName]["PlayedLvl"] = playedlevel
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		OldMoney = GetMoney()						-- так надо, ибо не считает раньше деньгу
@@ -227,7 +227,7 @@ function Stat:onClick( )
 	isOpen = not isOpen
 	if IsShiftKeyDown() then
 		local myPersonalConfig
-		if yo_AllData[myRealm][myName] and yo_AllData[myRealm][myName].PersonalConfig then
+		if yo_AllData[yo.myRealm][yo.myName] and yo_AllData[yo.myRealm][yo.myName].PersonalConfig then
 			myPersonalConfig = true
 		end
 		yo_AllData = nil
