@@ -1,25 +1,6 @@
 local addonName, ns = ...
 local L, yo, n = unpack( ns)
 
--- название школы по индексу  _G.CombatLog_String_SchoolString(key))
-
-yo.myClass 	= select( 2, UnitClass( "player"))
-yo.mySpec 		= GetSpecialization()
-yo.myGUID		= UnitGUID('player')
---mySpeClass	= yo.myClass .. yo.mySpec
-yo.myColor 	= RAID_CLASS_COLORS[yo.myClass]
-yo.myColorStr 	= "|c" .. RAID_CLASS_COLORS[yo.myClass].colorStr
-yo.myName		= UnitName( "player")
-yo.myRealm 	= GetRealmName()
-yo.myRealmShort= select( 2, UnitFullName("player"))
-yo.myLogin 	= GetTime()
-yo.myClient 	= GetLocale()
-yo.myFaction 	= UnitFactionGroup("player")
-yo.myLevel 	= UnitLevel( "player")
-yo.myRace		= select(2, UnitRace('player'))
-yo.mySex		= UnitSex('player')
-
-
 yo["InfoTexts"] = {
 	["enable"] 			= true,
 	["countLeft"] 		= 5,
@@ -114,7 +95,7 @@ yo["Addons"] = {
 	["AutoQuestComplete"]			= true,
 	["AutoQuestSkipScene"]			= true,
 	["AutoQuestComplete2Choice"]	= true,
-	["showToday"]					= true,
+	["showToday"]					= false,
 	["ObjectiveTracker"]			= true,
 	["ObjectiveHeight"]				= 500,
 	["ObjectiveShort"]				= false,
@@ -270,7 +251,7 @@ yo["NamePlates"] = {
 	["tankMode"]		= false,
 	["moreDebuffIcons"]	= false,
 	["showTauntDebuff"] = false,
-	["badCasts"]		= false,
+	["badCasts"]		= true,
 }
 
 yo["Media"] = {
@@ -375,16 +356,18 @@ yo["healBotka"] = {
 	["hEnable"]	= false,
 	["hSize"]	= 12,
 	["hTimeSec"]= false,
-	["hTempW"] 	= 90,
-	["hTempH"]	= 40,
+	["hTempW"] 	= 100,
+	["hTempH"]	= 45,
 	["hRedTime"]= 3,
 	["hDefCol"]	= "1,1,0",
 	["hRedCol"]	= "1,0,0",
+	["borderC"] = "1,0,0",
+	["borderS"]	= false,
 
 	["bSpell"]	= "",
 	["bColor"]	= "0,1,0",
 	["bColEna"]	= true,
-	["bShiftY"] = 1,
+	["bShiftY"] = 0,
 
 	["set00"]	= "",
 	["set01"]	= "",
@@ -495,6 +478,7 @@ yo["fliger"] = {
 	["fligerBuffGlow"]	= true,
 	["fligerBuffAnim"]  = true,
 	["fligerBuffColr"]	= true,
+	["fligerShowHint"]  = false,
 }
 
 yo["CTA"] = {
@@ -516,4 +500,156 @@ yo["CTA"] = {
 	["sound"]	= "Murloc",
 	["hideLast"]= false,
 	["lfdMode"]	= 0,
+}
+
+yo.profiles = {}
+
+yo.profiles.noisex = {
+	["General"] = {
+		["scriptErrors"] = true,
+	},
+	["Addons"] = {
+		["AutoSellGrayTrash"] = true,
+		["AutoLeader"] = true,
+	},
+	["ToolTip"] = {
+		["IDInToolTip"] = true,
+		["showSpells"] = false,
+		["ladyMod"] = false,
+	},
+	["CastBar"] = {
+		["BCB"] = {
+			["castBoss"] = true,
+		},
+	},
+	["fliger"] = {
+		["fligerBuffColr"] = false,
+		["fligerBuffAnim"] = false,
+		["fligerBuffGlow"] = false,
+	},
+	["UF"] = {
+		["simpleUF"] = true,
+	},
+	["Raid"] = {
+		["showSolo"] = true,
+		["groupingOrder"] = "TDH",
+	},
+	["Chat"] = {
+		["wim"] = true,
+		["showVoice"] = true,
+	},
+}
+
+yo.profiles.demayer = {
+	["General"] = {
+		["scriptErrors"] = true,
+	},
+	["Addons"] = {
+		["AutoSellGrayTrash"] = true,
+		["mythicProcents"] = false,
+		["AutoLeader"] = true,
+	},
+	["CTA"] = {
+		["setD"] = false,
+		["setN"] = false,
+		["setT"] = false,
+		["lfdMode"] = 2087,
+		["enable"] = true,
+		["dRole"] = false,
+		["tRole"] = false,
+		["nRole"] = false,
+	},
+	["ToolTip"] = {
+		["IDInToolTip"] = true,
+		["ladyMod"] = false,
+		["showSpells"] = false,
+	},
+--				["CastBar"] = {
+--					["player"] = {
+--					},
+--					["focus"] = {
+--					},
+--					["target"] = {
+--					},
+--					["BCB"] = {
+--					},
+--					["boss"] = {
+--					},
+--				},
+	["fliger"] = {
+		["fligerBuffColr"] = false,
+		["fligerBuffSpell"] = "331939\n331937\n16974\n338825\n157228",
+		["gAzetit"] = true,
+		["fligerBuffCount"] = "35\n0\n0\n9\n0\n",
+	},
+	["Raid"] = {
+		["showSolo"] = true,
+		["groupingOrder"] = "TDH",
+		["hpBarVertical"] = true,
+		["raidTemplate"] = 3,
+	},
+		["healBotka"] = {
+		["key9"] = "BUTTON4",
+		["mySpell"] = "увечь",
+		["hSpell3"] = "Восстановление",
+		["bTrink7"] = true,
+		["hColEna2"] = true,
+		["key7"] = "SHIFT-BUTTON1",
+		["hTimer4"] = 5,
+		["key8"] = "SHIFT-BUTTON2",
+		["spell5"] = "Природный целитель",
+		["hTimer5"] = 0,
+		["bStop2"] = true,
+		["hSpell4"] = "Омоложение",
+		["hColEna3"] = true,
+		["spell3"] = "Восстановление",
+		["hTimEna4"] = true,
+		["spell1"] = "Буйный рост",
+		["spell8"] = "Жизнецвет",
+		["borderC"] = "1,1,0",
+		["hColEna4"] = true,
+		["spell10"] = "Сноходец",
+		["key4"] = "BUTTON2",
+		["myAction"] = "омо",
+		["hTimer2"] = 0,
+		["hEnable"] = true,
+		["enable"] = true,
+		["key5"] = "ALT-BUTTON1",
+		["hRedCol"] = "0.50196078431373,1,0",
+		["spell4"] = "Омоложение",
+		["hColEna5"] = true,
+		["spell6"] = "Железная кора",
+		["bSpell"] = "Жизнецвет",
+		["spell9"] = "Быстрое восстановление",
+		["hTimeSec"] = true,
+		["spell2"] = "Стремительный рывок",
+		["hColor4"] = "0.63921568627451,0.18823529411765,0.78823529411765",
+		["hSize"] = 10,
+		["hSpell2"] = "Буйный рост",
+		["hTimEna5"] = true,
+		["key6"] = "ALT-BUTTON2",
+		["hColor2"] = "0,1,0",
+		["hSpell5"] = "Спокойствие",
+		["key3"] = "BUTTON1",
+		["hTimer3"] = 0,
+		["key10"] = "SHIFT-BUTTON3",
+		["key1"] = "MOUSEWHEELDOWN",
+		["bStop7"] = true,
+		["key2"] = "MOUSEWHEELUP",
+		["hColor5"] = "1,0.50196078431373,0",
+		["hTimEna2"] = true,
+		["spell7"] = "Природная стремительность",
+		["hDefCol"] = "1,0,0",
+		["hTimEna3"] = true,
+		["hColor3"] = "0,0.43921568627451,0.87058823529412",
+		["myPlayer"] = "Походный облик",
+	},
+	["Chat"] = {
+		["wim"] = true,
+		["wimFigter"] = false,
+		["wimLastTab"] = "|Kq2|k,,2",
+		["winHeight"] = 273.9999694824219,
+		["wimWidth"] = 425.9997863769531,
+		["showVoice"] = true,
+	},
 }

@@ -258,7 +258,7 @@ function Stat:Enable()
 	self:SetScript("OnMouseDown", self.onMouseDown)
 
 	self.Text = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( font, fontsize, "OVERLAY")
+	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)

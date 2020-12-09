@@ -125,6 +125,7 @@ local function OnEvent( self, event, unit, pToken, ...)
 
 	elseif event == "UNIT_DISPLAYPOWER" then
 		self:SetShown( isDruid( self))
+		CreateShards( self)
 		--isDruid( self)
 
 	elseif event == "UNIT_POWER_UPDATE" and self.powerType and self.powerType == pToken then

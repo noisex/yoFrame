@@ -1,7 +1,7 @@
 local addon, ns = ...
 
 ns[1] = {}	-- L, Locales
-ns[2] = {}	-- yo, Config
+ns[2] = {}	--  Config
 ns[3] = {}	-- N,
 
 yoFrame_Config = ns

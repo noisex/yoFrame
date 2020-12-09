@@ -15,8 +15,8 @@ local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame
 ------------------------------------------------------------------------------------------------------------
 ---								Buf Icons Anime
 ------------------------------------------------------------------------------------------------------------
-n.PlayerProcWhiteList = {}
-n.DebuffPlayerTargetList = {}
+n.playerProcWhiteList = {}
+n.targetDebuffList = {}
 
 n.filgerBuffSpells = {
 --	--[205473] 	= 5,
@@ -40,9 +40,13 @@ local function checkAnimeSpells()
 
     	if spellName and spellCount and not n.filgerBuffSpells[spellName] then
     		n.filgerBuffSpells[spellName] = spellCount
-    		print( format( pStr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
+    		if yo.fliger.fligerShowHint then
+    			print( format( pStr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
+    		end
     	else
-    		print( format( pStrErr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
+    		if yo.fliger.fligerShowHint then
+    			print( format( pStrErr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
+    		end
     	end
 
     	index = index + 1
@@ -63,7 +67,7 @@ local function UpdateAura( self, unit)
 		if not name then break end
 
 		if yo.fliger.tDebuffEnable then
-			if unit == self.tDebuff.unit and caster == "player"	and n.DebuffPlayerTargetList then -- n.DebuffWhiteList[name] then
+			if unit == self.tDebuff.unit and caster == "player"	and n.targetDebuffList then -- n.DebuffWhiteList[name] then
 				--if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = n.createAuraIcon( self.tDebuff, fligerTD) end
 
 				n.updateAuraIcon( n.createAuraIcon( self.tDebuff, fligerTD), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
@@ -98,14 +102,14 @@ local function UpdateAura( self, unit)
 		end
 
 		if yo.fliger.pBuffEnable then
-			if unit == self.pBuff.unit and n.PlayerBuffWhiteList[name] then
+			if unit == self.pBuff.unit and n.playerBuffList[name] then
 				n.updateAuraIcon( n.createAuraIcon( self.pBuff, fligerPB), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerPB = fligerPB + 1
 			end
 		end
 
 		if yo.fliger.pProcEnable then
-			if unit == self.pProc.unit and n.PlayerProcWhiteList[spellID] then
+			if unit == self.pProc.unit and n.playerProcWhiteList[spellID] then
 				n.updateAuraIcon( n.createAuraIcon( self.pProc, fligerProc), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerProc = fligerProc + 1
 			end
@@ -161,7 +165,7 @@ local function MakeFligerFrame( self)
 	local cdSize		= yo.fliger.pCDSize
 
 	if yo.fliger.tDebuffEnable then
-		CreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	250, 	0, 		"CENTER", "CENTER")
+		CreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	300, 	0, 		"CENTER", "CENTER")
 		local tDebuff = CreateFrame("Frame", nil, self)
 		tDebuff:SetPoint("CENTER", T_DEBUFF, "CENTER",  0, 0)
 		tDebuff:SetWidth( tdebuffSize)
@@ -172,18 +176,23 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pProcEnable then
-		CreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-250, 	-50, 	"CENTER", "CENTER")
+		CreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-300, 	-50, 	"CENTER", "CENTER")
 		local pProc = CreateFrame("Frame", nil, self)
 		pProc:SetPoint("CENTER", P_PROC, "CENTER",  0, 0)
 		pProc:SetWidth( pProcSize)
 		pProc:SetHeight( pProcSize)
-		pProc.direction = yo.fliger.pProcDirect
-		pProc.unit 		= "player"
-		self.pProc 		= pProc
+		pProc.direction 	= yo.fliger.pProcDirect
+		pProc.unit 			= "player"
+		pProc.countGlow 	= yo.fliger.fligerBuffGlow
+		pProc.countAnim 	= yo.fliger.fligerBuffAnim
+		pProc.countColor	= yo.fliger.fligerBuffColr
+		pProc.showBorder	= nil--"border"
+		pProc.countFilter 	= n.filgerBuffSpells
+		self.pProc 			= pProc
 	end
 
 	if yo.fliger.pBuffEnable then
-		CreateAnchor("P_BUFF", 				"Player Buff", 				pbuffSize, pbuffSize,	-250, 	50, 		"CENTER", "CENTER")
+		CreateAnchor("P_BUFF", 				"Player Buff", 				pbuffSize, pbuffSize,	-300, 	50, 		"CENTER", "CENTER")
 		local pBuff = CreateFrame("Frame", nil, self)
 		pBuff:SetPoint("CENTER", P_BUFF, "CENTER",  0, 0)
 		pBuff:SetWidth( pbuffSize)
@@ -200,7 +209,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pDebuffEnable then
-		CreateAnchor("P_DEBUFF",			"Player Debuff",			pdebuffSize,	pdebuffSize,-250, 	150, 	"CENTER", "CENTER")
+		CreateAnchor("P_DEBUFF",			"Player Debuff",			pdebuffSize,	pdebuffSize,-300, 	150, 	"CENTER", "CENTER")
 		local pDebuff = CreateFrame("Frame", nil, self)
 		pDebuff:SetPoint("CENTER", P_DEBUFF, "CENTER",  0, 0)
 		pDebuff:SetWidth( pdebuffSize)
@@ -230,7 +239,7 @@ local function CheckClassTemplates( myClass, mySpec)
 	for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][1]["args"]) do
 		local spellId = GetSpellInfo( v.spell)
 		if spellId then
-			n.PlayerBuffWhiteList[spellId] = true
+			n.playerBuffList[spellId] = true
 		else
 			--print("Spell ".. v.spell .. " removed from his game...")
 		end
@@ -240,20 +249,18 @@ local function CheckClassTemplates( myClass, mySpec)
 		for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][5]["args"]) do
 			local spellId = GetSpellInfo( v.spell)
 			if spellId then
-				n.PlayerBuffWhiteList[spellId] = true
+				n.playerBuffList[spellId] = true
 			end
 		end
 	end
 
-	for i,v in pairs( n.PlayerBuffWhiteListAll) do
-		n.PlayerBuffWhiteList[GetSpellInfo( i)] = v
-	end
+	for i,v in pairs( n.playerBuffListAll) do n.playerBuffList[GetSpellInfo( i)] = v end
 
-	n.DebuffPlayerTargetList = {}
+	n.targetDebuffList = {}
 	for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][2]["args"]) do
 		if GetSpellInfo( v.spell) then
 			--print( v.spell, yo.myClass, yo.mySpec, GetSpellInfo( v.spell))
-			n.DebuffPlayerTargetList[GetSpellInfo( v.spell)] = true
+			n.targetDebuffList[GetSpellInfo( v.spell)] = true
 		end
 	end
 end
@@ -261,19 +268,9 @@ end
 
 local function CheckTemplates( myClass, mySpec)
 
-	for i, v in pairs( n.templates.items) do n.PlayerProcWhiteList[ v] = true end
-
-	--if n.templates.items[2] then
-	--	for i,v in pairs( n.templates.items[2]["args"]) do
-	--		local spellId = GetSpellInfo( v.spell)
-	--		if spellId then PlayerProcWhiteList[spellId] = true end
-	--	end
-
-	--	for i,v in pairs( n.templates.items[3]["args"]) do PlayerProcWhiteList[v.title] = true 	end
-	--	for i,v in pairs( n.templates.items[4]["args"]) do PlayerProcWhiteList[v.title] = true 	end
-
-	--	wipe( n.templates.items)
-	--end
+	for i, v in pairs( n.templates.items)    			do n.playerProcWhiteList[ v] 	  = true end
+	for i, v in pairs( n.generalLegendaries) 			do n.playerProcWhiteList[v.spell] = true end
+	for i, v in pairs( n.classLegendaries[yo.myClass]) 	do n.playerProcWhiteList[v.spell] = true end
 
 	if n.templates.covenants and yo.fliger.gAzetit then
 
@@ -283,14 +280,14 @@ local function CheckTemplates( myClass, mySpec)
 
 				if spellData.class and spellData.class ~= yo.myClass then
 				else
-					if 		spellData.type == "buff" and 	spellData.unit == "player" then n.PlayerBuffWhiteList[ GetSpellInfo( spellData.spell)] = true
-					elseif 	spellData.type == "debuff" and 	spellData.unit == "target" then n.DebuffPlayerTargetList[ GetSpellInfo( spellData.spell)] = true
-					--elseif spellData.type == "debuff" and spellData.unit == "player" then n.DebuffPlayerTargetList[ GetSpellInfo( spellData.spell)] = true
+					if 		spellData.type == "buff" and 	spellData.unit == "player" then n.playerBuffList[ GetSpellInfo( spellData.spell)] = true
+					elseif 	spellData.type == "debuff" and 	spellData.unit == "target" then n.targetDebuffList[ GetSpellInfo( spellData.spell)] = true
+					--elseif spellData.type == "debuff" and spellData.unit == "player" then n.targetDebuffList[ GetSpellInfo( spellData.spell)] = true
 					end
 				end
 			end
 		end
-			--if spellId then PlayerProcWhiteList[spellId] = true end
+
 		wipe( n.templates.covenants)
 	end
 

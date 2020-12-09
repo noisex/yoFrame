@@ -1,4 +1,4 @@
-﻿local L, yo = unpack( select( 2, ...))
+﻿local L, yo, n = unpack( select( 2, ...))
 --if C.misc.move_blizzard ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ local frames = {
 	"WorldStateScoreFrame", "ChatConfigFrame", "RaidBrowserFrame", "InterfaceOptionsFrame",
 	"GameMenuFrame", "VideoOptionsFrame", "GuildInviteFrame", "ItemTextFrame", "BankFrame",
 	"OpenMailFrame", "StackSplitFrame", "MacOptionsFrame", "TutorialFrame", "StaticPopup1",
-	"StaticPopup2", "ScrollOfResurrectionSelectionFrame", "WorldMapFrame", "SplashFrame", 
+	"StaticPopup2", "ScrollOfResurrectionSelectionFrame", "WorldMapFrame", "SplashFrame",
 }
 
 local AddOnFrames = {
@@ -52,7 +52,7 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event, addon)
-		
+
 	if event == "ADDON_LOADED" then
 
 		---print(addon)
@@ -69,10 +69,10 @@ frame:SetScript("OnEvent", function(self, event, addon)
 					_G[v]:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 				end
 			end
-		end	
+		end
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		
+
 		if not yo.Addons.MoveBlizzFrames then return end
 
 		for i, v in pairs(frames) do
@@ -85,5 +85,5 @@ frame:SetScript("OnEvent", function(self, event, addon)
 				_G[v]:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 			end
 		end
-	end	
+	end
 end)

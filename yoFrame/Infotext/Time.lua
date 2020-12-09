@@ -105,31 +105,41 @@ function Stat:onEnter()
 	if Min<10 then Min = "0"..Min end
 	GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, Hr24 .. ":" .. Min, 1, 1, 0, 1, 1, 1)
 
-	local oneDate = false
+	local oneDate, oneDateDungeons = false, false
+	local tr,tg,tb
+
 	for i = 1, GetNumSavedInstances() do
-		local name, id, reset, difficulty, locked, extended, _, isRaid, _, diff, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
-		if isRaid and (locked or extended) then
-			local tr,tg,tb
-			if not oneDate then
+		local  name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo( i)
+
+		if     difficulty == 14 then difficultyName = "|cffffff00"..difficultyName..": |r"
+		elseif difficulty == 15 then difficultyName = "|cff00ffff"..difficultyName..": |r"
+		elseif difficulty == 16 then difficultyName = "|cffff0000"..difficultyName..": |r"
+		elseif difficulty == 17 then difficultyName = "|cff00ff00"..difficultyName..": |r"
+		elseif difficulty == 23 then difficultyName = "|cffff0000"..difficultyName..": |r"
+		else 						 difficultyName = difficultyName
+		end
+
+		if extended then tr,tg,tb = 0.3,1,0.3 else tr,tg,tb = 0,1,1 end
+
+		--if isRaid and (locked or extended) then
+		--	if not oneDate then
+		--		GameTooltip:AddLine(" ")
+		--		GameTooltip:AddDoubleLine( CALENDAR_FILTER_RAID_LOCKOUTS, SecondsToClock(reset, true, false))
+		--		oneDate = true
+		--	end
+
+		--	GameTooltip:AddDoubleLine( difficultyName .. name, encounterProgress .. "/" .. numEncounters,1,1,1,tr,tg,tb)
+
+		if locked or extended then
+
+			if not oneDateDungeons then
 				GameTooltip:AddLine(" ")
-				GameTooltip:AddDoubleLine( CALENDAR_FILTER_RAID_RESETS, SecondsToClock(reset, true, false))
-				oneDate = true
+				GameTooltip:AddDoubleLine( CALENDAR_FILTER_RAID_LOCKOUTS, SecondsToClock( reset, 1, 1)) --SPLASH_BATTLEFORAZEROTH_8_1_0_2_FEATURE2_TITLE
+				oneDateDungeons = true
 			end
-
-			if extended then tr,tg,tb = 0.3,1,0.3 else tr,tg,tb = 1,1,1 end
-
-			if difficulty == 14 then
-				diff = "|cffffff00"..diff..": |r"
-			elseif difficulty == 15 then
-				diff = "|cff00ffff"..diff..": |r"
-			elseif difficulty == 16 then
-				diff = "|cffff0000"..diff..": |r"
-			elseif difficulty == 17 then
-				diff = "|cff00ff00"..diff..": |r"
-			else
-				diff = ""
-			end
-			GameTooltip:AddDoubleLine( diff .. name, encounterProgress .. "/" .. numEncounters,1,1,1,tr,tg,tb)
+			--local templink = GetSavedInstanceChatLink(i)
+			--print(name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress, templink)
+			GameTooltip:AddDoubleLine( "[" .. maxPlayers .. "] " .. difficultyName, name .. " [" .. encounterProgress .. "/" .. numEncounters .. "]", 1, 1, 1, tr,tg,tb)
 		end
 	end
 

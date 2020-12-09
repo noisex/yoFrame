@@ -1,5 +1,5 @@
 --local _, ns = ...
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if GetLocale() ~= "ruRU" then return end
 
@@ -403,6 +403,8 @@ L["bSpell"] 	= "Хотобар - полоска с хоткой"
 L["bColEna"]	= "Изменить цвет хотабара"
 L["funcEnable"]	= "Жахнуть похилить!"
 L["funcDisable"]= "Всё, хватит, нахилился..."
+L["borderC"]	= "Цвет рамки, которая при наведении курсорки"
+L["borderS"]	= "Рамка в 2 пикселя (нет = 1)"
 
 L["DESC_HBOT_ENA"] = "|cff00ff00Включить|r бинды.\n|cff00ff00Включить|r хоты\nШаблон |cff00ff00HealBot|r\nПерезагрузка интерфейса."
 L["DESC_HBOT_DIS"] = "|cffff0000Выключить|r бинды.\n|cffff0000Выключить|r хоты\nШаблон |cffff0000Normal|r\nПерезагрузка интерфейса."

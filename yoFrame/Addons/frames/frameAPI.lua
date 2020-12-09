@@ -12,8 +12,8 @@ local GetThreatStatusColor, UnitThreatSituation, UnitDetailedThreatSituation, Un
 local UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
 	= UnitPowerType, GetSpellPowerCost, GameTooltip, UnitReaction, UnitPowerMax, UIParent, UnitIsUnit, UnitClass, UnitPower, CreateFrame, nums, Round, UnitIsPlayer, UnitPlayerControlled, UnitAura, ShortValue
 
-local texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell, InCombatLockdown, GameTooltip_SetDefaultAnchor, CreateStyle
-	= texhl, texture, tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell, InCombatLockdown, GameTooltip_SetDefaultAnchor, CreateStyle
+local  tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell, InCombatLockdown, CreateStyle
+	=  tinsert, GetSpellBookItemInfo, GetSpellCooldown, IsSpellKnown, type, IsPlayerSpell, InCombatLockdown, CreateStyle
 
 --local sIsSwiftmend, readyToSwift = false, false
 
@@ -127,7 +127,7 @@ local function frameOnEnter(f, event)
 		f.bgHlight = f.Health:CreateTexture(nil, "OVERLAY")
 		f.bgHlight:SetAllPoints()
 		f.bgHlight:SetVertexColor( 0.4,0.4,0.4,0.9)
-		f.bgHlight:SetTexture( texhl)
+		f.bgHlight:SetTexture( yo.texhl)
 		--f.bgHlight:SetBlendMode("ADD")
 		f.bgHlight:SetAlpha(0.2)
 		f.bgHlight:Show()
@@ -297,7 +297,7 @@ local function addBuffHost( self)
 		self.buffHots.hotaBar:ClearAllPoints()
 		self.buffHots.hotaBar:SetPoint( "TOP", self, "TOP", 0, yo.healBotka.bShiftY)
 		self.buffHots.hotaBar:SetWidth( self:GetWidth() - 6)
-		self.buffHots.hotaBar:SetHeight( 3)
+		self.buffHots.hotaBar:SetHeight( 2)
 		self.buffHots.hotaBar:SetStatusBarTexture( yo.texture)
 		self.buffHots.hotaBar:SetStatusBarColor( split( ",", yo.healBotka.bColor ), 1)
 		self.buffHots.hotaBar:SetFrameLevel( 120)

@@ -1,10 +1,10 @@
 local addon, ns = ...
-local L, _ = unpack( ns)
+local L, conf = unpack( ns)
 
 local _G = _G
 
 local ACD
-local needReload, openka, initka = false
+local needReload = false
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -111,12 +111,10 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
 
 
 function InitOptions()
-	n = yoFrame[3]
 
 	local defaults = {
 		profile = {},
 	}
-
 
 	local options = {
 		name = function(info) return tr( info[#info]) end,
@@ -179,6 +177,8 @@ function InitOptions()
 						set = function(info,val) Setlers( "Media#" .. info[#info], val)
 						--	SetCVar("useUiScale", 1)	SetCVar("uiScale", val) UIParent:SetScale( val)
 						end, },
+
+					spell12	= { order =122, type = "select", 		name = "", width = 1.1, values = n.allData.configData[yo.myRealm]},
 
 					set00	= {	order = 50, type = "description", name = " ", width = "full"},
 					--fontSizeMinus = { hidden = true,
@@ -641,6 +641,7 @@ function InitOptions()
 					fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					fligerShowHint	= {	order = 05, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 
 					fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
 					fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.5,},
@@ -712,7 +713,8 @@ function InitOptions()
 			healBotka = {
 				type = 'group', name = "Хилботка", childGroups = 'tab', order = 200,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
-				get = function(info) return yo[info[1]][info[#info]] end,
+				get = function(info)  return yo[info[1]][info[#info]] end,
+				--dprint( "!!!!!!!!!", yo[info[1]][info[#info]], n.spellsBooks[yo[info[1]][info[#info]]])
 				--disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
 					funcEnable = {
@@ -729,10 +731,10 @@ function InitOptions()
 							enable 	= { width = "full",	order = 0, type = "toggle",	name = "Забинбить всякое, для кликания этим по рейдфреймам.", desc = L["DESC_HENA"], disabled = false, },
 
 							set00	= {	order = 08, type = "description", 	name = "Маус ор клавабатон", width = 1.2,},
-							set01	= {	order = 09, type = "description", 	name = "Спелл фор биндинг", width = 1,},
+							set01	= {	order = 09, type = "description", 	name = "Спелл фор биндинг",  width = 1,},
 
 							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", width = 0.9, desc = L["DESC_KEY"],},
-							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",   width = 0.9, desc = L["DESC_KEY"],},
+							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",  width = 0.9, desc = L["DESC_KEY"],},
 
 							key1	= {	order = 10, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
 							key2	= {	order = 20, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
@@ -747,44 +749,58 @@ function InitOptions()
 							key11	= {	order =110, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
 							key12	= {	order =120, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
 
-							spell1	= { order = 12, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell2	= { order = 22, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell3	= { order = 32, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell4	= { order = 42, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell5	= { order = 52, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell6	= { order = 62, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell7	= { order = 72, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell8	= { order = 82, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell9	= { order = 92, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell10	= { order =102, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell11	= { order =112, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
-							spell12	= { order =122, type = "select", 		name = "", width = 0.9, values = n.spellsBooks,},
+							spell1 	= { order = 12, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell2 	= { order = 22, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell3 	= { order = 32, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell4 	= { order = 42, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell5 	= { order = 51, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell6 	= { order = 62, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell7 	= { order = 72, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell8 	= { order = 82, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell9	= { order = 92, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell10	= { order =102, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell11	= { order =112, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							spell12	= { order =122, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
+							--mySpell = { order = 202, name = "Spell name",  dialogControl = "Spell_EditBox",  type = 'input',},
 
-							bTrink1	= {	order = 14, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink2	= {	order = 24, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink3	= {	order = 34, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink4	= {	order = 44, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink5	= {	order = 54, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink6	= {	order = 64, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink7	= {	order = 74, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink8	= {	order = 84, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink9 = {	order = 94, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink10= {	order =104, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink11= {	order =114, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink12= {	order =124, type = "toggle",name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink1	= {	order = 14, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink2	= {	order = 24, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink3	= {	order = 34, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink4	= {	order = 44, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink5	= {	order = 54, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink6	= {	order = 64, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink7	= {	order = 74, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink8	= {	order = 84, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink9 = {	order = 94, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink10= {	order =104, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink11= {	order =114, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink12= {	order =124, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
 
-							bStop1	= {	order = 16, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop2	= {	order = 26, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop3	= {	order = 36, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop4	= {	order = 46, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop5	= {	order = 56, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop6	= {	order = 66, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop7	= {	order = 76, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop8	= {	order = 86, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop9	= {	order = 96, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop10 = {	order =106, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop11 = {	order =116, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop12 = {	order =126, type = "toggle",name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop1	= {	order = 16, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop2	= {	order = 26, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop3	= {	order = 36, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop4	= {	order = 46, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop5	= {	order = 56, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop6	= {	order = 66, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop7	= {	order = 76, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop8	= {	order = 86, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop9	= {	order = 96, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop10 = {	order =106, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop11 = {	order =116, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop12 = {	order =126, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+
+							--spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell2	= { order = 22, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell3	= { order = 32, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell4	= { order = 42, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell5	= { order = 52, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell6	= { order = 62, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,}, 	--get = function(info) tprint(info) print( n.spellsBooks[ yo.healBotka[info[3]]]) return n.spellsBooks[ yo.healBotka[info[3]]] end, },
+							--spell7	= { order = 72, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell8	= { order = 82, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell9	= { order = 92, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell10	= { order =102, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell11	= { order =112, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							--spell12	= { order =122, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
 						},
 					},
 					heneral = {
@@ -869,6 +885,11 @@ function InitOptions()
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 							bShiftY = {	order = 47,type = "range", name = function(info) return tr( info[#info]) end,	min = -50,  max = 10,  step = 1,},
+
+							borderC = {	order = 49,type = "color", name = function(info) return tr( info[#info]) end, 	--width = 0.2,
+								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
+								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
+							borderS = {	order = 50,type = "toggle", name = function(info) return tr( info[#info]) end,},
 
 							hpBarVertical 	= {	order = 62, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", get = function(info) return yo.Raid[info[#info]] end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end},
 							hpBarRevers	 	= {	order = 65, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", get = function(info) return yo.Raid[info[#info]] end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end},
@@ -1003,47 +1024,29 @@ function InitOptions()
 		};
 	};
 
-	if ACD == nil then
-		LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", options)
+	--conf.data = options
 
-		ACD = LibStub("AceConfigDialog-3.0")
-		ACD:SetDefaultSize( "yoFrame", 650, 500)
-		ACD:AddToBlizOptions( "yoFrame", "yoFrame")--, parent, ...)
-	end
-	openka = true
+	return options
 end
 
 function ns.InitOptions()
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
-	if not openka then
-		InitOptions()
+
+	if not ACD then
+		LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", InitOptions())
+		ACD = LibStub("AceConfigDialog-3.0")
+		ACD:SetDefaultSize( "yoFrame", 730, 650)
+		ACD:AddToBlizOptions( "yoFrame", "yoFrame")--, parent, ...)
+		--conf.ACD = ACD
+		--tprint(ACD)
+	end
+
+	if not ACD.OpenFrames.yoFrame then
 		ACD:Open( "yoFrame")
-		openka = true
 	else
 		ACD:Close( "yoFrame")
-		openka = false
 	end
 end
-
-SlashCmdList["CFGSLASH"] = function() ns.InitOptions() end
-SLASH_CFGSLASH1 = "/cfg"
-SLASH_CFGSLASH2 = "/config"
-
-local GameMenuButton = CreateFrame("Button", "GameMenuButtonQulightUI", GameMenuFrame, "GameMenuButtonTemplate")
-GameMenuButton:SetText("|cff00ffffyoFrame|r")
-GameMenuButton:SetPoint("TOP", "GameMenuButtonAddons", "BOTTOM", 0, -1)
-
-GameMenuFrame:HookScript("OnShow", function()
-	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButton:GetHeight())
-	GameMenuButtonLogout:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -16)
-end)
-
-GameMenuButton:SetScript("OnClick", function()
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
-	HideUIPanel(GameMenuFrame)
-	InitOptions()
-	ACD:Open( "yoFrame")
-end)
 
 local init = CreateFrame("Frame")
 init:RegisterEvent("PLAYER_LOGIN")
@@ -1053,5 +1056,23 @@ init:SetScript("OnEvent", function()
 	_, yo, n = unpack( _G["yoFrame"])
 
 	if _G["yo_AllData"][yo.myRealm][yo.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
-	else														aConf = _G["yo_AllConfig"]	end
+	else															aConf = _G["yo_AllConfig"]	end
+
+	SlashCmdList["CFGSLASH"] = function() ns.InitOptions() end
+	SLASH_CFGSLASH1 = "/cfg"
+	SLASH_CFGSLASH2 = "/config"
+
+	local GameMenuButton = CreateFrame("Button", "GameMenuButtonQulightUI", GameMenuFrame, "GameMenuButtonTemplate")
+	GameMenuButton:SetText("|cff00ffffyoFrame|r")
+	GameMenuButton:SetPoint("TOP", "GameMenuButtonAddons", "BOTTOM", 0, -1)
+
+	GameMenuFrame:HookScript("OnShow", function()
+		GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButton:GetHeight())
+		GameMenuButtonLogout:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -16)
+	end)
+
+	GameMenuButton:SetScript("OnClick", function()
+		HideUIPanel(GameMenuFrame)
+		ns.InitOptions()
+	end)
 end)

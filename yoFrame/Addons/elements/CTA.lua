@@ -61,7 +61,7 @@ local function CreateLFRFrame( self)
 
 	frame.title = frame:CreateFontString(nil, "OVERLAY", frame)
 	frame.title:SetPoint("TOP")
-	frame.title:SetFont( font, fontsize -1, "THINOUTLINE")
+	frame.title:SetFont( yo.font, yo.fontsize -1, "THINOUTLINE")
 	frame.title:SetText( format( LFG_CALL_TO_ARMS, " "))
 	frame.title:SetTextColor( 0.75, .5, 0)
 

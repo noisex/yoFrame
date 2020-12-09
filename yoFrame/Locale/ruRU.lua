@@ -1,7 +1,7 @@
 local _, ns = ...
 
 if ns:IsSameLocale("ruRU") then
-	local L, yo = unpack( select( 2, ...)) or ns:NewLocale()
+	local L, yo, n = unpack( select( 2, ...)) or ns:NewLocale()
 
 	L.LOCALE_NAME = "ruRU"
 
@@ -35,7 +35,7 @@ if ns:IsSameLocale("ruRU") then
 	L["Close"] 	= "Закрыть"
 	L["Close_OFF"] 	= "Закрыть СТА до следующего входа в игру.\n(Повторно можно запустить из меню настроек СТА)"
 	L["Role"] = "Роль:"
-	L["Not enough"] 	= "Не хватает:"	
+	L["Not enough"] 	= "Не хватает:"
 	L["In the queue"] 	= "В очереди:"
 	L["Waiting"] 	= "Ожидание:"
 	L["HRENDOM"] 	= "Хероический рендом"
@@ -74,7 +74,7 @@ if ns:IsSameLocale("ruRU") then
 	L["put on"] 	= "|cffff0000После боя надень: |r"
 	L["weared"] 	= "|cffff0000Надето: |r"
 	L["can change"] 	= "|cffff0000Можно сменить: |r"
-						
+
 	L["Money"] 	= "Денюжка"
 	L["Skill Points"] 	= "Очки умений"
 	L["Expirience"] 	= "Опыт"
@@ -109,9 +109,11 @@ if ns:IsSameLocale("ruRU") then
 	L["WeekLeader"] = "Лидеры недели"
 
 	L["EXPEDIT_COMPLETE"] = "А кто-то все еще не закрыл экспедиции недельные..."
+
+	L["MISC_SCROLL"] = "Чары на свиток"
 --[[
 L[""] 	= "
-L["DESC"] 	= 
+L["DESC"] 	=
 
 ]]
 	ns[1] = L

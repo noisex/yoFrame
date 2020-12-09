@@ -22,7 +22,7 @@ end
 
 local CreateFS = function(frame, font, fsize, fstyle)
 	local fstring = frame:CreateFontString(nil, "OVERLAY")
-	fstring:SetFont( font or yo.font, fsize or fontsize -1, "OUTLINE")
+	fstring:SetFont( font or yo.font, fsize or yo.fontsize -1, "OUTLINE")
 	fstring:SetShadowOffset(1 and 1 or 0, 1 and -1 or 0)
 	return fstring
 end

@@ -84,7 +84,7 @@ local function CreateTabs(self, ID)
 	tab:RegisterForClicks( "LeftButtonDown", "RightButtonUp")
 
 	local header = tab:CreateFontString(nil, "OVERLAY")
-	header:SetFont( font, fontsize)	--, "OUTLINE")
+	header:SetFont( yo.font, yo.fontsize)	--, "OUTLINE")
 	header:SetShadowOffset(1, -1)
 	header:SetShadowColor(0, 0, 0, 1)
 	header:SetPoint("TOPLEFT", 0, -1)
@@ -99,7 +99,7 @@ local function CreateTabs(self, ID)
 	--tab.tabNum = tabNum
 
 	local hover = tab:CreateTexture(nil, "OVERLAY")
-	hover:SetTexture( texture)
+	hover:SetTexture( yo.texture)
 	hover:SetVertexColor( 0.5, 0.5, 0.5, 0.5)
 	hover:SetPoint("TOPLEFT", 0, 0)
 	hover:SetPoint("BOTTOMRIGHT", 0, 0)
@@ -122,7 +122,7 @@ local function CreateTabs(self, ID)
 	editBox:SetText("")
 	editBox:SetAutoFocus(false)
 	editBox:SetHistoryLines(32);
-	editBox:SetFont( font, fontsize +1 )
+	editBox:SetFont( yo.font, yo.fontsize +1 )
 	editBox:SetPoint('BOTTOMLEFT', self:GetParent(), 'BOTTOMLEFT', 6, 6);
 	editBox:SetPoint('BOTTOMRIGHT', self:GetParent(), 'BOTTOMRIGHT', -23, 6);
 	editBox:SetScript("OnLeave", 			function() self:SetAlpha( minAlpha) end)

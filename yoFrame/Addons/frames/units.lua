@@ -2,6 +2,7 @@ local _, ns = ...
 local oUF = ns.oUF or oUF
 --local colors = oUF.colors
 local L, yo, n = ns[1], ns[2], ns[3]
+
 local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
 

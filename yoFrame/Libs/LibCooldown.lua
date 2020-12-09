@@ -124,6 +124,7 @@ local function parsespellbook(spellbook)
 		[""] = "-Я еще не определился-",
 	}
 	n.spellsBooksName = {}
+	n.spellBooksID = {}
 
 	for i = 1, _G.MAX_TALENT_TIERS do
 		for j = 1, 3 do
@@ -136,7 +137,7 @@ local function parsespellbook(spellbook)
 
 	local numTabs = GetNumSpellTabs();
 
-	for tabIndex = 1, 3 do
+	for tabIndex = 1, numTabs do
    		local _, _, offset, numSlots = GetSpellTabInfo(tabIndex);
    		for i = offset + 1, offset + numSlots do
       		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
@@ -151,6 +152,7 @@ local function parsespellbook(spellbook)
    				----n.spellsBooks[spellID] = spellName
    				n.spellsBooks[spellName] = spellName
    				n.spellsBooksName[spellName] = spellID
+   				n.spellBooksID[spellID] = true
    				if cd > 5 then
    					spells[spellID] = cd
    					--print( i, spellID, spellName, cd)
@@ -158,7 +160,6 @@ local function parsespellbook(spellbook)
    			end
    		end
 	end
-	--table.sort( n.spellsBooks, compare)
 end
 
 -- events --

@@ -76,7 +76,7 @@ local templates =
 	},
   }
 
-n.PlayerBuffWhiteListAll= {
+n.playerBuffListAll= {
   [126389]  = true, -- Goblin Glider [Goblin Glider Kit]
   [54861]   = true, -- Nitro Boosts
   [55001]   = true, -- Parachute
@@ -3281,6 +3281,8 @@ n.PlayerBuffWhiteListAll= {
 		  { spell = 202461, type = "buff", unit = "player", talent = 16 }, -- Stellar Drift
 		  { spell = 252216, type = "buff", unit = "player", talent = 4 }, -- Tiger Dash
 		  { spell = 279709, type = "buff", unit = "player", talent = 14 }, -- Starlord
+
+		  --{ spell = 338825, type = "buff", unit = "player"}, -- изначальный магический пульсар
 		},
 		icon = 136097
 	  },
@@ -4630,6 +4632,136 @@ templates.covenants = {
     }
   }
 
+ --------------------------------------------
+  --- Legendaries
+  --------------------------------------------
+ n.generalLegendaries = {
+    { spell = 347458, type = "buff", unit = "player", bonusItemId = 7100}, -- Echo of Eonar
+    { spell = 339445, type = "buff", unit = "player", bonusItemId = 7102}, -- Norgannon's Sagacity
+    { spell = 339463, type = "buff", unit = "player", bonusItemId = 7103}, -- Sephuz's Proclamation
+    { spell = 339507, type = "buff", unit = "player", bonusItemId = 7104}, -- Stable Phantasma Lure
+    { spell = 339970, type = "buff", unit = "player", bonusItemId = 7105}, -- Third Eye of the Jailer
+    { spell = 338746, type = "buff", unit = "player", bonusItemId = 7106}, -- Vitality Sacrifice
+}
+
+local classLegendaries = {
+    WARRIOR = {
+      { spell = 346369, type = "buff", unit = "player", bonusItemId = 6960}, -- Battlelord
+      { spell = 346369, type = "debuff", unit = "target", bonusItemId = 6961}, -- Exploiter
+      { spell = 335558, type = "buff", unit = "player", bonusItemId = 6963}, -- Cadence of Fujieda
+      { spell = 335597, type = "buff", unit = "player", bonusItemId = 6966}, -- Will of the Berserker
+      { spell = 335734, type = "buff", unit = "player", bonusItemId = 6969}, -- Reprisal
+    },
+    PALADIN = {
+      { spell = 337682, type = "buff", unit = "player", bonusItemId = 7056}, -- The Magistrate's Judgment
+      { spell = 337747, type = "buff", unit = "player", bonusItemId = 7055}, -- Blessing of Dawn
+      { spell = 337757, type = "buff", unit = "player", bonusItemId = 7055}, -- Blessing of Dusk
+      { spell = 340459, type = "buff", unit = "player", bonusItemId = 7128}, -- Maraad's Dying Breath
+      { spell = 337824, type = "buff", unit = "target", bonusItemId = 7059}, -- Shock Barrier
+      { spell = 337848, type = "buff", unit = "player", bonusItemId = 7062}, -- Bulwark of Righteous Fury
+      { spell = 337315, type = "buff", unit = "player", bonusItemId = 7066}, -- Relentless Inquisitor
+      { spell = 345046, type = "buff", unit = "player", bonusItemId = 7065}, -- Vanguard's Momentum
+
+    },
+    HUNTER = {
+      { spell = 336744, type = "buff", unit = "player", bonusItemId = 7004}, -- Nesingwary's Trapping Apparatus
+      { spell = 336746, type = "debuff", unit = "target", bonusItemId = 7005}, -- Soulforge Embers
+      { spell = 336826, type = "buff", unit = "player", bonusItemId = 7008}, -- Flamewaker's Cobra Sting
+      { spell = 336892, type = "buff", unit = "player", bonusItemId = 7013}, -- Secrets of the Unblinking Vigil
+      { spell = 336908, type = "buff", unit = "player", bonusItemId = 7018}, -- Butcher's Bone Fragments
+      { spell = 273286, type = "debuff", unit = "target", bonusItemId = 7017}, -- Latent Poison
+    },
+    ROGUE = {
+      { spell = 23580, type = "debuff", unit = "target", bonusItemId = 7113}, -- Bloodfang
+      { spell = 340094, type = "buff", unit = "player", bonusItemId = 7111}, -- Master Assassin's Mark
+      { spell = 340587, type = "buff", unit = "player", bonusItemId = 7122}, -- Concealed Blunderbuss
+      { spell = 340573, type = "buff", unit = "player", bonusItemId = 7119}, -- Greenskin's Wickers
+      { spell = 340580, type = "buff", unit = "player", bonusItemId = 7120}, -- Guile Charm
+      { spell = 341202, type = "buff", unit = "player", bonusItemId = 7126}, -- Deathly Shadows
+      { spell = 340600, type = "buff", unit = "player", bonusItemId = 7123}, -- Finality: Eviscerate
+      { spell = 340601, type = "buff", unit = "player", bonusItemId = 7123}, -- Finality: Rupture
+      { spell = 340603, type = "buff", unit = "player", bonusItemId = 7123}, -- Finality: Black Powder
+      { spell = 341134, type = "buff", unit = "player", bonusItemId = 7125}, -- The Rotten
+    },
+    PRIEST = {
+      { spell = 341824, type = "buff", unit = "player", bonusItemId = 7161}, -- Measured Contemplation
+      { spell = 336267, type = "buff", unit = "player", bonusItemId = 6974}, -- Flash Concentration
+    },
+    SHAMAN = {
+      { spell = 329771, type = "buff", unit = "player", bonusItemId = 6988}, -- Chains of Devastation
+      { spell = 336217, type = "buff", unit = "player", bonusItemId = 6991}, -- Echoes of Great Sundering
+      { spell = 347349, spellId = 347349, type = "debuff", unit = "player", titleSuffix = L["Debuff"], bonusItemId = 6990}, -- Elemental Equilibrium
+      { spell = 336731, spellId = 336731, type = "buff", unit = "player", titleSuffix = L["Frost"], bonusItemId = 6990}, -- Elemental Equilibrium
+      { spell = 336732, spellId = 336732, type = "buff", unit = "player", titleSuffix = L["Nature"], bonusItemId = 6990}, -- Elemental Equilibrium
+      { spell = 336733, spellId = 336733, type = "buff", unit = "player", titleSuffix = L["Fire"], bonusItemId = 6990}, -- Elemental Equilibrium
+      { spell = 336065, type = "buff", unit = "player", bonusItemId = 6992}, -- Windspeaker's Lava Resurgence
+      { spell = 335903, type = "buff", unit = "player", bonusItemId = 6993}, -- Doom Winds
+      { spell = 335901, type = "buff", unit = "player", bonusItemId = 6994}, -- Legacy of the Frost Witch
+      { spell = 335896, type = "buff", unit = "player", bonusItemId = 6996}, -- Primal Lava Actuators
+      { spell = 335894, type = "buff", unit = "player", bonusItemId = 6997}, -- Jonat's Natural Focus
+      { spell = 335892, type = "buff", unit = "player", bonusItemId = 6998}, -- Spiritwalker's Tidal Totem
+    },
+    MAGE = {
+      { spell = 327371, type = "buff", unit = "player", bonusItemId = 6832}, -- Disciplinary Command
+      { spell = 327495, type = "buff", unit = "player", bonusItemId = 6831}, -- Expanded Potential
+      { spell = 332777, type = "buff", unit = "player", bonusItemId = 6926}, -- Arcane Harmony/Infinity
+      { spell = 332934, type = "buff", unit = "player", bonusItemId = 6928}, -- Siphon Storm
+      { spell = 333049, type = "buff", unit = "player", bonusItemId = 6931}, -- Fevered Incantation
+      { spell = 333100, type = "buff", unit = "player", bonusItemId = 6932}, -- Firestorm
+      { spell = 333170, spellId = 333170, type = "buff", unit = "player", titleSuffix = L["Build Up"], bonusItemId = 6933}, -- Molten Skyfall
+      { spell = 333182, spellId = 333182, type = "buff", unit = "player",  titleSuffix = L["Meteor Ready"], bonusItemId = 6933}, -- Molten Skyfall
+      { spell = 333314, spellId = 333314, type = "buff", unit = "player", titleSuffix = L["Build Up"], bonusItemId = 6934}, -- Sun King's Blessing
+      { spell = 333315, spellId = 333315, type = "buff", unit = "player", titleSuffix = L["Combustion Ready"], bonusItemId = 6934}, -- Sun King's Blessing
+      { spell = 327327, spellId = 327327, type = "buff", unit = "player", titleSuffix = L["Build Up"], bonusItemId = 6828}, -- Cold Front
+      { spell = 327330, spellId = 327330, type = "buff", unit = "player",  titleSuffix = L["Meteor Ready"], bonusItemId = 6828}, -- Cold Front
+      { spell = 327478, type = "buff", unit = "player", bonusItemId = 6829}, -- Freezing Winds
+      { spell = 327509, type = "buff", unit = "player", bonusItemId = 6823}, -- Slick Ice
+    },
+    WARLOCK = {
+      { spell = 337096, type = "buff", unit = "player", bonusItemId = 7028}, -- Pillars of the Dark Portal
+      { spell = 337060, type = "buff", unit = "player", bonusItemId = 7027}, -- Relic of Demonic Synergy
+      { spell = 337125, type = "buff", unit = "player", bonusItemId = 7031}, -- Malefic Wrath
+      { spell = 337096, type = "debuff", unit = "target", bonusItemId = 7030}, -- Sacrolash's Dark Strike
+      { spell = 337130, type = "buff", unit = "player", bonusItemId = 7032}, -- Wrath of Consumption
+      { spell = 337161, type = "buff", unit = "player", bonusItemId = 7036}, -- Balespider's Burning Core
+      { spell = 342997, type = "buff", unit = "player", bonusItemId = 7034}, -- Grim Inquisitor's Dread Calling
+      { spell = 337139, type = "buff", unit = "player", bonusItemId = 7033}, -- Implosive Potential
+      { spell = 337170, type = "buff", unit = "player", bonusItemId = 7029}, -- Madness of the Azj'Aqir
+      { spell = 337164, type = "debuff", unit = "target", bonusItemId = 7034}, -- Grim Inquisitor's Dread Calling
+    },
+    MONK = {
+      { spell = 343249, type = "buff", unit = "player", bonusItemId = 7184}, -- Escape from Reality
+      { spell = 338140, type = "buff", unit = "player", bonusItemId = 7076}, -- Charred Passions
+      { spell = 337994, type = "buff", unit = "player", bonusItemId = 7078}, -- Mighty Pour/Celestial Infusion
+      { spell = 347553, type = "buff", unit = "player", bonusItemId = 7075}, -- Ancient Teachings of the Monastery
+      { spell = 337476, type = "buff", unit = "player", bonusItemId = 7074}, -- Clouded Focus
+      { spell = 337476, type = "buff", unit = "player", bonusItemId = 7072}, -- Tear of Morning
+      { spell = 337571, type = "buff", unit = "player", bonusItemId = 7068}, -- Jade Ignition/Chi Energy
+      { spell = 337291, type = "buff", unit = "player", bonusItemId = 7069}, -- The Emperor's Capacitor
+    },
+    DRUID = {
+      { spell = 340060, type = "buff", unit = "player", bonusItemId = 7110}, -- Lycara's Fleeting Glimpse
+      { spell = 340060, type = "buff", unit = "player", bonusItemId = 7107}, -- Balance of All Things
+      { spell = 339797, type = "buff", unit = "player", bonusItemId = 7087}, -- Oneth's Clear Vision
+      { spell = 338825, type = "buff", unit = "player", bonusItemId = 7088}, -- Primordial Arcanic Pulsar
+      { spell = 340049, type = "buff", unit = "player", bonusItemId = 7108}, -- Timeworn Dreambinder
+      { spell = 339140, type = "buff", unit = "player", bonusItemId = 7091}, -- Apex Predator's Craving
+      { spell = 339142, type = "buff", unit = "player", bonusItemId = 7090}, -- Eye of Fearful Symmetry
+      { spell = 189877, type = "buff", unit = "player", bonusItemId = 7096}, -- Memory of the Mother Tree
+    },
+    DEMONHUNTER = {
+      { spell = 337567, type = "buff", unit = "player", bonusItemId = 7050}, -- Chaos Theory/Chaotic Blades
+      { spell = 346264, type = "buff", unit = "player", bonusItemId = 7218}, -- Darker Nature
+      { spell = 337542, type = "buff", unit = "player", bonusItemId = 7045}, -- Spirit of the Darkness Flame
+      { spell = 334722, type = "buff", unit = "player", bonusItemId = 6948}, -- Grip of the Everlasting
+    },
+    DEATHKNIGHT = {
+      { spell = 332199, type = "buff", unit = "player", bonusItemId = 6954}, -- Phearomones
+      { spell = 334526, type = "buff", unit = "player", bonusItemId = 6941}, -- Crimson Rune Weapon
+      { spell = 334693, type = "debuff", unit = "target", bonusItemId = 6946}, -- Absolute Zero
+    }
+}
+
 templates.items = { -- Тринкеты вида [item ID] = spellID
   [113931] = 176878,  [113969] = 176874,  [118876] = 177597,  [118878] = 177594,  [118880] = 177592,  [118882] = 177189,  [118884] = 176460,  [113905] = 176873,  --Tank BRF
   [113834] = 176876,  [113835] = 176875,  [113842] = 176879,  [110002] = 165531,  [110003] = 165543,  [110008] = 165535,  [110012] = 165532,  [110013] = 165543,
@@ -4647,15 +4779,19 @@ templates.items = { -- Тринкеты вида [item ID] = spellID
 
   [184030]=344732,  [184031]=344231,  [184029]=344245,  [184019]=345251,   [184016]=345019,  [184020]=344916,  [184024]=345432,  [184025]=344662,
   [173069]=334058,  [173078]=333734,  [173096]=311444,  [173087]=331624,  [184021]=345319,  [184017]=344384,  [175921]=345228,  [178447]=345231,  [181333]=336126,
+
+  [347941]=347941,	[330376] = 330376, [330373]=330373, [330364]=330364, [330363] =330363, [330380]=330380, [330366]=330366, [330367]=330367, [330368] =330368, 	-- Непостижимое квантовое устройство
 }
 
-templates.spell_covenant = {
-  [307865]=1,[312321]=1,[324386]=1,[323547]=1,[325013]=1,[304971]=1,[310454]=1,[307443]=1,[308491]=1,[326434]=1,[306830]=1,[312202]=1,[324739]=1,[323436]=1,
-  [324143]=4,[325289]=4,[326059]=4,[328547]=4,[324724]=4,[328204]=4,[325216]=4,[324220]=4,[325028]=4,[325727]=4,[329554]=4,[315443]=4,[324631]=4,
-  [325886]=3,[325640]=3,[328923]=3,[328305]=3,[327661]=3,[328620]=3,[327104]=3,[314791]=3,[328231]=3,[323764]=3,[323639]=3,[324128]=3,[310143]=3,
-  [317320]=2,[321792]=2,[320674]=2,[323654]=2,[323673]=2,[316958]=2,[326860]=2,[314793]=2,[324149]=2,[323546]=2,[317009]=2,[311648]=2,[300728]=2,
-}
+--templates.spell_covenant = {
+--  [307865]=1,[312321]=1,[324386]=1,[323547]=1,[325013]=1,[304971]=1,[310454]=1,[307443]=1,[308491]=1,[326434]=1,[306830]=1,[312202]=1,[324739]=1,[323436]=1,
+--  [324143]=4,[325289]=4,[326059]=4,[328547]=4,[324724]=4,[328204]=4,[325216]=4,[324220]=4,[325028]=4,[325727]=4,[329554]=4,[315443]=4,[324631]=4,
+--  [325886]=3,[325640]=3,[328923]=3,[328305]=3,[327661]=3,[328620]=3,[327104]=3,[314791]=3,[328231]=3,[323764]=3,[323639]=3,[324128]=3,[310143]=3,
+--  [317320]=2,[321792]=2,[320674]=2,[323654]=2,[323673]=2,[316958]=2,[326860]=2,[314793]=2,[324149]=2,[323546]=2,[317009]=2,[311648]=2,[300728]=2,
+--}
 
+
+tinsert( templates.class.DRUID[1][1].args, { spell = 157228, type = "buff", unit = "player"}) -- Бешенство совуха
 
 local delayedEnrichDatabase = false;
 local itemInfoReceived = CreateFrame("frame")
@@ -4704,36 +4840,16 @@ end
 itemInfoReceived:SetScript("OnEvent", function( self, event)
   if event == "PLAYER_LOGIN" then
 
- -- 	n.spellsBooks = {
-	--	[""] = "-Я еще не определился-",
-	--}
-
 	for k,v in pairs( templates.class) do
 	  if k ~= yo.myClass then
 		templates.class[k] = nil
+		classLegendaries[k] = nil
 	  end
 	end
 	enrichDatabase();
 	n.templates = templates
+	n.classLegendaries = classLegendaries
   end
-
- -- for k , specList in pairs( n.templates.class[yo.myClass]) do
-	----for k, specData in pairs(specList) do
-	--for i = 1, 3 do
-	--		--print(k, specData)
-	--		local buffData = specList[1].args
-
-	--		for k,v in pairs(buffData) do
-	--			local name = GetSpellInfo( v.spell)
-	--			--print(k, v.spell, name)
-	--			n.spellsBooks[name] = name
-	--		end
-	--	--end
-
-	--	end
- -- end
---local name = GetSpellInfo(id)
---n.spellsBooks[spellName] = spellName
 
   if (not delayedEnrichDatabase) then
 	delayedEnrichDatabase = true;

@@ -1,6 +1,6 @@
 --local T, C, L, _ = unpack(select(2, ...))
 --if C.skins.dbm ~= true then return end
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 ----------------------------------------------------------------------------------------
 --	DBM skin(by Affli)
@@ -116,7 +116,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							name:SetPoint("LEFT", frame, "LEFT", 4, 0)
 							name:SetWidth(165)
 							name:SetHeight(8)
-							name:SetFont( font, fontsize, "OUTLINE")
+							name:SetFont( yo.font, yo.fontsize, "OUTLINE")
 							--name:SetShadowOffset( 1 , -1)
 							--name:SetShadowColor(0.5, 0.5, 0.5, 0.9)
 							name:SetJustifyH("LEFT")
@@ -127,7 +127,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 						if not timer.styled then
 							timer:ClearAllPoints()
 							timer:SetPoint("RIGHT", frame, "RIGHT", -1, 0)
-							timer:SetFont( font, fontsize, "OUTLINE")
+							timer:SetFont( yo.font, yo.fontsize, "OUTLINE")
 							--timer:SetShadowOffset( 1, -1)
 							--timer:SetShadowColor(0.5, 0.7, 0.7)
 							timer:SetJustifyH("RIGHT")

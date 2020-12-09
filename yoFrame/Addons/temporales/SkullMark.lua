@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 aura_env.interval = 3   -- интервал в секундах
 aura_env.endTime = 0

@@ -1,14 +1,18 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 --if C.misc.enchantment_scroll ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Enchantment scroll on TradeSkill frame(OneClickEnchantScroll by Sara.Festung)
 ----------------------------------------------------------------------------------------
+local _g = _G
+
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
 frame:SetScript("OnEvent", function(self, event, addon)
 	if addon == "Blizzard_TradeSkillUI" then -- and not IsAddOnLoaded("OneClickEnchantScroll") then
-		local button = CreateFrame("Button", "TradeSkillCreateScrollButton", TradeSkillFrame, "MagicButtonTemplate")
+
+		local button = _G["yoSkillCreateScrollButton"] or CreateFrame("Button", "yoSkillCreateScrollButton", TradeSkillFrame, "MagicButtonTemplate")
+		button:SetWidth( 135)
 		if false then
 			button:SkinButton(true)
 			button:SetPoint("TOPRIGHT", TradeSkillFrame.DetailsFrame.CreateButton, "TOPLEFT", -1, 0)
@@ -31,7 +35,7 @@ frame:SetScript("OnEvent", function(self, event, addon)
 						button:Show()
 						local numCreateable = recipeInfo.numAvailable
 						local numScrollsAvailable = GetItemCount(38682)
-						button:SetText( "L_MISC_SCROLL".." ("..numScrollsAvailable..")")
+						button:SetText( L["MISC_SCROLL"].." ("..numScrollsAvailable..")")
 						 if numScrollsAvailable == 0 then
 							numCreateable = 0
 						end

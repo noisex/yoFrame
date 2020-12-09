@@ -1,6 +1,6 @@
 Adds functions:
 
-PixelGlow_Start(frame[, color[, n[, frequency[, length[, th[, xOffset[, yOffset[, border[ ,key]]]]]]]])
+PixelGlow_Start(frame[, color[, N[, frequency[, length[, th[, xOffset[, yOffset[, border[ ,key]]]]]]]])
 
 Starts glow over target frame with set parameters:
 
@@ -19,7 +19,7 @@ Stops glow with set key over target frame
 
  
 
-AutoCastGlow_Start(frame[, color[, n[, frequency[, scale[, xOffset[, yOffset[, key]]]]]]])
+AutoCastGlow_Start(frame[, color[, N[, frequency[, scale[, xOffset[, yOffset[, key]]]]]]])
 
 Starts glow over target frame with set parameters:
 

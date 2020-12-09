@@ -1,5 +1,6 @@
 local major = "AceGUI-3.0-SpellLoader"
 local minor = 1
+local n
 
 local SpellLoader = LibStub:NewLibrary(major, minor)
 if( not SpellLoader ) then return end
@@ -21,6 +22,19 @@ function SpellLoader:UnregisterPredictor(frame)
 end
 
 function SpellLoader:StartLoading()
+	_, yo, n = unpack( _G["yoFrame"])
+
+	for spellID,v in pairs( n.spellBooksID) do
+		local name, rank, icon = GetSpellInfo(spellID)
+
+		spells[spellID] = string.lower(name)
+		SpellLoader.spellsLoaded = i
+	end
+
+	if true then return	end
+
+	--spells = n.spellBooksID
+
 	if( self.loader ) then return end
 
 	local blacklist = {
@@ -36,14 +50,14 @@ function SpellLoader:StartLoading()
 		["Interface\\Icons\\Trade_Tailoring"] = true,
 		["Interface\\Icons\\Temp"] = true,
 	}
-		
+
 	local timeElapsed, totalInvalid, currentIndex = 0, 0, 0
 	self.loader = CreateFrame("Frame")
 	self.loader:SetScript("OnUpdate", function(self, elapsed)
 		timeElapsed = timeElapsed + elapsed
 		if( timeElapsed < TIMER_THROTTLE ) then return end
 		timeElapsed = timeElapsed - TIMER_THROTTLE
-		
+
 		-- 5,000 invalid spells in a row means it's a safe assumption that there are no more spells to query
 		if( totalInvalid >= 5000 ) then
 			self:Hide()
@@ -53,23 +67,23 @@ function SpellLoader:StartLoading()
 		-- Load as many spells in
 		for spellID=currentIndex + 1, currentIndex + SPELLS_PER_RUN do
 			local name, rank, icon = GetSpellInfo(spellID)
-			
+
 			-- Pretty much every profession spell uses Trade_* and 99% of the random spells use the Trade_Engineering icon
 			-- we can safely blacklist any of these spells as they are not needed. Can get away with this because things like
 			-- Alchemy use two icons, the Trade_* for the actual crafted spell and a different icon for the actual buff
 			-- Passive spells have no use as well, since they are well passive and can't actually be used
 			if( name and not blacklist[icon] and rank ~= SPELL_PASSIVE ) then
-				name = string.lower(name)
-				
+				--name = string.lower(name)
+
 				SpellLoader.spellsLoaded = SpellLoader.spellsLoaded + 1
 				spells[spellID] = string.lower(name)
-				
+
 				totalInvalid = 0
 			else
 				totalInvalid = totalInvalid + 1
 			end
 		end
-		
+
 		-- Every ~1 second it will update any visible predictors to make up for the fact that the data is delay loaded
 		if( currentIndex % 5000 == 0 ) then
 			for predictor in pairs(predictors) do
@@ -79,7 +93,7 @@ function SpellLoader:StartLoading()
 			end
 		end
 
-		
+
 		-- Increment and do it all over!
 		currentIndex = currentIndex + SPELLS_PER_RUN
 	end)

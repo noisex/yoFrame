@@ -6,6 +6,13 @@ local oUF = ns.oUF
 if not yo.ToolTip.enable then return end
 if not yo.ToolTip.showBorder then return end
 
+local _G = _G
+
+local GameTooltip, UnitIsDeadOrGhost, UnitHealth, UnitHealthMax, select, CreateStyle, UnitIsConnected, UnitPlayerControlled, UnitReaction, GetItemInfo, GetItemQualityColor, GetMouseFocus, floor, UnitClass
+	= GameTooltip, UnitIsDeadOrGhost, UnitHealth, UnitHealthMax, select, CreateStyle, UnitIsConnected, UnitPlayerControlled, UnitReaction, GetItemInfo, GetItemQualityColor, GetMouseFocus, floor, UnitClass
+
+local DEAD = DEAD
+
 -------------------------------------------------------------------------------------------------------
 --                                   based on Tukui
 ------------------------------------------------------------------------------------------------------
@@ -13,7 +20,7 @@ if not yo.ToolTip.showBorder then return end
 local HealthBar = GameTooltipStatusBar
 local icon = "Interface\\AddOns\\yoFrame\\Media\\spec_icons_normal"
 
-function SetHealthValue(self, unit)
+local function SetHealthValue(self, unit)
 	if (UnitIsDeadOrGhost(unit)) then
 		self.Text:SetText(DEAD)
 	else
@@ -24,7 +31,7 @@ function SetHealthValue(self, unit)
 	end
 end
 
-function OnValueChanged()
+local function OnValueChanged()
 
 	local unit = select(2, HealthBar:GetParent():GetUnit())
 
@@ -43,9 +50,9 @@ function OnValueChanged()
 	SetHealthValue(HealthBar, unit)
 end
 
-function SkinHealthBar()
+local function SkinHealthBar()
 	HealthBar:SetScript("OnValueChanged", OnValueChanged)
-	HealthBar:SetStatusBarTexture( texture)
+	HealthBar:SetStatusBarTexture( yo.texture)
 	HealthBar:ClearAllPoints()
 	HealthBar:SetPoint("BOTTOMLEFT", HealthBar:GetParent(), "TOPLEFT", 0, 5)
 	HealthBar:SetPoint("BOTTOMRIGHT", HealthBar:GetParent(), "TOPRIGHT", 0, 5)
@@ -59,12 +66,12 @@ function SkinHealthBar()
 
 	if not HealthBar.Text then
 		HealthBar.Text = HealthBar:CreateFontString(nil, "OVERLAY")
-		HealthBar.Text:SetFont( fontpx, fontsize +5, "OUTLINE")
+		HealthBar.Text:SetFont( yo.fontpx, yo.fontsize +5, "OUTLINE")
 		HealthBar.Text:SetPoint("CENTER", HealthBar, "TOP", 0, 2)
 	end
 end
 
-function SetUnitBorderColor( Unit)
+local function SetUnitBorderColor( Unit)
 	local Unit = select(2, HealthBar:GetParent():GetUnit()) or "mouseover"
 	local cols = { 0.09, 0.09, 0.09}
 
@@ -93,7 +100,7 @@ local function getMyColor()
 	return R, G, B
 end
 
-function Skin(style)
+local function Skin(style)
 	local self = GameTooltip
 
 	if not self.shadow then CreateStyle(self, 1) end
@@ -112,7 +119,7 @@ function Skin(style)
 	self:ClearBackdrop()
 end
 
-function SetCompareItemBorderColor(anchorFrame)
+local function SetCompareItemBorderColor(anchorFrame)
 	for i = 1, 2 do
 		local TT = _G["ShoppingTooltip"..i]
 

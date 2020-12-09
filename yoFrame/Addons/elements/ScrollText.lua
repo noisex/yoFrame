@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Addons.stbEnable then return end
 
@@ -66,7 +66,7 @@ local function CreateSBT( self)
 	sbtD:SetMaxLines( 25)
 	sbtD:SetFading( true)
 
-	sbtD:SetFont( font, fontsize + 8, "OUTLINE")
+	sbtD:SetFont( yo.font, yo.fontsize + 8, "OUTLINE")
 	sbtD:SetShadowColor( 0.3, 0.3, 0.3, 1)
 	sbtD:SetShadowOffset( 1, -1)
 	sbtD:SetJustifyH("LEFT")
@@ -77,7 +77,7 @@ local function CreateSBT( self)
 	sbtH:SetMaxLines( 25)
 	sbtH:SetFading( true)
 
-	sbtH:SetFont( font, fontsize + 8, "OUTLINE")
+	sbtH:SetFont( yo.font, yo.fontsize + 8, "OUTLINE")
 	sbtH:SetShadowColor( 0.3, 0.3, 0.3, 1)
 	sbtH:SetShadowOffset( 1, -1)
 	sbtH:SetJustifyH("RIGHT")

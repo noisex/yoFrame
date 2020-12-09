@@ -1,5 +1,5 @@
 local _, ns = ...
-local L, yo = unpack( select( 2, ...)) or ns:NewLocale()
+local L, yo, n = unpack( select( 2, ...)) or ns:NewLocale()
 
 L.LOCALE_NAME = "enUS"
 

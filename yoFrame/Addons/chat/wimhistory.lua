@@ -48,7 +48,7 @@ local function CreateUserListButton( self, ind)
 	button:GetHighlightTexture():SetVertexColor(.196, .388, .5);
 
 	button.text = button:CreateFontString(nil, "OVERLAY") --, "ChatFontNormal");
-	button.text:SetFont( font, fontsize)
+	button.text:SetFont( yo.font, yo.fontsize)
 	button.text:SetPoint("TOPLEFT");
 	button.text:SetPoint("BOTTOMRIGHT", -18, 0);
 	button.text:SetJustifyH("LEFT");

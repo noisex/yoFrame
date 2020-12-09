@@ -8,8 +8,8 @@ local L, yo, n = ns[1], ns[2], ns[3]
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, texture, CreateStyleSmall, type, print, tinsert, UnitClass, texglow, GetColors
-	= CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, texture, CreateStyleSmall, type, print, tinsert, UnitClass, texglow, GetColors
+local CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, CreateStyleSmall, type, print, tinsert, UnitClass, GetColors
+	= CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, CreateStyleSmall, type, print, tinsert, UnitClass, GetColors
 
 local UnitSpecific = {
 	player = function(self)
@@ -169,10 +169,11 @@ local function raidShared(self, unit)
 			CustomFilter 	= funcWhiteList --funcBlackList
 		end
 
-		CreateStyleSmall( self.shadow, 2)
+		CreateStyleSmall( self.shadow, yo.healBotka.borderS and 2 or 1)
+
 		self.overShadow = self.shadow.shadow
 		self.overShadow:Hide()
-		self.overShadow:SetBackdropBorderColor(1, 0, 0, 1)
+		self.overShadow:SetBackdropBorderColor( split( ",", yo.healBotka.borderC))
 	end
 
 	if unit == "raid" then
@@ -454,6 +455,11 @@ local function raidShared(self, unit)
 			button.timerPos = { "TOP", button, "BOTTOM", 0, -3}
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
+			button.count:ClearAllPoints()
+			button.count:SetPoint( "CENTER", button, "TOPRIGHT", -3, -3)
+			local fn, fs, fd = button.count:GetFont()
+			button.count:SetFont( yo.fontpx, fs+2)
+			button.count:SetTextColor(1, 1, 0, 1)
 			if sizeAuras >= 30 then
 				n.CreateBorder( button, sizeAuras / 3)
 				n.SetBorderColor( button, 0.19, 0.19, 0.19, 0.9)
@@ -557,8 +563,8 @@ local function CreateTempStyle(f, size, level, alpha, alphaborder)
     if f.shadowMove then return end
 
 	local style = {
-		bgFile =  texture,
-		edgeFile = texglow,
+		bgFile =  yo.texture,
+		edgeFile = yo.texglow,
 		edgeSize = 4,
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	}

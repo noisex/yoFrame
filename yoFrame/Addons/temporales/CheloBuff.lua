@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local markPool = {8, 7, 5, 4, 3, 1, 6, 2}
 local markIndex = 1
@@ -13,10 +13,10 @@ local chatN = "RAID_WARNING"
 --	[264382]	= true, -- 04 - Зек'Воз : Пронзающий Взгляд  		2136
 --}
 
--- useMark, textWarning, withName, channelWarning, markClearDelay, foundTarget, delayAnonce 
+-- useMark, textWarning, withName, channelWarning, markClearDelay, foundTarget, delayAnonce
 
 local badDBM = {
-	["SPELL_AURA_APPLIED"]	= { 
+	["SPELL_AURA_APPLIED"]	= {
 		--[164812] = { 2, "Used moon", true,	"RAID_WARNING"},
 		--[164815] = { 2, "Used sun",  true,	"RAID_WARNING"},
 
@@ -35,9 +35,9 @@ local badDBM = {
 		[274271] = { 2, "Скоро диспел: Желание Смерти", true,	"RAID_WARNING"},
 		--07 272536
 		--[272536] = { 2, "Неизбежное уничтожение", true,	"RAID_WARNING"},
-	},     
+	},
 
-	["SPELL_AURA_REMOVED"]	= { 
+	["SPELL_AURA_REMOVED"]	= {
 		--[164812] = { 1, "Used sun",  true,	"RAID_WARNING"},
 		--[164815] = { 1,  "Used sun",  true,	"RAID_WARNING"},
 
@@ -58,22 +58,22 @@ local badDBM = {
 		--[272536] = { 1, "Неизбежное уничтожение", true,	"RAID_WARNING"},
 	},
 
-	["SPELL_CAST_START"]	= { 
+	["SPELL_CAST_START"]	= {
 		--[5176] = 	{ 0, "Выброс начался", 		false,	"RAID_WARNING"},273554
 		[271296] = 	{ 0, "RUN AWAY Кровавый Отбойник", 	false,	"RAID_WARNING"},
-		
+
 		[264382] = 	{ 2, "Пронзающий Взгляд", 	true,	"RAID_WARNING", 3, "boss2target"},
 		--07 - Митракс Развоплотитель
 		[273282] = 	{ 0, "RUN AWAY Разрыв сущности START", false,	"RAID_WARNING"},
 		[273538] = 	{ 0, "RUN AWAY уничтожающий-взрыв START", false,	"RAID_WARNING"},
 	},
 
-	["SPELL_CAST_SUCCESS"]	= { 
+	["SPELL_CAST_SUCCESS"]	= {
 		--[5176] 	= 	{ 2, "Выброс кончился 1й", 	true,	"RAID_WARNING", 3},
 		--277973 - 7	269827 - 15
 		[277973] = 	{ 0, "Ульдирский защитный луч Нормал",	false,	"RAID_WARNING"},
 		[269827] = 	{ 0, "Ульдирский защитный луч Героик",	false,	"RAID_WARNING"},
-		
+
 		[268253] = 	{ 0, "Ульдирский защитный луч",	false,	"RAID_WARNING"},
 		[268245] = 	{ 0, "Ульдирский защитный луч",	false,	"RAID_WARNING"},
 		--[264382] = 	{ 2, "Пронзающий Взгляд", 	true,	"RAID_WARNING", 3.5},
@@ -82,8 +82,8 @@ local badDBM = {
 
 --https://wow.gamepedia.com/UnitFlag
 --local _, sevent, _, _, sName, sourceFlags, _, _, _, _, _, spellId = CombatLogGetCurrentEventInfo ()
---COMBATLOG_OBJECT_TYPE_NPC 	0x 0 0 0 0 0 8 0 0 
---COMBATLOG_OBJECT_TYPE_PLAYER 	0x 0 0 0 0 0 4 0 0 
+--COMBATLOG_OBJECT_TYPE_NPC 	0x 0 0 0 0 0 8 0 0
+--COMBATLOG_OBJECT_TYPE_PLAYER 	0x 0 0 0 0 0 4 0 0
 --class, classFilename, race, raceFilename, sex, name, realm = GetPlayerInfoByGUID("guid")
 --print(sourceFlags, destFlags, bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) )
 --local eventData = {CombatLogGetCurrentEventInfo()};
@@ -93,7 +93,7 @@ local badDBM = {
 local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, 
+		local _, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
 				extraArg1, extraArg2, extraArg3, extraArg4, extraArg5, extraArg6, extraArg7, extraArg8, extraArg9, extraArg10 = CombatLogGetCurrentEventInfo()
 		--print(CombatLogGetCurrentEventInfo())
 
@@ -109,7 +109,7 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 		if useMark == 2 then
 			--SetRaidTarget( sourceName, markPool[markIndex]); --destName
 			rt = " {rt" .. markIndex .. "} "
-			markIndex = markIndex + 1			
+			markIndex = markIndex + 1
 		elseif useMark == 1 then
 			--SetRaidTarget( sourceName, 9);	--destName
 			markIndex =  max( 1, markIndex - 1)
@@ -131,7 +131,7 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 		if markClearDelay then
 			C_Timer.After( markClearDelay, function(self, ...)
 				--SetRaidTarget( sourceName, 9)
-				markIndex =  max( 1, markIndex - 1)	
+				markIndex =  max( 1, markIndex - 1)
 			end)
 		end
 
@@ -154,14 +154,14 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 				if targetName then
 					local cTargetName = "|r|c" .. RAID_CLASS_COLORS[ select( 2, UnitClass( unitTarget))].colorStr .. strsplit( "-", targetName) .. "|r"
 					print( "--Target cast: {rt8} " .. cTargetName .. " {rt8} " .. spellName)
-					--SendChatMessage( "{rt8} " .. cTargetName .. " {rt8} " .. spellName, chatN) 
+					--SendChatMessage( "{rt8} " .. cTargetName .. " {rt8} " .. spellName, chatN)
 					--SetRaidTarget( unit .. "target", 8);
 				end
 			else
 				print( "--SoloCast: " .. UnitName( unit), spellName)
-				--SendChatMessage( "{rt8} " .. spellName .. " {rt8} " .. spellName, chatN) 
+				--SendChatMessage( "{rt8} " .. spellName .. " {rt8} " .. spellName, chatN)
 			end
-		end							
+		end
 
 	elseif event == "ENCOUNTER_START" then
 		if UnitInRaid("player") or UnitInParty("player") then
@@ -188,7 +188,7 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 		self:RegisterEvent("ENCOUNTER_END")
 
 		if UnitExists( "boss1") then
-			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")			
+			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			--self:RegisterUnitEvent("UNIT_SPELLCAST_START", "boss1", "boss2")
 		else
 			--self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -217,7 +217,7 @@ chelobuff:SetScript("OnEvent", cheloEvent)
 		--		local textMark = "--{rt" .. markIndex .. "} "
 
 		--		print( textMark .. unitColor .. textMark .. extraArg2, extraArg1, badBuff[extraArg2])
-		--		--SendChatMessage( textMark .. unitColor .. textMark .. extraArg2, chatN) 
+		--		--SendChatMessage( textMark .. unitColor .. textMark .. extraArg2, chatN)
 		--		--SetRaidTarget( sourceName, markPool[markIndex]);
 		--		markIndex = markIndex + 1
 		--	end
@@ -228,4 +228,4 @@ chelobuff:SetScript("OnEvent", cheloEvent)
 		--		markIndex =  max( 1, markIndex - 1)
 		--		print("--SPELL_AURA_REMOVED", markIndex)
 		--	end
-		--end	
+		--end

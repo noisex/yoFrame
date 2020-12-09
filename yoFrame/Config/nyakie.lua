@@ -333,6 +333,7 @@ n.badMobsCasts = {
 
     [346506] = true, --https://ru.wowhead.com/spell=346506
     [330822] = true, --https://ru.wowhead.com/spell=330822
+    [298844] = true, -- Ужасающий вой
 }
 --164926
 --163086

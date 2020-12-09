@@ -1,7 +1,17 @@
 local addon, ns = ...
 local L, yo, n = unpack( ns)
 
+local _G = _G
 local yoEF = n.elemFrames
+
+local GameTooltip, UIParent, IsShiftKeyDown, CreateFrame, GetSpecializationInfo, GetSpecialization, CreateStyle, unpack, UnitClass, pairs, Round, GetItemSpell, GetSpellBaseCooldown, select, format, GetItemInfo, GetItemSetInfo
+	= GameTooltip, UIParent, IsShiftKeyDown, CreateFrame, GetSpecializationInfo, GetSpecialization, CreateStyle, unpack, UnitClass, pairs, Round, GetItemSpell, GetSpellBaseCooldown, select, format, GetItemInfo, GetItemSetInfo
+
+local GetItemStats, GetSpellDescription, CreatePanel, hex, GetLootSpecialization, GetSpecializationInfoByID, SecondsToClock, EJ_SetLootFilter, EJ_SetDifficulty, EJ_GetInstanceByIndex, EJ_SelectInstance, EJ_GetNumLoot, GameTooltip_ShowCompareItem
+	= GetItemStats, GetSpellDescription, CreatePanel, hex, GetLootSpecialization, GetSpecializationInfoByID, SecondsToClock, EJ_SetLootFilter, EJ_SetDifficulty, EJ_GetInstanceByIndex, EJ_SelectInstance, EJ_GetNumLoot, GameTooltip_ShowCompareItem
+
+local ITEM_SPELL_TRIGGER_ONUSE = ITEM_SPELL_TRIGGER_ONUSE
+local ITEM_SPELL_TRIGGER_ONEQUIP= ITEM_SPELL_TRIGGER_ONEQUIP
 
 local locationToFilter = {
 	["HeadSlot"]	= 0,
@@ -378,7 +388,7 @@ local function createDuLoot( self)
 	seting:SetHighlightTexture("Interface\\GossipFrame\\BinderGossipIcon")
 	seting:SetScript("OnClick", settingDoIt)
 
-	scrollFrame = CreateFrame("ScrollFrame", nil, self, "UIPanelScrollFrameTemplate")
+	local scrollFrame = CreateFrame("ScrollFrame", nil, self, "UIPanelScrollFrameTemplate")
 	scrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -25)
 	scrollFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -3, 3)
 

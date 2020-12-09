@@ -236,7 +236,7 @@ logan:SetScript("OnEvent", function(self, ...)
 	end
 end)
 
-n.PlayerBuffWhiteList = {
+n.playerBuffList = {
 	--Consumables
 		[SpellName(251231)] = true, -- Steelskin Potion (BfA Armor)
 		[SpellName(251316)] = true, -- Potion of Bursting Blood (BfA Melee)

@@ -5,8 +5,9 @@ do
 
 	-- I know theres a better way of doing this than this, but not sure for the time being, works fine though!
 	local function Constructor()
-		return AceGUI:Create("Predictor_Base")
+		local self = AceGUI:Create("Predictor_Base")
+		return self
 	end
-	
+
 	AceGUI:RegisterWidgetType(Type, Constructor, Version)
 end

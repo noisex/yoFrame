@@ -2,7 +2,7 @@ local _, ns = ...
 local oUF = ns.oUF or oUF
 assert(oUF, "oUF_q was unable to locate oUF install.")
 
-local L, yo = ns[1], ns[2]
+local L, yo, n = ns[1], ns[2], ns[3]
 
 local _G = _G
 

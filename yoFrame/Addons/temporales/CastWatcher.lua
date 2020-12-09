@@ -1,6 +1,6 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
-local tauntSpell = { 
+local tauntSpell = {
     [6795] = "Мишка",
     [56222] = "DK",
     [49576] = "DK",
@@ -13,7 +13,7 @@ local tauntSpell = {
     [20736] = "Hunter"
 }
 
-local foodSpell = { 
+local foodSpell = {
     --[157757] = "valeriy",
     --[157898] = "igor",
     --[8690] = "vindikar",
@@ -27,27 +27,27 @@ local foodSpell = {
 }
 
 local function CreateText( self)
-	
+
 	self:SetPoint( "CENTER", UIParent, "TOP", 0, -100)
 	self:SetSize( 45, 45)
 	self:Hide()
 	CreateStyle( self, 5)
-	
+
 	self.icon = self:CreateTexture(nil, "BORDER")
 	self.icon:SetAllPoints()
 	self.icon:SetTexCoord(unpack( yo.tCoord))
 	self.icon:SetVertexColor( 1,1,1,1)
-	
+
 	self.watchText = self:CreateFontString(nil, "OVERLAY")
 	self.watchText:SetFont( font, 20, "OUTLINE")
 	self.watchText:SetPoint("CENTER", self, "BOTTOM", 0, -10)
 	self.watchText:SetTextColor( 1, 0.5, 0)
-	
+
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
 local function FadingOut( self, elapled)
-	
+
 	self.countDown = self.countDown - elapled
 	if self.countDown > 0 then
 		self:SetAlpha( math.min( self.countDown, 1.0))
@@ -60,40 +60,40 @@ end
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		
-		if not yo["Addons"].CastWatcher then return end	
+
+		if not yo["Addons"].CastWatcher then return end
 		if not self.icon then
 			CreateText( self)
 		end
-		
+
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		
+
 		local _, sevent, _, _, sName, sourceFlags, _, _, _, _, _, spellId = CombatLogGetCurrentEventInfo ()
    		if sevent == "SPELL_CAST_SUCCESS"  then
-			
+
 			if foodSpell[spellID] then
-				if --not UnitIsUnit( sName, "player") and 
+				if --not UnitIsUnit( sName, "player") and
 						( UnitInParty( sName) or UnitInRaid( sName)) then
-				        
+
 					local spellName, _, icon = GetSpellInfo ( spellID)
 					local uClass = select( 2, UnitClass( sName)) or "PRIEST"
 					local sColor = " -=> |c" .. RAID_CLASS_COLORS[ uClass].colorStr .. strsplit( "-", sName) .. "|r"
-			
+
 					--print( sName, uClass, UnitClass( "Аллотрил"))
-			
+
 					self.icon:SetTexture( icon)
 					self.watchText:SetText( spellName .. sColor)
 					self.countDown = 5
 					self:Show()
 					self:SetScript('OnUpdate', FadingOut)
-	
+
 					PlaySoundFile( LSM:Fetch( "sound", yo["Addons"]["CastWatchSound"]))
 				end
 			elseif tauntSpell[spellID] then
 				if not UnitIsUnit( sName, "player") and ( UnitInParty( sName) or UnitInRaid( sName))
 					--and UnitGroupRolesAssigned( "player") == "TANK"
 					then
-										
+
 					local spellName, _, icon = GetSpellInfo ( spellID)
 					local uClass = select( 2, UnitClass( sName)) or "PRIEST"
 					local sColor = " -=> |c" .. RAID_CLASS_COLORS[ uClass].colorStr .. strsplit( "-", sName) .. "|r"
@@ -106,7 +106,7 @@ local function OnEvent( self, event, ...)
 				end
 			end
 		end
-    end 
+    end
 end
 
 local logan = CreateFrame("Frame")

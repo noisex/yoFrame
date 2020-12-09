@@ -1,4 +1,4 @@
-local L, yo = unpack( select( 2, ...))
+local L, yo, n = unpack( select( 2, ...))
 
 local function skinBubble( self)
 	for i = 1, self:GetNumRegions() do
@@ -9,13 +9,13 @@ local function skinBubble( self)
 			self.text = region
 			region:SetFont( font, yo.Chat.chatBubbleFont, "OUTLINE")
 			if yo.Chat.chatBubbleShadow then
-				region:SetShadowOffset(1, -1)				
+				region:SetShadowOffset(1, -1)
 			end
 		end
 	end
 
 	local shift = yo.Chat.chatBubbleShift
-	
+
 	if yo.Chat.chatBubble == "remove" then
 		self:SetBackdrop(nil)
 
@@ -27,37 +27,37 @@ local function skinBubble( self)
 			insets = { left = shift, right = shift, top = shift -2, bottom = shift -2}
 		})
 		self:SetBackdropColor( 0.15, 0.15, 0.15, 0.5)
-		self:SetBackdropBorderColor(0, 0, 0, 0)	
+		self:SetBackdropBorderColor(0, 0, 0, 0)
 
 	elseif yo.Chat.chatBubble == "skin" then
 		self:SetBackdrop(nil)
 		CreateStyle( self, -(shift-4), 0, 0.2, 0.4)
-	end	
+	end
 
 	--self.skinned = true
 	--self.run = 3
 end
 
 local function OnUpdate( self, elapsed)
-	
+
 	self.run = self.run + elapsed
 	if self.run > 2 then
 		self:SetScript("OnUpdate", nil)
 	end
-	
+
 	local _, instanceType = IsInInstance()
 	if instanceType == "party" or instanceType == "none" then
 		for _, chatBubble in pairs(C_ChatBubbles.GetAllChatBubbles( )) do
 			if chatBubble and not chatBubble.skinned then
 				skinBubble( chatBubble)
-			end			
+			end
 		end
 	elseif instanceType == "party" then
 		local numChilds = WorldFrame:GetNumChildren()
 		for i, frame in pairs( {WorldFrame:GetChildren()}) do
-			
+
 			if frame:GetNumRegions() then
-				print( i, frame:GetNumRegions())	
+				print( i, frame:GetNumRegions())
 			end
 			--if frame:GetName() then return end
 			--if not frame:GetRegions() then return end
@@ -74,12 +74,12 @@ local function OnEvent( self, event, ...)
 
 		self:RegisterEvent("CHAT_MSG_SAY")
 		self:RegisterEvent("CHAT_MSG_YELL")
-		
+
 		--self:RegisterEvent("CHAT_MSG_PARTY")
 		--self:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 		self:RegisterEvent("CHAT_MSG_MONSTER_SAY")
-		self:RegisterEvent("CHAT_MSG_MONSTER_YELL")	
-	
+		self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+
 	elseif event:match( "CHAT_MSG") then
 		print(event, ...)
 		self.run = 0

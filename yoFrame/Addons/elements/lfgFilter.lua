@@ -1,7 +1,7 @@
 local addon, ns = ...
 
 local L, yo, n = unpack( ns)
-local oUF = ns.oUF
+--local oUF = ns.oUF
 
 -------------------------------------------------------------------------------------------------------
 --                                   LFG Filter
@@ -74,9 +74,9 @@ function LFGListUtil_SortSearchResults(results)
 		--tprint( memberCounts)
 		--print( memberCounts.TANK, setting.Tank,  memberCounts.HEALER, setting.Heal, memberCounts.DAMAGER, setting.Damager)
 
-		if ( setting.Tank and (( memberCounts.TANK == setting.Tank) or ( setting.TankPlus and memberCounts.TANK >= setting.Tank))  or setting.Tank == -1 )
-			and ( setting.Heal and ((memberCounts.HEALER == setting.Heal ) or ( setting.HealPlus and memberCounts.HEALER >= setting.Heal)) or setting.Heal == -1 )
-			and (setting.Damager and ((memberCounts.DAMAGER == setting.Damager ) or ( setting.DamagerPlus and memberCounts.DAMAGER >= setting.Damager)) or setting.Damager == -1)	then
+		if 		( setting.Tank 		and (( memberCounts.TANK 	== setting.Tank) 		or ( setting.TankPlus 	 and memberCounts.TANK 		>= setting.Tank))  		or setting.Tank 	== -1)
+			and ( setting.Heal 		and (( memberCounts.HEALER 	== setting.Heal) 		or ( setting.HealPlus 	 and memberCounts.HEALER 	>= setting.Heal)) 		or setting.Heal  	== -1)
+			and ( setting.Damager 	and (( memberCounts.DAMAGER == setting.Damager) 	or ( setting.DamagerPlus and memberCounts.DAMAGER 	>= setting.Damager)) 	or setting.Damager 	== -1)	then
 		else
 			table.remove( results, idx)
 		end
@@ -134,5 +134,5 @@ local function createLFGFrame( self)
 end
 
 LFGListFrame:HookScript("OnShow", createLFGFrame)
-LFGListFrame.SearchPanel:HookScript("OnShow", function(self, ...) LFGListFrame.setting:Show() end)
-LFGListFrame.SearchPanel:HookScript("OnHide", function(self, ...) LFGListFrame.setting:Hide() end)
+LFGListFrame.SearchPanel:HookScript("OnShow", function(self, ...) if LFGListFrame.setting then LFGListFrame.setting:Show() end end)
+LFGListFrame.SearchPanel:HookScript("OnHide", function(self, ...) if LFGListFrame.setting then LFGListFrame.setting:Hide() end end)

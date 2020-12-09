@@ -8,7 +8,10 @@ local Stat = CreateFrame("Frame", nil, UIParent)
 --------------------------------------------------------------------
  -- BAGS
 --------------------------------------------------------------------
-local free, total, used = 0, 0, 0
+local free, total, used, isOpen = 0, 0, 0
+
+local GameTooltip, GetContainerNumFreeSlots, GetContainerNumSlots, NUM_BAG_SLOTS, BAGSLOT, CloseAllBags, OpenAllBags
+	= GameTooltip, GetContainerNumFreeSlots, GetContainerNumSlots, NUM_BAG_SLOTS, BAGSLOT, CloseAllBags, OpenAllBags
 
 function Stat:onEvent(event)
 	free, total = 0, 0
@@ -53,7 +56,7 @@ function Stat:Enable()
 	self:SetScript("OnEnter", function( ) self:onEnter( self) end )
 	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	self:SetScript("OnMouseDown", function( btn)
-		if yo_Bags.bagFrame then addon_Toggle()
+		if n.bags.bagFrame then n.bags:Toggle()
 		else 	isOpen = not isOpen
 				if isOpen then OpenAllBags()
 				else CloseAllBags()

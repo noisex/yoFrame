@@ -5,6 +5,7 @@ if not yo.Bags.enable then return end
 local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert = table.insert
+local BankFrame = BankFrame
 local floor, ceil, abs, mod = math.floor, math.ceil, math.abs, math.fmod
 local format, len, sub = string.format, string.len, string.sub
 local BankFrameItemButton_Update = BankFrameItemButton_Update
@@ -12,18 +13,72 @@ local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
 local C_NewItems_IsNewItem = C_NewItems.IsNewItem
 local Search = LibStub('LibItemSearch-1.2')
 local defcol = 0.17
+LE_ITEM_QUALITY_POOR = 0
+
 local CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
 	= CreateFrame, CreateStyle, UIParent, CreateStyleSmall, GameTooltip, GetContainerNumSlots, GetItemInfo, GetContainerItemLink, GetContainerItemInfo, GetItemQualityColor, SetItemButtonTexture, SetItemButtonCount
 
-local addon = CreateFrame("Frame", "yo_Bags", UIParent)
-	--addon:RegisterEvent("ADDON_LOADED")
-	addon:RegisterEvent("PLAYER_ENTERING_WORLD")
-	addon:SetScript('OnEvent', function(self, event, ...)
-		self[event](self, event, ...)
-	end)
-LE_ITEM_QUALITY_POOR = 0
+local tostring, PlaySound, GetBankSlotCost, GetNumBankSlots, IsShiftKeyDown, print, IsControlKeyDown, UnitClass, GetLocale, wipe, next, yoDelay, InCombatLockdown, SetItemButtonDesaturated, SetBankBagSlotFlag, SetBagSlotFlag
+	= tostring, PlaySound, GetBankSlotCost, GetNumBankSlots, IsShiftKeyDown, print, IsControlKeyDown, UnitClass, GetLocale, wipe, next, yoDelay, InCombatLockdown, SetItemButtonDesaturated, SetBankBagSlotFlag, SetBagSlotFlag
 
-ProfessionColors = {
+local SetUpAnimGroup, UIDropDownMenu_CreateInfo, IsInventoryItemProfessionBag, ContainerIDToInventoryID, UIDropDownMenu_AddButton, GetBagSlotFlag, GetBankBagSlotFlag, GetBagSlotFlag, GetBankAutosortDisabled, GetBackpackAutosortDisabled
+	= SetUpAnimGroup, UIDropDownMenu_CreateInfo, IsInventoryItemProfessionBag, ContainerIDToInventoryID, UIDropDownMenu_AddButton, GetBagSlotFlag, GetBankBagSlotFlag, GetBagSlotFlag, GetBankAutosortDisabled, GetBackpackAutosortDisabled
+
+local SetBankAutosortDisabled, SetBackpackAutosortDisabled, EquipItemByName, ConfirmBindOnUse, C_NewItems_RemoveNewItem, C_NewItems_IsNewItem, GetInventoryItemsForSlot, GetContainerItemQuestInfo, GetContainerItemCooldown
+	= SetBankAutosortDisabled, SetBackpackAutosortDisabled, EquipItemByName, ConfirmBindOnUse, C_NewItems.RemoveNewItem, C_NewItems.IsNewItem, GetInventoryItemsForSlot, GetContainerItemQuestInfo, GetContainerItemCooldown
+
+local CooldownFrame_Set, SetItemButtonTextureVertexColor, SetItemButtonQuality, ContainerFrame4, frame1px, ToggleDropDownMenu, PutItemInBag, PutItemInBackpack, CloseAllBags, CloseBankBagFrames, CloseBankFrame, SortBags
+	= CooldownFrame_Set, SetItemButtonTextureVertexColor, SetItemButtonQuality, ContainerFrame4, frame1px, ToggleDropDownMenu, PutItemInBag, PutItemInBackpack, CloseAllBags, CloseBankBagFrames, CloseBankFrame, SortBags
+
+local GetCVarBitfield, IsReagentBankUnlocked, DepositReagentBank, GetContainerNumFreeSlots, ReagentButtonInventorySlot, BankFrameItemButton_OnEnter, HelpTip, Kill, BankFrameTab2, UIDropDownMenu_Initialize, Setlers
+	= GetCVarBitfield, IsReagentBankUnlocked, DepositReagentBank, GetContainerNumFreeSlots, ReagentButtonInventorySlot, BankFrameItemButton_OnEnter, HelpTip, Kill, BankFrameTab2, UIDropDownMenu_Initialize, Setlers
+
+local SortBankBags, SortReagentBankBags, PurchaseSlot, SetInsertItemsLeftToRight, SetSortBagsRightToLeft, StaticPopupDialogs, HideUIPanel, MoneyFrame_Update, StaticPopup_Show, hooksecurefunc
+	= SortBankBags, SortReagentBankBags, PurchaseSlot, SetInsertItemsLeftToRight, SetSortBagsRightToLeft, StaticPopupDialogs, HideUIPanel, MoneyFrame_Update, StaticPopup_Show, hooksecurefunc
+
+local BANK = BANK
+local SEARCH_STRING
+local SEARCH = SEARCH
+local BAGSLOTTEXT = BAGSLOTTEXT
+local KEY_BUTTON2 = KEY_BUTTON2
+local REAGENT_BANK = REAGENT_BANK
+local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local BAG_CLEANUP_BANK = BAG_CLEANUP_BANK
+local BAG_CLEANUP_BAGS = BAG_CLEANUP_BAGS
+local AUTO_ACTIVATE_ON = AUTO_ACTIVATE_ON
+local REAGENT_BANK_HELP = REAGENT_BANK_HELP
+local BAG_FILTER_IGNORE = BAG_FILTER_IGNORE
+local BANK_BAG_PURCHASE = BANK_BAG_PURCHASE
+local BAG_FILTER_CLEANUP = BAG_FILTER_CLEANUP
+local REAGENTBANK_DEPOSIT = REAGENTBANK_DEPOSIT
+local NUM_CONTAINER_FRAMES = NUM_CONTAINER_FRAMES
+local BAG_SETTINGS_TOOLTIP = BAG_SETTINGS_TOOLTIP
+local CONFIRM_BUY_BANK_SLOT = CONFIRM_BUY_BANK_SLOT
+local REAGENTBANK_CONTAINER = REAGENTBANK_CONTAINER
+local STATICPOPUP_NUMDIALOGS = STATICPOPUP_NUMDIALOGS
+local NUM_LE_BAG_FILTER_FLAGS = NUM_LE_BAG_FILTER_FLAGS
+local LE_BAG_FILTER_FLAG_JUNK = LE_BAG_FILTER_FLAG_JUNK
+local BAG_CLEANUP_REAGENT_BANK = BAG_CLEANUP_REAGENT_BANK
+local LE_BAG_FILTER_FLAG_EQUIPMENT = LE_BAG_FILTER_FLAG_EQUIPMENT
+local LE_BAG_FILTER_FLAG_IGNORE_CLEANUP = LE_BAG_FILTER_FLAG_IGNORE_CLEANUP
+local LE_FRAME_TUTORIAL_REAGENT_BANK_UNLOCK = LE_FRAME_TUTORIAL_REAGENT_BANK_UNLOCK
+
+-- GLOBALS: LE_ITEM_QUALITY_POOR, ReagentBankFrameItem1, ToggleBackpack, ToggleBag, ToggleAllBags, OpenAllBags, OpenBackpack, CloseBackpack
+
+n.bags = CreateFrame("Frame", "yo_Bags", UIParent)
+local addon = n.bags
+--addon:RegisterEvent("ADDON_LOADED")
+addon:RegisterEvent("PLAYER_ENTERING_WORLD")
+addon:SetScript('OnEvent', function(self, event, ...)
+	self[event](self, event, ...)
+end)
+
+local ElvUIAssignBagDropdown = CreateFrame("Frame", "ElvUIAssignBagDropdown", UIParent, "UIDropDownMenuTemplate")
+ElvUIAssignBagDropdown:SetID(1)
+ElvUIAssignBagDropdown:SetClampedToScreen(true)
+ElvUIAssignBagDropdown:Hide()
+
+local ProfessionColors = {
 	[0x0008]   = {224/255, 187/255, 74/255},  -- Leatherworking
 	[0x0010]   = {74/255, 77/255, 224/255},   -- Inscription
 	[0x0020]   = {18/255, 181/255, 32/255},   -- Herbs
@@ -35,28 +90,23 @@ ProfessionColors = {
 	[0x010000] = {222/255, 13/255,  65/255},  -- Cooking
 }
 
-AssignmentColors = {
+local AssignmentColors = {
 	[0] = {252/255, 59/255, 54/255}, -- fallback
 	[2] = {0/255, 127/255, 121/255}, -- equipment
 	[3] = {145/255, 242/255, 123/255}, -- consumables
 	[4] = {255/255, 81/255, 168/255}, -- tradegoods
 }
 
-BAG_FILTER_ICONS = {
+local BAG_FILTER_ICONS = {
 	[_G.LE_BAG_FILTER_FLAG_EQUIPMENT] = 'Interface/ICONS/INV_Chest_Plate10',
 	[_G.LE_BAG_FILTER_FLAG_CONSUMABLES] = 'Interface/ICONS/INV_Potion_93',
 	[_G.LE_BAG_FILTER_FLAG_TRADE_GOODS] = 'Interface/ICONS/INV_Fabric_Silk_02',
 }
 
-QuestColors = {
+local QuestColors = {
 	questStarter = {r = 1, g = 1, b = 0},
 	questItem 	 = {r = 1, g = 0.30, b = 0.30},
 }
-
---QuestKeys = {
---	questStarter = 'questStarter',
---	questItem = 'questItem',
---}
 
 local UpdateItemUpgradeIcon;
 local ITEM_UPGRADE_CHECK_TIME = 0.5;
@@ -116,7 +166,7 @@ local function ConvertER( str)
 	local res, t = "", {}
 	str:gsub(".",function(c)
 		if enrus[c] then c = enrus[c] end
-		table.insert( t, c )
+		tinsert( t, c )
 	end)
 
 	for k, v in pairs( t) do
@@ -237,7 +287,7 @@ function addon:AssignBagFlagMenu()
 
 	local info = UIDropDownMenu_CreateInfo()
 	if holder.id > 0 and not IsInventoryItemProfessionBag('player', ContainerIDToInventoryID(holder.id)) then -- The actual bank has ID -1, backpack has ID 0, we want to make sure we're looking at a regular or bank bag
-		info.text = BAG_FILTER_ASSIGN_TO
+		info.text = _G.BAG_FILTER_ASSIGN_TO
 		info.isTitle = 1
 		info.notCheckable = 1
 		UIDropDownMenu_AddButton(info)
@@ -249,7 +299,7 @@ function addon:AssignBagFlagMenu()
 
 		for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
 			if i ~= LE_BAG_FILTER_FLAG_JUNK then
-				info.text = BAG_FILTER_LABELS[i]
+				info.text = _G.BAG_FILTER_LABELS[i]
 				info.func = function(_, _, _, value)
 					value = not value
 
@@ -355,7 +405,7 @@ function addon:SetSlotAlphaForBag(f)
 						f.Bags[bagID][slotID].shadow:SetAlpha( 1)
 					else
 						f.Bags[bagID][slotID]:SetAlpha(0.2)
-						f.Bags[bagID][slotID].shadow:SetAlpha(0.1)
+						f.Bags[bagID][slotID].shadow:SetAlpha(0.2)
 					end
 				end
 			end
@@ -464,7 +514,7 @@ end
 
 local function StyleButton(button, noHover, noPushed, noChecked)
 	if button.SetHighlightTexture and not button.hover and not noHover then
-		local hover = button:CreateTexture("frame", nil, self)
+		local hover = button:CreateTexture("frame", nil, button)
 			hover:SetTexture( yo.texture)
 			hover:SetVertexColor( 0, 1, 0, 1)
 			hover:SetPoint("TOPLEFT", 0, -0)
@@ -475,7 +525,7 @@ local function StyleButton(button, noHover, noPushed, noChecked)
 	end
 
 	if button.SetPushedTexture and not button.pushed then
-		local pushed = button:CreateTexture("frame", nil, self)
+		local pushed = button:CreateTexture("frame", nil, button)
 			pushed:SetTexture( yo.texture)
 			pushed:SetVertexColor( 0, 1, 0, 1)
 			pushed:SetPoint("TOPLEFT", 0, -0)
@@ -486,7 +536,7 @@ local function StyleButton(button, noHover, noPushed, noChecked)
 	end
 
 	if button.SetCheckedTexture and not button.checked then
-		local checked = button:CreateTexture("frame", nil, self)
+		local checked = button:CreateTexture("frame", nil, button)
 			checked:SetTexture( yo.texture)
 			checked:SetVertexColor( 1, 1, 0, 1)
 			checked:SetPoint("TOPLEFT", 0, -0)
@@ -524,10 +574,10 @@ local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquip
 
 	local itemRarity = select( 3, GetItemInfo( clink))
 	local hexColor = "|c" .. select( 4, GetItemQualityColor(itemRarity))
-	local loclhexColor
+	local loclhexColor, locitemRarity
 
 	if locLink then
-		local locitemRarity = select( 3, GetItemInfo( locLink))
+		locitemRarity = select( 3, GetItemInfo( locLink))
 		loclhexColor = "|c" .. select( 4, GetItemQualityColor(locitemRarity))
 	else
 		loclhexColor = "|c" .. select( 4, GetItemQualityColor(0))
@@ -549,11 +599,11 @@ local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquip
 			EquipItemByName( clink)
 			ConfirmBindOnUse() -- elseif ( event == "USE_BIND_CONFIRM" ) then StaticPopup_Show("USE_BIND");
 		end
-		C_NewItems.RemoveNewItem(bagID, slotID)
+		C_NewItems_RemoveNewItem(bagID, slotID)
 		--print( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)
 	else
 		print( L["can change"] .. text)
-		C_NewItems.RemoveNewItem(bagID, slotID)
+		C_NewItems_RemoveNewItem(bagID, slotID)
 	end
 end
 
@@ -566,8 +616,8 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 	if slotIndexes and iLvl then
 
 		for i, locSlotID in ipairs( slotIndexes ) do
-			local itemLocation = ItemLocation:CreateFromEquipmentSlot( locSlotID)
-			local item = Item:CreateFromItemLocation( itemLocation)
+			local itemLocation = _G.ItemLocation:CreateFromEquipmentSlot( locSlotID)
+			local item = _G.Item:CreateFromItemLocation( itemLocation)
 			local locLvl = item:GetCurrentItemLevel()
 
 			if locSlotID == 16 and n.slot2HWeapon[item:GetInventoryTypeName()] then weapon2H = true end
@@ -588,7 +638,7 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 				end
 			end
 			--dprint( "11111 ", bagID, slotID, itemEquipLoc, locEquipLocation, itemSubType, clink, canWear, locLvl, iLvl, C_NewItems.IsNewItem(bagID, slotID))
-			if item:IsItemEmpty() and locSlotID < 16 and C_NewItems.IsNewItem(bagID, slotID) == true then
+			if item:IsItemEmpty() and locSlotID < 16 and C_NewItems_IsNewItem(bagID, slotID) == true then
 
 				if locSlotID >= 11 and locSlotID <= 15 then 				-- ring and trinkets slots
 					equipItem( bagID, slotID, clink, iLvl)
@@ -605,7 +655,7 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 				ret = true 																	-- чекать что в майнхэнде двуручка и не чекать 2й слот на канвеар
 				if locSlotID <= 16 and itemEquipLoc == locEquipLocation then
 					--dprint("прошли 2й чек")
-					if ( C_NewItems.IsNewItem(bagID, slotID) == true) then
+					if ( C_NewItems_IsNewItem(bagID, slotID) == true) then
 						--dprint("прошли 3й чек")
 						equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 					end
@@ -629,10 +679,11 @@ end
 -----------------------------------------------------------------------------------------------------------------
 --																	UPDATE SLOT
 -----------------------------------------------------------------------------------------------------------------
-function UpdateSlot( self, bagID, slotID)
+local function UpdateSlot( self, bagID, slotID)
 	--print ("UPDATE_SLOT: ", bagID, slotID)
 	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return; end
 
+	local itemLink
 	local slot, _ 		= self.Bags[bagID][slotID], nil;
 	local bagType 		= self.Bags[bagID].type;
 	local clink 		= GetContainerItemLink(bagID, slotID);
@@ -665,7 +716,7 @@ function UpdateSlot( self, bagID, slotID)
 		local iLvl, itemEquipLoc, itemClassID, itemSubClassID, itemSubType
 		slot.name, _, _, _, _, _, itemSubType, _, itemEquipLoc, _, _, itemClassID, itemSubClassID = GetItemInfo(clink);
 
-		local item = Item:CreateFromBagAndSlot(bagID, slotID)
+		local item = _G.Item:CreateFromBagAndSlot(bagID, slotID)
  		if ( item ) then
     		iLvl = item:GetCurrentItemLevel()
 		end
@@ -742,7 +793,7 @@ function UpdateSlot( self, bagID, slotID)
 	SetItemButtonTexture(slot, texture);
 	SetItemButtonCount(slot, count);
 	SetItemButtonDesaturated(slot, locked, 0.5, 0.5, 0.5);
-	SetItemButtonQuality(slot, rarity, itemLink)
+	SetItemButtonQuality(slot, slot.rarity, itemLink)
 
 	if GameTooltip:GetOwner() == slot and not slot.hasItem then GameTooltip:Hide() end
 end
@@ -761,7 +812,20 @@ function addon:UpdateBagSlots( self, bagID)
 	end
 end
 
-function UpdateAllSlots( self, ...)
+function addon:UpdateCooldowns(frame)
+	if not (frame and frame.BagIDs) then return end
+
+	for _, bagID in ipairs(frame.BagIDs) do
+		for slotID = 1, GetContainerNumSlots(bagID) do
+			if GetContainerItemInfo(bagID, slotID) then
+				local start, duration, enable = GetContainerItemCooldown(bagID, slotID)
+				CooldownFrame_Set(frame.Bags[bagID][slotID].cooldown, start, duration, enable)
+			end
+		end
+	end
+end
+
+local function UpdateAllSlots( self, ...)
 	--print( "UpdateAllSlots: ", self:GetName(), self.BagIDs)
 
 	for _, bagID in ipairs( self.BagIDs) do
@@ -781,45 +845,79 @@ end
 ----													SHOW HIDES
 -----------------------------------------------------------------------------------------------
 
-function addon_Open()
+function addon:RegisterEvents( )
+	local f = addon.bagFrame
+
+	f:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED");
+	f:RegisterEvent("ITEM_LOCK_CHANGED");
+	f:RegisterEvent("ITEM_UNLOCKED");
+	f:RegisterEvent("BAG_UPDATE_COOLDOWN")
+	f:RegisterEvent("BAG_UPDATE");
+	f:RegisterEvent("BAG_SLOT_FLAGS_UPDATED");
+	f:RegisterEvent("BANK_BAG_SLOT_FLAGS_UPDATED");
+	f:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
+	f:RegisterEvent("QUEST_ACCEPTED");
+	f:RegisterEvent("QUEST_REMOVED");
+	f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	f:RegisterEvent("USE_BIND_CONFIRM")
+end
+
+function addon:UnRegisterEvents( )
+	local f = addon.bagFrame
+	f:UnregisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED");
+	f:UnregisterEvent("ITEM_LOCK_CHANGED");
+	f:UnregisterEvent("ITEM_UNLOCKED");
+	f:UnregisterEvent("BAG_UPDATE_COOLDOWN")
+	f:UnregisterEvent("BAG_UPDATE");
+	f:UnregisterEvent("BAG_SLOT_FLAGS_UPDATED");
+	f:UnregisterEvent("BANK_BAG_SLOT_FLAGS_UPDATED");
+	f:UnregisterEvent("PLAYERBANKSLOTS_CHANGED");
+	f:UnregisterEvent("QUEST_ACCEPTED");
+	f:UnregisterEvent("QUEST_REMOVED");
+	f:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	f:UnregisterEvent("USE_BIND_CONFIRM")
+end
+
+function addon:Open()
 	--print( "BAGS Frame Open")
+	addon:RegisterEvents()
+
 	PlaySound ( 862, "Master")
 	addon.bagFrame:Show()
 	ContainerFrame4:Show()
 	UpdateAllSlots( addon.bagFrame)
 end
 
-function addon_Close()
+function addon:Close()
 	--print( "BAGS Close")
+	addon:UnRegisterEvents()
+
 	if addon.bagFrame:IsShown() then PlaySound ( 863, "Master") end
 	ContainerFrame4:Hide()
 	addon.bagFrame:Hide()
 end
 
-function addon_Toggle()
+function addon:Toggle()
 	--print( "addon_Toggle")
-	if addon.bagFrame:IsShown() then 	addon_Close()
-	else								addon_Open()	end
+	if addon.bagFrame:IsShown() then 	addon:Close()
+	else								addon:Open()	end
 end
 
-local function addon_OnShow() --print( "Event addon_ONShow")
-end
-
-local function addonBank_OnHide()
+function addon:OnHide()
 	--print( "Event addonBANK_ONhide")
-	addon_Close()
+	addon:Close()
 	addon.bankFrame:Hide()
 	BankFrame:Hide()
 	CloseBankFrame()
 end
 
-local function addonBank_OnShow()
+function addon:OnShow()
 	--print( "Event addonBANK_ONShow")
 	--OpenBankFrame()
 	--ReagentBankHelpBox:Show();
 	if(not GetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_REAGENT_BANK_UNLOCK)) then
 		local numSlots,full = GetNumBankSlots();
-		if (full and not IsReagentBankUnlocked()) then
+		if ( full and not IsReagentBankUnlocked()) then
 			local helpTipInfo = {
 				text = REAGENT_BANK_HELP,
 				buttonStyle = HelpTip.ButtonStyle.Close,
@@ -828,7 +926,7 @@ local function addonBank_OnShow()
 				targetPoint = HelpTip.Point.RightEdgeCenter,
 				offsetX = -2,
 			};
-			HelpTip:Show(self, helpTipInfo, BankFrameTab2);
+			HelpTip:Show( addon, helpTipInfo, BankFrameTab2);
 		end
 	end
 
@@ -843,13 +941,13 @@ local function addonBank_OnShow()
 	end
 end
 
-local function addon_OnHide()
+function addon:OnHide()
 	--print( "Event addonBAG_ONhide")
 
 	if addon.bankFrame and addon.bankFrame:IsShown() then
 		addon.bankFrame:Hide()
 		ContainerFrame4:Hide()
-		CloseAllBags(self);
+		CloseAllBags();
 		CloseBankBagFrames();
 		CloseBankFrame();
 	end
@@ -872,7 +970,7 @@ function addon:UpdateReagentSlot(slotID)
 	if not slot.shadow then CreateStyle( slot, 1, nil, 0.5) end
 
 	if (clink) then
-		slot.name, _, slot.rarity = GetItemInfo(clink);
+		slot.name, slot.t, slot.rarity = GetItemInfo(clink);
 
 		local r, g, b
 
@@ -930,9 +1028,9 @@ function addon:CreateFilterIcon(parent)
 	parent.ElvUIFilterIcon:SetSize(14, 14)
 end
 
-function yoReagentSplitStack(split)
-	SplitContainerItem(REAGENTBANK_CONTAINER, self:GetID(), split)
-end
+--local function yoReagentSplitStack(split)
+--	SplitContainerItem(REAGENTBANK_CONTAINER, self:GetID(), split)
+--end
 
 function addon:CreateLayout( isBank)
 	local f = self:GetContainerFrame(isBank);
@@ -949,7 +1047,7 @@ function addon:CreateLayout( isBank)
 	repeat
 		numContainerColumns = floor(containerWidth / (buttonSize + buttonSpacing));
 		holderWidth = ((buttonSize + buttonSpacing) * numContainerColumns) - buttonSpacing;
-		local rows = math.ceil( maxSlots / numContainerColumns)
+		local rows = ceil( maxSlots / numContainerColumns)
 
 		if rows > numMaxRow then
 			containerWidth = containerWidth + buttonSize + buttonSpacing
@@ -1124,7 +1222,7 @@ function addon:CreateLayout( isBank)
 						--SetIcon:SetAtlas("bags-junkcoin")
 						SetIcon:SetPoint("BOTTOMLEFT", 1, 1)
 						SetIcon:SetSize( 7, 7)
-						SetIcon:SetTexture(texture)
+						SetIcon:SetTexture( yo.texture)
 						SetIcon:SetVertexColor(0, 1, 0, 1)
 						SetIcon:Hide()
 						f.Bags[bagID][slotID].SetIcon = SetIcon
@@ -1265,7 +1363,7 @@ function addon:CreateLayout( isBank)
 				f.reagentFrame.slots[i]:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
 				f.reagentFrame.slots[i].GetInventorySlot = ReagentButtonInventorySlot
 				f.reagentFrame.slots[i].UpdateTooltip = BankFrameItemButton_OnEnter
-				f.reagentFrame.slots[i].SplitStack = yoReagentSplitStack
+				--f.reagentFrame.slots[i].SplitStack = yoReagentSplitStack
 			end
 
 			f.reagentFrame.slots[i]:ClearAllPoints()
@@ -1306,19 +1404,21 @@ function addon:CreateBagFrame( Bag, isBank)
 	f.bottomOffset = 10
 	f.texCoord = yo.tCoord --{.08, .92, .08, .92} --{ unpack( yo.tCoord)}
 
-	f:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED");
-	f:RegisterEvent("ITEM_LOCK_CHANGED");
-	f:RegisterEvent("ITEM_UNLOCKED");
-	--f:RegisterEvent("BAG_UPDATE_COOLDOWN")
-	f:RegisterEvent("BAG_UPDATE");
-	f:RegisterEvent("BAG_SLOT_FLAGS_UPDATED");
-	f:RegisterEvent("BANK_BAG_SLOT_FLAGS_UPDATED");
-	f:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
-	f:RegisterEvent("QUEST_ACCEPTED");
-	f:RegisterEvent("QUEST_REMOVED");
-	f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-	f:RegisterEvent("USE_BIND_CONFIRM")
-	f:SetScript("OnEvent", OnEvent)
+	if isBank then
+		f:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED");
+		f:RegisterEvent("ITEM_LOCK_CHANGED");
+		f:RegisterEvent("ITEM_UNLOCKED");
+		--f:RegisterEvent("BAG_UPDATE_COOLDOWN")
+		f:RegisterEvent("BAG_UPDATE");
+		f:RegisterEvent("BAG_SLOT_FLAGS_UPDATED");
+		f:RegisterEvent("BANK_BAG_SLOT_FLAGS_UPDATED");
+		f:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
+		f:RegisterEvent("QUEST_ACCEPTED");
+		f:RegisterEvent("QUEST_REMOVED");
+		f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+		f:RegisterEvent("USE_BIND_CONFIRM")
+	end
+	f:SetScript("OnEvent", addon.OnEvent)
 
 	f.BagIDs = isBank and {-1, 5, 6, 7, 8, 9, 10, 11} or {0, 1, 2, 3, 4};
 	f.Bags = {};
@@ -1478,7 +1578,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bankToggle:RegisterForClicks("AnyUp")
 		f.bankToggle:SetScript("OnLeave", function( self)  f.bankToggle:SetBackdropBorderColor(.15,.15,.15, 0) end)
 		f.bankToggle:SetScript("OnEnter", function( self)
-			local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
+			local color = yo.myColor --RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
 			f.bankToggle:SetBackdropBorderColor(color.r, color.g, color.b)
 		end)
 
@@ -1641,8 +1741,8 @@ function addon:InitBags()
 	addon.BagFrames = {};
 
 	local f = self:CreateBagFrame("yoFrame_BagsFrame")
-	f:SetScript("OnShow", addon_OnShow)
-	f:SetScript("OnHide", addon_OnHide)
+	f:SetScript("OnShow", addon.OnShow)
+	f:SetScript("OnHide", addon.OnHide)
 
 	f:Hide()
 	self.bagFrame = f
@@ -1652,8 +1752,8 @@ end
 function addon:InitBank()
 	if not self.bankFrame then
 		local f = self:CreateBagFrame("yoFrame_BanksFrame", true)
-		f:SetScript("OnHide", addonBank_OnHide)
-		f:SetScript("OnShow", addonBank_OnShow)
+		f:SetScript("OnHide", addon.OnHide)
+		f:SetScript("OnShow", addon.OnShow)
 		self.bankFrame = f
 	end
 
@@ -1663,9 +1763,10 @@ end
 -----------------------------------------------------------------------------------------------
 ---										EVENTS
 ------------------------------------------------------------------------------------------------
-function OnEvent( self, event, ...)
-	--print( "Event: ", self:GetName(), event, ...)
+function addon:OnEvent( event, ...)
+	--print( "Event: ", self, event, ...)
 	if event == "BAG_UPDATE" then
+
 		for _, bagID in ipairs( self.BagIDs) do
 			local numSlots = GetContainerNumSlots(bagID)
 			if (not self.Bags[bagID] and numSlots ~= 0) or (self.Bags[bagID] and numSlots ~= self.Bags[bagID].numSlots) then
@@ -1702,9 +1803,13 @@ function OnEvent( self, event, ...)
 	elseif event == "BAG_SLOT_FLAGS_UPDATED" then
 		addon:CreateLayout()
 	elseif event == "USE_BIND_CONFIRM" then
+
+	elseif event == 'BAG_UPDATE_COOLDOWN' then
+		addon:UpdateCooldowns( self)
 		--dprint( "event =", event, doEquip)
 	-- else
 		-- print( "|cffff0000Unknow:|r ", event, ...)
+
 	end
 end
 
@@ -1722,7 +1827,7 @@ function addon:BANKFRAME_OPENED()
 
 	UpdateAllSlots( self.bankFrame)
 	self.bankFrame:Show()
-	addon_Open()
+	addon:Open()
 
 	if yo.Bags.autoReagent then
 		PlaySound(841)
@@ -1730,42 +1835,36 @@ function addon:BANKFRAME_OPENED()
 	end
 end
 
-function addon:MERCHANT_CLOSED() 		addon_Close() end
-function addon:SCRAPPING_MACHINE_SHOW() addon_Open() end
-function addon:SCRAPPING_MACHINE_CLOSE()addon_Close() end
-function addon:AUCTION_HOUSE_SHOW() 	addon_Open() end
-function addon:AUCTION_HOUSE_CLOSED() 	addon_Close() end
-function addon:GUILDBANKFRAME_OPENED() 	addon_Open() end
-function addon:GUILDBANKFRAME_CLOSED() 	addon_Close() end
-function addon:TRADE_SHOW() 			addon_Open() end
-function addon:TRADE_CLOSED() 			addon_Close() end
-function addon:TRADE_SKILL_SHOW() 		addon_Open() end
-function addon:TRADE_SKILL_CLOSE() 		addon_Close() end
+function addon:PLAYERBANKBAGSLOTS_CHANGED() addon:CreateLayout( true) end
+function addon:MERCHANT_CLOSED() 			addon:Close() end
+function addon:SCRAPPING_MACHINE_SHOW() 	addon:Open() end
+function addon:SCRAPPING_MACHINE_CLOSE()	addon:Close() end
+function addon:AUCTION_HOUSE_SHOW() 		addon:Open() end
+function addon:AUCTION_HOUSE_CLOSED() 		addon:Close() end
+function addon:GUILDBANKFRAME_OPENED() 		addon:Open() end
+function addon:GUILDBANKFRAME_CLOSED() 		addon:Close() end
+function addon:TRADE_SHOW() 				addon:Open() end
+function addon:TRADE_CLOSED() 				addon:Close() end
+function addon:TRADE_SKILL_SHOW() 			addon:Open() end
+function addon:TRADE_SKILL_CLOSE() 			addon:Close() end
 function addon:BANKFRAME_CLOSED()
 	HideUIPanel(self);
 	BankFrame:Hide()
 
 	if self.bankFrame then
 		self.bankFrame:Hide()
-		addon_Close()
+		addon:Close()
 	end
 end
 
-HiddenFrame = CreateFrame('Frame')
-HiddenFrame:Hide()
+function addon:ADDON_LOADED( event, var)
 
-function addon:PLAYERBANKBAGSLOTS_CHANGED( ...)
-	--print( "PLAYERBANKBAGSLOTS_CHANGED", ...)
-	self:CreateLayout( true)
-end
+	if var == "Blizzard_Soulbinds" then
+		_G.SoulbindViewer.Fx:HookScript( "OnShow", addon.Open)
+		_G.SoulbindViewer.Fx:HookScript( "OnHide", addon.Close)
 
-function addon:ADDON_LOADED( addon)
-	-- if not yo["Bags"].enable then
-		-- self:UnregisterAllEvents()
-		-- return
-	-- end
-	-- print( "WTF&!", yo["Bags"].enable)
-
+		addon:UnregisterEvent("ADDON_LOADED")
+	end
 end
 
 hooksecurefunc( 'SetItemButtonCount', function( slot)
@@ -1781,8 +1880,6 @@ end)
 function addon:PLAYER_ENTERING_WORLD()
 	addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	if not yo.Bags.enable then return end
-
 	--C_Timer.After( 2,  function(f, ...)
 		self:InitBags( self)
 	--end)
@@ -1790,7 +1887,7 @@ function addon:PLAYER_ENTERING_WORLD()
 	self:RegisterEvent("BANKFRAME_OPENED")
 	self:RegisterEvent("BANKFRAME_CLOSED")
 	self:RegisterEvent("PLAYERBANKBAGSLOTS_CHANGED")
-
+	self:RegisterEvent("ADDON_LOADED")
 	-- Events for trade skill UI handling
 	self:RegisterEvent("SCRAPPING_MACHINE_SHOW");
 	self:RegisterEvent("SCRAPPING_MACHINE_CLOSE");
@@ -1825,21 +1922,26 @@ function addon:PLAYER_ENTERING_WORLD()
 	SetInsertItemsLeftToRight( yo.Bags.LeftToRight)
 	SetSortBagsRightToLeft( not yo.Bags.LeftToRight)
 
-	ToggleBackpack 	= addon_Toggle
-	ToggleBag 		= addon_Toggle
-	ToggleAllBags 	= addon_Toggle
-	OpenAllBags 	= addon_Open
-	OpenBackpack 	= addon_Open
-	CloseAllBags 	= addon_Close
-	CloseBackpack 	= addon_Close
+	ToggleBackpack 	= addon.Toggle
+	ToggleBag 		= addon.Toggle
+	ToggleAllBags 	= addon.Toggle
+	--OpenAllBags 	= addon.Open
+	--OpenBackpack 	= addon.Open
+	--CloseAllBags 	= addon.Close
+	--CloseBackpack 	= addon.Close
+
+	----Hook onto Blizzard Functions
+	--B:SecureHook('BackpackTokenFrame_Update', 'UpdateTokens')
+	hooksecurefunc('OpenAllBags', 	addon.Open)
+	hooksecurefunc('OpenBackpack', 	addon.Open)
+	hooksecurefunc('CloseAllBags', 	addon.Close)
+	hooksecurefunc('CloseBackpack', addon.Close)
+	--hooksecurefunc('ToggleBag', 	addon.Toggle)
+	--hooksecurefunc('ToggleAllBags', addon.Toggle)
+	--hooksecurefunc('ToggleBackpack',addon.Toggle)
+	--hooksecurefunc('ToggleBag', 	addon.Toggle)
 
 	--hooksecurefunc( "ToggleGameMenu", tryToClose)
-
 	--Bag Assignment Dropdown Menu
-	ElvUIAssignBagDropdown = CreateFrame("Frame", "ElvUIAssignBagDropdown", UIParent, "UIDropDownMenuTemplate")
-	ElvUIAssignBagDropdown:SetID(1)
-	ElvUIAssignBagDropdown:SetClampedToScreen(true)
-	ElvUIAssignBagDropdown:Hide()
-	UIDropDownMenu_Initialize(ElvUIAssignBagDropdown, self.AssignBagFlagMenu, "MENU");
+	UIDropDownMenu_Initialize( ElvUIAssignBagDropdown, self.AssignBagFlagMenu, "MENU");
 end
-

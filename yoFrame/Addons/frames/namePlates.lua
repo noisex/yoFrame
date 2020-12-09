@@ -4,14 +4,14 @@ local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 if not yo.NamePlates.enable then return end
-
+--https://ru.wowhead.com/spell=299150/%D0%B1%D0%B5%D0%B7%D1%83%D0%B4%D0%B5%D1%80%D0%B6%D0%BD%D0%B0%D1%8F-%D0%BC%D0%BE%D1%89%D1%8C
 n.namePlates = {}
 local np = n.namePlates
 
 local _G = _G
 
-local CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
-	= CreateStyle, texhl, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
+local CreateStyle, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
+	= CreateStyle, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -501,7 +501,7 @@ local function createNP(self, unit)
    	self.Health.HightLight:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
 	self.Health.HightLight:SetVertexColor( r, g, b, 1)
 	self.Health.HightLight:SetBlendMode( "ADD")
-	self.Health.HightLight:SetTexture( texhl)
+	self.Health.HightLight:SetTexture( yo.texhl)
 	self.Health.HightLight:SetAlpha( 0.5)
 	self.Health.HightLight:Hide()
 
