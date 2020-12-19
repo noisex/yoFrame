@@ -24,7 +24,7 @@ end
 
 n.updateUnitPower = function ( self)
 
-	if yo.myClass == "DEATHKNIGHT" then
+	if n.myClass == "DEATHKNIGHT" then
 		UpdateRunes( self)
 		return
 	end
@@ -73,7 +73,7 @@ local function OnCPEvent( self, event, unit, powerType)
         	--isDruid( self)
         end
 
-	elseif yo.myClass == "DEATHKNIGHT" then
+	elseif n.myClass == "DEATHKNIGHT" then
 		UpdateRunes( self)
 	else
 		n.updateUnitPower( self)
@@ -82,8 +82,8 @@ end
 
 n.createCPpoints = function ( f, maxComboPoints)
 
-	if not n.pType[yo.myClass].powerID then return end
-	if n.pType[yo.myClass].spec and n.pType[yo.myClass].spec ~= GetSpecialization() then return end
+	if not n.pType[n.myClass].powerID then return end
+	if n.pType[n.myClass].spec and n.pType[n.myClass].spec ~= GetSpecialization() then return end
 
 	if not f.classPower then
 		f.classPower = f.classPower or CreateFrame("Frame", nil, f)
@@ -93,12 +93,12 @@ n.createCPpoints = function ( f, maxComboPoints)
 		f.classPower:SetFrameLevel(100)
 		f.classPower.TurnOff 	= ClassPowerBar.TurnOff
 		f.classPower.TurnOn 	= ClassPowerBar.TurnOn
-		f.classPower.powerID 	= n.pType[yo.myClass].powerID
-		f.classPower.powerType	= n.pType[yo.myClass].powerType
+		f.classPower.powerID 	= n.pType[n.myClass].powerID
+		f.classPower.powerType	= n.pType[n.myClass].powerType
 
 		f.classPower:SetScript("OnEvent", OnCPEvent)
 
-		if yo.myClass == "DEATHKNIGHT" then
+		if n.myClass == "DEATHKNIGHT" then
 			f.classPower:RegisterEvent("RUNE_POWER_UPDATE")
 		else
 			f.classPower:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")

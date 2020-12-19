@@ -171,9 +171,9 @@ local function attachItemTooltip(self)
 
 	if id ~= "6948" then
 		if yo.Bags.showAltBags and yo.Bags.countAltBags then
-			for name, player in pairs( yo_BBCount[yo.myRealm]) do
+			for name, player in pairs( yo_BBCount[n.myRealm]) do
 			id = tonumber(id)
-			if name ~= yo.myName and player[id] then
+			if name ~= n.myName and player[id] then
 				if not oneDate then
 					self:AddLine(" ")
 					oneDate = true
@@ -198,7 +198,7 @@ local function attachItemTooltip(self)
 		self:AddLine(" ")
 		oneDate = true
 		end
-		self:AddDoubleLine( yo.myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
+		self:AddDoubleLine( n.myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
 	end
 	self:AddLine(" ")
 

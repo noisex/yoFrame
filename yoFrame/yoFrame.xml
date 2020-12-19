@@ -1,8 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="Config\init.lua"/>
-	<Script file="Config\constants.lua"/>
-	<Script file="Config\nyakie.lua"/>
+	<!-- <Script file="Config\constants.lua"/> -->
 	<Script file="Config\config.lua"/>
+	<Script file="Config\nyakie.lua"/>
 
 	<Include file="Locale\locale.xml"/>
 	<Include file="Libs\Load_Libraries.xml"/>

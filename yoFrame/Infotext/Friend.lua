@@ -33,7 +33,7 @@ Stat:SetFrameStrata("MEDIUM")
 Stat:SetFrameLevel(3)
 
 local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
---Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+--Text:SetFont( n.font, n.fontsize, "OVERLAY")
 Text:SetHeight(LeftInfoPanel:GetHeight())
 Text:SetPoint("RIGHT", LeftInfoPanel, "RIGHT", -30, 0)
 Stat:SetParent(Text:GetParent())
@@ -86,7 +86,7 @@ local otherGameInfoString2 = "%s %s"
 local totalOnlineString = FRIENDS_LIST_ONLINE .. ": %s/%s"
 local tthead, ttsubh, ttoff = {r=0.4, g=0.78, b=1}, {r=0.75, g=0.9, b=1}, {r=.3,g=1,b=.3}
 local activezone, inactivezone = {r=0.3, g=1.0, b=0.3}, {r=0.65, g=0.65, b=0.65}
-local displayString = "%s: ".. yo.myColorStr .. "%d|r"
+local displayString = "%s: ".. n.myColorStr .. "%d|r"
 local statusTable = { " |cff888888[AFK]|r ", " |cff888888[DND] |r", "" }
 local gstatusTable = { " |cffFF0000[AFK]|r ", " |cff0000ff[DND] |r", "" }
 local groupedTable = { "|cffaaaaaa*|r", "" }
@@ -283,7 +283,7 @@ local function Update(self, event, ...)
 	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		Text:SetFont( yo.font, ( yo.Media.fontsize), "OVERLAY")
+		Text:SetFont( n.font, ( yo.Media.fontsize), "OVERLAY")
 		self:SetAllPoints(Text)
 
 		Stat:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
@@ -350,8 +350,8 @@ Stat:SetScript("OnMouseDown", function(self, btn)
 					menuCountInvites = menuCountInvites + 1
 					menuCountWhispers = menuCountWhispers + 1
 
-					classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2] or yo.myLevel)
-					classc = classc or GetQuestDifficultyColor(info[2] or yo.myLevel);
+					classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2] or n.myLevel)
+					classc = classc or GetQuestDifficultyColor(info[2] or n.myLevel);
 
 					menuList[2].menuList[menuCountInvites] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],classc.r*255,classc.g*255,classc.b*255,info[1]), arg1 = info[1],notCheckable=true, func = inviteClick}
 					menuList[3].menuList[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],classc.r*255,classc.g*255,classc.b*255,info[1]), arg1 = info[1],notCheckable=true, func = whisperClick}
@@ -423,8 +423,8 @@ Stat.ShowFiends = function(self, btn)
 			if (info and info[5]) then
 				menuCountWhispers = menuCountWhispers + 1
 
-				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2] or yo.myLevel)
-				classc = classc or GetQuestDifficultyColor(info[2] or yo.myLevel);
+				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2] or n.myLevel)
+				classc = classc or GetQuestDifficultyColor(info[2] or n.myLevel);
 
 				menuWIM[menuCountWhispers] = {text = format(levelNameString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],classc.r*255,classc.g*255,classc.b*255,info[1]), arg1 = info[1],notCheckable=true, func = whisperClick}
 			end
@@ -439,9 +439,9 @@ Stat.ShowFiends = function(self, btn)
 
 				if info[6] == wowString and UnitFactionGroup("player") == info[12] then
 					--tprint( info)
-					if info[11] == yo.myRealmShort then
-						classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[14]], GetQuestDifficultyColor(info[16] or yo.myLevel)
-						classc = classc or GetQuestDifficultyColor(info[16] or yo.myLevel)
+					if info[11] == n.myRealmShort then
+						classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[14]], GetQuestDifficultyColor(info[16] or n.myLevel)
+						classc = classc or GetQuestDifficultyColor(info[16] or n.myLevel)
 
 						if UnitInParty(info[4]) or UnitInRaid(info[4]) then grouped = 1 else grouped = 2 end
 						menuCountWhispers = menuCountWhispers + 1
@@ -505,9 +505,9 @@ Stat:SetScript("OnEnter", function(self)
 				--print( info[4], zoneText)
 
 				if GetZoneText( C_Map.GetBestMapForUnit("player")) == info[4] then zonec = activezone else zonec = inactivezone end
-				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2] or yo.myLevel)
+				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2] or n.myLevel)
 
-				classc = classc or GetQuestDifficultyColor(info[2] or yo.myLevel)
+				classc = classc or GetQuestDifficultyColor(info[2] or n.myLevel)
 
 				if UnitInParty(info[1]) or UnitInRaid(info[1]) then grouped = 1 else grouped = 2 end
 				GameTooltip:AddDoubleLine(format(levelNameClassString,levelc.r*255,levelc.g*255,levelc.b*255,info[2],info[1],groupedTable[grouped]," "..info[6]), info[4],classc.r,classc.g,classc.b,zonec.r,zonec.g,zonec.b)
@@ -537,7 +537,7 @@ Stat:SetScript("OnEnter", function(self)
 							if (info[19] == true) then gstatus = 1 elseif (info[20] == true) then gstatus = 2 else gstatus = 3 end
 							classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[13]]
 							if info[15] ~= '' then
-								levelc = GetQuestDifficultyColor(info[15] or yo.myLevel)
+								levelc = GetQuestDifficultyColor(info[15] or n.myLevel)
 							else
 								levelc = RAID_CLASS_COLORS["PRIEST"]
 								classc = RAID_CLASS_COLORS["PRIEST"]

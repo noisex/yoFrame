@@ -159,7 +159,7 @@ local function MiniInit()
 	TimeManagerClockButton:GetRegions():Hide()
 	TimeManagerClockButton:ClearAllPoints()
 	TimeManagerClockButton:SetPoint("BOTTOM",0, -10)
-	TimeManagerClockTicker:SetFont( yo.font, yo.fontsize +3,"OUTLINE")
+	TimeManagerClockTicker:SetFont( n.font, n.fontsize +3,"OUTLINE")
 	TimeManagerClockTicker:SetTextColor(0.8,0.8,0.6,1)
 
 	--GameTimeFrame
@@ -175,7 +175,7 @@ local function MiniInit()
 	local fs = GameTimeFrame:GetFontString()
 		fs:ClearAllPoints()
 		fs:SetPoint("CENTER",0,-5)
-		fs:SetFont( yo.font, yo.fontsize + 10)
+		fs:SetFont( n.font, n.fontsize + 10)
 		fs:SetTextColor(0.2,0.2,0.1,0.9)
 
 	--zoom
@@ -203,7 +203,7 @@ local function pvpTimer( self, elapsed)
 		--unitPVP( self, "player")
 
 		self.pvpText = self:CreateFontString(nil, "OVERLAY")
-		self.pvpText:SetFont( yo.font, yo.fontsize  +3, "OUTLINE")
+		self.pvpText:SetFont( n.font, n.fontsize  +3, "OUTLINE")
 		self.pvpText:SetPoint("RIGHT", self.pvpIcon, "LEFT", 0, 1)
 		self.pvpText:SetTextColor(1, .4, 0, 1)
 	end
@@ -251,7 +251,7 @@ local function CalendarPend( self, event, ...)
 
 			if not self.pingText then
 				self.pingText = self:CreateFontString(nil, "OVERLAY")
-				self.pingText:SetFont( yo.font, yo.fontsize, "OUTLINE")
+				self.pingText:SetFont( n.font, n.fontsize, "OUTLINE")
 				self.pingText:SetPoint("CENTER", Minimap, "TOP", 0, -40)
 				self.pingText:Hide()
 			end
@@ -309,6 +309,8 @@ end
 local function coordUpdate( self, elapsed)
 	tick  = tick + elapsed
 	if tick >= 1 then
+		tick = 0
+
 		if not yo.Addons.MiniMapCoord then
 			self:SetScript("OnUpdate", nil)
 			self.MiniMapText:SetText("")
@@ -318,10 +320,8 @@ local function coordUpdate( self, elapsed)
 
 			local fontsize = yo.Addons.MMCoordSize
 			self.MiniMapText:SetTextColor( r, b, g)
-			self.MiniMapText:SetFont( yo.font, fontsize)
+			self.MiniMapText:SetFont( n.font, fontsize)
 		end
-
-		tick = 0
 
 		local mapID = C_Map.GetBestMapForUnit("player")
 
@@ -341,7 +341,7 @@ end
 
 local coordFrame = CreateFrame( "Frame", nil, UIParent)
 coordFrame.MiniMapText = coordFrame:CreateFontString(nil, "OVERLAY")
-coordFrame.MiniMapText:SetFont( yo.font, yo.fontsize)
+coordFrame.MiniMapText:SetFont( n.font, n.fontsize)
 coordFrame.MiniMapText:SetJustifyH("LEFT")
 coordFrame.MiniMapText:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, 15)
 coordFrame.MiniMapText:SetText("0, 0")

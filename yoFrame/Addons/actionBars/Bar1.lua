@@ -27,9 +27,9 @@ function ActionBars:CreateBar1()
 	ActionBar1:SetWidth((Size * ButtonsPerRow) + (Spacing * (ButtonsPerRow + 1)))
 	ActionBar1:SetHeight((Size * NumRow) + (Spacing * (NumRow + 1)))
 
-	if true then --(C.ActionBars.SwitchBarOnStance) then
+	if yo.ActionBar.switchBars then
 		Rogue = "[bonusbar:1] 7;"
-		Druid = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;"
+		Druid = "[bonusbar:1,nostealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;" --  [bonusbar:1,stealth] 8
 		Warrior = "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9;"
 		Priest = "[bonusbar:1] 7;"
 	end

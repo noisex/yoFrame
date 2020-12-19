@@ -48,7 +48,7 @@ local function CreateUserListButton( self, ind)
 	button:GetHighlightTexture():SetVertexColor(.196, .388, .5);
 
 	button.text = button:CreateFontString(nil, "OVERLAY") --, "ChatFontNormal");
-	button.text:SetFont( yo.font, yo.fontsize)
+	button.text:SetFont( n.font, n.fontsize)
 	button.text:SetPoint("TOPLEFT");
 	button.text:SetPoint("BOTTOMRIGHT", -18, 0);
 	button.text:SetJustifyH("LEFT");
@@ -183,7 +183,7 @@ local function CreateHistoryFrame( self)
 				self.userList.buttons[ind].realmName 	= realmName
 				self.userList.buttons[ind].userName 	= userName
 				self.userList.buttons[ind].targetName	= targetName
-				self.userList.buttons[ind].text:SetText( yo_AllData[realmName][userName].ColorStr .. userName .. "|r/" .. colorLine .. targetName)
+				self.userList.buttons[ind].text:SetText( n.allData[realmName][userName].ColorStr .. userName .. "|r/" .. colorLine .. targetName)
 				self.userList.buttons[ind]:Show()
 				if self.userList.checked == fullName then
 					self.userList.buttons[ind]:LockHighlight();
@@ -208,11 +208,11 @@ local function CreateHistoryFrame( self)
 
 	UIDropDownMenu_SetWidth( userMenu, 170)
 	UIDropDownMenu_Initialize( userMenu, userMenu.initialize)
-	if yo_WIMSTER[yo.myRealm] and yo_WIMSTER[yo.myRealm][yo.myName] then
-		UIDropDownMenu_SetSelectedValue( userMenu, yo.myRealm .. "/" .. yo.myName)
+	if yo_WIMSTER[n.myRealm] and yo_WIMSTER[n.myRealm][n.myName] then
+		UIDropDownMenu_SetSelectedValue( userMenu, n.myRealm .. "/" .. n.myName)
 		userList.updateUserListButtons()
-	elseif yo_WIMSTER[yo.myRealm] then
-		UIDropDownMenu_SetSelectedValue( userMenu, yo.myRealm)
+	elseif yo_WIMSTER[n.myRealm] then
+		UIDropDownMenu_SetSelectedValue( userMenu, n.myRealm)
 		userList.updateUserListButtons()
 	end
 
@@ -282,7 +282,7 @@ local function CreateHistoryFrame( self)
 	self.hider = hider
 
 	local viewText = CreateFrame("Button", nil, self)
-	viewText:SetScript("OnEnter", function(self) self:SetBackdropBorderColor( yo.myColor.r, yo.myColor.g, yo.myColor.b) end)
+	viewText:SetScript("OnEnter", function(self) self:SetBackdropBorderColor( n.myColor.r, n.myColor.g, n.myColor.b) end)
     viewText:SetScript("OnLeave", function(self) self:SetBackdropBorderColor(.15,.15,.15, 0) end)
     viewText:SetScript("OnClick", function(self) editBox:SetText("")
 		if not scrollArea:IsShown() then
@@ -305,15 +305,15 @@ local function CreateHistoryFrame( self)
     frame1px( viewText)
 
     viewText.text = viewText:CreateFontString(nil, OVERLAY)
-    viewText.text:SetFont( yo.font, yo.fontsize, "OUTLINE")
-    viewText.text:SetTextColor( yo.myColor.r, yo.myColor.g, yo.myColor.b)
+    viewText.text:SetFont( n.font, n.fontsize, "OUTLINE")
+    viewText.text:SetTextColor( n.myColor.r, n.myColor.g, n.myColor.b)
     viewText.text:SetPoint("CENTER")
     viewText.text:SetText("Text")
 
     viewText.text2 = self:CreateFontString(ni, "OVERLAY")
-	viewText.text2:SetFont( yo.font, yo.fontsize, "OUTLINE")
+	viewText.text2:SetFont( n.font, n.fontsize, "OUTLINE")
 	viewText.text2:SetPoint("RIGHT", viewText, "LEFT", 0, 0)
-	viewText.text2:SetTextColor( yo.myColor.r, yo.myColor.g, yo.myColor.b)
+	viewText.text2:SetTextColor( n.myColor.r, n.myColor.g, n.myColor.b)
 	viewText.text2:SetText( "View as:")
     self.viewText = viewText
 end

@@ -88,9 +88,9 @@ local function setupAttribute(self)
 	--local MyClass = select( 2, UnitClass( "player"))
 	--print( MyClass)
 
-	if classList[yo.myClass] and not IsAddOnLoaded("Clique") then
+	if classList[n.myClass] and not IsAddOnLoaded("Clique") then
 		self:SetAttribute("*type3", "macro")
-		self:SetAttribute("macrotext3", macroBody(yo.myClass))
+		self:SetAttribute("macrotext3", macroBody(n.myClass))
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
 	end
 end

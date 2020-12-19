@@ -1,6 +1,6 @@
 local L, yo, n = unpack( select( 2, ...))
 
-local texture = yo.texture
+local texture = n.texture
 
 local function DisbandRaidGroup()
 	if InCombatLockdown() then return end -- Prevent user error in combat
@@ -8,7 +8,7 @@ local function DisbandRaidGroup()
 	if UnitInRaid("player") then
 		for i = 1, GetNumGroupMembers() do
 			local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
-			if online and name ~= yo.myName then
+			if online and name ~= n.myName then
 				UninviteUnit(name)
 			end
 		end
@@ -47,7 +47,7 @@ local function doRUP()
 	RUPanel:Hide()
 
 	local function ButtonEnter(self)
-		self:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
+		self:SetBackdropBorderColor(n.myColor.r, n.myColor.g, n.myColor.b)
 	end
 
 	local function ButtonLeave(self)
@@ -57,11 +57,11 @@ local function doRUP()
 
 	local function BEnter(self)
 		if self.shadow then
-			local r, g, b = yo.myColor.r, yo.myColor.g, yo.myColor.b
+			local r, g, b = n.myColor.r, n.myColor.g, n.myColor.b
     		self.shadow:SetBackdropColor(.07,.07,.07, .9)
 			self.shadow:SetBackdropBorderColor( r, g, b, 1)
 		else
-			self:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
+			self:SetBackdropBorderColor(n.myColor.r, n.myColor.g, n.myColor.b)
 		end
 	end
 
@@ -134,7 +134,7 @@ local function doRUP()
 			sB[i]:SetHeight(18)
 
 			local txt = sB[i]:CreateFontString(nil,"OVERLAY", nil)
-			txt:SetFont( yo.font, yo.fontsize,"OUTLINE")
+			txt:SetFont( n.font, n.fontsize,"OUTLINE")
 			txt:SetText("Clear")
 			txt:SetPoint("CENTER")
 			txt:SetJustifyH("CENTER")
@@ -228,7 +228,7 @@ local function doRUP()
 	--PlaceRaidMarker(marker);
 
 			local txt = sB[i]:CreateFontString(nil,"OVERLAY", nil)
-			txt:SetFont( yo.font, yo.fontsize,"OUTLINE")
+			txt:SetFont( n.font, n.fontsize,"OUTLINE")
 			txt:SetText("Clear")
 			txt:SetPoint("CENTER")
 			txt:SetJustifyH("CENTER")
@@ -259,7 +259,7 @@ local function doRUP()
 	]=]);
 
 	local CloseButtonText = CloseButton:CreateFontString(nil,"OVERLAY",CloseButton)
-	CloseButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	CloseButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	CloseButtonText:SetText("Raid Utility")
 	CloseButtonText:SetPoint("CENTER")
 	CloseButtonText:SetJustifyH("CENTER")
@@ -283,7 +283,7 @@ local function doRUP()
 	]=]);
 
 	local ShownButtonText = ShownButton:CreateFontString(nil,"OVERLAY",ShownButton)
-	ShownButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	ShownButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	ShownButtonText:SetText("Close")
 	ShownButtonText:SetPoint("CENTER")
 	ShownButtonText:SetJustifyH("CENTER")
@@ -309,7 +309,7 @@ local function doRUP()
 	end)
 
 	local CancelButtonText = CancelButton:CreateFontString(nil,"OVERLAY",CancelButton)
-	CancelButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	CancelButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	CancelButtonText:SetText("Cancel Pull")
 	CancelButtonText:SetPoint("CENTER")
 	CancelButtonText:SetJustifyH("CENTER")
@@ -335,7 +335,7 @@ local function doRUP()
 	end)
 
 	local Pull5ButtonText = Pull5Button:CreateFontString(nil,"OVERLAY",Pull5Button)
-	Pull5ButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	Pull5ButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	Pull5ButtonText:SetText("Pull 5")
 	Pull5ButtonText:SetPoint("CENTER")
 	Pull5ButtonText:SetJustifyH("CENTER")
@@ -361,7 +361,7 @@ local function doRUP()
 	end)
 
 	local Pull10ButtonText = Pull10Button:CreateFontString(nil,"OVERLAY",Pull10Button)
-	Pull10ButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	Pull10ButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	Pull10ButtonText:SetText("Pull 10")
 	Pull10ButtonText:SetPoint("CENTER")
 	Pull10ButtonText:SetJustifyH("CENTER")
@@ -381,7 +381,7 @@ local function doRUP()
 	end)
 
 	local ReadyCheckButtonText = ReadyCheckButton:CreateFontString(nil,"OVERLAY",ReadyCheckButton)
-	ReadyCheckButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	ReadyCheckButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	ReadyCheckButtonText:SetText(READY_CHECK)
 	ReadyCheckButtonText:SetPoint("CENTER")
 	ReadyCheckButtonText:SetJustifyH("CENTER")
@@ -403,7 +403,7 @@ local function doRUP()
 	end)
 
 	local LeaveButtonText = LeaveButton:CreateFontString(nil,"OVERLAY",LeaveButton)
-	LeaveButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	LeaveButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	LeaveButtonText:SetText( PARTY_LEAVE)
 	LeaveButtonText:SetPoint("CENTER")
 	LeaveButtonText:SetJustifyH("CENTER")
@@ -428,7 +428,7 @@ local function doRUP()
 	end)
 
 	local DisbandButtonText = DisbandButton:CreateFontString(nil,"OVERLAY",DisbandButton)
-	DisbandButtonText:SetFont( yo.font, yo.fontsize,"OUTLINE")
+	DisbandButtonText:SetFont( n.font, n.fontsize,"OUTLINE")
 	DisbandButtonText:SetText( TEAM_DISBAND)
 	DisbandButtonText:SetTextColor( 1, 0.5, 0)
 	DisbandButtonText:SetPoint("CENTER")

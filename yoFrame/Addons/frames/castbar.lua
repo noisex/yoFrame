@@ -2,14 +2,14 @@ local L, yo, n = unpack( select( 2, ...))
 
 if not yo.UF.unitFrames then return end
 
-local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
-	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatchm, min
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, math.min
 
 local _G = _G
 local yoUF = n.unitFrames
 
-local CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
-	= CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle
+local CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle, CopyTable
+	= CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle, CopyTable
 --/dump GetCVar("SpellQueueWindow") – чтобы узнать текущее значение
 --/console spellqueuewindow 200 – чтобы установить значение 200
 --/cqs
@@ -21,8 +21,8 @@ local CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, Unit
 local cfg = {}
 
 local function DisableBlizzardFrame( f)
-	f.RegisterEvent = noop
-	f.Show = noop
+	f.RegisterEvent = n.dummy
+	f.Show = n.dummy
 	f:UnregisterAllEvents()
 	f:Hide()
 end
@@ -32,7 +32,7 @@ local function FadingOut( f)
 	local now = GetTime()
 	local alpha = f.fadeDuration - (now - f.endTime)
 	if alpha > 0 then
-		f:SetAlpha( math.min( alpha, 1.0))
+		f:SetAlpha( min( alpha, 1.0))
 	else
 		f:SetScript('OnUpdate', nil)
 		f:Hide()
@@ -215,7 +215,7 @@ local function createTicks( self, extraTickRatio)
 	for i = 1, self.numTicks do
 		if not self.ticks[i] then
 			self.ticks[i] = self:CreateTexture(nil, 'OVERLAY')
-			self.ticks[i]:SetTexture( texture)
+			self.ticks[i]:SetTexture( n.texture)
 			self.ticks[i]:SetVertexColor( 0.09, 0.09, 0.09, 0.5)
 			self.ticks[i]:SetWidth( 2)
 			self.ticks[i]:SetHeight( self:GetHeight())
@@ -348,11 +348,11 @@ function CreateCastBar( frame, cfg)
 
 	bar.castBar = CreateFrame("StatusBar", nil, bar)
 	bar.castBar:SetPoint( unpack( point))
-	bar.castBar:SetStatusBarTexture( texture)
+	bar.castBar:SetStatusBarTexture( n.texture)
 	bar.castBar:SetHeight( height)
 	bar.castBar:SetWidth( width)
 	bar.castBar:SetFrameLevel( 12)
-	table.insert( n.statusBars, bar.castBar)
+	tinsert( n.statusBars, bar.castBar)
 
 	bar.castBar.unit 		= unit
 	bar.castBar.noLag 		= noLag
@@ -366,7 +366,7 @@ function CreateCastBar( frame, cfg)
 	bar.castBar.bgcBar = bar.castBar:CreateTexture(nil, 'BACKGROUND')
 	bar.castBar.bgcBar:SetAllPoints( bar.castBar)
 	bar.castBar.bgcBar:SetVertexColor(0.09, 0.09, 0.09, 1)
-	bar.castBar.bgcBar:SetTexture( texture)
+	bar.castBar.bgcBar:SetTexture( n.texture)
 
 	--bar.castBar.shield = bar.castBar:CreateTexture(nil, 'BACKGROUND')
 	--bar.castBar.shield:SetPoint( "RIGHT", bar.castBar, "LEFT", -4, 0)
@@ -380,11 +380,11 @@ function CreateCastBar( frame, cfg)
 	--bar.castBar.shield:SetSize( 70, 100)
 
 	bar.castBar.nameText =  bar.castBar:CreateFontString(nil ,"OVERLAY")
-	bar.castBar.nameText:SetFont( font, max( 10, height * 0.65), "OUTLINE")
+	bar.castBar.nameText:SetFont( n.font, max( 10, height * 0.65), "OUTLINE")
 	bar.castBar.nameText:SetPoint("LEFT", bar.castBar, "LEFT", 2, 0)
 
 	bar.castBar.timeText =  bar.castBar:CreateFontString(nil ,"OVERLAY")
-	bar.castBar.timeText:SetFont( font, max( 10, height * 0.65), "OUTLINE")
+	bar.castBar.timeText:SetFont( n.font, max( 10, height * 0.65), "OUTLINE")
 	bar.castBar.timeText:SetPoint("RIGHT", bar.castBar, "RIGHT", -2, 0)
 
 	bar.castBar.spark = bar.castBar:CreateTexture(nil, "OVERLAY")
@@ -426,7 +426,7 @@ function CreateCastBar( frame, cfg)
 
 		bar.castBar.icon =  bar.castBar.ibg:CreateTexture(nil, "BORDER")
 		bar.castBar.icon:SetAllPoints( bar.castBar.ibg)
-		bar.castBar.icon:SetTexCoord(unpack( yo.tCoord))
+		bar.castBar.icon:SetTexCoord(unpack( n.tCoord))
 		CreateStyle( bar.castBar.ibg, 3)
 	end
 
@@ -501,18 +501,18 @@ logan:SetScript("OnEvent", function(self, event)
 
 	if not yo.UF.unitFrames or not yo_Player then return end
 
-	cfg 		= yo.CastBar.target
+	cfg 		= CopyTable( yo.CastBar.target)
 	cfg.width	= yoUF.target:GetWidth()
 	cfg.point	= { "BOTTOM", yoUF.target, "TOP", 0, 8}
 	CreateCastBar( yoUF.target, cfg)
 
 	if yo.CastBar.player.bigBar then
-		cfg 		= yo.CastBar.player
+		cfg 		= CopyTable( yo.CastBar.player)
 		cfg.width 	= yoMovePlayerCastBar:GetWidth()
 		cfg.height 	= yoMovePlayerCastBar:GetHeight()
 		cfg.point 	= { "CENTER", yoMovePlayerCastBar, "CENTER", 0, 0}
 	else
-		cfg 			= yo.CastBar.target
+		cfg 			= CopyTable( yo.CastBar.target)
 		cfg.width		= yoUF.player:GetWidth()
 		cfg.unit 		= "player"
 		cfg.point		= { "BOTTOM", yoUF.player, "TOP", 0, 8}
@@ -522,18 +522,18 @@ logan:SetScript("OnEvent", function(self, event)
 	end
 	CreateCastBar( yoUF.player, cfg)
 
-	cfg 		= yo.CastBar.focus
+	cfg 		= CopyTable( yo.CastBar.focus)
 	cfg.width	= yoUF.focus:GetWidth()
 	cfg.point 	= { "BOTTOM", focus, "TOP", 0, 8}
 	CreateCastBar( yoUF.focus, cfg)
 
-	cfg 		= yo.CastBar.BCB
+	cfg 		= CopyTable( yo.CastBar.BCB)
 	cfg.cfgname = "BCB"
 	cfg.point	= { "CENTER", UIParent, "CENTER", cfg.offsetX, cfg.offsetY}
 	yo_castBig = CreateFrame("Frame", "yo_castBig", UIParent)
 	CreateCastBar( yo_castBig, cfg)
 
-	cfg 		= yo.CastBar.boss
+	cfg 		= CopyTable( yo.CastBar.boss)
 	--cfg.width 	= yoMoveboss:GetWidth()
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = yoUF["boss" .. i]
@@ -552,20 +552,20 @@ end)
 
 		self:SetWidth( 350)
 		self:SetHeight( 25)
-		self:SetStatusBarTexture( texture)
+		self:SetStatusBarTexture( n.texture)
 		self:ClearAllPoints()
 		self:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 100)
 
 		self.Icon:SetSize( self:GetHeight(), self:GetHeight())
-		self.Icon:SetTexCoord(unpack( yo.tCoord))
+		self.Icon:SetTexCoord(unpack( n.tCoord))
 
-		self.Text:SetFont( font, 11, "OUTLINE")
+		self.Text:SetFont( n.font, 11, "OUTLINE")
 		self.Text:ClearAllPoints()
 		self.Text:SetPoint("CENTER", self, "CENTER", 0, 0)
 
 		CreateStyle( self, 4)
 	end
 
-	self.Text:SetTextColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
-	self:SetStatusBarColor(yo.myColor.r, yo.myColor.g, yo.myColor.b)
+	self.Text:SetTextColor(n.myColor.r, n.myColor.g, n.myColor.b)
+	self:SetStatusBarColor(n.myColor.r, n.myColor.g, n.myColor.b)
 end)

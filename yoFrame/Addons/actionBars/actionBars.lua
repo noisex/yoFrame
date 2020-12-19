@@ -82,7 +82,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local Icon = _G[name.."Icon"]
 
 		button:SetSize( buttonWidth, buttonWidth)
-		Icon:SetTexCoord(unpack( yo.tCoord))
+		Icon:SetTexCoord(unpack( n.tCoord))
 		CreateStyle( button, 2)
 
 		local shift, alpfa = 3, 0.9
@@ -114,18 +114,18 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		CreateStyle( f, 2)
 		m.frame = f
 
-		pushed:SetTexCoord(unpack( yo.tCoordBig))
+		pushed:SetTexCoord(unpack( n.tCoordBig))
 		pushed:ClearAllPoints()
 		pushed:SetPoint("TOPLEFT", m.frame, "TOPLEFT", 2, -2)
 		pushed:SetPoint("BOTTOMRIGHT", m.frame, "BOTTOMRIGHT", -2, 2)
 
-		normal:SetTexCoord(unpack( yo.tCoordBig))
+		normal:SetTexCoord(unpack( n.tCoordBig))
 		normal:ClearAllPoints()
 		normal:SetPoint("TOPLEFT", m.frame, "TOPLEFT", 2, -2)
 		normal:SetPoint("BOTTOMRIGHT", m.frame, "BOTTOMRIGHT", -2, 2)
 
 		if disabled then
-			disabled:SetTexCoord(unpack( yo.tCoordBig))
+			disabled:SetTexCoord(unpack( n.tCoordBig))
 			disabled:ClearAllPoints()
 			disabled:SetPoint("TOPLEFT", m.frame, "TOPLEFT", 2, -2)
 			disabled:SetPoint("BOTTOMRIGHT", m.frame, "BOTTOMRIGHT", -2, 2)
@@ -151,7 +151,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 		button:SetScale( 0.9)
 		button.Count:Hide()
-		button.icon:SetTexCoord(unpack( yo.tCoord))
+		button.icon:SetTexCoord(unpack( n.tCoord))
 		button.cooldown:ClearAllPoints()
 		button.cooldown:SetAllPoints( button)
 
@@ -184,7 +184,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			panel:SetFrameLevel(button:GetFrameLevel() - 1)
 			CreateStyle(panel, 2)
 
-			icon:SetTexCoord(unpack( yo.tCoord))
+			icon:SetTexCoord(unpack( n.tCoord))
 			icon:ClearAllPoints()
 			icon:SetPoint("TOPLEFT", button, 2, -2)
 			icon:SetPoint("BOTTOMRIGHT", button, -2, 2)
@@ -207,7 +207,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 		button.HotKey:ClearAllPoints()
 		button.HotKey:SetPoint("TOPRIGHT", 0, 0)
-		button.HotKey:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
+		button.HotKey:SetFont( n.fontpx, n.fontsize, "OUTLINE")
 		button.HotKey.ClearAllPoints = n.dummy
 		button.HotKey.SetPoint = n.dummy
 
@@ -235,12 +235,12 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 		Icon:SetSize( buttonWidth, buttonWidth)
 		IconTXT:SetSize( buttonWidth, buttonWidth)
-		IconTXT:SetTexCoord(unpack( yo.tCoord))
+		IconTXT:SetTexCoord(unpack( n.tCoord))
 		IconTXT:SetPoint("TOPLEFT", button, 2, -2)
 		IconTXT:SetPoint("BOTTOMRIGHT", button, -2, 2)
 		Back:Hide()
 		--Dura:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 3, 5)
-		Dura:SetFont( yo.fontpx, yo.fontsize +1, "OUTLINE")
+		Dura:SetFont( n.fontpx, n.fontsize +1, "OUTLINE")
 		CreateStyle( button, 2)
 
 		local shift, alpfa = 3, 0.9
@@ -265,7 +265,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local Btname 	= _G[name.."Name"]
 		local normal  	= _G[name.."NormalTexture"]
 		local BtnBG 	= _G[name..'FloatingBG']
-		local texture 	= yo.texture
+		local texture 	= n.texture
 
 		if yo.ActionBar.hoverTexture then
 			--texture = "Interface\\AddOns\\yoFrame\\Media\\SimpleSquare.blp"
@@ -304,7 +304,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		Count:SetParent( countFrame)
 		Count:ClearAllPoints()
 		Count:SetPoint("BOTTOMRIGHT", 1, 0)
-		Count:SetFont( yo.fontpx, yo["ActionBar"].CountSize, "OUTLINE")
+		Count:SetFont( n.fontpx, yo["ActionBar"].CountSize, "OUTLINE")
 		Count:SetTextColor( 0, 215/255, 1)
 		Count:SetShadowColor(0, 0, 0, 0.5)
 		Count:SetShadowOffset(2, -2)
@@ -312,7 +312,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		if Btname then
 			Btname:ClearAllPoints()
 			Btname:SetPoint("BOTTOM", 0, 0)
-			Btname:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
+			Btname:SetFont( n.fontpx, n.fontsize, "OUTLINE")
 			Btname:SetWidth( buttonWidth)
 		end
 
@@ -328,14 +328,14 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			--panel:SetFrameLevel(button:GetFrameLevel() - 1)
 			panel:SetBackdropColor(.05,.05,.05, .6)
 
-			Icon:SetTexCoord(unpack( yo.tCoord))
+			Icon:SetTexCoord(unpack( n.tCoord))
 			Icon:SetPoint("TOPLEFT", button, 2, -2)
 			Icon:SetPoint("BOTTOMRIGHT", button, -2, 2)
 		end
 
 		HotKey:ClearAllPoints()
 		HotKey:SetPoint("TOPRIGHT", 0, 0)
-		HotKey:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
+		HotKey:SetFont( n.fontpx, n.fontsize, "OUTLINE")
 		HotKey.ClearAllPoints = n.dummy
 		HotKey.SetPoint = n.dummy
 
@@ -371,14 +371,14 @@ end
 
 --	if yo.ActionBar.enable == true then
 
---		CreateAnchor("yoMoveABar1", 		"Move Action Bar #1", 445, 35, 0, 	2, 		"BOTTOM", "BOTTOM")
---		CreateAnchor("yoMoveABar2", 		"Move Action Bar #2", 445, 35, 0, 	40, 	"BOTTOM", "BOTTOM")
---		CreateAnchor("yoMoveABar3", 		"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT", "BOTTOMRIGHT")
---		CreateAnchor("yoMoveABar4", 		"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
---		CreateAnchor("yoMoveABar5", 		"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
---		CreateAnchor("yoMoveAMicro", 		"Move MicroMenu Bar", 220, 18, -470,7, 		"BOTTOMRIGHT", "BOTTOMRIGHT")
---		CreateAnchor("yoMovePetBar", 		"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yoMoveLeftPanel)
---		CreateAnchor("yoMoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yoMoveplayer)
+--		n.moveCreateAnchor("yoMoveABar1", 		"Move Action Bar #1", 445, 35, 0, 	2, 		"BOTTOM", "BOTTOM")
+--		n.moveCreateAnchor("yoMoveABar2", 		"Move Action Bar #2", 445, 35, 0, 	40, 	"BOTTOM", "BOTTOM")
+--		n.moveCreateAnchor("yoMoveABar3", 		"Move Action Bar #3", 40, 40, -300, 300, 	"TOPRIGHT", "BOTTOMRIGHT")
+--		n.moveCreateAnchor("yoMoveABar4", 		"Move Action Bar #4", 445, 35, -1, 	182, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
+--		n.moveCreateAnchor("yoMoveABar5", 		"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
+--		n.moveCreateAnchor("yoMoveAMicro", 		"Move MicroMenu Bar", 220, 18, -470,7, 		"BOTTOMRIGHT", "BOTTOMRIGHT")
+--		n.moveCreateAnchor("yoMovePetBar", 		"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", yoMoveLeftPanel)
+--		n.moveCreateAnchor("yoMoveExtr", 		"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", yoMoveplayer)
 
 --		local fader01 = {
 --  			fadeInAlpha 	= 1,

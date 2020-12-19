@@ -31,14 +31,14 @@ function Stat:onEvent( event, ...)
 		if Event == "SPELL_ABSORBED" then
 			local cleuInfo 		= {CombatLogGetCurrentEventInfo()}
 			--tprint(cleuInfo)
-			if spellID == yo.myGUID then 		-- arg12
+			if spellID == n.myGUID then 		-- arg12
 				sourceGUID 		= spellID
 				spellID 		= overHeal 	-- arg16
 				spellSchool		= arg18
 				spellDMG		= arg19
 				overHeal 		= 0
 				spellName		= school
-			elseif spellDMG == yo.myGUID then 	-- arg15
+			elseif spellDMG == n.myGUID then 	-- arg15
 				sourceGUID 		= spellDMG
 				spellID 		= arg19
 				spellSchool		= arg21
@@ -50,8 +50,8 @@ function Stat:onEvent( event, ...)
 			end
 		end
 
-		if sourceGUID == yo.myGUID or infoText.pets[sourceGUID] then
-			infoText.checkNewSpell( self, yo.myGUID, spellID, spellName, spellDMG, overHeal, spellSchool, arg18)
+		if sourceGUID == n.myGUID or infoText.pets[sourceGUID] then
+			infoText.checkNewSpell( self, n.myGUID, spellID, spellName, spellDMG, overHeal, spellSchool, arg18)
 		end
 
 	elseif event == 'UNIT_PET' then
@@ -79,6 +79,7 @@ function Stat:Enable()
 	self.amountTotal 	= 0
 	self.spellInfo		= {}
 	self.spellDamage 	= {}
+	self.displayName 	= "dps"
 
 	self:SetFrameStrata("BACKGROUND")
 	self:SetFrameLevel(3)
@@ -98,8 +99,8 @@ function Stat:Enable()
 	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	self:SetScript("OnMouseDown", self.onClick)
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
-	self.Text:SetFormattedText( infoText.displayString, "hps", 0, "") --,  SecondsToClocks(self.combatTime))
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
+	self.Text:SetFormattedText( infoText.displayString, self.displayName, 0, "") --,  SecondsToClocks(self.combatTime))
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)

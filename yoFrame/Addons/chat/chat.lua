@@ -473,7 +473,7 @@ local Fane = CreateFrame("Frame")
 local updateFS = function(self, inc, ...)
 	local fstring = self:GetFontString()
 
-	fstring:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	fstring:SetFont( n.font, n.fontsize, "OVERLAY")
 	fstring:SetShadowOffset(1, -1)
 
 	if (...) then

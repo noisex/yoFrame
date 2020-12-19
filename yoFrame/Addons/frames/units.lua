@@ -48,7 +48,7 @@ local function unitShared(self, unit)
 	local powerHeight		= 4
 	local showLeader 		= true
 	local combatPos 		= 6
-	local nameTextSize		= yo.fontsize
+	local nameTextSize		= n.fontsize
 
 	if yo.UF.simpleUF then
 		height 			= height / 1.8
@@ -58,13 +58,17 @@ local function unitShared(self, unit)
 		powerPos		= { "BOTTOM", self, "BOTTOM", 0, 2}
 		powerHeight		= 3
 		showLeader 		= false
-		nameTextSize	= yo.fontsize + 0
+		nameTextSize	= n.fontsize + 0
 		combatPos 		= 0
 		nameLeight		= "namemedium"
 		namePos			= { "LEFT", self, "TOPLEFT", 5, 1}
 		healthTextPos	= { "BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 2}
 		rtargetPos 		= { "CENTER", self, "TOPRIGHT", -15, 0}
 		self.simpleUF	= true
+	end
+
+	if unit == "pet" or unit == "focus" or unit == "targettarget" or unit == "focustarget" then
+		powerHeight = 2
 	end
 
 	_G["yoMove" .. cunit]:SetHeight( height)
@@ -79,14 +83,14 @@ local function unitShared(self, unit)
 	self.Health:SetAllPoints( self)
 	self.Health:SetWidth( width)
 	self.Health:SetHeight(height)
-	self.Health:SetStatusBarTexture( yo.texture)
+	self.Health:SetStatusBarTexture( n.texture)
 	self.Health:SetFrameLevel( 1)
 	self.Health:GetStatusBarTexture():SetHorizTile(false)
 	tinsert( n.statusBars, self.Health)
 
 	self.Health.hbg = self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
-	self.Health.hbg:SetTexture( yo.texture)
+	self.Health.hbg:SetTexture( n.texture)
 
 	if unit == "player" or unit == "target" or unit == "pet" then
 		self.Health.AbsorbBar = self:addAbsorbBar()
@@ -107,7 +111,7 @@ local function unitShared(self, unit)
 			self.Health.stoper:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
 		end
 
-		self.Health.stoper:SetStatusBarTexture( yo.texture)
+		self.Health.stoper:SetStatusBarTexture( n.texture)
 		self.Health.stoper:SetFrameLevel( 5)
 		self.Health.stoper:SetWidth( 1)
 		self.Health.stoper:SetHeight( 4)
@@ -118,7 +122,7 @@ local function unitShared(self, unit)
 		--self.Health.stoper.bg:SetAllPoints( self.Health.stoper)
 		--self.Health.stoper.bg:SetVertexColor( 0.4, 0.4, 0.4, 0.5)
 		--self.Health.stoper.bg:SetAlpha(0.2)
-		--self.Health.stoper.bg:SetTexture( yo.texture)
+		--self.Health.stoper.bg:SetTexture( n.texture)
 	end
 
 	self.fader 						= yo.Raid.fadeColor
@@ -137,7 +141,7 @@ local function unitShared(self, unit)
 	if enablePower then
 		self.Power = CreateFrame("StatusBar", nil, self)
 		self.Power:SetPoint( unpack( powerPos))
-		self.Power:SetStatusBarTexture( yo.texture)
+		self.Power:SetStatusBarTexture( n.texture)
 		self.Power:SetFrameLevel( 5)
 		self.Power:SetWidth( width - 10)
 		self.Power:SetHeight( powerHeight)
@@ -147,13 +151,13 @@ local function unitShared(self, unit)
 		self.Power.bg:SetAllPoints( self.Power)
 		self.Power.bg:SetVertexColor( 0.4, 0.4, 0.4, 0.5)
 		self.Power.bg:SetAlpha(0.2)
-		self.Power.bg:SetTexture( yo.texture)
+		self.Power.bg:SetTexture( n.texture)
 
 		if unit == "player" then
 			local powerFlashBar = CreateFrame("StatusBar" , nil, self)
 			powerFlashBar:SetPoint("TOPLEFT", self.Power:GetStatusBarTexture(),"TOPRIGHT", 0, 0);
 			powerFlashBar:SetPoint("BOTTOMLEFT", self.Power:GetStatusBarTexture(),"BOTTOMRIGHT", 0, 0);
-			powerFlashBar:SetStatusBarTexture( yo.texture)
+			powerFlashBar:SetStatusBarTexture( n.texture)
 			powerFlashBar:SetHeight( 4)
 			powerFlashBar:SetWidth( self.Power:GetWidth())
 			powerFlashBar:SetFrameLevel( 4)
@@ -188,7 +192,7 @@ local function unitShared(self, unit)
 	self.Overlay:SetFrameLevel( 10)
 
 	self.nameText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
-	self.nameText:SetFont( yo.font, nameTextSize, "OUTLINE")
+	self.nameText:SetFont( n.font, nameTextSize, "OUTLINE")
 	self.nameText:SetPoint(unpack( namePos))
 	if unit == "targettarget" or unit == "focustarget" or unit == "focus" or unit == "pet" then
 			self:Tag( self.nameText, "[GetNameColor][unitLevel][nameshort][afk]")
@@ -198,19 +202,19 @@ local function unitShared(self, unit)
 	if unit ~= "pet" or unit ~= "targettarget" or unit ~= "focus" or unit ~= "focustarget" then
 
 		self.Health.healthText =  self.Overlay:CreateFontString(nil ,"OVERLAY", 8)
-		self.Health.healthText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
+		self.Health.healthText:SetFont( n.font, n.fontsize -1, "OUTLINE")
 		self.Health.healthText:SetPoint( unpack( healthTextPos))
 		tinsert( n.strings, self.Health.healthText)
 
 		if enablePower and enablePowerText then
 			self.Power.powerText =  self.Overlay:CreateFontString(nil ,"OVERLAY")
-			self.Power.powerText:SetFont( yo.font, yo.fontsize -1, "OUTLINE")
+			self.Power.powerText:SetFont( n.font, n.fontsize -1, "OUTLINE")
 			self.Power.powerText:SetPoint("TOPRIGHT", self.Health.healthText, "BOTTOMRIGHT", 0, -3)
 			tinsert( n.strings, self.Power.powerText)
 		end
 		if showLeader then
 			self.rText =  self:CreateFontString(nil ,"OVERLAY")
-			self.rText:SetFont( yo.Media.fontpx, yo.fontsize, "OUTLINE")
+			self.rText:SetFont( yo.Media.fontpx, n.fontsize, "OUTLINE")
 			self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -2)
 			self:Tag( self.rText, "[GetNameColor][group]")
 		end
@@ -290,10 +294,10 @@ local function unitShared(self, unit)
 			self.GCD:SetWidth( width)
 			self.GCD:SetHeight( 2)
 			self.GCD:SetFrameLevel( 5)
-			self.GCD:SetStatusBarTexture( yo.texture)
+			self.GCD:SetStatusBarTexture( n.texture)
 			self.GCD:SetStatusBarColor( 1, 1, 1, 0)
 		end
-		if n.pType[yo.myClass] and n.pType[yo.myClass].powerID then n.createShardsBar( self) end
+		if n.pType[n.myClass] and n.pType[n.myClass].powerID then n.createShardsBar( self) end
 
 	elseif unit == "target" and yo.healBotka.enable then
 		--n.makeQuiButton(self)
@@ -345,21 +349,21 @@ logan:SetScript("OnEvent", function(self, event)
 		oUF:SetActiveStyle("yoFrames")
 
 		yoUF.player = oUF:Spawn("player", "yo_Player")
-		if yo.UF.simpleUF then 	yoUF.player:SetPoint( "TOPRIGHT", yoMoveplayer, "TOPRIGHT", 15, 40)
-		else 					yoUF.player:SetPoint( "CENTER", yoMoveplayer, "CENTER", 0 , 0)
+		if yo.UF.simpleUF then 	yoUF.player:SetPoint( "TOPRIGHT", n.moveFrames.yoMoveplayer, "TOPRIGHT", 15, 40)
+		else 					yoUF.player:SetPoint( "CENTER", n.moveFrames.yoMoveplayer, "CENTER", 0 , 0)
 		end
 
 		yoUF.target = oUF:Spawn("target", "yo_Target")
 
-		if yo.UF.simpleUF then 	yoUF.target:SetPoint( "TOPLEFT", yoMovetarget, "TOPLEFT", -15, 40)
-		else					yoUF.target:SetPoint( "CENTER", yoMovetarget, "CENTER", 0 , 0)
+		if yo.UF.simpleUF then 	yoUF.target:SetPoint( "TOPLEFT", n.moveFrames.yoMovetarget, "TOPLEFT", -15, 40)
+		else					yoUF.target:SetPoint( "CENTER", n.moveFrames.yoMovetarget, "CENTER", 0 , 0)
 		end
 
 		yoUF.targetTarget = oUF:Spawn("targettarget", "yo_ToT")
 		yoUF.targetTarget:SetPoint( "TOPLEFT", yoUF.target, "TOPRIGHT", 8 , 0)
 
 		yoUF.focus = oUF:Spawn("focus", "yo_Focus")
-		yoUF.focus:SetPoint( "CENTER", yoMovefocus, "CENTER", 0 , 0)
+		yoUF.focus:SetPoint( "CENTER", n.moveFrames.yoMovefocus, "CENTER", 0 , 0)
 
 		yoUF.focusTarget = oUF:Spawn("focustarget", "yo_FocusTarget")
 		yoUF.focusTarget:SetPoint( "TOPLEFT", yoUF.focus, "TOPRIGHT", 7 , 0)
@@ -371,7 +375,7 @@ logan:SetScript("OnEvent", function(self, event)
 		for i = 1, MAX_BOSS_FRAMES do
 			--boses[i] = "boss"..i.."Frame"
 			yoUF["boss" .. i] = oUF:Spawn( "boss" .. i, "yo_Boss" .. i)
-			yoUF["boss" .. i]:SetPoint( "CENTER", yoMoveboss, "CENTER", 0 , -(i -1) * 65)
+			yoUF["boss" .. i]:SetPoint( "CENTER", n.moveFrames.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
 			--yoUF["boss" .. i] = boses[i]
 
 			updateAllElements( yoUF["boss" .. i])

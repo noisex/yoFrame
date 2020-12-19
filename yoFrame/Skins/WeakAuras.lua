@@ -67,7 +67,7 @@ local function styleIcon( region)
     	end
 	end
 
-	region.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)	--(0.1, 0.9, 0.1, 0.9) --(unpack( yo.tCoord))
+	region.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)	--(0.1, 0.9, 0.1, 0.9) --(unpack( n.tCoord))
 	region.icon.SetTexCoord = n.dummy
 
 	if region.bar then
@@ -75,8 +75,8 @@ local function styleIcon( region)
 			CreateVirtualFrame( region, region.bar)
 		end
 
-		region.bar.bg:SetTexture( yo.texture)
-		region.bar.fg:SetTexture( yo.texture)
+		region.bar.bg:SetTexture( n.texture)
+		region.bar.fg:SetTexture( n.texture)
 	end
 end
 
@@ -84,12 +84,12 @@ local function styleText( regFrame)
 
 	if regFrame.text then
 		local t0, t1, t2 = regFrame.text:GetFont()
-		if t0 then regFrame.text:SetFont( yo.font, t1, t2) end
+		if t0 then regFrame.text:SetFont( n.font, t1, t2) end
 	end
 
 	if regFrame.text2 then
 		local t0, t1, t2 = regFrame.text2:GetFont()
-		if t0 then regFrame.text2:SetFont( yo.font, t1, t2) end
+		if t0 then regFrame.text2:SetFont( n.font, t1, t2) end
 	end
 
 	if regFrame.timer then

@@ -89,3 +89,5 @@ function SetItemButtonOverlay(button, itemIDOrLink, quality, isBound)
 	--	button.IconOverlay:Hide();
 	--end
 end
+
+--/run LoadAddOn("Blizzard_WeeklyRewards"); WeeklyRewardsFrame:Show()

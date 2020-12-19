@@ -11,14 +11,28 @@ local CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, 
 	= CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, GetTime, format, GetLFGMode, GetLFGCategoryForID
 
 local function isRaidFinderDungeonDisplayable(id)
+	local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(id);
 
-	local _, _, isKilled = GetLFGDungeonEncounterInfo( id, GetLFGDungeonNumEncounters( id))
-	if yo.CTA.hideLast and isKilled then
-		return false
+	if n.myLevel >= minLevel and n.myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel then
+		--local _, _, isKilled = GetLFGDungeonEncounterInfo( id, GetLFGDungeonNumEncounters( id))
+
+		if yo.CTA.hideLast then
+			local totalBosses = GetLFGDungeonNumEncounters( id)
+			local killedBosses = 0
+			for i = 1, totalBosses do
+				local _, _, isKilled = GetLFGDungeonEncounterInfo( id, i)
+				killedBosses = isKilled and killedBosses + 1 or killedBosses
+			end
+
+			if killedBosses ~= totalBosses then
+				return true
+			end
+		else
+			return true
+		end
 	end
 
-	local name, typeID, subtypeID, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(id);
-	return yo.myLevel >= minLevel and yo.myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel;
+	return false
 end
 
 local function CheckLFGQueueMode( self, id, modeLFG)
@@ -42,7 +56,8 @@ local function CreateLFRFrame( self)
 	frame:RegisterForDrag("LeftButton", "RightButton")
 	frame:Hide()
 	CreatePanel( frame, 220, 10, "CENTER", yoMoveCTA, "CENTER", 0, 0, 0, 0)
-	CreateStyle( frame, 3, 0, 0.4, 0.6)
+	frame:createStyle( 3, 0, 0.4, 0.6)
+	--CreateStyle( frame, 3, 0, 0.4, 0.6)
 
 	frame.tank = frame:CreateTexture(nil, "OVERLAY")
 	frame.tank:SetPoint( "TOPLEFT", frame, "TOPLEFT", 5, -2)
@@ -61,7 +76,7 @@ local function CreateLFRFrame( self)
 
 	frame.title = frame:CreateFontString(nil, "OVERLAY", frame)
 	frame.title:SetPoint("TOP")
-	frame.title:SetFont( yo.font, yo.fontsize -1, "THINOUTLINE")
+	frame.title:SetFont( n.font, n.fontsize -1, "THINOUTLINE")
 	frame.title:SetText( format( LFG_CALL_TO_ARMS, " "))
 	frame.title:SetTextColor( 0.75, .5, 0)
 
@@ -184,7 +199,7 @@ local function CreateLFRFrame( self)
 		self:StopMovingOrSizing()
 		yoMoveCTA:ClearAllPoints()
 		yoMoveCTA:SetPoint( self:GetPoint())
-		SetAnchPosition( yoMoveCTA, self)
+		n.setAnchPosition( yoMoveCTA, self)
 	end)
 	self.LFRFrame = frame
 end
@@ -209,7 +224,7 @@ local function CreateLFRStrings( parent, id)
 	button.icon:SetSize(35, 18)
 
 	button.name = button:CreateFontString(nil, "OVERLAY")
-	button.name:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
+	button.name:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	button.name:SetPoint("TOPLEFT", button.icon, "TOPRIGHT", 2, 2)
 	button.name:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -50, 0)
 
@@ -287,8 +302,8 @@ local function CreateLFRStrings( parent, id)
 		end
 
 		GameTooltip:Show()
-		--self.name:SetTextColor(yo.myColor.r, yo.myColor.g, yo.myColor.b, .9)
-		self:SetBackdropBorderColor(yo.myColor.r, yo.myColor.g, yo.myColor.b, .9)
+		--self.name:SetTextColor(n.myColor.r, n.myColor.g, n.myColor.b, .9)
+		self:SetBackdropBorderColor(n.myColor.r, n.myColor.g, n.myColor.b, .9)
 	end)
 
 	button:SetScript("OnLeave", function(self, ...)
@@ -355,7 +370,8 @@ local function CheckLFR( self, ...)
    				--1671 	Random Battle For Azeroth Heroic
    				--2086	Random Dungeon (Shadowlands)	1: Normal - party
 				--2087	Random Heroic (Shadowlands)	2: Heroic - party
-   	if id > 0 and not yo.CTA.hide and isRaidFinderDungeonDisplayable(id) then
+   	if id > 0 and not yo.CTA.hide then
+   		--and isRaidFinderDungeonDisplayable(id) then
 
 		local checkTank, checkHeal, checkDD
 		if not yo_CTA[id] then yo_CTA[id] = {} end
@@ -393,7 +409,8 @@ local function CheckLFR( self, ...)
 
 	if yo.CTA.lfr and not yo.CTA.hide then
 		for i = 1, GetNumRFDungeons() do
-			local id, name,  _, _, level = GetRFDungeonInfo(i)
+			local id, name = GetRFDungeonInfo(i)
+			--print(id, name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel)
 			if isRaidFinderDungeonDisplayable(id) then
 				local checkTank, checkHeal, checkDD
 				if not yo_CTA[id] then yo_CTA[id] = {} end
@@ -458,7 +475,7 @@ end
 local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if not yo.CTA.enable then return end
-		CreateAnchor("yoMoveCTA",	"Move CTA", 220, 25,	-150, 0, "TOPRIGHT", "LEFT", Minimap)
+		n.moveCreateAnchor("yoMoveCTA",	"Move CTA", 220, 25,	-150, 0, "TOPRIGHT", "LEFT", Minimap)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent("LFG_ROLE_UPDATE");
 		self:RegisterEvent("LFG_UPDATE");

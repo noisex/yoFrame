@@ -5,7 +5,7 @@ local tonumber, floor, ceil, abs, mod, modf, format, len, sub, abs, gsub, tostri
     = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, math.abs, string.gsub, tostring, string.find, tinsert
 
 local texture, texglow
-  = yo.texture, yo.texglow
+  = n.texture, n.texglow
 
 local COPPER_AMOUNT_TEXTURE, GOLD_AMOUNT_TEXTURE_STRING, SILVER_AMOUNT_TEXTURE
     = COPPER_AMOUNT_TEXTURE, GOLD_AMOUNT_TEXTURE_STRING, SILVER_AMOUNT_TEXTURE

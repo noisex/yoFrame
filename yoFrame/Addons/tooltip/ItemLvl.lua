@@ -454,7 +454,7 @@ local function DecorateTooltip(guid)
 
 		if GameTooltipStatusBar and GameTooltipStatusBar.icon and ( cache.specID and n.classSpecsCoords[cache.specID]) then
 			print("CASHGE ", cache.specID)
-			GameTooltipStatusBar.icon:SetTexCoord( unpack( n.classSpecsCoords[cache.specID]))
+			GameTooltipStatusBar.icon:SetTexCoord( unpack( n.classSpecsCoords[cache.specID].tCoord))
 			GameTooltipStatusBar.icon:Show()
 		end
 

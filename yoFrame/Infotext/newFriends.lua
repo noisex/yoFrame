@@ -7,7 +7,7 @@ local yoEF = n.elemFrames
 local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 
-local displayString = "%s: ".. yo.myColorStr .. "%d|r"
+local displayString = "%s: ".. n.myColorStr .. "%d|r"
 local appTitle 	= "|T%s:24:24:0:0:64:64:10:54:10:54|t"	-- иконка приложения
 local gold 		= "|cffffff00"
 local grey 		= "|cff888888"
@@ -258,7 +258,7 @@ function Stat:Enable()
 	self:SetScript("OnMouseDown", self.onMouseDown)
 
 	self.Text = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)

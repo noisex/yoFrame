@@ -1,5 +1,7 @@
-local _, ns = ...
-local L, yo, n = unpack( select( 2, ...)) or ns:NewLocale()
+local addonName, ns = ...
+local L = unpack( select( 2, ...)) or ns:NewLocale()
+
+ns[1] = L
 
 L.LOCALE_NAME = "enUS"
 

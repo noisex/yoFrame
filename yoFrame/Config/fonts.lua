@@ -9,7 +9,7 @@ if not yo.Addons.ChangeSystemFonts then return end
 local function mySetFont( fontObj, fontsSize )
 	if fontObj then
 		local ft, fs, fd = fontObj:GetFont()
-		fontObj:SetFont( yo.font, floor( max(( fontsSize or yo.sysfontsize), fs-2)), fd)
+		fontObj:SetFont( n.font, floor( max(( fontsSize or n.sysfontsize), fs-2)), fd)
 	end
 end
 
@@ -29,7 +29,7 @@ function ChangeSystemFonts( fontsSize)
 						if fs > 120 then fs = 12 end
 						--print( i, " fs:", fs, fd, " yfs:", floor( max(( fontsSize or sysfontsize), fs-2)))
 						--_G[i]:SetFont( font, floor( max( fontsSize or sysfontsize), fs-2), fd)
-						var:SetFont( yo.font, fs, fd)
+						var:SetFont( n.font, fs, fd)
 --						local ftN, fsN, fdN = var:GetFont()
 						--yo_fArray[ind] = { i, ft, ftN, fs, fd}
 --						if ftN == font then
@@ -168,11 +168,11 @@ function ChangeSystemFonts( fontsSize)
 --	_G["ChatBubbleFont"]:SetFont( font, 12, "OUTLINE")
 
 --	_G["ChatFontNormal"]:SetFont( font, fontsize)
-	_G["ErrorFont"]:SetFont( yo.font, 22)
-	_G["QuestFont"]:SetFont( yo.font, 12)
-	_G["QuestFontLeft"]:SetFont( yo.font, 13)
-	_G["QuestFontNormalSmall"]:SetFont( yo.font, 13)
-	_G["GameFontNormalLarge"]:SetFont( yo.font, 14)
+	_G["ErrorFont"]:SetFont( n.font, 22)
+	_G["QuestFont"]:SetFont( n.font, 12)
+	_G["QuestFontLeft"]:SetFont( n.font, 13)
+	_G["QuestFontNormalSmall"]:SetFont( n.font, 13)
+	_G["GameFontNormalLarge"]:SetFont( n.font, 14)
 end
 
 CHAT_FONT_HEIGHTS = {10, 11, 12, 13, 14, 15, 16, 17, 18}

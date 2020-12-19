@@ -29,7 +29,7 @@ infoText.pets = {}
 infoText.petBlacklist 	= {}
 infoText.strIcon 		= "|T%s:14:14:0:0:64:64:10:54:10:54|t %s %-3s" --|cff888888
 infoText.damag 			= "%s (%.1f%%)"
-infoText.displayString 	= "%s: ".. yo.myColorStr .. "%s%s|r"
+infoText.displayString 	= "%s: ".. n.myColorStr .. "%s%s|r"
 infoText.parentCount 	= yo.InfoTexts.countLeft
 infoText.shift 			= 0
 
@@ -126,7 +126,7 @@ function infoText:checkPets( serial)
 	local line1 = _G ["yoFrame_STTTextLeft2"]
 	local text1 = line1 and line1:GetText()
 	if (text1 and text1 ~= "") then
-		local playerName = yo.myName
+		local playerName = n.myName
 		playerName = playerName:gsub ("%-.*", "") --remove realm name
 		if text1:find( playerName) then
 			self.pets[serial] = true
@@ -136,7 +136,7 @@ function infoText:checkPets( serial)
 	local line2 = _G ["yoFrame_STTTextLeft3"]
 	local text2 = line2 and line2:GetText()
 	if (text2 and text2 ~= "") then
-		local playerName = yo.myName
+		local playerName = n.myName
 		playerName = playerName:gsub ("%-.*", "") --remove realm name
 		if text2:find( playerName) then
 			self.pets[serial] = true
@@ -157,14 +157,14 @@ function infoText:getDPS( infos)
 		DPS = infos.amountTotal / infos.combatTime
 	end
 
-	infos.Text:SetFormattedText( self.displayString, "dps", nums( DPS), "") --, SecondsToClocks( infos.combatTime))
+	infos.Text:SetFormattedText( self.displayString, infos.displayName, nums( DPS), "") --, SecondsToClocks( infos.combatTime))
 end
 
 
 function infoText:onEnter( infos)
 	GameTooltip:SetOwner( infos, "ANCHOR_TOP", 0, 6);
 	GameTooltip:ClearLines()
-	GameTooltip:AddLine( yo.myColorStr .. "Царский депс:")
+	GameTooltip:AddLine( n.myColorStr .. "Царский депс:")
 	local ind = 1
 	local shift = 2.9
 	local stoPerc

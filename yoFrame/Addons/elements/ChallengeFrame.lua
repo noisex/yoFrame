@@ -1,21 +1,22 @@
 local L, yo, n = unpack( select( 2, ...))
 
+local _G = _G
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
+
+local GameTooltip, CreateFrame, ipairs, hooksecurefunc, select, GetContainerNumSlots, GetContainerItemInfo, pairs, unpack, CreateStyle, LoadAddOn, GameTooltip_Hide, PickupContainerItem, CursorHasItem
+	= GameTooltip, CreateFrame, ipairs, hooksecurefunc, select, GetContainerNumSlots, GetContainerItemInfo, pairs, unpack, CreateStyle, LoadAddOn, GameTooltip_Hide, PickupContainerItem, CursorHasItem
+
+local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local BACKPACK_CONTAINER= BACKPACK_CONTAINER
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local CHALLENGE_MODE_POWER_LEVEL= CHALLENGE_MODE_POWER_LEVEL
+local CHALLENGE_MODE_GUILD_BEST_LINE= CHALLENGE_MODE_GUILD_BEST_LINE
 
 local rowCount = 3
 local affCount = 3
 local iSize = 35
 local currentWeek, designed
 
---Уровни добычи Замка Нафрия
---Режим	1-8 боссы	9-10 боссы
---Поиск рейда	187	194
---Обычный	200	207
---Героический	213	220
---Эпохальный	226	233
-
--- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
--- 20: Void, 21: "Tides", 22: "Enchanted"
 local mythicRewards = {
 --	{"Level","End","Weekly","Azer Weekly"},
 	{2,187,200},
@@ -35,20 +36,19 @@ local mythicRewards = {
 }
 
 local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
-    [1] = 	{[2]=5,	[3]=3,	[1]=9,	[4]=120},
-    [2] = 	{[2]=7,	[3]=2,	[1]=10,	[4]=120},
-    [3] = 	{[2]=11,[3]=4,	[1]=9,	[4]=120},
-    [4] = 	{[2]=8,	[3]=14,	[1]=10,	[4]=120},
-    [5] = 	{[2]=7,	[3]=13,	[1]=9,	[4]=120},
-    [6] = 	{[2]=11,[3]=3,	[1]=10,	[4]=120},
-    [7] = 	{[2]=6,	[3]=4,	[1]=9,	[4]=120},
-    [8] = 	{[2]=5,	[3]=14,	[1]=10,	[4]=120},
-    [9] = 	{[2]=11,[3]=2,	[1]=9,	[4]=120},
-    [10] =	{[2]=7,	[3]=12,	[1]=10,	[4]=120},
-    [11] = 	{[2]=6,	[3]=13,	[1]=9,	[4]=120},
-    [12] = 	{[2]=8,	[3]=12,	[1]=10,	[4]=120},
+    [1] = 	{[2]=11,	[3]=3,	[1]=10,	[4]=121},
+    [2] = 	{[2]=7,		[3]=124,[1]=9,	[4]=121},
+    [3] = 	{[2]=123,	[3]=12,	[1]=10,	[4]=121},
+    [4] = 	{[2]=122,	[3]=4,	[1]=9,	[4]=121},
+    [5] = 	{[2]=8,		[3]=14,	[1]=10,	[4]=121},
+    [6] = 	{[2]=6,		[3]=13,	[1]=9,	[4]=121},
+    [7] = 	{[2]=123,	[3]=3,	[1]=10,	[4]=121},
+    [8] = 	{[2]=7,		[3]=4,	[1]=9,	[4]=121},
+    [9] = 	{[2]=122,	[3]=124,[1]=10,	[4]=121},
+    [10] =	{[2]=11,	[3]=13,	[1]=9,	[4]=121},
+    [11] = 	{[2]=8,		[3]=12,	[1]=10,	[4]=121},
+    [12] = 	{[2]=6,		[3]=14,	[1]=9,	[4]=121},
 }
-
 
 local function GuildLeadersOnLeave(...)
     GameTooltip:Hide()
@@ -83,17 +83,17 @@ local function CreateLeadersIcon( self, index)
 		--frame.icon:SetTexCoord( 0.365, 0.636, 0.352, 0.742)
 
 		frame.level = frame:CreateFontString(nil, "OVERLAY")
-		frame.level:SetFont( yo.font, yo.fontsize + 4, "OUTLINE")
+		frame.level:SetFont( n.font, n.fontsize + 4, "OUTLINE")
 		frame.level:SetTextColor( 1, 0.75, 0, 1)
 		frame.level:SetPoint("BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", 0, 1)
 
 		frame.mapname = frame:CreateFontString(nil, "ARTWORK")
-		frame.mapname:SetFont( yo.font, yo.fontsize, "OUTLINE")
+		frame.mapname:SetFont( n.font, n.fontsize, "OUTLINE")
 		frame.mapname:SetTextColor( 1, 0.75, 0, 1)
 		frame.mapname:SetPoint("TOPLEFT", frame.icon, "TOPRIGHT", 5, 0)
 
 		frame.leadername = frame:CreateFontString(nil, "ARTWORK")
-		frame.leadername:SetFont( yo.font, yo.fontsize, "OUTLINE")
+		frame.leadername:SetFont( n.font, n.fontsize, "OUTLINE")
 		frame.leadername:SetPoint("LEFT", frame.icon, "RIGHT", 5, 0)
 		CreateStyle( frame, 4, 2)
 
@@ -108,16 +108,19 @@ end
 
 local function CreateLiders( self)
 
+	local self = _G.ChallengesFrame
 	local leaders = C_ChallengeMode.GetGuildLeaders()
+	--print("leaders:")
+	--tprint(leaders)
 	if leaders and #leaders > 0 then
 
 		if not self.leaderBest then
-			self.leaderBest = CreateFrame("Frame", nil, ChallengesFrame)
+			self.leaderBest = CreateFrame("Frame", nil, _G.ChallengesFrame)
 			self.leaderBest:SetSize(175, ( 35+5) * #leaders)
-			self.leaderBest:SetPoint("TOPLEFT", ChallengesFrame, "TOPLEFT", 10, -120)
+			self.leaderBest:SetPoint("TOPLEFT", _G.ChallengesFrame, "TOPLEFT", 10, -120)
 
 			self.leaderBest.title = self.leaderBest:CreateFontString(nil, "ARTWORK")
-			self.leaderBest.title:SetFont( yo.font, yo.fontsize + 3, "OUTLINE")
+			self.leaderBest.title:SetFont( n.font, n.fontsize + 3, "OUTLINE")
 			self.leaderBest.title:SetTextColor( 1, 0.75, 0, 1)
 			self.leaderBest.title:SetText(  L["WeekLeader"])
 			self.leaderBest.title:SetPoint("BOTTOM", self.leaderBest, "TOP", -15, 10)
@@ -138,13 +141,13 @@ local function CreateLiders( self)
 end
 
 local function skinDungens()
-	for k, map in pairs( ChallengesFrame.DungeonIcons) do
+	for k, map in pairs( _G.ChallengesFrame.DungeonIcons) do
 		map.HighestLevel:ClearAllPoints()
 		map.HighestLevel:SetPoint("BOTTOMRIGHT", map, "BOTTOMRIGHT", -1, 2)
 
-		map.Icon:SetHeight( map:GetHeight() - 4)
-		map.Icon:SetWidth( map:GetWidth() - 4)
-		map.Icon:SetTexCoord(unpack( yo.tCoord))
+		map.Icon:SetHeight( map:GetHeight() - 10)
+		map.Icon:SetWidth( map:GetWidth() - 10)
+		map.Icon:SetTexCoord(unpack( n.tCoord))
 		map:GetRegions(1):SetAtlas( nil) --GetAtlas())
 		if not map.shadow then
 			CreateStyle( map, 4)
@@ -154,20 +157,50 @@ end
 
 local function UpdateAffixes( self)
 	if designed then return end
+
+	if self.WeeklyInfo.Child.WeeklyChest.RunStatus then
+		self.WeeklyInfo.Child.WeeklyChest.RunStatus:SetFont( n.font, n.fontsize + 1, "OUTLINE")
+		self.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
+		self.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint("TOP", self, "TOP", 10, -140)
+		self.WeeklyInfo.Child.WeeklyChest.RunStatus:SetWidth( 250)
+		self.WeeklyInfo.Child.WeeklyChest.RunStatus.ClearAllPoints = n.dummy
+	end
+
 	if self.WeeklyInfo.Child.RunStatus then
-		self.WeeklyInfo.Child.RunStatus:SetFont( yo.font, yo.fontsize + 2, "OUTLINE")
+		self.WeeklyInfo.Child.RunStatus:SetFont( n.font, n.fontsize + 1, "OUTLINE")
 		self.WeeklyInfo.Child.RunStatus:ClearAllPoints()
 		self.WeeklyInfo.Child.RunStatus:SetPoint("TOP", self, "TOP", 0, -150)
-		self.WeeklyInfo.Child.RunStatus:SetWidth( 250)
+		self.WeeklyInfo.Child.RunStatus:SetWidth( 200)
 		self.WeeklyInfo.Child.RunStatus.ClearAllPoints = n.dummy
 	end
 
 	if self.WeeklyInfo.Child.Description then
-		self.WeeklyInfo.Child.Description:SetFont( yo.font, yo.fontsize + 2, "OUTLINE")
+		self.WeeklyInfo.Child.Description:SetFont( n.font, n.fontsize + 1, "OUTLINE")
 		self.WeeklyInfo.Child.Description:ClearAllPoints()
-		self.WeeklyInfo.Child.Description:SetPoint("TOP", self, "TOP", 0, -100)
+		self.WeeklyInfo.Child.Description:SetPoint("TOP", self, "TOP", 10, -140)
 		self.WeeklyInfo.Child.Description:SetWidth( 250)
 		self.WeeklyInfo.Child.Description.ClearAllPoints = n.dummy
+	end
+
+	if self.WeeklyInfo.Child.WeeklyChest then
+		local weekly = self.WeeklyInfo.Child.WeeklyChest
+		weekly.RewardButton = CreateFrame( "Button", nil, weekly)
+		weekly.RewardButton:SetAllPoints(weekly)
+		weekly.RewardButton:EnableMouse(true)
+		weekly.RewardButton:SetScript("OnEnter", function(self, ...)
+			weekly.Icon:SetDesaturated(true)
+			weekly.Icon:SetVertexColor(1, 0.8, 0.2, 1)
+		end)
+
+		weekly.RewardButton:SetScript("OnLeave", function(self, ...)
+			weekly.Icon:SetDesaturated( false)
+			weekly.Icon:SetVertexColor(1, 1, 1, 1)
+		end)
+
+		weekly.RewardButton:SetScript("OnClick", function (...)
+			LoadAddOn("Blizzard_WeeklyRewards");
+			_G.WeeklyRewardsFrame:SetShown( not _G.WeeklyRewardsFrame:IsShown())
+		end)
 	end
 
 	C_MythicPlus.RequestCurrentAffixes()
@@ -199,7 +232,7 @@ local function UpdateAffixes( self)
 	--if affixIds[4].id == 119 then
     	if not self.seasonAffix then
     		local seasonAffix = self:CreateFontString( nil, "ARTWORK") --, "GameFontNormalMed1")
-			seasonAffix:SetFont( yo.font, yo.fontsize +2, "OUTLINE")
+			seasonAffix:SetFont( n.font, n.fontsize +2, "OUTLINE")
 			seasonAffix:SetTextColor( 0.529, 0.529, 0.929, 1)
 			seasonAffix:SetJustifyH("CENTER")
 			seasonAffix:SetPoint("BOTTOM", self.WeeklyInfo.Child.RunStatus, "TOP", 0, 15)
@@ -212,7 +245,7 @@ local function UpdateAffixes( self)
     if self.WeeklyInfo.Child.WeeklyChest.ownedKeystoneLevel and self.WeeklyInfo.Child.WeeklyChest.ownedKeystoneLevel > 1 then
 		if not self.weekReward then
 			local weekReward = self:CreateFontString( nil, "ARTWORK") --, "GameFontNormalMed1")
-			weekReward:SetFont( yo.font, yo.fontsize +9, "OUTLINE")
+			weekReward:SetFont( n.font, n.fontsize +9, "OUTLINE")
 			weekReward:SetTextColor( 1, 0, 0)
 			weekReward:SetJustifyH("LEFT")
 			weekReward:SetPoint("LEFT", self.WeeklyInfo.Child.Label, "RIGHT", 5, 0)
@@ -223,8 +256,8 @@ local function UpdateAffixes( self)
     end
 
     designed = true
-	CreateLiders( self)
 	skinDungens()
+	C_Timer.After( 0.5, CreateLiders) --CreateLiders( self)
 end
 
 local function makeAffix(parent)
@@ -249,9 +282,9 @@ local function makeAffix(parent)
 end
 
 local function Blizzard_ChallengesUI( self)
-	local frame = CreateFrame("Frame", nil, ChallengesFrame)
+	local frame = CreateFrame("Frame", nil, _G.ChallengesFrame)
 	frame:SetSize( (iSize + 10) * affCount, (iSize + 7) * rowCount + 50 + 120)
-	frame:SetPoint("TOPRIGHT", ChallengesFrame.WeeklyInfo.Child, "TOPRIGHT", -6, -15)
+	frame:SetPoint("TOPRIGHT", _G.ChallengesFrame.WeeklyInfo.Child, "TOPRIGHT", -6, -15)
 
 	local bg = frame:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()
@@ -260,7 +293,7 @@ local function Blizzard_ChallengesUI( self)
 	frame.bg = bg
 
 	local title = frame:CreateFontString(nil, "ARTWORK")--, "GameFontNormalMed1")
-	title:SetFont( yo.font, yo.fontsize + 3, "OUTLINE")
+	title:SetFont( n.font, n.fontsize + 3, "OUTLINE")
 	title:SetTextColor(1, 0.75, 0, 1)
 	title:SetText( L["Schedule"])
 	title:SetPoint("TOP", 0, -3)
@@ -273,7 +306,7 @@ local function Blizzard_ChallengesUI( self)
 	frame.line = line
 
 	local Levels = frame:CreateFontString(nil, "ARTWORK") --, "GameFontNormalMed1")
-	Levels:SetFont( yo.font, yo.fontsize + 3, "OUTLINE")
+	Levels:SetFont( n.font, n.fontsize + 3, "OUTLINE")
 	Levels:SetTextColor( 0.5, 0.5, 0.5, 1)
 	--Levels:SetText( "2+      4+      7+      10+")
 	Levels:SetText( "2+      4+      7+")
@@ -293,7 +326,7 @@ local function Blizzard_ChallengesUI( self)
 	frame.line3 = line3
 
 	local title2 = frame:CreateFontString(nil, "ARTWORK")--, "GameFontNormalMed1")
-	title2:SetFont( yo.font, yo.fontsize + 3, "OUTLINE")
+	title2:SetFont( n.font, n.fontsize + 3, "OUTLINE")
 	title2:SetTextColor(1, 0.75, 0, 1)
 	title2:SetText( L["Rewards"])
 	title2:SetPoint("TOP", line3, "BOTTOM", 0, 0)
@@ -312,7 +345,7 @@ local function Blizzard_ChallengesUI( self)
 	frame.outReward = outReward
 
 	local rewards = frame:CreateFontString(nil, "ARTWORK") --, "GameFontNormalMed1")
-	rewards:SetFont( yo.font, yo.fontsize, "OUTLINE")
+	rewards:SetFont( n.font, n.fontsize, "OUTLINE")
 	rewards:SetText( outReward)
 	rewards:SetJustifyH("LEFT")
 	rewards:SetPoint("TOP", line4, "BOTTOM", 0, 0)
@@ -347,7 +380,12 @@ local function Blizzard_ChallengesUI( self)
 	end
 
 	frame.Entries = entries
-	ChallengesFrame.Frame = frame
+	_G.ChallengesFrame.Frame = frame
+
+	frame:SetScript("OnShow", function(self, ...)
+		CreateLiders( _G.ChallengesFrame)
+		--UpdateAffixes( _G.ChallengesFrame)
+	end)
 
 	hooksecurefunc("ChallengesFrame_Update", UpdateAffixes)
 end
@@ -367,14 +405,42 @@ local function SlotKeystone()
 	end
 end
 
-local function OnEvent( self, event, name, sender, ...)
-	--print ( "Load: " .. event, self:GetName(), name, sender, ...)
-	if event == "ADDON_LOADED" and name == "Blizzard_ChallengesUI" then
-		Blizzard_ChallengesUI( self)
-		ChallengesKeystoneFrame:HookScript("OnShow", SlotKeystone)
+local function makeSoulsBitton(...)
+
+	local frame = _G.GarrisonLandingPage
+	local invite = select( 2, frame.Report.Sections:GetChildren())
+
+	if invite then
+		invite:ClearAllPoints()
+		invite:SetPoint( "TOPLEFT", frame, "TOPLEFT", 0, -295)
+
+		local panel = frame.SoulbindPanel
+		panel.NewButton = panel.NewButton or CreateFrame("Button", "$parentnewName", panel, "LandingPageRenownButtonTemplate")
+		panel.NewButton:ClearAllPoints()
+		panel.NewButton:SetPoint( "TOPLEFT", panel.SoulbindButton, "BOTTOMLEFT", 0, 0)
+		panel.NewButton.Label:SetText( "Ежеднивничек")
+		panel.NewButton.Label:SetTextColor( 0.9, 0.8, 0.2, 1)
+		panel.NewButton.Renown:SetText("")
+
+		panel.NewButton:SetScript("OnClick", function(self, ...)
+			--frame:Hide()
+			LoadAddOn("Blizzard_WeeklyRewards");
+			_G.WeeklyRewardsFrame:SetShown( not _G.WeeklyRewardsFrame:IsShown())
+		end)
+		--panel.NewButton.Portrait:SetTexture( n.texture)
+		--panel.NewButton.Portrait:SetAtlas("shadowlands-landingpage-soulbindsbutton-theotar")
 	end
 end
 
+local function OnEvent( self, event, name, sender, ...)
+	if name == "Blizzard_ChallengesUI" then
+		Blizzard_ChallengesUI( self)
+		ChallengesKeystoneFrame:HookScript("OnShow", SlotKeystone)
+
+	--elseif name == "Blizzard_LandingSoulbinds" then
+	--	C_Timer.After( 0.5, makeSoulsBitton)
+	end
+end
 
 local logan = CreateFrame("Frame", nil, UIParent)
 logan:RegisterEvent("ADDON_LOADED")

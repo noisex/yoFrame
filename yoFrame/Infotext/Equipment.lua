@@ -46,7 +46,7 @@ local function OnEvent(self, event, ...)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
 
-		eText:SetFont( yo.font, yo.fontsize, "OVERLAY")
+		eText:SetFont( n.font, n.fontsize, "OVERLAY")
 		eText:SetHeight(LeftInfoPanel:GetHeight())
 		eText:SetPoint("LEFT", LeftInfoPanel, "RIGHT", -120, 0)
 		LeftInfoPanel.equipText = eText
@@ -62,10 +62,10 @@ local function OnEvent(self, event, ...)
 			name, _, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo( i)
 			if name and isEquipped then
 				self.id = i
-				eText:SetText("Equip: "..yo.myColorStr..utf8sub( name, 12, false))
+				eText:SetText("Equip: "..n.myColorStr..utf8sub( name, 12, false))
 				break
 			else
-				eText:SetText("Equip: "..yo.myColorStr.." no Set")
+				eText:SetText("Equip: "..n.myColorStr.." no Set")
 			end
 		end
 	end

@@ -92,24 +92,24 @@ end
 
 local function newConfigData( personalConfig)
 
-	yo_AllData[yo.myRealm][yo.myName]["Money"] 	= GetMoney()
-	yo_AllData[yo.myRealm][yo.myName]["MoneyDay"] = date()
-	yo_AllData[yo.myRealm][yo.myName]["MoneyTime"]= time()
-	yo_AllData[yo.myRealm][yo.myName]["Class"] 	= yo.myClass
-	yo_AllData[yo.myRealm][yo.myName]["Race"]		= select(2, UnitRace('player'))
-	yo_AllData[yo.myRealm][yo.myName]["Sex"]		= UnitSex('player')
-	yo_AllData[yo.myRealm][yo.myName]["Color"] = { ["r"] = yo.myColor.r, ["g"] = yo.myColor.g, ["b"] = yo.myColor.b, ["colorStr"] = yo.myColor.colorStr}
-	yo_AllData[yo.myRealm][yo.myName]["ColorStr"] = yo.myColorStr
-	yo_AllData[yo.myRealm][yo.myName]["PersonalConfig"] = yo_AllData[yo.myRealm][yo.myName].PersonalConfig or personalConfig
-	yo_AllData[yo.myRealm][yo.myName]["WorldBoss"] =  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
+	n.allData[n.myRealm][n.myName]["Money"] 	= GetMoney()
+	n.allData[n.myRealm][n.myName]["MoneyDay"] 	= date()
+	n.allData[n.myRealm][n.myName]["MoneyTime"]	= time()
+	n.allData[n.myRealm][n.myName]["Class"] 	= n.myClass
+	n.allData[n.myRealm][n.myName]["Race"]		= select(2, UnitRace('player'))
+	n.allData[n.myRealm][n.myName]["Sex"]		= UnitSex('player')
+	n.allData[n.myRealm][n.myName]["Color"] 	= { ["r"] = n.myColor.r, ["g"] = n.myColor.g, ["b"] = n.myColor.b, ["colorStr"] = n.myColor.colorStr}
+	n.allData[n.myRealm][n.myName]["ColorStr"] 	= n.myColorStr
+	--n.allData[n.myRealm][n.myName]["PersonalConfig"] = n.allData[n.myRealm][n.myName].PersonalConfig or personalConfig
+	n.allData[n.myRealm][n.myName]["WorldBoss"] =  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
 end
 
 function Stat:onEvent( event, ...)
 
 	if event == "TIME_PLAYED_MSG" then
 		local playedtotal, playedlevel = ...
-		yo_AllData[yo.myRealm][yo.myName]["Played"] = playedtotal
-		yo_AllData[yo.myRealm][yo.myName]["PlayedLvl"] = playedlevel
+		n.allData[n.myRealm][n.myName]["Played"] = playedtotal
+		n.allData[n.myRealm][n.myName]["PlayedLvl"] = playedlevel
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		OldMoney = GetMoney()						-- так надо, ибо не считает раньше деньгу
@@ -163,7 +163,7 @@ function Stat:onEnter()
 	GameTooltip:AddLine(L["General information"])
 
 	local oneDate
-	for k, realm in pairs ( yo_AllData) do
+	for k, realm in pairs ( n.allData) do
 		if type( realm) == "table" and k ~= "editHistory" then
 
    			local tkeys = {}
@@ -226,11 +226,11 @@ end
 function Stat:onClick( )
 	isOpen = not isOpen
 	if IsShiftKeyDown() then
-		local myPersonalConfig
-		if yo_AllData[yo.myRealm][yo.myName] and yo_AllData[yo.myRealm][yo.myName].PersonalConfig then
-			myPersonalConfig = true
-		end
-		yo_AllData = nil
+		--local myPersonalConfig
+		--if n.allData[n.myRealm][n.myName] and n.allData[n.myRealm][n.myName].PersonalConfig then
+		--	myPersonalConfig = true
+		--end
+		n.allData = nil
 		newConfigData( myPersonalConfig)
 		print("|cffff0000All data reset.|r")
 	else
@@ -259,7 +259,7 @@ function Stat:Enable()
 	self:SetScript("OnMouseDown", self.onClick)
 
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
 	self:SetWidth( self.Text:GetWidth())
 
 	local ofunc = ChatFrame_DisplayTimePlayed

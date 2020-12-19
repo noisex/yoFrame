@@ -124,7 +124,7 @@ local createSlot = function(id)
 	count:ClearAllPoints()
 	count:SetJustifyH"RIGHT"
 	count:SetPoint("BOTTOMRIGHT", iconFrame, -1, 2)
-	count:SetFont( yo.font, yo.fontsize, "OUTLINE")
+	count:SetFont( n.font, n.fontsize, "OUTLINE")
 	count:SetText(1)
 	frame.count = count
 
@@ -134,7 +134,7 @@ local createSlot = function(id)
 	name:SetPoint("LEFT", frame, 2, 0)
 	name:SetPoint("RIGHT", icon, "LEFT")
 	name:SetNonSpaceWrap(false)
-	name:SetFont( yo.font, yo.fontsize, "OUTLINE")
+	name:SetFont( n.font, n.fontsize, "OUTLINE")
 	frame.name = name
 
 	local drop = frame:CreateTexture(nil, "ARTWORK")
@@ -166,7 +166,7 @@ local anchorSlots = function(self)
 	self:SetHeight( max(shownSlots * iconsize + 8, 20))
 end
 
-title:SetFont( yo.font, yo.fontsize, "OUTLINE")
+title:SetFont( n.font, n.fontsize, "OUTLINE")
 title:SetPoint("TOP", logon, "TOP", 0, 15)
 
 logon:SetScript("OnMouseDown", function(self) if(IsAltKeyDown()) then self:StartMoving() end end)
@@ -321,7 +321,7 @@ end
 
 logon.ADDON_LOADED = function(self, event, logon)
 	if(logon == "Butsu") then
-		--title:SetFont( yo.font, yo.fontsize, "OUTLINE")
+		--title:SetFont( n.font, n.fontsize, "OUTLINE")
 
 		db = setmetatable({}, {__index = defaults})
 

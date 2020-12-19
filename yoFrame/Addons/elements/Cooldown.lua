@@ -114,7 +114,11 @@ local function Timer_OnUpdate(self, elapsed)
 end
 
 local function Timer_Create(self)
-	--print(self:GetParent():GetName())
+
+	if ( not pcall(self.GetCenter, self)) then
+		print( "|cffff0000PIZDA: |r" , self:GetName(), self)
+	end
+
 	local scaler = CreateFrame('Frame', nil, self)
 	scaler:SetAllPoints(self)
 
@@ -137,8 +141,6 @@ local function Timer_Create(self)
 		text:SetJustifyV("CENTER")
 	end
 
-
-
 	timer.text = text
 
 	Timer_OnSizeChanged(timer, scaler:GetSize())
@@ -153,6 +155,9 @@ local function Timer_Start(self, start, duration)
 	--start timer
 	if start > 0 and duration > MIN_DURATION then
 		local timer = self.timer or Timer_Create(self)
+
+		--if not timer then return end
+
 		timer.start = start
 		timer.duration = duration
 		timer.enabled = true
@@ -172,8 +177,13 @@ hooksecurefunc(getmetatable(ActionButton1Cooldown).__index, "SetCooldown", Timer
 local active = {}
 local hooked = {}
 
+n.cd = {}
+n.cd.active = active
+n.cd.hooked = hooked
+
 local function cooldown_OnShow(self)
 	active[self] = true
+	--print(self, self:GetName())
 end
 
 local function cooldown_OnHide(self)
@@ -190,7 +200,7 @@ local function cooldown_Update(self)
 	local action = button.action
 	local start, duration, enable = GetActionCooldown(action)
 	local charges, maxCharges, chargeStart, chargeDuration = GetActionCharges(action)
-
+--print(action)
 	if cooldown_ShouldUpdateTimer(self, start, duration, charges, maxCharges) then
 		Timer_Start(self, start, duration)
 	end

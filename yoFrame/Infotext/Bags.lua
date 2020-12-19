@@ -23,7 +23,7 @@ function Stat:onEvent(event)
 	if free <= 5 then
 		self.Text:SetText( "|cffff0000Bags: ".. free .. "/" .. total)
 	else
-		self.Text:SetText( BAGSLOT .. ": ".. yo.myColorStr .. free .. "/" .. total)
+		self.Text:SetText( BAGSLOT .. ": ".. n.myColorStr .. free .. "/" .. total)
 	end
 	--self:SetWidth( self.Text:GetWidth())
 end
@@ -65,7 +65,7 @@ function Stat:Enable()
 	end)
 
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
 	self:SetWidth( self.Text:GetWidth())
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)

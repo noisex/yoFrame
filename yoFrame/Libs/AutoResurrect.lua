@@ -46,7 +46,7 @@ local classList = {
 }
 
 local body = ""
-local function macroBody(class)
+function n.macroAutoResurectBody(class)
 	body = "/stopcasting\n"
 
 	-- BFA
@@ -82,9 +82,12 @@ end
 local function setupAttribute(self)
 	if InCombatLockdown() then return end
 
-	if classList[yo.myClass] then
-		self:SetAttribute("*type3", "macro")
-		self:SetAttribute("macrotext3", macroBody(yo.myClass))
+	if classList[n.myClass] then
+		local macroAttr, macroButton = n.makeMacroButton( yo.healBotka.res01)
+		self:SetAttribute( macroAttr, "macro")
+		self:SetAttribute( macroButton, n.macroAutoResurectBody(n.myClass))
+		--self:SetAttribute("*type3", "macro")
+		--self:SetAttribute("macrotext3", n.macroAutoResurectBody(n.myClass))
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
 	end
 end
@@ -100,8 +103,8 @@ end
 
 local Disable = function(self)
 
-	self:SetAttribute("*type3", nil)
-	self:UnregisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
+	--self:SetAttribute("*type3", nil)
+	--self:UnregisterEvent("PLAYER_REGEN_ENABLED", setupAttribute, true)
 end
 
 oUF:AddElement("AutoResurrect", nil, Enable, Disable)

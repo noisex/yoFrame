@@ -128,10 +128,9 @@ local function parsespellbook(spellbook)
 
 	for i = 1, _G.MAX_TALENT_TIERS do
 		for j = 1, 3 do
-			local _, name, _, selected = GetTalentInfo( i, j, 1) --, 1, true, "player")
-			if selected then
-				n.spellsBooks[name] = name
-			end
+			local _, name, _, selected, _, spellID = GetTalentInfo( i, j, 1) --, 1, true, "player")
+
+			if selected then n.spellsBooks[name] = name end
 		end
 	end
 
@@ -153,6 +152,7 @@ local function parsespellbook(spellbook)
    				n.spellsBooks[spellName] = spellName
    				n.spellsBooksName[spellName] = spellID
    				n.spellBooksID[spellID] = true
+
    				if cd > 5 then
    					spells[spellID] = cd
    					--print( i, spellID, spellName, cd)

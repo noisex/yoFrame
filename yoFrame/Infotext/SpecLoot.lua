@@ -119,21 +119,21 @@ function Stat:Enable()
 
 	self.Text1:SetHeight( RightInfoPanel:GetHeight())
 	self.Text1:SetPoint("LEFT", self, "LEFT", 25, 0)
-	self.Text1:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text1:SetFont( n.font, n.fontsize, "OVERLAY")
 	self.Text1:SetText("S: ")
 
 	self.Icon1:SetPoint( "LEFT", self.Text1, "RIGHT", 0, 0)
-	self.Icon1:SetTexCoord(unpack( yo.tCoord))
+	self.Icon1:SetTexCoord(unpack( n.tCoord))
 	self.Icon1:SetHeight( RightInfoPanel:GetHeight())
 	self.Icon1:SetWidth( RightInfoPanel:GetHeight())
 
 	self.Text2:SetHeight( RightInfoPanel:GetHeight())
 	self.Text2:SetPoint("LEFT", self.Icon1, "RIGHT", 5, 0)
-	self.Text2:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text2:SetFont( n.font, n.fontsize, "OVERLAY")
 	self.Text2:SetText("L: ")
 
 	self.Icon2:SetPoint( "LEFT", self.Text2, "RIGHT", 0, 0)
-	self.Icon2:SetTexCoord(unpack( yo.tCoord))
+	self.Icon2:SetTexCoord(unpack( n.tCoord))
 	self.Icon2:SetHeight( RightInfoPanel:GetHeight())
 	self.Icon2:SetWidth( RightInfoPanel:GetHeight())
 

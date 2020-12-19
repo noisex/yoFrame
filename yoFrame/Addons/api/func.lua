@@ -5,16 +5,16 @@ local yoEF = n.elemFrames
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs, type, select, unpack, tremove, max
 	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs, type, select, unpack, tremove, max
-local texture, texglow = yo.texture, yo.texglow
+local texture, texglow = n.texture, n.texglow
 
---local yo.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, yo.myName
---	= yo.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, yo.myName
+--local n.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, n.myName
+--	= n.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, n.myName
 
 local GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
 	= GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
 
 function isDruid( self)
-	if yo.myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
+	if n.myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then
 		--self:Hide()
 		return false
 	else
@@ -33,9 +33,13 @@ myDev = {
 }
 
 dprint = function(...)
-	if myDev[yo.myName] then
+	if myDev[n.myName] then
 		print( time(), "|cff33ff99yoDev:|cff999999", ... )
 	end
+end
+
+local CreateStyleR = function( f, size, level, alpha, alphaborder)
+	print(f, size, level, alpha, alphaborder)
 end
 
 -------------------------------------------------------------------------------------------
@@ -138,21 +142,45 @@ function UpdateShadows( r, g, b)
 	end
 end
 
+function n:updateCharacterData( key, value)
 
+end
+
+function n:newCgaracterData( personalConfig)
+	if not n.allData 										then n.allData= {} end
+	if not n.allData.charactersData 						then n.allData.charactersData = {} end
+	if not n.allData.charactersData[n.myRealm] 			then n.allData.charactersData[n.myRealm] = {} end
+	if not n.allData.charactersData[n.myRealm][n.myName] 	then n.allData.charactersData[n.myRealm][n.myName] = {} end
+
+	local myData = n.allData.charactersData[n.myRealm][n.myName]
+
+	myData["Money"] 			= GetMoney()
+	myData["MoneyDay"] 			= date()
+	myData["MoneyTime"]			= time()
+	myData["Class"] 			= n.myClass
+	myData["Race"]				= select(2, UnitRace('player'))
+	myData["Sex"]				= UnitSex('player')
+	myData["Color"] 			= { ["r"] = n.myColor.r, ["g"] = n.myColor.g, ["b"] = n.myColor.b, ["colorStr"] = n.myColor.colorStr}
+	myData["ColorStr"] 			= n.myColorStr
+	myData["WorldBoss"] 		=  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
+	--myData["PersonalConfig"] 	= myData.PersonalConfig or personalConfig
+end
 -----------------------------------------------------------------------------------------------
 
-function checkToClose(...)
+--function checkToClose(...)
 
-	if yoEF.wim 	and yoEF.wim:IsShown() 		then yoEF.wim:Hide() end
-	if yoEF.duLoot 	and yoEF.duLoot:IsShown()	then yoEF.duLoot:Hide() end
-	if yo_BBFrame	and yo_BBFrame.bag 			and  yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
-	if yo_Bags		and yo_Bags.bagFrame 		and  yo_Bags.bagFrame:IsShown() then yo_Bags.bagFrame:Hide() end
-end
+--	if yoEF.wim 	and yoEF.wim:IsShown() 		then yoEF.wim:Hide() end
+--	if yoEF.duLoot 	and yoEF.duLoot:IsShown()	then yoEF.duLoot:Hide() end
+--	if yo_BBFrame	and yo_BBFrame.bag 			and  yo_BBFrame.bag:IsShown()	then yo_BBFrame.bag:Hide() end
+--	if yo_Bags		and yo_Bags.bagFrame 		and  yo_Bags.bagFrame:IsShown() then yo_Bags.bagFrame:Hide() end
+--end
 
-if not ContainerFrame4  then
-	ContainerFrame4 = CreateFrame("Frame", "ContainerFrame4", UIParent)
-	ContainerFrame4:SetPoint("CENTER")
-end
+--if not ContainerFrame14  then
+--	ContainerFrame14 = CreateFrame("Frame", "ContainerFrame14", UIParent)
+--	ContainerFrame14:SetPoint("CENTER")
+--	--ContainerFrame14:SetID(0)
+--	--n.bags:CreateFilterIcon( ContainerFrame14)
+--end
 
 --if (wowtocversion > 90000) then Mixin( f, BackdropTemplateMixin) end
 ----------------------------------------------------------------------------------------
@@ -256,32 +284,30 @@ end
 
 function CreateStyle(f, size, level, alpha, alphaborder)
     if f.shadow then return end
-    local size = size or 2
-    size = max( 1, size + yo.Media.edgeSize)
-
+    local size = size or 0
+    size = max( 3, size + yo.Media.edgeSize)
+    local sSize = yo.Media.bdbSize
 	local style = {
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
 		edgeFile = texglow,
-		--edgeFile = "Interface\\Buttons\\WHITE8x8",
-		--edgeFile = [=[Interface\Addons\yoFrame\Media\blank.tga]=],
-
-		edgeSize = size,
-		--insets = { left = size, right = size, top = size, bottom = size }
-		insets = { left = size, right = size, top = size, bottom = size }
+		edgeSize = sSize,
+		insets = { left = sSize, right = sSize, top = sSize, bottom = sSize }
 	}
 
     local shadow = CreateFrame("Frame", nil, f, BackdropTemplateMixin and "BackdropTemplate")
-    shadow:SetFrameLevel( level or 0)
+    shadow:SetFrameLevel( f:GetFrameLevel() - (level or 1))
     shadow:SetFrameStrata( f:GetFrameStrata())
     shadow:SetPoint("TOPLEFT", f, "TOPLEFT", -size, size)
     shadow:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", size, -size)
     shadow:SetBackdrop( style)
-    local r, g, b = strsplit( ",", yo.Media.shadowColor)
 
-    shadow:SetBackdropColor(.075,.075,.086, alpha or 1)
-	shadow:SetBackdropBorderColor( r, g, b, alphaborder or 1)	--(0, 0, 0, alphaborder or 1)
+    local r, g, b = strsplit( ",", yo.Media.bdColor)
+    shadow:SetBackdropColor( r, g, b, alpha or yo.Media.bdAlpha)
+
+    local r, g, b = strsplit( ",", yo.Media.bdbColor)
+	shadow:SetBackdropBorderColor( r, g, b, alphaborder or yo.Media.bdbAlpha)
     f.shadow = shadow
-    tinsert( n["shadows"], f.shadow)
+    tinsert( n.shadows, f.shadow)
     return shadow
 end
 
@@ -304,9 +330,14 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
     shadow:SetPoint("TOPLEFT", -size, size)
     shadow:SetPoint("BOTTOMRIGHT", size, -size)
     shadow:SetBackdrop(style)
-    shadow:SetBackdropColor(.07,.07,.07, alpha or 0.9)
-	shadow:SetBackdropBorderColor(0, 0, 0, alphaborder or 1)
-	tinsert( n["shadows"], f.shadow)
+
+    local r, g, b = strsplit( ",", yo.Media.bdColor)
+    shadow:SetBackdropColor( r, g, b, alpha or yo.Media.bdAlpha)
+
+    local r, g, b = strsplit( ",", yo.Media.bdbColor)
+	shadow:SetBackdropBorderColor( r, g, b, alphaborder or yo.Media.bdbAlpha)
+
+	tinsert( n.shadows, f.shadow)
     f.shadow = shadow
     return shadow
 end
@@ -327,7 +358,7 @@ function CreatePanel(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	})
 	f:SetBackdropColor(.07,.07,.07, alpha or .9)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
-	--if yo.Media.classBorder then r, g, b = yo.myColor.r, yo.myColor.g, yo.myColor.b end
+	--if yo.Media.classBorder then r, g, b = n.myColor.r, n.myColor.g, n.myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0)	--(.15,.15,.15, alphaborder  or 0)
 	--table.insert( n["shadows"], f)
 	return f
@@ -363,7 +394,48 @@ function SimpleBackground(f, w, h, a1, p, a2, x, y, alpha, alphaborder)
 	})
 	f:SetBackdropColor(.07,.07,.07, alpha or 0.9)
 	local r, g, b = strsplit( ",", yo.Media.shadowColor)
-	--if yo.Media.classBorder then r, g, b = yo.myColor.r, yo.myColor.g, yo.myColor.b end
+	--if yo.Media.classBorder then r, g, b = n.myColor.r, n.myColor.g, n.myColor.b end
 	f:SetBackdropBorderColor( r, g, b, alphaborder or 0) --(0, 0, 0, alphaborder or 1)
 	--table.insert( n["shadows"], f)
 end
+
+-------------------------------------------------------------------------------------------
+-- 						ADD API
+-------------------------------------------------------------------------------------------
+local function addAPI(object)
+	local mt = getmetatable(object).__index
+	if not object.createStyle 		then mt.createStyle 		= CreateStyle end
+	if not object.frame1px 			then mt.frame1px 			= frame1px end
+	if not object.createStyleSmall 	then mt.createStyleSmall 	= CreateStyleSmall end
+	if not object.kill 				then mt.kill 				= Kill end
+	--if not object.SetTemplate then mt.SetTemplate = SetTemplate end
+	--if not object.CreatePanel then mt.CreatePanel = CreatePanel end
+	--if not object.CreateBackdrop then mt.CreateBackdrop = CreateBackdrop end
+	--if not object.StripTextures then mt.StripTextures = StripTextures end
+	--if not object.StyleButton then mt.StyleButton = StyleButton end
+	--if not object.SkinButton then mt.SkinButton = SkinButton end
+	--if not object.SkinIcon then mt.SkinIcon = SkinIcon end
+	--if not object.FontString then mt.FontString = FontString end
+	--if not object.FadeIn then mt.FadeIn = FadeIn end
+	--if not object.FadeOut then mt.FadeOut = FadeOut end
+end
+
+local handled = {["Frame"] = true}
+local object = CreateFrame("Frame")
+addAPI(object)
+addAPI(object:CreateTexture())
+addAPI(object:CreateFontString())
+
+object = EnumerateFrames()
+while object do
+	if not object:IsForbidden() and not handled[object:GetObjectType()] then
+		addAPI(object)
+		handled[object:GetObjectType()] = true
+	end
+
+	object = EnumerateFrames(object)
+end
+
+-- Hacky fix for issue on 7.1 PTR where scroll frames no longer seem to inherit the methods from the "Frame" widget
+local scrollFrame = CreateFrame("ScrollFrame")
+addAPI(scrollFrame)

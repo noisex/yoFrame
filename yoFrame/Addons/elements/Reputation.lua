@@ -109,7 +109,7 @@ end
 local function Experience( f)
 	if not f then return end
 	local Experience = CreateFrame('StatusBar', nil, f)
-	Experience:SetStatusBarTexture( texture)
+	Experience:SetStatusBarTexture( n.texture)
 	Experience:SetPoint('CENTER', yoMoveExperience, 'CENTER', 0, 0)
 	Experience:SetStatusBarColor(.901, .8, .601)
 	Experience:EnableMouse(true)
@@ -117,7 +117,7 @@ local function Experience( f)
 	Experience:SetOrientation("VERTICAL")
 	Experience:SetFrameLevel(3)
 	table.insert( n.statusBars, Experience)
-	CreateStyle(Experience)
+	CreateStyle(Experience, 3)
 
 	f.Experience = Experience
 end

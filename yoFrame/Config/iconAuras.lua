@@ -151,7 +151,7 @@ function n.createAuraIcon( parent, index)
 	button:SetWidth( size)
 	button:SetHeight( size)
 
-	parent.timerPosition= parent.timerPosition or "BOTTOM"
+	parent.timerPos 	= parent.timerPos or "BOTTOM"
 	button.unit 		= parent.unit
 	button.countGlow 	= parent.countGlow
 	button.countFilter 	= parent.countFilter
@@ -169,19 +169,22 @@ function n.createAuraIcon( parent, index)
 	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
 	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
 	--button.icon:SetGradient("VERTICAL", 1, 1, 1, 1, 0, 0);
-	button.icon:SetTexCoord( unpack( yo.tCoord))
+	button.icon:SetTexCoord( unpack( n.tCoord))
 
 	button.count = button:CreateFontString(nil, "OVERLAY")
-	button.count:SetFont( yo.fontpx, max( 10, size / 1.9), "THINOUTLINE")
+	button.count:SetFont( n.fontpx, max( 10, size / 1.9), "THINOUTLINE")
 	button.count:SetShadowOffset(1, -1)
 	button.count:SetTextColor( 0, 1, 0)
 
 	button.timer = button:CreateFontString(nil, "OVERLAY")
-	button.timer:SetFont( yo.fontpx, max( 10, size / 1.9), "OUTLINE")
+	button.timer:SetFont( n.fontpx, max( 10, size / 1.9), "OUTLINE")
 	button.timer:SetShadowColor(0, 0, 0, 0.5)
 	button.timer:SetShadowOffset( 1, -1)
 
-	if parent.timerPosition == "BOTTOM" then
+	--button.cd = CreateFrame('Cooldown', nil, button, 'CooldownFrameTemplate') --'$parentCooldown'
+	--button.cd:SetAllPoints()
+
+	if parent.timerPos == "BOTTOM" then
 		button.count:SetPoint("TOPRIGHT", button, "TOPRIGHT", 6, 6)
 		button.timer:SetPoint("CENTER", button, "BOTTOM", 2, 0)
 	else
@@ -223,7 +226,7 @@ function n.createAuraIcon( parent, index)
 	if button.countColor then
 		button.countColor = button:CreateTexture(nil, "OVERLAY")
 		button.countColor:SetAllPoints( button)
-		button.countColor:SetTexture( yo.texture)  --texhl
+		button.countColor:SetTexture( n.texture)  --texhl
 		button.countColor:SetBlendMode("ADD")
 		button.countColor:SetColorTexture( 1, 0, 0, 1) -- SetColorTexture SetVertexColor
 		button.countColor:SetAlpha( 0)
@@ -259,6 +262,15 @@ function n.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 	button.tick 			= 1
 
 	button.timer:SetTextColor( button.timerDefCol[1], button.timerDefCol[2], button.timerDefCol[3])
+
+	if button.cd then
+		if(duration and duration > 0) then
+			button.cd:SetCooldown(expirationTime - duration, duration)
+			button.cd:Show()
+		else
+			button.cd:Hide()
+		end
+	end
 
 	if button.color then
 		button.icon:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\plain_white.tga")--texture)

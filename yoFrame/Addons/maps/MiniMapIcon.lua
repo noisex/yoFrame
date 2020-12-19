@@ -120,7 +120,7 @@ local function CreateMiniMapFrame(self)
 		self.CloseButton = CloseButton
 
 		local Text = CloseButton:CreateFontString(nil,"OVERLAY",CloseButton)
-		Text:SetFont( yo.font, 10, "OUTLINE")
+		Text:SetFont( n.font, 10, "OUTLINE")
 		Text:SetText("<\n<")
 		Text:SetPoint("CENTER")
 		self.Text = Text

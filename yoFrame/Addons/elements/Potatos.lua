@@ -300,7 +300,7 @@ local function CreatePotatos( f)
 	f.icon = f:CreateTexture(nil, "BORDER")
 	f.icon:SetAllPoints()
 	f.icon:SetPoint( "CENTER", f)
-	f.icon:SetTexCoord(unpack( yo.tCoord))
+	f.icon:SetTexCoord(unpack( n.tCoord))
 
 	f.outerGlow = f:CreateTexture( "OuterGlow", "BORDER")
 	f.outerGlow:SetPoint("CENTER", f)
@@ -314,15 +314,15 @@ local function CreatePotatos( f)
 	f.overlay:SetFrameLevel(3)
 
 	f.tName = f.overlay:CreateFontString(nil, "OVERLAY")
-	f.tName:SetFont( yo.font, yo.fontsize +4, "OUTLINE")
+	f.tName:SetFont( n.font, n.fontsize +4, "OUTLINE")
 	f.tName:SetPoint("TOP", f, "BOTTOM", 0, -4)
 
 	f.tTimer = f.overlay:CreateFontString(nil, "OVERLAY")
-	f.tTimer:SetFont( yo.fontpx, yo.fontsize+15, "OUTLINE")
+	f.tTimer:SetFont( n.fontpx, n.fontsize+15, "OUTLINE")
 	f.tTimer:SetPoint("CENTER", f, "CENTER", 0, 0)
 
 	f.tCount = f.overlay:CreateFontString(nil, "OVERLAY")
-	f.tCount:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
+	f.tCount:SetFont( n.fontpx, n.fontsize, "OUTLINE")
 	f.tCount:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -0, 0)
 	--f.tCount:SetText( ( GetItemCount( f.itemID) or 0))
 	f.tCount:SetTextColor( 0, 0.5, 1, 0.7)
@@ -339,7 +339,7 @@ local function CreatePotatos( f)
 
 	f.blframe = CreateFrame("Frame", nil, f)
 	f.blframe.tBl = f.blframe:CreateFontString(nil, "OVERLAY")
-	f.blframe.tBl:SetFont( yo.font, yo.fontsize + 2, "OUTLINE")
+	f.blframe.tBl:SetFont( n.font, n.fontsize + 2, "OUTLINE")
 	f.blframe.tBl:SetPoint("BOTTOM", f, "TOP", 0, 10)
 
 	f.blframe.outerGlow = f.blframe:CreateTexture( "OuterGlow", "BORDER")
@@ -382,7 +382,7 @@ local potatos = CreateFrame("Frame", "yo_Potatos", UIParent)
 		C_ChatInfo.RegisterAddonMessagePrefix("D4") -- DBM
 
 		--if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
-		CreateAnchor("yoMovePotatos", 		"Move Potatos", 40, 40, 100, 0, "LEFT", "RIGHT", LeftDataPanel)
+		n.moveCreateAnchor("yoMovePotatos", 		"Move Potatos", 40, 40, 100, 0, "LEFT", "RIGHT", LeftDataPanel)
 		CreatePotatos( self)
 		initPotatos( self)
 	end)

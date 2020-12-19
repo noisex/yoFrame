@@ -22,7 +22,7 @@ end
 
 local CreateFS = function(frame, font, fsize, fstyle)
 	local fstring = frame:CreateFontString(nil, "OVERLAY")
-	fstring:SetFont( font or yo.font, fsize or yo.fontsize -1, "OUTLINE")
+	fstring:SetFont( font or n.font, fsize or n.fontsize -1, "OUTLINE")
 	fstring:SetShadowOffset(1 and 1 or 0, 1 and -1 or 0)
 	return fstring
 end
@@ -105,7 +105,7 @@ local createBar = function( self, index)
 	bar.left:SetJustifyH("LEFT")
 	bar.left:SetSize(186 - 10, 20)
 
-	bar.right = CreateFS(bar, yo.fontpx, yo.fontsize + 6)
+	bar.right = CreateFS(bar, n.fontpx, n.fontsize + 6)
 	bar.right:SetPoint("RIGHT", 1, 0)
 	bar.right:SetJustifyH("RIGHT")
 	bar.right:SetTextColor( 0.8, 0.8, 0.2, 1)
@@ -212,7 +212,7 @@ local OnEvent = function(self, event, ...)
 	end
 end
 
-CreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 27, 250, "LEFT", "LEFT")
+n.moveCreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 27, 250, "LEFT", "LEFT")
 
 local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
 RaidCDAnchor:SetPoint("BOTTOM", "yoMoveRaidCD")

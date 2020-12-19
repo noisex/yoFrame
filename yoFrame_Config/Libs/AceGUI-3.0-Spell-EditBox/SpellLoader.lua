@@ -8,10 +8,18 @@ if( not SpellLoader ) then return end
 SpellLoader.predictors = SpellLoader.predictors or {}
 SpellLoader.spellList = SpellLoader.spellList or {}
 SpellLoader.spellsLoaded = SpellLoader.spellsLoaded or 0
+SpellLoader.spellType = SpellLoader.spellType or {}
 
 local SPELLS_PER_RUN = 500
 local TIMER_THROTTLE = 0.10
-local spells, predictors = SpellLoader.spellList, SpellLoader.predictors
+local spells, predictors, spellType = SpellLoader.spellList, SpellLoader.predictors, SpellLoader.spellType
+local typesType = {
+	["buff"] 	= "Бафф ",
+	["debuff"] 	= "Дебафф ",
+	["ability"] = "Умелка ",
+	["totem"] 	= "Тотем ",
+	["talent"]	= "Талант ",
+}
 
 function SpellLoader:RegisterPredictor(frame)
 	self.predictors[frame] = true
@@ -24,16 +32,23 @@ end
 function SpellLoader:StartLoading()
 	_, yo, n = unpack( _G["yoFrame"])
 
-	for spellID,v in pairs( n.spellBooksID) do
+	for spellID, types in pairs( n.allPlayerSpell) do  --allPlayerSpell  --spellBooksID
 		local name, rank, icon = GetSpellInfo(spellID)
 
 		spells[spellID] = string.lower(name)
+
+		local sType = ""
+		for k, ss in pairs( types) do
+			sType = sType .. ( typesType[k] or " ")
+		end
+
+		spellType[spellID] = sType
 		SpellLoader.spellsLoaded = i
 	end
 
 	if true then return	end
 
-	--spells = n.spellBooksID
+	---------spells = n.spellBooksID
 
 	if( self.loader ) then return end
 
@@ -83,7 +98,7 @@ function SpellLoader:StartLoading()
 				totalInvalid = totalInvalid + 1
 			end
 		end
-
+--print(totalInvalid)
 		-- Every ~1 second it will update any visible predictors to make up for the fact that the data is delay loaded
 		if( currentIndex % 5000 == 0 ) then
 			for predictor in pairs(predictors) do
@@ -92,7 +107,6 @@ function SpellLoader:StartLoading()
 				end
 			end
 		end
-
 
 		-- Increment and do it all over!
 		currentIndex = currentIndex + SPELLS_PER_RUN

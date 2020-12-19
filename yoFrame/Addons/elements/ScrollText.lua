@@ -66,7 +66,7 @@ local function CreateSBT( self)
 	sbtD:SetMaxLines( 25)
 	sbtD:SetFading( true)
 
-	sbtD:SetFont( yo.font, yo.fontsize + 8, "OUTLINE")
+	sbtD:SetFont( n.font, n.fontsize + 8, "OUTLINE")
 	sbtD:SetShadowColor( 0.3, 0.3, 0.3, 1)
 	sbtD:SetShadowOffset( 1, -1)
 	sbtD:SetJustifyH("LEFT")
@@ -77,7 +77,7 @@ local function CreateSBT( self)
 	sbtH:SetMaxLines( 25)
 	sbtH:SetFading( true)
 
-	sbtH:SetFont( yo.font, yo.fontsize + 8, "OUTLINE")
+	sbtH:SetFont( n.font, n.fontsize + 8, "OUTLINE")
 	sbtH:SetShadowColor( 0.3, 0.3, 0.3, 1)
 	sbtH:SetShadowOffset( 1, -1)
 	sbtH:SetJustifyH("RIGHT")
@@ -144,7 +144,7 @@ end
 local function CombatLogEvent( self, ...)
 	local sourceName = select( 5, ...)
 
-	if sourceName == yo.myName or sourceName == myPet then
+	if sourceName == n.myName or sourceName == myPet then
 		local subEvent = select( 2, ...)
 
 		if subEvent == "SPELL_DAMAGE"
@@ -192,7 +192,7 @@ local function OnEvent( self, event, ...)
 
 		if not yo.Addons.stbEnable then return end
 
-		CreateAnchor("yoMoveSBT",			"Move Combat Text", 150, 205,	300, -100, 	"CENTER", "CENTER")
+		n.moveCreateAnchor("yoMoveSBT",			"Move Combat Text", 150, 205,	300, -100, 	"CENTER", "CENTER")
 		CreateSBT( self)
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")

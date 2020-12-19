@@ -8,8 +8,8 @@ local L, yo, n = ns[1], ns[2], ns[3]
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, CreateStyleSmall, type, print, tinsert, UnitClass, GetColors
-	= CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, CreateStyleSmall, type, print, tinsert, UnitClass, GetColors
+local CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, CreateStyleSmall, type, print, tinsert, UnitClass, GetColors, Kill, SetUpAnimGroup
+	= CreateFrame, CreateStyle, InCombatLockdown, IsAddOnLoaded, tostring, CreateStyleSmall, type, print, tinsert, UnitClass, GetColors, Kill, SetUpAnimGroup
 
 local UnitSpecific = {
 	player = function(self)
@@ -23,7 +23,7 @@ local UnitSpecific = {
 
 local PostIconUpdate = function( self, button)
 	if not button.shadow then
-		button.icon:SetTexCoord( unpack( yo.tCoord))
+		button.icon:SetTexCoord( unpack( n.tCoord))
 		CreateStyle( button, 4)
 	end
 end
@@ -92,7 +92,6 @@ local function raidShared(self, unit)
 	n.importUnitsAPI( self)
 
 	self:RegisterForClicks("AnyUp")
-	--self.qwert = qwert
 
 	CreateStyleSmall(self, 1)
 
@@ -102,9 +101,9 @@ local function raidShared(self, unit)
 	local posAuras		= {'LEFT', self, 'RIGHT', 12, 0}
 	local posRCheck		= {'RIGHT', self, 'RIGHT', -15, 0}
 	local posAuraTank	= { "LEFT", self, "LEFT", 5, 0}
-	local sizeInfoFont 	= yo.fontsize
-	local sizeLFDFont 	= yo.fontsize - 1
-	local sizeDeadFont 	= yo.fontsize - 1
+	local sizeInfoFont 	= n.fontsize
+	local sizeLFDFont 	= n.fontsize - 1
+	local sizeDeadFont 	= n.fontsize - 1
 	local sizeRTarget	= 16
 	local sizeResurrect	= 25
 	local enablePower	= true
@@ -128,14 +127,15 @@ local function raidShared(self, unit)
 	local anchTankAura 	= "CENTER"
 	local hpBarVertical = yo.Raid.hpBarVertical
 	local hpBarRevers	= yo.Raid.hpBarRevers
+	local showBorder
 
 	if yo.Raid.raidTemplate == 2 then
-		posInfo			= {"LEFT", self, "RIGHT", 12, 0}
+		posInfo			= {"LEFT",  self, "RIGHT", 12, 0}
 		posDead 		= {"RIGHT", self, "RIGHT", -8, 1}
 		posLFD			= {"RIGHT", self, "RIGHT", -1, 0}
-		posRCheck		= {'RIGHT', self, 'RIGHT', -25, 0}
-		sizeInfoFont 	= yo.fontsize + 2
-		sizeLFDFont 	= yo.fontsize - 3
+		posRCheck		= {"RIGHT", self, "RIGHT", -25, 0}
+		sizeInfoFont 	= n.fontsize + 2
+		sizeLFDFont 	= n.fontsize - 3
 		sizeRTarget		= 12
 		sizeResurrect	= 16
 		enablePower		= false
@@ -150,12 +150,14 @@ local function raidShared(self, unit)
 		enableAbsorb	= false
 		enableLFD		= false
 		enableAuras		= true
-		CustomFilter 	= nil
+		CustomFilter 	= funcWhiteList
 		outsideAlpha	= 0.5
 		frameWidth		= 90
 		frameHeight		= 40
 		anchTankAura 	= "CENTER"
 		showBorder 		= "border"
+		hpBarVertical 	= yo.healBotka.hpBarVertical
+		hpBarRevers		= yo.healBotka.hpBarRevers
 
 		if unit == "raid" then
 			sizeAuras 		= 14
@@ -166,7 +168,7 @@ local function raidShared(self, unit)
 			growAuraTank 	= "LEFT"
 			posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -1, -3}
 
-			CustomFilter 	= funcWhiteList --funcBlackList
+			CustomFilter 	= funcBlackList -- funcWhiteList --funcBlackList
 		end
 
 		CreateStyleSmall( self.shadow, yo.healBotka.borderS and 2 or 1)
@@ -195,12 +197,12 @@ local function raidShared(self, unit)
 		enableAbsorb	= true
 		numAuras		= 3
 		spacingAuras	= 2
-		sizeInfoFont	= yo.fontsize
+		sizeInfoFont	= n.fontsize
 		initialAnchor 	= "RIGHT"
 		growthX 		= 'LEFT'
 		sizeAuras 		= self:GetHeight() * 0.7
 		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -2, -2}
-		CustomFilter	= funcBlackList --funcWhiteList
+		CustomFilter	= funcWhiteList --funcBlackList
 		frameHeight 	= yo.Raid.heightMT
 		frameWidth 		= yo.Raid.widthMT
 		posAuraTank		= { "LEFT", self, "LEFT", 3, -5}
@@ -217,8 +219,8 @@ local function raidShared(self, unit)
 			enableDeHight 	= false
 			enableIcons 	= false
 			enablePower		= false
-			sizeInfoFont	= yo.fontsize - 1
-			sizeDeadFont 	= yo.fontsize - 1
+			sizeInfoFont	= n.fontsize - 1
+			sizeDeadFont 	= n.fontsize - 1
 		end
 		if self.unitTT then
 			enableDeHight 	= false
@@ -228,8 +230,8 @@ local function raidShared(self, unit)
 			enableBorder 	= false
 			enableIcons 	= false
 			enablePower		= false
-			sizeInfoFont	= yo.fontsize - 1
-			sizeDeadFont 	= yo.fontsize - 1
+			sizeInfoFont	= n.fontsize - 1
+			sizeDeadFont 	= n.fontsize - 1
 		end
 	end
 
@@ -244,12 +246,12 @@ local function raidShared(self, unit)
 	self.Health:SetAllPoints( self)
 	self.Health:SetWidth( self:GetWidth())
 	self.Health:SetFrameLevel(1)
-	self.Health:SetStatusBarTexture( texture)
+	self.Health:SetStatusBarTexture( n.texture)
 	tinsert( n.statusBars, self.Health)
 
 	self.Health.hbg = self.Health.hbg or self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
-	self.Health.hbg:SetTexture( texture)
+	self.Health.hbg:SetTexture( n.texture)
 
 	if hpBarRevers 	 then self.Health:SetFillStyle( 'REVERSE'); end
 	if hpBarVertical then self.Health:SetOrientation( 'VERTICAL') 	end
@@ -278,15 +280,15 @@ local function raidShared(self, unit)
 		self.Range.PostUpdate = function(object, self, inRange, checkedRange, connected)
 			if connected then
 				if checkedRange and not inRange then
-					self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
+					--self.Health.hbg:SetAlpha( self.Range.outsideAlpha) --.Health.hbg:SetAlpha(0)
 					self.shadow:SetBackdropColor( .075,.075,.086, self.shadowAlpha)
 				else
-					self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
+					--self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(0)
 					self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
 		--			--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 				end
 			else
-				self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
+				--self.Health.hbg:SetAlpha( self.Range.insideAlpha) --.Health.hbg:SetAlpha(1)
 				self.shadow:SetBackdropColor( .075,.075,.086, 0.9)
 		--		--self.shadow:SetAlpha(0.9) --( self.Range.insideAlpha)
 			end
@@ -311,11 +313,12 @@ local function raidShared(self, unit)
 
 	if enablePower then
 		self.Power = self.Power or CreateFrame("StatusBar", nil, self)
+		self.Power:ClearAllPoints()
 		self.Power:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
-		self.Power:SetStatusBarTexture( texture)
+		self.Power:SetStatusBarTexture( n.texture)
 		self.Power:SetFrameStrata( "MEDIUM")
 		self.Power:SetWidth( self:GetWidth() - 6)
-		self.Power:SetHeight( 2)
+		self.Power:SetHeight( 1)
 		tinsert( n.statusBars, self.Power)
 
 		self.Power:SetFrameLevel(10)
@@ -329,8 +332,9 @@ local function raidShared(self, unit)
 		self.Power:Hide()
 
 		self.Power.bg = self.Power.bg or self.Power:CreateTexture(nil, "BORDER")
+		self.Power.bg:ClearAllPoints()
 		self.Power.bg:SetAllPoints(self.Power)
-		self.Power.bg:SetTexture( texture)
+		self.Power.bg:SetTexture( n.texture)
 		self.Power.bg:SetAlpha(1)
 		self.Power.bg.multiplier = 0.2
 		CreateStyle( self.Power, 1)
@@ -347,7 +351,7 @@ local function raidShared(self, unit)
 
 	self.Info = self.Info or self.Overlay:CreateFontString( nil, "OVERLAY")
 	self.Info:SetPoint( unpack( posInfo))
-	self.Info:SetFont( yo.font, sizeInfoFont, "OUTLINE")
+	self.Info:SetFont( n.font, sizeInfoFont, "OUTLINE")
 	--self.Info:SetShadowOffset( 1, -1)
 	--self.Info:SetShadowColor( 0, 0, 0, 1)
 	tinsert( n.strings, self.Info)
@@ -357,7 +361,7 @@ local function raidShared(self, unit)
 
 		if yo.Raid.showValueTreat and ( not self.unitTT or self.unitT) then
 			self.threat = self.threat or self.Overlay:CreateFontString(nil, "OVERLAY")
-			self.threat:SetFont( yo.fontpx, yo.fontsize +1)--, "THINOUTLINE")
+			self.threat:SetFont( n.fontpx, n.fontsize +1)--, "THINOUTLINE")
 			self.threat:SetShadowOffset( 1, -1)
 			self.threat:SetPoint("BOTTOMLEFT", self.Overlay, "BOTTOMLEFT", 3, 2)
 			tinsert( n.strings, self.threat)
@@ -409,7 +413,7 @@ local function raidShared(self, unit)
 	end
 
 	self.DeadText = self.DeadText or self.Overlay:CreateFontString(nil ,"OVERLAY")
-	self.DeadText:SetFont( yo.font, sizeDeadFont -3)
+	self.DeadText:SetFont( n.font, sizeDeadFont -3)
 	self.DeadText:SetPoint( unpack( posDead))
 	self.DeadText:SetShadowOffset( 1, -1)
 	self.DeadText:SetShadowColor( 0, 0, 0, 1)
@@ -418,7 +422,7 @@ local function raidShared(self, unit)
 
 	if unit == "raid" and yo.Raid.showGroupNum and ( not self.unitTT or self.unitT) then
 		self.rText = self.rText or self.Overlay:CreateFontString(nil ,"OVERLAY")
-		self.rText:SetFont( yo.fontpx, yo.fontsize, "OUTLINE")
+		self.rText:SetFont( n.fontpx, n.fontsize, "OUTLINE")
 		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -4)
 		tinsert( n.strings, self.rText)
 		self:Tag(self.rText, "[GetNameColor][group]")
@@ -451,14 +455,14 @@ local function raidShared(self, unit)
 		self.Debuffs.CustomFilter 	= CustomFilter
 
 		self.Debuffs.PostCreateIcon = function( self, button)
-			button.icon:SetTexCoord( unpack( yo.tCoord))
+			button.icon:SetTexCoord( unpack( n.tCoord))
 			button.timerPos = { "TOP", button, "BOTTOM", 0, -3}
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
 			button.count:ClearAllPoints()
 			button.count:SetPoint( "CENTER", button, "TOPRIGHT", -3, -3)
 			local fn, fs, fd = button.count:GetFont()
-			button.count:SetFont( yo.fontpx, fs+2)
+			button.count:SetFont( n.fontpx, fs+2)
 			button.count:SetTextColor(1, 1, 0, 1)
 			if sizeAuras >= 30 then
 				n.CreateBorder( button, sizeAuras / 3)
@@ -472,7 +476,7 @@ local function raidShared(self, unit)
 		end
 	end
 
-	if yo.Raid.raidTemplate == 3 or unit == "tank" then
+	if yo.Raid.raidTemplate == 3 or ( unit == "tank" and not self.unitTT) then
 		self.Buffs = self.Buffs or CreateFrame('Frame', nil, self)
 		self.Buffs:SetPoint( unpack( posAuraTank))
 		self.Buffs:SetFrameLevel( 100)
@@ -498,7 +502,7 @@ local function raidShared(self, unit)
    		self.Buffs.tankOverlay.anim.fadeout:SetDuration( 1)
 
 		self.Buffs.PostCreateIcon = function( self, button)
-			button.icon:SetTexCoord( unpack( yo.tCoord))
+			button.icon:SetTexCoord( unpack( n.tCoord))
 			--button.icon:ClearAllPoints()
 			button.cd.timerPos 	= { 'CENTER', button.cd, 'BOTTOM', 0, 2}
 			--button.cd.timerPos1 	= { 'RIGHT', button.cd, 'BOTTOMRIGHT', 0, 2}
@@ -528,10 +532,9 @@ local function raidShared(self, unit)
 	------------------------------------------------------------------------------------------------------
 	if enableDeHight then self.addDebuffHigh( self) end
 
-
 	if yo.healBotka.hEnable and unit ~= "tank" then self:addBuffHost()	end
 
-	if yo.healBotka.enable  then
+	if yo.healBotka.enable and unit ~= "tank" then
 		self:addQliqueButton()
 		self:HookScript("OnEnter", self.frameOnEnter)
 		self:HookScript("OnLeave", self.frameOnLeave)
@@ -563,8 +566,8 @@ local function CreateTempStyle(f, size, level, alpha, alphaborder)
     if f.shadowMove then return end
 
 	local style = {
-		bgFile =  yo.texture,
-		edgeFile = yo.texglow,
+		bgFile =  n.texture,
+		edgeFile = n.texglow,
 		edgeSize = 4,
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	}
@@ -592,7 +595,7 @@ local function CreateMovier(frame, f)
 	movePartyFrame:SetMovable(true)
 	movePartyFrame:RegisterForDrag("LeftButton", "RightButton")
 	movePartyFrame:ClearAllPoints()
-	movePartyFrame:SetPoint( yoMoveRaid:GetPoint())
+	movePartyFrame:SetPoint( n.moveFrames.yoMoveRaid:GetPoint())
 	movePartyFrame:SetWidth( frame:GetWidth() + delta * 2)
 	movePartyFrame:SetHeight( frame:GetHeight() + delta * 2)
 
@@ -604,23 +607,23 @@ local function CreateMovier(frame, f)
 
 	movePartyFrame:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
-		yoMoveRaid:ClearAllPoints()
-		yoMoveRaid:SetPoint( self:GetPoint())
-		SetAnchPosition( yoMoveRaid, self)
+		n.moveFrames.yoMoveRaid:ClearAllPoints()
+		n.moveFrames.yoMoveRaid:SetPoint( self:GetPoint())
+		n.setAnchPosition( n.moveFrames.yoMoveRaid, self)
 	end)
 
 	movePartyFrame:SetScript("OnShow", function(self)
 		if InCombatLockdown() then return end
 
 		self:ClearAllPoints()
-		self:SetPoint( yoMoveRaid:GetPoint())
+		self:SetPoint( n.moveFrames.yoMoveRaid:GetPoint())
 	end)
 
 	movePartyFrame:SetScript("OnHide", function(self)
 		if InCombatLockdown() then return end
 
-		yoMoveRaid:ClearAllPoints()
-		yoMoveRaid:SetPoint( self:GetPoint())
+		n.moveFrames.yoMoveRaid:ClearAllPoints()
+		n.moveFrames.yoMoveRaid:SetPoint( self:GetPoint())
 	end)
 
 	frame:SetScript("OnSizeChanged", function(self, w, h)
@@ -648,8 +651,8 @@ end
 ---										MAKE RAID/PARTY FRAMES
 ------------------------------------------------------------------------------------------------------
 --   groupheader:SetFrameRef("clickcast_header", addon.header)
-CreateAnchor("yoMoveRaid", 	"Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
-CreateAnchor("yoMoveTanks", "Move Raid Tanks Frame", 200, 55, 5, 400, 	"TOPLEFT", "BOTTOMLEFT")
+n.moveCreateAnchor("yoMoveRaid", 	"Move Raid Party Frame", 520, 170, 10, -10, "TOPLEFT", "TOPLEFT")
+n.moveCreateAnchor("yoMoveTanks", "Move Raid Tanks Frame", 200, 55, 5, 450, 	"TOPLEFT", "BOTTOMLEFT")
 
 local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -685,8 +688,8 @@ logan:SetScript("OnEvent", function(self, event)
 	end
 	ShowPartyFrame = n.dummy
 	HidePartyFrame = n.dummy
-	CompactUnitFrameProfiles_ApplyProfile = n.dummy
-	CompactRaidFrameManager_UpdateShown = n.dummy
+	CompactUnitFrameProfiles_ApplyProfile 	= n.dummy
+	CompactRaidFrameManager_UpdateShown 	= n.dummy
 	CompactRaidFrameManager_UpdateOptionsFlowContainer = n.dummy
 
 	oUF:RegisterStyle("Raid", raidShared)
@@ -822,7 +825,7 @@ logan:SetScript("OnEvent", function(self, event)
             		self:SetScale(%d)
             	]]):format( widthMT, heightMT, 1)
 			)
-			mt:SetPoint("BOTTOMLEFT", yoMoveTanks, "BOTTOMLEFT", 0, 0)
+			mt:SetPoint("BOTTOMLEFT", n.moveFrames.yoMoveTanks, "BOTTOMLEFT", 0, 0)
 		end
 	end)
 end)

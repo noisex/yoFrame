@@ -85,7 +85,7 @@ local badClassTypes = {
 	["DEMONHUNTER"]	=	{},
 }
 
-local badTypes = classDispell and badClassTypes[yo.myClass] or badClassTypes["HUNTER"]
+local badTypes = classDispell and badClassTypes[n.myClass] or badClassTypes["HUNTER"]
 
 local badMobes = {
 	--[130771] = true,	--	Дамми у ханта
@@ -118,7 +118,7 @@ local treatColor = {
 
 local br, bg, bb = strsplit( ",", yo.Media.shadowColor)
 if yo.Media.classBorder then
-	br, bg, bb = yo.myColor.r, yo.myColor.g, yo.myColor.b
+	br, bg, bb = n.myColor.r, n.myColor.g, n.myColor.b
 end
 DebuffTypeColor.none = { r = br, g = bg, b = bb}
 
@@ -160,9 +160,9 @@ local function updateBuffs(self)
 			--elseif spellID == 277242 then showGuune = true
 
 			elseif ( filter == "HELPFUL" and not isPlayer and not n.blackSpells[spellID]) then
-
+				--true then
 				if dissIcons ~= "none"	or iDisp > 2 then
-					if ( dissIcons == "dispell" and badClassTypes[yo.myClass][debuffType])
+					if ( dissIcons == "dispell" and badClassTypes[n.myClass][debuffType])
 						or ( dissIcons == "all" and debuffType) then
 
 						local aIcon = n.createAuraIcon( self.disIcons, iDisp)
@@ -261,7 +261,7 @@ local function updateName( self)
 			r, g, b = color.r, color.g, color.b
 		end
 
-		if level == UnitLevel( "player") then --yo.myLevel then
+		if level == UnitLevel( "player") then --n.myLevel then
 			level = ""
 		end
 
@@ -441,16 +441,19 @@ local function updateAll(self, event, unit)
 			self.Castbar:ForceUpdate( self)
 			--updateCastBar( self.castBar, self.unit, true)
 			if UnitIsUnit("player", self.unit) then
-				self.CastBar:UnregisterAllEvents()
+				--self.CastBar:UnregisterAllEvents()
 			end
 		end
 	end
 end
 
-local function callback(self, ...)
+local function callback(self, event, unit)
 	if self then
 		self.UpdateAllElements( self)
 	end
+	oUF:DisableBlizzard( unit)
+	ClassNameplateManaBar 	= yo.dummy
+	NamePlateDriverMixin 	= yo.dummy
 end
 
 local function onEvent( self, event, unit)
@@ -482,7 +485,7 @@ local function createNP(self, unit)
 	--self.Health:SetAllPoints(self)
 	self.Health:SetSize( nameplatewidth, nameplateheight)
 	self.Health:SetMinMaxValues(0, 1)
-	self.Health:SetStatusBarTexture( yo.texture)
+	self.Health:SetStatusBarTexture( n.texture)
 	tinsert( n.statusBars, self.Health)
 
 	self.Health.frequentUpdates = true
@@ -492,7 +495,7 @@ local function createNP(self, unit)
 	self.Health.Background = self.Health:CreateTexture(nil, "BACKGROUND")
 	self.Health.Background:SetAllPoints( self.Health)
 	self.Health.Background:SetVertexColor( 0.3, 0.3, 0.3, 0.9)
-	self.Health.Background:SetTexture( yo.texture)
+	self.Health.Background:SetTexture( n.texture)
 
 	local r, g, b = strsplit( "," , yo.NamePlates.executeColor)
 	local textureHL = "Interface\\AddOns\\yoFrame\\Media\\highlight2"
@@ -501,7 +504,7 @@ local function createNP(self, unit)
    	self.Health.HightLight:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
 	self.Health.HightLight:SetVertexColor( r, g, b, 1)
 	self.Health.HightLight:SetBlendMode( "ADD")
-	self.Health.HightLight:SetTexture( yo.texhl)
+	self.Health.HightLight:SetTexture( n.texhl)
 	self.Health.HightLight:SetAlpha( 0.5)
 	self.Health.HightLight:Hide()
 
@@ -512,26 +515,26 @@ local function createNP(self, unit)
 	self.Health.focusInd:SetAlpha( 0.4)
 
 	self.Health.perc = self.Health:CreateFontString(nil, "OVERLAY")
-	self.Health.perc:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
+	self.Health.perc:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	self.Health.perc:SetPoint("RIGHT", self.Health, "RIGHT", -5, 0)
 	self.Health.perc:SetTextColor(1, 1, 1)
 	tinsert( n.strings, self.Health.perc)
 
 	self.name = self:CreateFontString(nil, "OVERLAY")
-	self.name:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
+	self.name:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	self.name:SetPoint("BOTTOM", self.Health, "TOP", 0, 2)
 	self.name:SetTextColor(1, 1, 1)
 	tinsert( n.strings, self.name)
 
 	self.level = self.Health:CreateFontString(nil, "OVERLAY")
-	self.level:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
+	self.level:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	self.level:SetTextColor(1, 1, 1)
 	self.level:SetPoint("LEFT", self.Health, "LEFT", 10, 0)
 	tinsert( n.strings, self.level)
 
 	--if yo.NamePlates.showPercTreat then
 		self.threat = self.Health:CreateFontString(nil, "OVERLAY")
-		self.threat:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
+		self.threat:SetFont( n.font, n.fontsize, "THINOUTLINE")
 		self.threat:SetTextColor(1, 1, 1)
 		self.threat:SetPoint("LEFT", self.level, "RIGHT", 6, 0)
 		tinsert( n.strings, self.threat)
@@ -615,7 +618,7 @@ local function createNP(self, unit)
 	--self.castBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", self.castBar.castOnEven, unit)
 	--self.castBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", self.castBar.castOnEven, unit)
 
-	if yo.NamePlates.showResourses and n.pType[yo.myClass] then n.createCPpoints( self) end
+	if yo.NamePlates.showResourses and n.pType[n.myClass] then n.createCPpoints( self) end
 end
 
 oUF:RegisterStyle(	"yo", createNP)

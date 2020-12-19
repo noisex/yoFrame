@@ -33,8 +33,8 @@ local ceil			= math.ceil
 
 local tthead, ttsubh, ttoff = {r=0.4, g=0.78, b=1}, {r=0.75, g=0.9, b=1}, {r=.3,g=1,b=.3}
 local activezone, inactivezone = {r=0.3, g=1.0, b=0.3}, {r=0.65, g=0.65, b=0.65}
-local displayString = GUILD ..": ".. yo.myColorStr .. "%d|r"
-local noGuildString = yo.myColorStr .. "No Guild"
+local displayString = GUILD ..": ".. n.myColorStr .. "%d|r"
+local noGuildString = n.myColorStr .. "No Guild"
 local guildInfoString = "%s [%d]"
 local guildInfoString2 = GUILD .. ": %d/%d"
 local guildMotDString = "%s |cffaaaaaa- |cffffffff%s"
@@ -299,7 +299,7 @@ function Stat:Enable()
 	self:SetScript("OnMouseDown", self.onMouseDown)
 
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
 	--self.Text:SetFormattedText( infoText.displayString, "dps", 0,  SecondsToClocks( self.combatTime))
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)

@@ -1,18 +1,21 @@
-local addon, ns = ...
-local L, conf = unpack( ns)
+local addonName, ns = ...
+local L, yo, N, defConfig = unpack( ns)
 
-local _G = _G
+N.Config = N:NewModule( 'Config','AceHook-3.0','AceEvent-3.0')
 
+local _G 	= _G
+local aceDB = _G.LibStub("AceDB-3.0")
+local AB 	= N:GetModule('Config')
 local ACD
 local needReload = false
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local strjoin, ReloadUI, PlaySound
-	= strjoin, ReloadUI, PlaySound
+local strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame
+	= strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame
 
-local yo, n
+local db, n
 local aConf = {}
 
 -- GLOBALS: Setlers
@@ -44,7 +47,6 @@ LSM:Register("font", "yoMagistral", "Interface\\Addons\\yoFrame\\Media\\qFont.tt
 LSM:Register("font", "yoSansNarrow","Interface\\Addons\\yoFrame\\Media\\qSans.ttf", 130)
 LSM:Register("font", "yoPixelFont", "Interface\\AddOns\\yoFrame\\Media\\pxFont.ttf", 130)
 
-
 local function checkToReboot( var, ...)
 	local noReboot
 	for k, v in pairs( n.noReboot) do
@@ -65,24 +67,31 @@ function Setlers( path, val, ...)
 	--local aConf = {}
 	local p1, p2, p3, p4 = strsplit("#", path)
 
-	--if yo_AllData[yo.myRealm][yo.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
+	--if n.allData[N.myRealm][N.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
 	--else												aConf = _G["yo_AllConfig"]	end
 
 	if p4 then
-		aConf[p1][p2][p3][p4] = val
+		--aConf[p1][p2][p3][p4] = val
 		yo[p1][p2][p3][p4] = val
+		db[p1][p2][p3][p4] = val
 		checkToReboot( p4, val, ...)
 	elseif p3 then
-		aConf[p1][p2][p3] = val
+		--aConf[p1][p2][p3] = val
 		yo[p1][p2][p3] = val
+		db[p1][p2][p3] = val
 		checkToReboot( p3, val, ...)
+--		print(3, val)
 	elseif p2 then
-		aConf[p1][p2] = val
+		--aConf[p1][p2] = val
 		yo[p1][p2] = val
+		db[p1][p2] = val
 		checkToReboot( p2, val, ...)
+--		print(2, p1, p2, db[p1][p2] )
 	else
-		aConf[p1] = val
+		--aConf[p1] = val
 		yo[p1] = val
+		db[p1] = val
+--		print(1, val)
 		checkToReboot( val, ...)
 	end
 end
@@ -100,7 +109,8 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
   	button1 = "Yes",
   	button2 = "No",
   	OnAccept = function()
-		yo_AllData[yo.myRealm][yo.myName].PersonalConfig = not yo_AllData[yo.myRealm][yo.myName].PersonalConfig
+		--n.allData[N.myRealm][N.myName].PersonalConfig = not n.allData[N.myRealm][N.myName].PersonalConfig
+		n.allData.personalProfiles = not n.allData.personalProfiles
      	ReloadUI()
   	end,
   	timeout = 0,
@@ -110,7 +120,7 @@ StaticPopupDialogs["CONFIRM_PERSONAL"] = {
 }
 
 
-function InitOptions()
+local function InitOptions()
 
 	local defaults = {
 		profile = {},
@@ -128,8 +138,11 @@ function InitOptions()
 					PersonalConfig = {
 						order = 1, type = "toggle", width = "full",	name = function(info) return tr( info[#info]) end,
 						desc = L["PERSONAL_DESC"],	descStyle = "inline",
-						get = function(info) return yo_AllData[yo.myRealm][yo.myName].PersonalConfig end,
-						set = function(info,val) StaticPopup_Show ("CONFIRM_PERSONAL") end,	},
+						get = function(info) return n.allData.personalProfiles end,
+						set = function(info,val) n.allData.personalProfiles = val
+							--StaticPopup_Show ("CONFIRM_PERSONAL")
+							checkToReboot( val)
+						end,	},
 					scriptErrors= {
 						name = function(info) return tr( info[#info]) end,
 						order = 9, type = "toggle",
@@ -178,7 +191,7 @@ function InitOptions()
 						--	SetCVar("useUiScale", 1)	SetCVar("uiScale", val) UIParent:SetScale( val)
 						end, },
 
-					spell12	= { order =122, type = "select", 		name = "", width = 1.1, values = n.allData.configData[yo.myRealm]},
+					--spell12	= { order =122, type = "select", 		name = "", width = 1.1, values = n.allData.configData[myRealm]},
 
 					set00	= {	order = 50, type = "description", name = " ", width = "full"},
 					--fontSizeMinus = { hidden = true,
@@ -206,7 +219,7 @@ function InitOptions()
 						get = function(info, r, g, b)  return strsplit( ",", yo.Media.shadowColor)	end,
 						set = function(info, r, g, b) --[[Setlers( "Media#shadowColor", strjoin(",", r, g, b))]] UpdateShadows(  r, g, b) end,},
 					classBorder	= {	order = 74, type = "execute", name = "Shadow classColor", desc = "JUST FOR FUN",
-           				func = function() UpdateShadows( yo.myColor.r, yo.myColor.g, yo.myColor.b) end,},
+           				func = function() UpdateShadows( N.myColor.r, N.myColor.g, N.myColor.b) end,},
            			borderReset	= {	order = 76, type = "execute", name = "Shadow Reset", desc = "JUST FOR FUN",
            				func = function() UpdateShadows( strsplit( ",", yo.Media.shadowColor)) end,},
 			 	},
@@ -215,7 +228,7 @@ function InitOptions()
 
 			Addons = {
 				order = 20,	name = L["Addons"], type = "group",
-				get = function(info) return yo["Addons"][info[#info]] end,
+				get = function(info) return db["Addons"][info[#info]] end,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
 				args = {
 					RaidUtilityPanel= {	order = 1, type = "toggle",	name = function(info) return tr( info[#info]) end,  width = "full",	desc = L["RUP_DESC"],},
@@ -248,7 +261,7 @@ function InitOptions()
 
 			Automatic = {
 				order = 25,	name = L["Automatic"], type = "group",
-				get = function(info) return yo["Addons"][info[#info]] end,
+				get = function(info) return db["Addons"][info[#info]] end,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
 				args = {
 					AutoRepair 				= {	order = 1, type = "toggle", name = function(info) return tr( info[#info]) end,  width = "full", },
@@ -643,8 +656,8 @@ function InitOptions()
 					fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					fligerShowHint	= {	order = 05, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 
-					fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.4,},
-					fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.5,},
+					fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.5,},
+					fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.7,},
 
 					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
@@ -711,7 +724,7 @@ function InitOptions()
 			},
 
 			healBotka = {
-				type = 'group', name = "Хилботка", childGroups = 'tab', order = 200,
+				type = 'group', name = "Хилботка", childGroups = 'tab', order = 95,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
 				get = function(info)  return yo[info[1]][info[#info]] end,
 				--dprint( "!!!!!!!!!", yo[info[1]][info[#info]], n.spellsBooks[yo[info[1]][info[#info]]])
@@ -733,8 +746,9 @@ function InitOptions()
 							set00	= {	order = 08, type = "description", 	name = "Маус ор клавабатон", width = 1.2,},
 							set01	= {	order = 09, type = "description", 	name = "Спелл фор биндинг",  width = 1,},
 
-							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", width = 0.9, desc = L["DESC_KEY"],},
-							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",  width = 0.9, desc = L["DESC_KEY"],},
+							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", 	width = 0.8, desc = L["DESC_KEY"],},
+							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",  	width = 0.8, desc = L["DESC_KEY"],},
+							res01	= {	order = 03, type = "keybinding",	name = "Авто воскресение",  width = 0.8, desc = L["DESC_KEY"],},
 
 							key1	= {	order = 10, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
 							key2	= {	order = 20, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
@@ -749,58 +763,48 @@ function InitOptions()
 							key11	= {	order =110, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
 							key12	= {	order =120, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
 
-							spell1 	= { order = 12, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell2 	= { order = 22, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell3 	= { order = 32, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell4 	= { order = 42, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell5 	= { order = 51, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell6 	= { order = 62, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell7 	= { order = 72, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell8 	= { order = 82, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell9	= { order = 92, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell10	= { order =102, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell11	= { order =112, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							spell12	= { order =122, name = "", dialogControl = "Player_EditBox", type = 'input',width = 1.1,},
-							--mySpell = { order = 202, name = "Spell name",  dialogControl = "Spell_EditBox",  type = 'input',},
+							spell1 	= { order = 12, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell2 	= { order = 22, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell3 	= { order = 32, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell4 	= { order = 42, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell5 	= { order = 51, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell6 	= { order = 62, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell7 	= { order = 72, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell8 	= { order = 82, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell9	= { order = 92, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell10	= { order =102, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell11	= { order =112, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
+							spell12	= { order =122, name = "", dialogControl = "Spell_EditBox", type = 'input',width = 1.3,},
 
-							bTrink1	= {	order = 14, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink2	= {	order = 24, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink3	= {	order = 34, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink4	= {	order = 44, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink5	= {	order = 54, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink6	= {	order = 64, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink7	= {	order = 74, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink8	= {	order = 84, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink9 = {	order = 94, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink10= {	order =104, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink11= {	order =114, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
-							bTrink12= {	order =124, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							--spell66	= { order =123, name = "", dialogControl = "Aura_EditBox", type = 'input',width = 1.1,},
+							--mySpell = { order = 999, name = "Spell name",  dialogControl = "Spell_EditBox",  type = 'input', width = 1.5},
+							--validate (methodname|function|false) - validate the input/value before setting it. return a string (error message) to indicate error.
 
-							bStop1	= {	order = 16, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop2	= {	order = 26, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop3	= {	order = 36, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop4	= {	order = 46, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop5	= {	order = 56, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop6	= {	order = 66, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop7	= {	order = 76, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop8	= {	order = 86, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop9	= {	order = 96, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop10 = {	order =106, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop11 = {	order =116, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
-							bStop12 = {	order =126, type = "toggle",		name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bTrink1	= {	order = 14, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink2	= {	order = 24, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink3	= {	order = 34, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink4	= {	order = 44, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink5	= {	order = 54, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink6	= {	order = 64, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink7	= {	order = 74, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink8	= {	order = 84, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink9 = {	order = 94, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink10= {	order =104, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink11= {	order =114, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
+							bTrink12= {	order =124, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_TRINK"]},
 
-							--spell1	= { order = 12, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell2	= { order = 22, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell3	= { order = 32, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell4	= { order = 42, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell5	= { order = 52, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell6	= { order = 62, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,}, 	--get = function(info) tprint(info) print( n.spellsBooks[ yo.healBotka[info[3]]]) return n.spellsBooks[ yo.healBotka[info[3]]] end, },
-							--spell7	= { order = 72, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell8	= { order = 82, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell9	= { order = 92, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell10	= { order =102, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell11	= { order =112, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
-							--spell12	= { order =122, type = "select", 		name = "", width = 1.1, values = n.spellsBooks,},
+							bStop1	= {	order = 16, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop2	= {	order = 26, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop3	= {	order = 36, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop4	= {	order = 46, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop5	= {	order = 56, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop6	= {	order = 66, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop7	= {	order = 76, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop8	= {	order = 86, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop9	= {	order = 96, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop10 = {	order =106, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop11 = {	order =116, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
+							bStop12 = {	order =126, type = "toggle",	name = " ", width = 0.1, desc = L["DESC_STOP"]},
 						},
 					},
 					heneral = {
@@ -809,51 +813,58 @@ function InitOptions()
 						args = {
 							hEnable= {	order = 1, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", desc = L["DESC_HENA"],},
 
-							hSpell1	= { order = 70, type = "select", name = "Иконка №1 ( лево-центр)", width = 1.5, values = n.spellsBooks,},
-							hSpell2	= { order = 80, type = "select", name = "Иконка №2 ( лево-низ)",   width = 1.5, values = n.spellsBooks,},
-							hSpell3	= { order = 90, type = "select", name = "Иконка №3 ( центр-низ)",  width = 1.5, values = n.spellsBooks,},
-							hSpell4	= { order =100, type = "select", name = "Иконка №4 ( право-низ)",  width = 1.5, values = n.spellsBooks,},
-							hSpell5	= { order =110, type = "select", name = "Иконка №5 ( право-центр)",width = 1.5, values = n.spellsBooks,},
+							hSpell1	= { order = 10, name = "Иконка №1 ( лево-центр)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
+							hSpell2	= { order = 20, name = "Иконка №2 ( лево-низ)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7},
+							hSpell3 = { order = 30, name = "Иконка №3 ( центр-низ)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
+							hSpell4	= { order = 40, name = "Иконка №4 ( право-низ)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
+							hSpell5	= { order = 50, name = "Иконка №5 ( право-центр)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
 
-							hColEna1= {	order = 71, type = "toggle",name = "Свой цвет вместо иконки",},
-							hColEna2= {	order = 81, type = "toggle",name = "Свой цвет вместо иконки",},
-							hColEna3= {	order = 91, type = "toggle",name = "Свой цвет вместо иконки",},
-							hColEna4= {	order = 101, type = "toggle",name ="Свой цвет вместо иконки",},
-							hColEna5= {	order = 111, type = "toggle",name ="Свой цвет вместо иконки",},
+							hColEna1= {	order = 12, type = "toggle",name = L["hColEnable"],},
+							hColEna2= {	order = 22, type = "toggle",name = L["hColEnable"],},
+							hColEna3= {	order = 33, type = "toggle",name = L["hColEnable"],},
+							hColEna4= {	order = 42, type = "toggle",name = L["hColEnable"],},
+							hColEna5= {	order = 52, type = "toggle",name = L["hColEnable"],},
 
-							hColor1 ={	order = 72, type = "color",	name =  "", width = 0.2,
+							hColor1 ={	order = 14, type = "color",	name =  "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor2 ={	order = 82, type = "color",	name = "", width = 0.2,
+							hColor2 ={	order = 24, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor3 ={	order = 92, type = "color",	name = "", width = 0.2,
+							hColor3 ={	order = 34, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor4 ={	order = 102, type = "color",	name = "", width = 0.2,
+							hColor4 ={	order = 44, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
-							hColor5 ={	order = 112, type = "color",	name = "", width = 0.2,
+							hColor5 ={	order = 54, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 
-							hScale1	= {	order = 73,	type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
-							hScale2	= {	order = 83,	type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
-							hScale3	= {	order = 93,	type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
-							hScale4 = {	order = 103,type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
-							hScale5 = {	order = 113,type = "range", name = "Масштаб",	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale1	= {	order = 16,	type = "range", name = L["hScale"],	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale2	= {	order = 26,	type = "range", name = L["hScale"],	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale3	= {	order = 36,	type = "range", name = L["hScale"],	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale4 = {	order = 46, type = "range", name = L["hScale"],	min = 0, max = 2, step = 0.1, width = 0.7},
+							hScale5 = {	order = 56, type = "range", name = L["hScale"],	min = 0, max = 2, step = 0.1, width = 0.7},
 
-							hTimEna1= {	order = 75, type = "toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna2= {	order = 85, type = "toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna3= {	order = 95, type = "toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna4= {	order = 105, type ="toggle",name = "Скрывать таймер больше времени:",},
-							hTimEna5= {	order = 115, type ="toggle",name = "Скрывать таймер больше времени:",},
+							hTimEna1= {	order = 18, type = "toggle",name = L["hideTimer"],},
+							hTimEna2= {	order = 28, type = "toggle",name = L["hideTimer"],},
+							hTimEna3= {	order = 38, type = "toggle",name = L["hideTimer"],},
+							hTimEna4= {	order = 48, type = "toggle",name = L["hideTimer"],},
+							hTimEna5= {	order = 58, type = "toggle",name = L["hideTimer"],},
 --hScale2
-							hTimer1	= {	order = 76,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
-							hTimer2	= {	order = 86,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
-							hTimer3	= {	order = 96,	type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
-							hTimer4	= {	order = 106,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
-							hTimer5 = {	order = 116,type = "range", name = "",	min = 0, max = 20, step = 1, width = 0.5},
+							hTimer1	= {	order = 19,	type = "range", name = "",	min = 0, max = 20, step = 0.1, width = 0.5},
+							hTimer2	= {	order = 29,	type = "range", name = "",	min = 0, max = 20, step = 0.1, width = 0.5},
+							hTimer3	= {	order = 39,	type = "range", name = "",	min = 0, max = 20, step = 0.1, width = 0.5},
+							hTimer4	= {	order = 49, type = "range", name = "",	min = 0, max = 20, step = 0.1, width = 0.5},
+							hTimer5 = {	order = 59, type = "range", name = "",	min = 0, max = 20, step = 0.1, width = 0.5},
+
+							--AutoQuesting = {
+							--	order = 30,	name = L["AutoQuesting"], type = "group",	inline = true,
+							--	args = {
+							--		AutoQuest = {		order = 10, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["QUACP_DESC"],},
+							--	},
+							--},
 						},
 					},
 				aeneral = {
@@ -879,7 +890,8 @@ function InitOptions()
 
 							hTimeSec= {	order = 35,type = "toggle", name = function(info) return tr( info[#info]) end, width = "full"},
 
-							bSpell 	= { order = 40, type = "select",name = function(info) return tr( info[#info]) end, width = 1.5, values = n.spellsBooks,},
+							--bSpell 	= { order = 40, type = "select",name = function(info) return tr( info[#info]) end, width = 1.5, values = n.spellsBooks,},
+							bSpell	= { order = 40, name = function(info) return tr( info[#info]) end, dialogControl = "Spell_EditBox", type = 'input',width = 2,},
 							bColEna = {	order = 43, type = "toggle",name = function(info) return tr( info[#info]) end,},
 							bColor	 ={	order = 45, type = "color",	name = "", width = 0.2,
 								get = function(info, r, g, b)  return strsplit( ",", yo[info[1]][info[#info]])	end,
@@ -891,10 +903,9 @@ function InitOptions()
 								set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 							borderS = {	order = 50,type = "toggle", name = function(info) return tr( info[#info]) end,},
 
-							hpBarVertical 	= {	order = 62, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", get = function(info) return yo.Raid[info[#info]] end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end},
-							hpBarRevers	 	= {	order = 65, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full", get = function(info) return yo.Raid[info[#info]] end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end},
-
-							--hTimeSec= {	order = 20,type = "range", name = function(info) return tr( info[#info]) end,	min = 5, max = 25, step = 1, width = 0.7},
+							hpBarVertical 	= {	order = 62, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
+							hpBarRevers	 	= {	order = 65, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
+							takeTarget 		= {	order = 69, type = "toggle", name = function(info) return tr( info[#info]) end, width = "full",},
 						},
 					},
 				},
@@ -991,28 +1002,22 @@ function InitOptions()
 			},
 
 			ResetConfig = {
-           		order = 1, type = "execute", confirm  = true, width = 0.9,	name = L["ResetConfig"],
-           		desc = L["RESET_DESC"],
-           		func = function() yo_PersonalConfig = {} yo_AllConfig = {} yo_BB = {}  yo_BBCount = {} yo_WIMSTER = {} yo_ChatHistory = {} yo_AllData = {} ReloadUI() end,},
+           		order = 1, type = "execute", confirm  = true, width = 0.95,	name = L["ResetConfig"], desc = L["RESET_DESC"],
+           		func = function() yo_PersonalConfig = {} yo_AllConfig = {} yo_BB = {}  yo_BBCount = {} yo_WIMSTER = {} yo_ChatHistory = {} n.allData = {} ReloadUI() end,},
 
 			MovingFrames = {
-           		order = 10,	type = "execute", width = 0.9,
-           		name = function()  if t_unlock ~= true then  return L["MOVE"] else return L["DONTMOVE"] end end,
-           		func = function() if t_unlock ~= true then AnchorsUnlock() else AnchorsLock() end end,},
+           		order = 10,	type = "execute", width = 0.95, name = function()  if n.moveUnlockState ~= true then  return L["MOVE"] else return L["DONTMOVE"] end end,
+           		func = function() if n.moveUnlockState ~= true then n.moveAnchorsUnlock() else n.moveAnchorsLock() end end,},
 
 			ResetPosition = {
-           		order = 20,	type = "execute", confirm  = true, width = 0.9,	name = L["ResetPosition"],
-           		desc = L["RESETUI_DESC"],
-           		func = function() AnchorsReset() end,},
+           		order = 20,	type = "execute", confirm  = true, width = 0.95,	name = L["ResetPosition"], desc = L["RESETUI_DESC"], func = function() n.moveAnchorsReset() end,},
 
 			--KeyBind = {
    --        		order = 30,	type = "execute", width = 0.7, name = "Key Binding", disabled = true,
    --        		func = function() 	SlashCmdList.MOUSEOVERBIND() end,},
 
 			ReloadConfig = {
-           		order = -1, type = "execute", width = 0.9, name = L["ReloadConfig"], desc = L["RELOAD_DESC"],
-           		disabled = function() return not needReload end,
-           		func = function() if needReload then ReloadUI() end	 end,},
+           		order = -1, type = "execute", width = 0.95, name = L["ReloadConfig"], desc = L["RELOAD_DESC"], disabled = function() return not needReload end, func = function() if needReload then ReloadUI() end	 end,},
 
 			NextOptions = {
 				name = "Следующие настройки",
@@ -1024,7 +1029,7 @@ function InitOptions()
 		};
 	};
 
-	--conf.data = options
+	options.args.profiles = _G.LibStub("AceDBOptions-3.0"):GetOptionsTable(AB.db)
 
 	return options
 end
@@ -1035,7 +1040,7 @@ function ns.InitOptions()
 	if not ACD then
 		LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", InitOptions())
 		ACD = LibStub("AceConfigDialog-3.0")
-		ACD:SetDefaultSize( "yoFrame", 730, 650)
+		ACD:SetDefaultSize( "yoFrame", 700, 620)
 		ACD:AddToBlizOptions( "yoFrame", "yoFrame")--, parent, ...)
 		--conf.ACD = ACD
 		--tprint(ACD)
@@ -1048,20 +1053,36 @@ function ns.InitOptions()
 	end
 end
 
-local init = CreateFrame("Frame")
-init:RegisterEvent("PLAYER_LOGIN")
-init:SetScript("OnEvent", function()
-	if not _G["yoFrame"] then return end
+function AB:OnInitialize()
+	--print("INIT")
+	if not yoFrameDB then
+		yoFrameDB = {}
+		yoFrameDB.profiles = {}
+	end
 
-	_, yo, n = unpack( _G["yoFrame"])
+	local defaults = {}
+	defaults.profile = {}
+	defaults.profile = CopyTable( defConfig.constants)
 
-	if _G["yo_AllData"][yo.myRealm][yo.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
-	else															aConf = _G["yo_AllConfig"]	end
+	for profName, profData in pairs( defConfig.profiles) do
+		yoFrameDB.profiles[profName] = profData
+	end
 
-	SlashCmdList["CFGSLASH"] = function() ns.InitOptions() end
-	SLASH_CFGSLASH1 = "/cfg"
-	SLASH_CFGSLASH2 = "/config"
+	--_G.yo_AllData.personalProfiles
+	--ACD:AddToBlizOptions( addonName, addonName)
+	self.db = aceDB:New( "yoFrameDB", defaults, not _G.yo_AllData.personalProfiles)
+	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
 
+	--yoFrameDB.profiles.Default = CopyTable( defConfig.constants)
+
+	db = self.db.profile
+
+	ns[2] = db
+	yo = ns[2]
+
+	--LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable( addonName, options)
 	local GameMenuButton = CreateFrame("Button", "GameMenuButtonQulightUI", GameMenuFrame, "GameMenuButtonTemplate")
 	GameMenuButton:SetText("|cff00ffffyoFrame|r")
 	GameMenuButton:SetPoint("TOP", "GameMenuButtonAddons", "BOTTOM", 0, -1)
@@ -1075,4 +1096,66 @@ init:SetScript("OnEvent", function()
 		HideUIPanel(GameMenuFrame)
 		ns.InitOptions()
 	end)
-end)
+
+	SlashCmdList["CFGSLASH"] = function() ns.InitOptions() end
+	SLASH_CFGSLASH1 = "/cfg"
+	SLASH_CFGSLASH2 = "/config"
+end
+
+function AB:OnEnable()
+	--print("ENABLE")
+	N.myName   	= UnitName( "player")
+	N.myRealm  	= GetRealmName()
+	N.myClass  	= select( 2, UnitClass( "player"))
+	N.myColor  	= RAID_CLASS_COLORS[N.myClass]
+
+	_, _, n = unpack( _G["yoFrame"])
+
+	-- копируем натсройки в текущий профиль
+	if n.allData and n.allData.configData and n.allData.configData[N.myRealm] and n.allData.configData[N.myRealm][N.myName] then
+		yoFrameDB.profiles[N.myName .. " ( старенький)"] = n.allData.configData[N.myRealm][N.myName]
+	end
+
+	--print( "CONFIG LOAD")
+	--if _G["n.allData"][N.myRealm][N.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
+	--else															aConf = _G["yo_AllConfig"]	end
+
+	--DB.profiles = db
+	--tprint( DB)
+	--if not db.enabled then
+	--	self:Disable()
+	--	return
+	--end
+	--self:RegisterMessage("HandyNotes_NotifyUpdate", "UpdatePluginMap")
+end
+
+function AB:OnDisable()
+	-- Remove all the pins
+end
+
+function AB:OnProfileChanged(event, database, newProfileKey)
+	--print("CHANGE ", event, database, newProfileKey)
+
+	if event == "OnProfileCopied" then
+		needReload = true
+		--database.profile = self.db:CopyProfile( newProfileKey) --, silent)
+
+	elseif event == "OnProfileReset" then
+		self.db.profile = CopyTable( defConfig.constants)
+
+	elseif event == "OnProfileChanged" then
+		 self.db.profile = self.db.profile[newProfileKey] --, silent)
+	end
+	--tprint( database.profile)
+	db 		= self.db.profile --CopyTable( database.profile)
+	ns[2] 	= CopyTable( db)
+	yo 		= CopyTable( db)
+
+	if event == "OnProfileChanged" then
+		ReloadUI()
+	end
+
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", InitOptions())
+end
+
+--n:RegisterModule( AB:GetName())

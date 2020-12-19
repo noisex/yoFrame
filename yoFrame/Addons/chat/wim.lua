@@ -9,14 +9,18 @@ local minAlpha 	= 1
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
-	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date, IsControlKeyDown, IsShiftKeyDown
+	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date, IsControlKeyDown, IsShiftKeyDown
 
+local PlaySound, SendChatMessage, UnitName, UnitIsSameServer, GetAutoCompleteResults, SetUpAnimGroup, Setlers, Kill, strlower, Ambiguate, GetPlayerInfoByGUID, InCombatLockdown, tremove
+	= PlaySound, SendChatMessage, UnitName, UnitIsSameServer, GetAutoCompleteResults, SetUpAnimGroup, Setlers, Kill, strlower, Ambiguate, GetPlayerInfoByGUID, InCombatLockdown, tremove
 --https://wowwiki.fandom.com/wiki/UI_escape_sequences
 
-CreateAnchor("yoMoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", LeftDataPanel)
-ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
-ContainerFrame3:SetPoint("CENTER")
+n.moveCreateAnchor("yoMoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", LeftDataPanel)
+--ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
+--ContainerFrame3:SetPoint("CENTER")
+
+--GLOBALS: yo_WIMSTER
 
 local function UpdateTabs( self)
 	if not self.lastTab then return end
@@ -84,7 +88,7 @@ local function CreateTabs(self, ID)
 	tab:RegisterForClicks( "LeftButtonDown", "RightButtonUp")
 
 	local header = tab:CreateFontString(nil, "OVERLAY")
-	header:SetFont( yo.font, yo.fontsize)	--, "OUTLINE")
+	header:SetFont( n.font, n.fontsize)	--, "OUTLINE")
 	header:SetShadowOffset(1, -1)
 	header:SetShadowColor(0, 0, 0, 1)
 	header:SetPoint("TOPLEFT", 0, -1)
@@ -99,7 +103,7 @@ local function CreateTabs(self, ID)
 	--tab.tabNum = tabNum
 
 	local hover = tab:CreateTexture(nil, "OVERLAY")
-	hover:SetTexture( yo.texture)
+	hover:SetTexture( n.texture)
 	hover:SetVertexColor( 0.5, 0.5, 0.5, 0.5)
 	hover:SetPoint("TOPLEFT", 0, 0)
 	hover:SetPoint("BOTTOMRIGHT", 0, 0)
@@ -122,7 +126,7 @@ local function CreateTabs(self, ID)
 	editBox:SetText("")
 	editBox:SetAutoFocus(false)
 	editBox:SetHistoryLines(32);
-	editBox:SetFont( yo.font, yo.fontsize +1 )
+	editBox:SetFont( n.font, n.fontsize +1 )
 	editBox:SetPoint('BOTTOMLEFT', self:GetParent(), 'BOTTOMLEFT', 6, 6);
 	editBox:SetPoint('BOTTOMRIGHT', self:GetParent(), 'BOTTOMRIGHT', -23, 6);
 	editBox:SetScript("OnLeave", 			function() self:SetAlpha( minAlpha) end)
@@ -163,9 +167,9 @@ local function CreateTabs(self, ID)
 	textBox:SetScript("OnDragStart", function() yoEF.wim:StartMoving() end)
 	textBox:SetScript("OnDragStop", function()
 		yoEF.wim:StopMovingOrSizing()
-		yoMoveWIM:ClearAllPoints()
-		yoMoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yoMoveWIM, yoEF.wim)
+		n.moveFrames.yoMoveWIM:ClearAllPoints()
+		n.moveFrames.yoMoveWIM:SetPoint( self:GetPoint())
+		n.setAnchPosition( n.moveFrames.yoMoveWIM, yoEF.wim)
 	end)
 	tab.textBox = textBox
 
@@ -250,11 +254,11 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 		local target = btag and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( unit, "none"))
 
 		if not yo_WIMSTER then yo_WIMSTER = {} end
-		if not yo_WIMSTER[yo.myRealm] then yo_WIMSTER[yo.myRealm] = {} end
-		if not yo_WIMSTER[yo.myRealm][yo.myName] then yo_WIMSTER[yo.myRealm][yo.myName] = {} end
+		if not yo_WIMSTER[n.myRealm] then yo_WIMSTER[n.myRealm] = {} end
+		if not yo_WIMSTER[n.myRealm][n.myName] then yo_WIMSTER[n.myRealm][n.myName] = {} end
 
-		if yo_WIMSTER[yo.myRealm][yo.myName][target] then
-			local logArray 	= yo_WIMSTER[yo.myRealm][yo.myName][target]
+		if yo_WIMSTER[n.myRealm][n.myName][target] then
+			local logArray 	= yo_WIMSTER[n.myRealm][n.myName][target]
 			local longArray = #logArray
 
 			if longArray > 0 then
@@ -326,12 +330,12 @@ local function CreateWIM( self)
 	self:RegisterForDrag( "LeftButton")
 	self:SetScript("OnEnter", 		function() self:SetAlpha(1) end)
 	self:SetScript("OnLeave", 		function() self:SetAlpha( minAlpha) end)
-	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) ContainerFrame3:Show() if yo.Chat.wimLastTab then CheckTabForUnit( self, strsplit( ",", yo.Chat.wimLastTab)) end end)
+	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) if yo.Chat.wimLastTab then CheckTabForUnit( self, strsplit( ",", yo.Chat.wimLastTab)) end end)
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
-		yoMoveWIM:ClearAllPoints()
-		yoMoveWIM:SetPoint( self:GetPoint())
-		SetAnchPosition( yoMoveWIM, yoEF.wim)
+		n.moveFrames.yoMoveWIM:ClearAllPoints()
+		n.moveFrames.yoMoveWIM:SetPoint( self:GetPoint())
+		n.setAnchPosition( n.moveFrames.yoMoveWIM, yoEF.wim)
 	end)
 	--self:SetScript("OnEscapePressed", function(self) self:Hide() end)
 
@@ -485,10 +489,10 @@ local function SaveLines( self, msg, event, tabID, target, bnet, colorLine)
 	target = bnet and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( target, "none"))
 
 	if not yo_WIMSTER then yo_WIMSTER = {} end
-	if not yo_WIMSTER[yo.myRealm] then yo_WIMSTER[yo.myRealm] = {} end
-	if not yo_WIMSTER[yo.myRealm][yo.myName] then yo_WIMSTER[yo.myRealm][yo.myName] = {} end
-	if not yo_WIMSTER[yo.myRealm][yo.myName][target] then yo_WIMSTER[yo.myRealm][yo.myName][target] = {} end
-	local logArray = yo_WIMSTER[yo.myRealm][yo.myName][target]
+	if not yo_WIMSTER[n.myRealm] then yo_WIMSTER[n.myRealm] = {} end
+	if not yo_WIMSTER[n.myRealm][n.myName] then yo_WIMSTER[n.myRealm][n.myName] = {} end
+	if not yo_WIMSTER[n.myRealm][n.myName][target] then yo_WIMSTER[n.myRealm][n.myName][target] = {} end
+	local logArray = yo_WIMSTER[n.myRealm][n.myName][target]
 	--print( strfind( msg, "|K%a+%d+|k"), self.tabber.tabs[tabID].name)
 
 	local array = { msg = msg, time = time(), event = event}
@@ -517,8 +521,8 @@ local function OutString(self, event, text, unit, guid, btag)
 	end
 
 	if strfind( event, "INFORM") then
-		colStr 	= " |r[" .. yo.myColorStr
-		unit 	= yo.myName
+		colStr 	= " |r[" .. n.myColorStr
+		unit 	= n.myName
 		ender 	= "|r] "
 	elseif btag then
 		unit = unit:gsub( "|K%a+%d+|k", strsplit( "#", self.tabber.tabs[tabID].fullTag))
@@ -602,6 +606,7 @@ wim:RegisterEvent("PLAYER_ENTERING_WORLD")
 wim:SetScript("OnEvent", OnEvent)
 yoEF.wim = wim
 
+tinsert( UISpecialFrames, "yo_WIM")
 -----------------------------------------------------------------------------------
 --		local functions
 -----------------------------------------------------------------------------------
@@ -838,7 +843,7 @@ local sizes = {
 }
 
 local function CreatCopyFrame()
-	copyFrame = CreateFrame("Frame", nil, UIParent)
+	local copyFrame = CreateFrame("Frame", nil, UIParent)
 	CreateStyle(copyFrame, 2, nil, 0.7)
 	--copyFrame:SetPoint("TOPLEFT", wim, "BOTTOMLEFT", 0, -10)
 	--copyFrame:SetPoint("TOPRIGHT", wim, "BOTTOMRIGHT", 0, -10)

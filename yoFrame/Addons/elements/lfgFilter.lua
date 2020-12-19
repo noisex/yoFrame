@@ -64,23 +64,27 @@ local function makeDropDown( self, title)
 end
 
 function LFGListUtil_SortSearchResults(results)
-	local setting = LFGListFrame.setting.filter
 
-	 for idx = #results, 1, -1 do
-		local resultID = results[idx]
-		local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
-		local memberCounts = C_LFGList.GetSearchResultMemberCounts(resultID)
-		--tprint( searchResultInfo)
-		--tprint( memberCounts)
-		--print( memberCounts.TANK, setting.Tank,  memberCounts.HEALER, setting.Heal, memberCounts.DAMAGER, setting.Damager)
+	if LFGListFrame.setting then
+		local setting = LFGListFrame.setting.filter
 
-		if 		( setting.Tank 		and (( memberCounts.TANK 	== setting.Tank) 		or ( setting.TankPlus 	 and memberCounts.TANK 		>= setting.Tank))  		or setting.Tank 	== -1)
-			and ( setting.Heal 		and (( memberCounts.HEALER 	== setting.Heal) 		or ( setting.HealPlus 	 and memberCounts.HEALER 	>= setting.Heal)) 		or setting.Heal  	== -1)
-			and ( setting.Damager 	and (( memberCounts.DAMAGER == setting.Damager) 	or ( setting.DamagerPlus and memberCounts.DAMAGER 	>= setting.Damager)) 	or setting.Damager 	== -1)	then
-		else
-			table.remove( results, idx)
+	 	for idx = #results, 1, -1 do
+			local resultID = results[idx]
+			local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
+			local memberCounts = C_LFGList.GetSearchResultMemberCounts(resultID)
+			--tprint( searchResultInfo)
+			--tprint( memberCounts)
+			--print( memberCounts.TANK, setting.Tank,  memberCounts.HEALER, setting.Heal, memberCounts.DAMAGER, setting.Damager)
+
+			if 		( setting.Tank 		and (( memberCounts.TANK 	== setting.Tank) 		or ( setting.TankPlus 	 and memberCounts.TANK 		>= setting.Tank))  		or setting.Tank 	== -1)
+				and ( setting.Heal 		and (( memberCounts.HEALER 	== setting.Heal) 		or ( setting.HealPlus 	 and memberCounts.HEALER 	>= setting.Heal)) 		or setting.Heal  	== -1)
+				and ( setting.Damager 	and (( memberCounts.DAMAGER == setting.Damager) 	or ( setting.DamagerPlus and memberCounts.DAMAGER 	>= setting.Damager)) 	or setting.Damager 	== -1)	then
+			else
+				table.remove( results, idx)
+			end
 		end
 	end
+
 	table.sort(results, LFGListUtil_SortSearchResultsCB);
 end
 

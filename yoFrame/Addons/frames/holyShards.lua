@@ -32,7 +32,7 @@ local function pwUpdate( self, powerID)
 		end
 	end
 
-	if unitPower == self.idx and yo.myClass ~= "DEATHKNIGHT" then
+	if unitPower == self.idx and n.myClass ~= "DEATHKNIGHT" then
 		if yo.Raid.classcolor < 3 then
 			local f = 0.7
 			self.shadow:SetBackdropBorderColor( self.cols[1] *f, self.cols[2] *f, self.cols[3] *f, 0.99)
@@ -60,7 +60,7 @@ end
 
 	for i = 1, self.idx do
 		self[i] = self[i] or CreateFrame('StatusBar', nil, self)
-		self[i]:SetStatusBarTexture( yo.texture)
+		self[i]:SetStatusBarTexture( n.texture)
 		self[i]:SetStatusBarColor( self.cols[1], self.cols[2], self.cols[3],  1)
 		self[i]:SetHeight( self:GetHeight() -2)
 		self[i]:SetWidth(self:GetWidth() / self.idx)
@@ -91,7 +91,7 @@ end
 end
 
 local function OnEvent( self, event, unit, pToken, ...)
-	--print( event, " ptoken: ", pToken, " Type: ", n.pType[yo.myClass].powerID, unit)
+	--print( event, " ptoken: ", pToken, " Type: ", n.pType[n.myClass].powerID, unit)
 
 	if event == "RUNE_POWER_UPDATE" then
 
@@ -120,7 +120,8 @@ local function OnEvent( self, event, unit, pToken, ...)
 		end
 
 	elseif event == "UNIT_MAXPOWER" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		yo.mySpec = GetSpecialization()
+		n.mySpec 		= GetSpecialization()
+		n.mySpecNum	= GetSpecializationInfo( n.mySpec)
 		CreateShards( self)
 
 	elseif event == "UNIT_DISPLAYPOWER" then
@@ -167,9 +168,9 @@ function n.createShardsBar( f)
 	CreateStyle( holyShards, 2, 5, 0.6)
 
 	holyShards.colr, holyShards.colg, holyShards.colb = f.colr, f.colg, f.colb
-	holyShards.powerID 	= n.pType[yo.myClass].powerID
-	holyShards.powerType= n.pType[yo.myClass].powerType
-	holyShards.spec 	= n.pType[yo.myClass].spec
+	holyShards.powerID 	= n.pType[n.myClass].powerID
+	holyShards.powerType= n.pType[n.myClass].powerType
+	holyShards.spec 	= n.pType[n.myClass].spec
 	holyShards.minAlpha = 0.2
 	holyShards.maxAlpha = 0.9
 	holyShards.TurnOff 	= ClassPowerBar.TurnOff

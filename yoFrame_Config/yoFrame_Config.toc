@@ -4,7 +4,7 @@
 ## Author: Noisex
 ## Version: 7.30
 ## RequiredDeps: yoFrame
-## SavedVariables: yo_AllConfig, yo_AllData
+## SavedVariables: yo_AllData, yoFrameDB
 ## SavedVariablesPerCharacter: yo_PersonalConfig, yo_ChatHistory
 
 ## X-Curse-Project-ID: 300674
@@ -15,4 +15,6 @@ Locale\locale.lua
 Locale\enUS.lua
 Locale\ruRU.lua
 
+constants.lua
+profiles.lua
 configui.lua

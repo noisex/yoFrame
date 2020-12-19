@@ -78,7 +78,7 @@ do
 		frame.bg:SetVertexColor(r * .5, g * .5, b * .5)
 
 		local text = frame:CreateFontString(nil, 'OVERLAY')
-		text:SetFont( yo.font, yo.fontsize, "THINOUTLINE")
+		text:SetFont( n.font, n.fontsize, "THINOUTLINE")
 		text:SetShadowOffset(1, -1)
 		text:SetShadowColor(0, 0, 0, 1)
 

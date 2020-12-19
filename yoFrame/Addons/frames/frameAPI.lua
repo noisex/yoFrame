@@ -31,11 +31,14 @@ local ID = {
 
 	[GetSpellInfo(53563)] = true,
 	[GetSpellInfo(156910)] = true,
+
+	[GetSpellInfo(200025)]  = true,
 }
 
 local SWIFTMEND 	= GetSpellInfo(18562);
 local NEZERKALO 	= GetSpellInfo(53563);
 local NEZERKALO2 	= GetSpellInfo(156910);
+local CHASYICA 		= GetSpellInfo(200025)
 
 local function isSpellKnown(aSpellName)
 	return (type(aSpellName) == "number" and IsSpellKnown(aSpellName))
@@ -64,7 +67,7 @@ local function updateBuffHost( self, event, unit, ...)
 			if not name then break end
 
 			if caster == "player" then
-				if ( isSpellKnown( NEZERKALO) or isSpellKnown( NEZERKALO2)) and not buffHots.sIsSwiftmend then
+				if ( isSpellKnown( NEZERKALO) or isSpellKnown( NEZERKALO2) or isSpellKnown( CHASYICA)) and not buffHots.sIsSwiftmend then
 					if ID[name] then
 						buffHots.sIsSwiftmend = true
 					end
@@ -127,7 +130,7 @@ local function frameOnEnter(f, event)
 		f.bgHlight = f.Health:CreateTexture(nil, "OVERLAY")
 		f.bgHlight:SetAllPoints()
 		f.bgHlight:SetVertexColor( 0.4,0.4,0.4,0.9)
-		f.bgHlight:SetTexture( yo.texhl)
+		f.bgHlight:SetTexture( n.texhl)
 		--f.bgHlight:SetBlendMode("ADD")
 		f.bgHlight:SetAlpha(0.2)
 		f.bgHlight:Show()
@@ -157,6 +160,7 @@ local function updatePowerBar ( power, event, unit)
 	local role = UnitGroupRolesAssigned( unit)
 	if yo.Raid.manabar == 1 or ( role == "HEALER" and yo.Raid.manabar == 2 ) then --or power:GetName():match( "yo_Tanke")
 		power.Power:SetAlpha( 1)
+		power.Power.Override = nil
 		if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
 			power.Power:SetValue( UnitPowerMax(unit))
 		end
@@ -204,7 +208,7 @@ local function updateFlash( self)
 end
 
 local function updateManaCost(self, event, _, _, spellID) -- 240022
-	if yo.myClass == "WARLOCK" and yo.mySpec == 3 or spellID == 240022 then return end
+	if n.myClass == "WARLOCK" and n.mySpec == 3 or spellID == 240022 then return end
 
 	local cost 		= 0;
 	local powerType = UnitPowerType("player")
@@ -234,7 +238,7 @@ local function addDebuffHigh( self)
 	self.DebuffHighlightMy = self.DebuffHighlightMy or self.Health:CreateTexture(nil, "OVERLAY")
 	self.DebuffHighlightMy:ClearAllPoints()
 	self.DebuffHighlightMy:SetAllPoints(self.Health:GetStatusBarTexture())
-	self.DebuffHighlightMy:SetTexture(texture)
+	self.DebuffHighlightMy:SetTexture( n.texture)
 	self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
 	--self.DebuffHighlightMy:SetBlendMode("BLEND")
 	self.DebuffHighlightMyAlpha = 0.5
@@ -248,7 +252,7 @@ local function addAbsorbBar( self)
    	AbsorbBar:SetPoint('BOTTOM')
    	AbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture(), 'RIGHT')
    	AbsorbBar:SetWidth( self.Health:GetWidth())
-	AbsorbBar:SetStatusBarTexture( yo.texture)
+	AbsorbBar:SetStatusBarTexture( n.texture)
 	AbsorbBar:SetFillStyle( 'REVERSE')
 	AbsorbBar:SetFrameLevel(2)
 	self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", self.updateHealth)
@@ -263,7 +267,7 @@ local function addHealPred( self)
     healPred:SetPoint('BOTTOM')
     healPred:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
     healPred:SetWidth( self.Health:GetWidth())
-	healPred:SetStatusBarTexture( yo.texture)
+	healPred:SetStatusBarTexture( n.texture)
 	healPred:SetStatusBarColor( 0.3, 0.9, 0.3, 0.6)
 	healPred:SetFrameLevel(2)
 	tinsert( n.statusBars, healPred)
@@ -274,6 +278,9 @@ local function addHealPred( self)
 end
 
 local function addBuffHost( self)
+
+	--if self.unitTT or self.unitT then return end
+
 	local buffHots = self.buffHots or CreateFrame("Frame", nil, self)
 	--buffHots:SetPoint("TOPLEFT", self, "TOPLEFT",  3, -3)
 	buffHots:ClearAllPoints()
@@ -298,7 +305,7 @@ local function addBuffHost( self)
 		self.buffHots.hotaBar:SetPoint( "TOP", self, "TOP", 0, yo.healBotka.bShiftY)
 		self.buffHots.hotaBar:SetWidth( self:GetWidth() - 6)
 		self.buffHots.hotaBar:SetHeight( 2)
-		self.buffHots.hotaBar:SetStatusBarTexture( yo.texture)
+		self.buffHots.hotaBar:SetStatusBarTexture( n.texture)
 		self.buffHots.hotaBar:SetStatusBarColor( split( ",", yo.healBotka.bColor ), 1)
 		self.buffHots.hotaBar:SetFrameLevel( 120)
 		self.buffHots.hotaBar:Hide()
@@ -334,7 +341,7 @@ end
 local function updatePower( f, unit, pmin, min, pmax)
 	local uPP, uPText
 
-	if yo.myClass == "WARLOCK" and yo.mySpec == 3 then
+	if n.myClass == "WARLOCK" and n.mySpec == 3 then
 		pmin, pmax = UnitPower( unit, 7, true), 10
 		pmin = mod( pmin, 10)
 	end
@@ -350,7 +357,7 @@ local function updatePower( f, unit, pmin, min, pmax)
     		if pmin == pmax then
     			uPText = nums( pmin)
     		else
-    			if yo.myClass == "WARLOCK" and yo.mySpec == 3 then
+    			if n.myClass == "WARLOCK" and n.mySpec == 3 then
 					uPText = nums( pmin) .. " | 10"
    				else
    					uPText = nums( pmin) .. " | " .. uPP .. "%"
@@ -496,7 +503,7 @@ local function updateHealth( f, event, unit)
 		f.Health.healPred:Show()
 	end
 
-	if not UnitIsConnected(unit) then
+	if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
 		f.Health:SetValue( healthMax + absorb)
 	else
 		f.Health:SetValue( healthCur + absorb)

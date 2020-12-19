@@ -569,10 +569,10 @@ end
 
 --		local oneDate
 --		if yo.Bags.showAltBags and yo.Bags.countAltBags then
---			for name, player in pairs( yo_BBCount[yo.myRealm]) do
+--			for name, player in pairs( yo_BBCount[n.myRealm]) do
 --				local _, itemID = strsplit(":", link)
 --				itemID = tonumber(itemID)
---				if name ~= yo.myName and player[itemID] then
+--				if name ~= n.myName and player[itemID] then
 --					if not oneDate then
 --						self:AddLine(" ")
 --						oneDate = true
@@ -592,12 +592,12 @@ end
 --				itemBank = cW .. " ( " .. L["BAG"] .. ": " .. numBag .. ", " ..L["BANK"] .. ": " .. numBank .. ")"
 --			end
 
---			--item_count = cY .. yo.myName ..": ".. cW ..numTotal .. itemBank
+--			--item_count = cY .. n.myName ..": ".. cW ..numTotal .. itemBank
 --			if not oneDate then
 --				self:AddLine(" ")
 --				oneDate = true
 --			end
---			self:AddDoubleLine( yo.myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
+--			self:AddDoubleLine( n.myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
 --		end
 --		self:AddLine(" ")
 --		--UIItemTooltipCount = link

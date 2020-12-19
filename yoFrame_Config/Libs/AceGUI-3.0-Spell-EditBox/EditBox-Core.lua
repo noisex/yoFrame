@@ -57,14 +57,17 @@ do
 
 				local button = self.buttons[activeButtons]
 				local spellName, spellRank, spellIcon = GetSpellInfo(spellID)
-				if( self.obj.useRanks and spellRank and spellRank ~= "" ) then
+
+				spellRank = SpellData.spellType[spellID] or nil
+
+				if( spellRank and spellRank ~= "" ) then
 					button:SetFormattedText("|T%s:20:20:2:11:64:64:4:60:4:60:255:255:255|t %s (%s)", spellIcon, spellName, spellRank)
 				else
 					button:SetFormattedText("|T%s:20:20:2:11:64:64:4:60:4:60:255:255:255|t %s", spellIcon, spellName)
 				end
 
 				if( not self.obj.useRanks ) then
-					alreadyAdded[name] = true
+					--alreadyAdded[name] = true
 				end
 
 				button.spellID = spellID

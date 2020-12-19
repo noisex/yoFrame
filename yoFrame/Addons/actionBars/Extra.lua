@@ -32,7 +32,7 @@ function ActionBars:SkinZoneAbilities()
 				CreateStyleSmall( SpellButton, 3, 0, 1)
 			end
 
-			SpellButton.Icon:SetTexCoord(unpack( yo.tCoord))
+			SpellButton.Icon:SetTexCoord(unpack( n.tCoord))
 			SpellButton.NormalTexture:SetAlpha(0)
 
 			SpellButton.IsSkinned = true

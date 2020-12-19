@@ -143,13 +143,13 @@ local function BuffDEbuffDesign(...)
 			if not _G[bf].shadow then
 				blast[i] = idx
 				CreateStyle( _G[bf], 4)
-				_G[bf.."Icon"]:SetTexCoord(unpack( yo.tCoord))
-				_G[bf.."Count"]:SetFont( yo.fontpx, 16, "OUTLINE")
+				_G[bf.."Icon"]:SetTexCoord(unpack( n.tCoord))
+				_G[bf.."Count"]:SetFont( n.fontpx, 16, "OUTLINE")
 				_G[bf.."Count"]:ClearAllPoints()
 				_G[bf.."Count"]:SetPoint( "CENTER", _G[bf], "TOPRIGHT", 0, 0)
 				_G[bf.."Duration"]:ClearAllPoints()
 				_G[bf.."Duration"]:SetPoint( "CENTER", _G[bf], "BOTTOM", 5, 0)
-				_G[bf.."Duration"]:SetFont( yo.fontpx, 12, "OUTLINE")
+				_G[bf.."Duration"]:SetFont( n.fontpx, 12, "OUTLINE")
 			end
 		end
 	end
@@ -205,19 +205,19 @@ local function CreateBuff( uf, name, iSize, count, from, to, shiftx, shifty, dir
 
 					icon.icon = icon:CreateTexture(nil, "BORDER")
 					icon.icon:SetAllPoints()
-					icon.icon:SetTexCoord(unpack( yo.tCoord))
+					icon.icon:SetTexCoord(unpack( n.tCoord))
 					icon.icon:SetVertexColor( 1,1,1,1)
 
 					icon.overlay = CreateFrame("Frame", nil, icon)
 					icon.overlay:SetFrameLevel(4)
 
 					icon.tStack = icon.overlay:CreateFontString(nil, "OVERLAY")
-					icon.tStack:SetFont( yo.fontpx, iSize / 1.7, "OUTLINE")
+					icon.tStack:SetFont( n.fontpx, iSize / 1.7, "OUTLINE")
 					icon.tStack:SetPoint("CENTER", icon, "TOPRIGHT", 0, 0)
 					icon.tStack:SetTextColor( 1, 1, 0)
 
 					icon.tTimer = icon.overlay:CreateFontString(nil, "OVERLAY")
-					icon.tTimer:SetFont( yo.fontpx, iSize / 1.9, "OUTLINE")
+					icon.tTimer:SetFont( n.fontpx, iSize / 1.9, "OUTLINE")
 					icon.tTimer:SetPoint("CENTER", icon, "BOTTOM", 0, 0)
 
 --[[				icon.cd = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")

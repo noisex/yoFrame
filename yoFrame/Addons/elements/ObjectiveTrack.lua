@@ -31,7 +31,7 @@ hooksecurefunc("BonusObjectiveTrackerProgressBar_OnEvent", function(self, ...)
 		self.Bar.BarFrame3:Hide()
 		self.Bar.IconBG:Hide()
 		self.Bar.Icon:SetMask( nil)
-		self.Bar.Icon:SetTexCoord( unpack( yo.tCoord))
+		self.Bar.Icon:SetTexCoord( unpack( n.tCoord))
 
 		CreateStyle( self.Bar, 2)
 	end
@@ -127,7 +127,7 @@ local function designItemButton( itemButton, block)
 
 		itemButton.NormalTexture = nil
 		itemButton:SetNormalTexture( nil)
-		if itemButton.icon then itemButton.icon:SetTexCoord(unpack( yo.tCoord))
+		if itemButton.icon then itemButton.icon:SetTexCoord(unpack( n.tCoord))
 			itemButton:SetSize( 30, 30)
 			CreateStyle( itemButton, 4, 0, 0)
 			itemButton.shadow:SetBackdropBorderColor( 0, 1, 0.8)--( 1, 0.7, 0, 1)
@@ -160,7 +160,7 @@ local function ShowQuestLevelInWatchFrame()
 
 --end
 
-					if ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then
+					if questInfo and ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then
 						local questTypeIndex = GetQuestLogQuestType(questLogIndex)
 						local tagString = n.questTypesIndex[questTypeIndex] or ""
 						local dailyMod = ( questInfo.frequency == 1 or questInfo.frequency == 2) and "|cff0080ff*!*|r" or ""

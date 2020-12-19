@@ -55,7 +55,7 @@ frame:SetScript("OnEvent", function(self, event, addon)
 
 	if event == "ADDON_LOADED" then
 
-		---print(addon)
+		--print(addon)
 		if not yo.Addons.MoveBlizzFrames then return end
 
 		if AddOnFrames[addon] then

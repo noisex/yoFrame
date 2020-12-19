@@ -2,7 +2,7 @@ local addon, ns = ...
 local L, yo, n = unpack( ns)
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
-local texture, texglow = yo.texture, yo.texglow
+local texture, texglow = n.texture, n.texglow
 
 local GetCurrentRegion, time, GetQuestResetTime, LASTONLINE_YEARS, LASTONLINE_MONTHS, LASTONLINE_DAYS, LASTONLINE_HOURS, LASTONLINE_MINUTES, INT_SPELL_DURATION_SEC, LESS_THAN_ONE_MINUTE, date
 	= GetCurrentRegion, time, GetQuestResetTime, LASTONLINE_YEARS, LASTONLINE_MONTHS, LASTONLINE_DAYS, LASTONLINE_HOURS, LASTONLINE_MINUTES, INT_SPELL_DURATION_SEC, LESS_THAN_ONE_MINUTE, date

@@ -10,7 +10,7 @@ local tonumber, print, IsInGroup
 local check = function(self, event, prefix, message, _, sender)
 
 	if event == "CHAT_MSG_ADDON" then
-		if prefix ~=  addonName or sender == yo.myName then return end
+		if prefix ~=  addonName or sender == n.myName then return end
 		if tonumber(message) ~= nil and tonumber(message) > tonumber(n.version) then
 			print("|cffff0000"..L_MISC_UI_OUTDATED.."|r")
 			self:UnregisterEvent("CHAT_MSG_ADDON")

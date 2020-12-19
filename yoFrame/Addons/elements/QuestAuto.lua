@@ -75,7 +75,7 @@ end
 local function GetActiveOptions(...)
 	local _, instance, _, _, _, _, _, mapID = GetInstanceInfo()
 	if --( autoGossipInstance[instance] or autoGossipNPC[GetNPCID()]) and
-		yo.myLevel ~= MAX_PLAYER_LEVEL and C_GossipInfo.GetNumOptions() == 1 then
+		n.myLevel ~= MAX_PLAYER_LEVEL and C_GossipInfo.GetNumOptions() == 1 then
 		C_GossipInfo.SelectOption(1, "", true)
 	end
 end
@@ -85,7 +85,7 @@ local function GetAvailableQuests1( quests)
 		if questInfo.isTrivial == false then
 			C_GossipInfo.SelectAvailableQuest( titleIndex) -- SelectGossipAvailableQuest
 		else
-			print("|cffff0000SKIPED: |r" .. titleText)
+			print("|cffff0000SKIPED: |r|cff00ffff" .. questInfo.title)
 		end
 	end
 end
@@ -300,7 +300,7 @@ local function OnEvent( self, event, ...)
 
 		if questObjectives and #questObjectives > 5 then
 			if watchType then
-				print( format( strQuestObjectives, questID, yo.myLevel, questObjectives))
+				print( format( strQuestObjectives, questID, n.myLevel, questObjectives))
 			elseif yo.Addons.showToday then
 				print( "|cffffff00Тудейки: |cff0080ff" .. questObjectives)
 			end

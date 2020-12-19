@@ -17,7 +17,7 @@ local filter = {
 	},
 }
 
-CreateAnchor("yoMoveFlashIcon", 	"Move flash icon", 70, 70, 0, 200)
+n.moveCreateAnchor("yoMoveFlashIcon", 	"Move flash icon", 70, 70, 0, 200)
 
 local flash = CreateFrame("Frame", "yo_FlashIcon", UIParent)
 flash:SetPoint("CENTER", yoMoveFlashIcon)

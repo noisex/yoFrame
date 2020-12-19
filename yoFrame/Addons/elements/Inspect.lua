@@ -32,6 +32,17 @@ local slotArmorTypeCheck = {
 	["INVTYPE_HAND"]	= true,
 }
 
+local enchSlots = {
+	["ChestSlot"] 	= true,
+	--["WristSlot"] = true,  -- инта
+	--["HandsSlot"]	= true,  -- сила
+	["Finger0Slot"] = true,
+	["Finger1Slot"] = true,
+	["BackSlot"] 	= true,
+	--["FeetSlot"]	= true,  -- ловкость
+	["MainHandSlot"]= true,
+}
+
 local MATCH_ENCHANT = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')
 --Trinket1Slot бесцветное гнездо
 
@@ -42,7 +53,8 @@ local function CreateButtonsText(frame)
 		button.textLVL:SetPoint("TOP", button, "TOP", 0, -2)
 		button.textLVL:SetText("")
 
-		button.textEnch = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
+		button.textEnch = button:CreateFontString(nil, "OVERLAY") --, "SystemFont_Outline_Small")
+		button.textEnch:SetFont( n.font, n.fontsize -1, n.fontstyle)
 		button.textEnch:SetText("")
 
 		if slotsRight[slot] then 				--- слоты справа
@@ -60,19 +72,21 @@ end
 local function UpdateButtonsText(frame)
 	local unit = "player"
 
-	if frame == "Inspect" and InspectFrame:IsShown() == false then return end
-	if frame == "Inspect" then unit = InspectFrame.unit end
+	if frame == "Inspect" and _G.InspectFrame:IsShown() == false then return end
+	if frame == "Inspect" then unit = _G.InspectFrame.unit end
 
 	for _, slot in pairs(n.slots) do
+		local text = _G[frame..slot].textEnch
+		if not text then return end
+
 		local id = GetInventorySlotInfo(slot)
-		--print(id, slot, slotsRight[slot])
+		local enchFound
 
 		local tt = CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate") --n.scanTooltip --
 		tt:SetOwner( UIParent, "ANCHOR_NONE")
 		tt:SetInventoryItem( unit, id)
 		tt:Show()
 
-		local text = _G[frame..slot].textEnch
 		text:SetText( "")
 
 		for x = 9, tt:NumLines() do
@@ -85,12 +99,19 @@ local function UpdateButtonsText(frame)
 				else
 					local enchant = strmatch(lineText, MATCH_ENCHANT)
 					if enchant then
+						enchFound = true
 						text:SetText( enchant)
 						text:SetTextColor( line:GetTextColor())
+						--print( frame..slot, enchant)
 						break
 					end
 				end
 			end
+		end
+
+		if n.mySpecNum and not enchFound and ( enchSlots[slot] or n.classSpecsCoords[n.mySpecNum].enchSlot == slot) then
+			text:SetText( "No enchant")
+			text:SetTextColor( 1, 0, 0)
 		end
 
 		local text = _G[frame..slot].textLVL
@@ -169,7 +190,7 @@ local function CheckSlotLocationUpgrade( self, slotID, itemLocation, bags)
 		local locTypeLoc = select( 9, GetItemInfo( linkLoc))
 
 		if slotArmorTypeCheck[locTypeLoc] then
-			if n.classEquipMap[yo.myClass] == subTypeLoc then
+			if n.classEquipMap[n.myClass] == subTypeLoc then
 				upgrade = true
 			end
 		else
@@ -242,17 +263,20 @@ hooksecurefunc("EquipmentFlyout_DisplayButton", UpdateFlyoutText) --EquipmentFly
 
 local OnEvent = CreateFrame("Frame")
 OnEvent:RegisterEvent("PLAYER_LOGIN")
+OnEvent:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 OnEvent:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+OnEvent:RegisterEvent("ITEM_CHANGED")
+
 OnEvent:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_LOGIN" then
 		CreateButtonsText("Character")
-		UpdateButtonsText("Character")
-		self:UnregisterEvent("PLAYER_LOGIN")
-		CharacterFrame:HookScript("OnShow", function(self) UpdateButtonsText("Character") end)
-		--tick = 1
-		--EquipmentFlyoutFrame:HookScript("OnUpdate", UpdateFlyoutText)
+		_G.CharacterFrame:HookScript("OnShow", function(self) UpdateButtonsText("Character") end)
 
-	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+	elseif event == "PLAYER_EQUIPMENT_CHANGED" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
+		UpdateButtonsText("Character")
+
+	elseif event == "ITEM_CHANGED" then
+		print("ITEM_CHANGED")
 		UpdateButtonsText("Character")
 	else
 		UpdateButtonsText("Inspect")
@@ -264,10 +288,11 @@ OnLoad:RegisterEvent("ADDON_LOADED")
 OnLoad:SetScript("OnEvent", function(self, event, addon)
 	if addon == "Blizzard_InspectUI" then
 		CreateButtonsText("Inspect")
-		InspectFrame:HookScript("OnShow", function(self) UpdateButtonsText("Inspect") end)
+		_G.InspectFrame:HookScript("OnShow", function(self) UpdateButtonsText("Inspect") end)
 		OnEvent:RegisterEvent("UNIT_INVENTORY_CHANGED")
 		OnEvent:RegisterEvent("PLAYER_TARGET_CHANGED")
 		OnEvent:RegisterEvent("INSPECT_READY")
+
 		self:UnregisterEvent("ADDON_LOADED")
 	end
 end)
@@ -286,4 +311,17 @@ hooksecurefunc("PaperDollFrame_SetItemLevel", function(self, unit)
 	end
 
 	CharacterStatsPane.ItemLevelFrame.Value:SetText(ilvl)
+end)
+
+hooksecurefunc("BindEnchant", 	 function(self, ...)
+	--print("BIND IT")
+	C_Timer.After(2, function ()
+		UpdateButtonsText("Character")
+	end)
+end)
+
+hooksecurefunc("ReplaceEnchant", function(self, ...)
+	C_Timer.After( 2, function ()
+		UpdateButtonsText("Character")
+	end)
 end)

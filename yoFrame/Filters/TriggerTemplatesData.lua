@@ -189,7 +189,7 @@ n.playerBuffListAll= {
 		  { spell = 107570, type = "ability", debuff = true, requiresTarget = true, talent = 6}, -- Storm Bolt
 		  { spell = 107574, type = "ability", buff = true, talent = 17}, -- Avatar
 		  { spell = 118038, type = "ability", buff = true}, -- Die by the Sword
-		  { spell = 152277, type = "a bility", talent = 21}, -- Ravager
+		  { spell = 152277, type = "ability", talent = 21}, -- Ravager
 		  { spell = 163201, type = "ability", requiresTarget = true}, -- Execute
 		  { spell = 167105, type = "ability", debuff = true, requiresTarget = true}, -- Colossus Smash
 		  { spell = 190456, type = "ability", buff = true}, -- Ignore Pain
@@ -4762,6 +4762,100 @@ local classLegendaries = {
     }
 }
 
+ --------------------------
+  -- Conduits
+  --------------------------
+
+  local conduits = {
+    WARRIOR = {
+      { spell = 335234, type = "buff", unit = "player"}, -- Ashen Juggernaut
+      { spell = 346574, type = "buff", unit = "player"}, -- Merciless Bonegrinder
+      { spell = 339825, type = "buff", unit = "player"}, -- Show of Force
+    },
+    PALADIN = {
+      { spell = 340147, type = "buff", unit = "player"}, -- Royal Decree
+      { spell = 338788, type = "buff", unit = "player"}, -- Shielding Words
+      { spell = 341741, type = "buff", unit = "player"}, -- Enkindled Spirit
+      { spell = 344067, type = "debuff", unit = "target"}, -- Expurgation
+      { spell = 339376, type = "debuff", unit = "target"}, -- Truth's Wake
+      { spell = 339990, type = "buff", unit = "player"}, -- Untempered Dedication
+      { spell = 340007, type = "debuff", unit = "target"}, -- Vengeful Shock
+      { spell = 339664, type = "buff", unit = "player"}, -- Virtuous Command
+    },
+    HUNTER = {
+      { spell = 339654, type = "debuff", unit = "target"}, -- Vengeful Shock
+      { spell = 339400, type = "buff", unit = "player"}, -- Rejuvenating Wind
+      { spell = 339461, type = "buff", unit = "player"}, -- Resilience of the Hunter
+      { spell = 339929, type = "buff", unit = "player"}, -- Brutal Projectiles
+      { spell = 341401, type = "buff", unit = "player"}, -- Flame Infusion
+      { spell = 341223, type = "buff", unit = "player"}, -- Strength of the Pack
+    },
+    ROGUE = {
+      { spell = 341533, type = "buff", unit = "player"}, -- Fade to Nothing
+      { spell = 341530, type = "buff", unit = "player"}, -- Cloaked in Shadows
+      { spell = 341550, type = "buff", unit = "player"}, -- Deeper Daggers
+      { spell = 341572, type = "buff", unit = "player"}, -- Perforated Veins
+    },
+    PRIEST = {
+      { spell = 337956, type = "debuff", unit = "target"}, -- Mental Recover
+      { spell = 337716, type = "buff", unit = "player"}, -- Charitable Soul
+      { spell = 337749, type = "buff", unit = "player"}, -- Light's Inspiration
+      { spell = 337661, type = "buff", unit = "player"}, -- Translucent Image
+      { spell = 343144, type = "buff", unit = "player"}, -- Dissonant Echoes
+      { spell = 338333, type = "buff", unit = "player"}, -- Mind Devourer
+      { spell = 337948, type = "buff", unit = "player"}, -- Resonant Words
+
+      { spell = 345452, type = "debuff", unit = "target", covenant = 3}, -- Wrathful Faerie Fermata
+      { spell = 345451, type = "buff", unit = "player", covenant = 3}, -- Guardian Faerie Fermata
+      { spell = 345453, type = "buff", unit = "player", covenant = 3}, -- Benevolent Faerie Fermata
+    },
+    SHAMAN = {
+      { spell = 338055, type = "debuff", unit = "target"}, -- Crippling Hex
+      { spell = 338036, type = "buff", unit = "player"}, -- Thunderous Paws
+      { spell = 337984, type = "buff", unit = "player"}, -- Vital Accretion
+      { spell = 338344, type = "buff", unit = "player"}, -- Heavy Rainfall
+      { spell = 338340, type = "buff", unit = "player"}, -- Swirling Currents
+    },
+    MAGE = {
+      { spell = 337278, type = "buff", unit = "player"}, -- Incantation of Swiftness
+      { spell = 337299, type = "buff", unit = "player"}, -- Tempest Barrier
+      { spell = 336832, type = "buff", unit = "player"}, -- Infernal Cascade
+      { spell = 337090, type = "buff", unit = "player", covenant = 4}, -- Siphoned Malice
+    },
+    WARLOCK = {
+      { spell = 339412, type = "buff", unit = "player"}, -- Demonic Momentum
+      { spell = 339298, type = "buff", unit = "player"}, -- Accrued Vitality
+      { spell = 339784, type = "buff", unit = "player"}, -- Tyrant's Soul
+    },
+    MONK = {
+      { spell = 336891, type = "debuff", unit = "target"}, -- Dizzying Tumble
+      { spell = 336887, type = "debuff", unit = "target"}, -- Lingering Numbness
+      { spell = 337079, type = "buff", unit = "player"}, -- Swift Transference
+      { spell = 336874, type = "buff", unit = "player"}, -- Fortifying Ingredients
+    },
+    DRUID = {
+      { spell = 341448, type = "buff", unit = "target"}, -- Born Anew
+      { spell = 340546, type = "buff", unit = "player"}, -- Tireless Pursuit
+      { spell = 340541, type = "buff", unit = "player"}, -- Ursine Vigor
+      { spell = 340613, type = "buff", unit = "player"}, -- Savage Combatant
+      { spell = 340698, type = "buff", unit = "player"}, -- Sudden Ambush
+    },
+    DEMONHUNTER = {
+      { spell = 339051, type = "debuff", unit = "target"}, -- Demonic Parole
+      { spell = 338804, type = "buff", unit = "player"}, -- Felfire Haste
+      { spell = 339589, type = "debuff", unit = "target"}, -- Demon Muzzle
+      { spell = 339424, type = "buff", unit = "player"}, -- Soul Furnace
+    },
+    DEATHKNIGHT = {
+      { spell = 338093, type = "buff", unit = "player"}, -- Fleeting Wind
+      { spell = 338312, type = "debuff", unit = "target"}, -- Unending Grip
+      { spell = 338523, type = "debuff", unit = "target"}, -- Debilitating Malady
+      { spell = 337936, type = "buff", unit = "player"}, -- Eradicating Blow
+      { spell = 338501, type = "buff", unit = "player"}, -- Unleashed Frenzy
+    }
+  }
+
+
 templates.items = { -- Тринкеты вида [item ID] = spellID
   [113931] = 176878,  [113969] = 176874,  [118876] = 177597,  [118878] = 177594,  [118880] = 177592,  [118882] = 177189,  [118884] = 176460,  [113905] = 176873,  --Tank BRF
   [113834] = 176876,  [113835] = 176875,  [113842] = 176879,  [110002] = 165531,  [110003] = 165543,  [110008] = 165535,  [110012] = 165532,  [110013] = 165543,
@@ -4783,6 +4877,89 @@ templates.items = { -- Тринкеты вида [item ID] = spellID
   [347941]=347941,	[330376] = 330376, [330373]=330373, [330364]=330364, [330363] =330363, [330380]=330380, [330366]=330366, [330367]=330367, [330368] =330368, 	-- Непостижимое квантовое устройство
 }
 
+------------------------------
+-- Hardcoded race templates
+-------------------------------
+-- Every Man for Himself
+tinsert(templates.race.Human, { spell = 59752, type = "ability" });
+-- Stoneform
+tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Dwarf, { spell = 65116, type = "buff", unit = "player", titleSuffix = L["buff"]});
+-- Shadow Meld
+tinsert(templates.race.NightElf, { spell = 58984, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.NightElf, { spell = 58984, type = "buff", titleSuffix = L["buff"]});
+-- Escape Artist
+tinsert(templates.race.Gnome, { spell = 20589, type = "ability" });
+-- Gift of the Naaru
+tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]});
+-- Dark Flight
+tinsert(templates.race.Worgen, { spell = 68992, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Worgen, { spell = 68992, type = "buff", unit = "player", titleSuffix = L["buff"]});
+-- Quaking Palm
+tinsert(templates.race.Pandaren, { spell = 107079, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Pandaren, { spell = 107079, type = "buff", titleSuffix = L["buff"]});
+-- Blood Fury
+tinsert(templates.race.Orc, { spell = 20572, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Orc, { spell = 20572, type = "buff", unit = "player", titleSuffix = L["buff"]});
+--Cannibalize
+tinsert(templates.race.Scourge, { spell = 20577, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Scourge, { spell = 20578, type = "buff", unit = "player", titleSuffix = L["buff"]});
+-- War Stomp
+tinsert(templates.race.Tauren, { spell = 20549, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Tauren, { spell = 20549, type = "buff", titleSuffix = L["buff"]});
+--Beserking
+tinsert(templates.race.Troll, { spell = 26297, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Troll, { spell = 26297, type = "buff", unit = "player", titleSuffix = L["buff"]});
+-- Arcane Torment
+tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.BloodElf, { spell = 69179, type = "buff", titleSuffix = L["buff"]});
+-- Pack Hobgoblin
+tinsert(templates.race.Goblin, { spell = 69046, type = "ability" });
+-- Rocket Barrage
+tinsert(templates.race.Goblin, { spell = 69041, type = "ability" });
+-- Arcane Pulse
+tinsert(templates.race.Nightborne, { spell = 260364, type = "ability" });
+-- Cantrips
+tinsert(templates.race.Nightborne, { spell = 255661, type = "ability" });
+-- Light's Judgment
+tinsert(templates.race.LightforgedDraenei, { spell = 255647, type = "ability" });
+-- Forge of Light
+tinsert(templates.race.LightforgedDraenei, { spell = 259930, type = "ability" });
+-- Bull Rush
+tinsert(templates.race.HighmountainTauren, { spell = 255654, type = "ability" });
+--Spatial Rift
+tinsert(templates.race.VoidElf, { spell = 256948, type = "ability" });
+-- Fireblood
+tinsert(templates.race.DarkIronDwarf, { spell = 265221, type = "ability" });
+-- Mole Machine
+tinsert(templates.race.DarkIronDwarf, { spell = 265225, type = "ability" });
+--Haymaker
+tinsert(templates.race.KulTiran, { spell = 287712, type = "ability", requiresTarget = true });
+-- Brush it Off
+tinsert(templates.race.KulTiran, { spell = 291843, type = "buff"});
+-- Hyper Organic Light Originator
+tinsert(templates.race.Mechagnome, { spell = 312924, type = "ability" });
+-- Combat Anlysis
+tinsert(templates.race.Mechagnome, { spell = 313424, type = "buff" });
+-- Recently Failed
+tinsert(templates.race.Mechagnome, { spell = 313015, type = "debuff" });
+-- Ancestral Call
+tinsert(templates.race.MagharOrc, { spell = 274738, type = "ability" });
+-- ZandalariTroll = {}
+-- Pterrordax Swoop
+tinsert(templates.race.ZandalariTroll, { spell = 281954, type = "ability" });
+-- Regenratin'
+tinsert(templates.race.ZandalariTroll, { spell = 291944, type = "ability" });
+-- Embrace of the Loa
+tinsert(templates.race.ZandalariTroll, { spell = 292752, type = "ability" });
+-- Vulpera = {}
+-- Bag of Tricks
+tinsert(templates.race.Vulpera, { spell = 312411, type = "ability" });
+-- Make Camp
+tinsert(templates.race.Vulpera, { spell = 312370, type = "ability" });
+
+
 --templates.spell_covenant = {
 --  [307865]=1,[312321]=1,[324386]=1,[323547]=1,[325013]=1,[304971]=1,[310454]=1,[307443]=1,[308491]=1,[326434]=1,[306830]=1,[312202]=1,[324739]=1,[323436]=1,
 --  [324143]=4,[325289]=4,[326059]=4,[328547]=4,[324724]=4,[328204]=4,[325216]=4,[324220]=4,[325028]=4,[325727]=4,[329554]=4,[315443]=4,[324631]=4,
@@ -4790,8 +4967,8 @@ templates.items = { -- Тринкеты вида [item ID] = spellID
 --  [317320]=2,[321792]=2,[320674]=2,[323654]=2,[323673]=2,[316958]=2,[326860]=2,[314793]=2,[324149]=2,[323546]=2,[317009]=2,[311648]=2,[300728]=2,
 --}
 
-
 tinsert( templates.class.DRUID[1][1].args, { spell = 157228, type = "buff", unit = "player"}) -- Бешенство совуха
+
 
 local delayedEnrichDatabase = false;
 local itemInfoReceived = CreateFrame("frame")
@@ -4837,11 +5014,99 @@ local function enrichDatabase()
   end
 end
 
+local function loadSpellsTable()
+	n.allPlayerSpell = {}
+	-- COVENANTS
+	local covaData = n.templates.covenants[C_Covenants.GetActiveCovenantID()]
+	if covaData and covaData.args then
+	--for i = 1, 4 do
+		for k,v in pairs( covaData.args) do
+			if v.type then
+				if not v.class or v.class == n.myClass then
+					if not n.allPlayerSpell[v.spell] then n.allPlayerSpell[v.spell] = {} end
+					n.allPlayerSpell[v.spell][v.type] = true
+				end
+			end
+		end
+	end
+	-- LEGENDARES
+	for k,v in pairs(  n.generalLegendaries) do
+		if v.type then
+			if not n.allPlayerSpell[v.spell] then n.allPlayerSpell[v.spell] = {} end
+			n.allPlayerSpell[v.spell][v.type] = true
+		end
+	end
+	-- CLASS LEGENDARES
+	for k,v in pairs(  n.classLegendaries[n.myClass]) do
+		if v.type then
+			if not n.allPlayerSpell[v.spell] then n.allPlayerSpell[v.spell] = {} end
+			n.allPlayerSpell[v.spell][v.type] = true
+		end
+	end
+	-- CLASS/SPEC ABILITY BUFF DEBUFF
+	for k, spec in pairs(  n.templates.class[n.myClass]) do 		-- specs
+		for k, args in ipairs( spec) do
+			if args.args then
+				for k,v in pairs( args.args) do
+					if v.type then
+						if not n.allPlayerSpell[v.spell] then n.allPlayerSpell[v.spell] = {} end
+						n.allPlayerSpell[v.spell][v.type] = true
+					end
+				end
+			end
+		end
+	end
+	-- RACE ABILITY
+	for k,v in pairs( templates.race[n.myRace]) do
+		if v.type then
+			if not n.allPlayerSpell[v.spell] then n.allPlayerSpell[v.spell] = {} end
+			n.allPlayerSpell[v.spell][v.type] = true
+		end
+	end
+	-- CONDUICTS
+	for k,v in pairs( conduits[n.myClass]) do
+		if v.type then
+			if not n.allPlayerSpell[v.spell] then n.allPlayerSpell[v.spell] = {} end
+			n.allPlayerSpell[v.spell][v.type] = true
+		end
+	end
+	-- TALENTS
+	for i = 1, _G.MAX_TALENT_TIERS do
+		for j = 1, 3 do
+			local _, name, _, _, _, spellID = GetTalentInfo( i, j, 1) --, 1, true, "player")
+
+			if not n.allPlayerSpell[spellID] then n.allPlayerSpell[spellID] = {} end
+			n.allPlayerSpell[spellID]["talent"] = true
+		end
+	end
+	--SPELLBOOK
+	for tabIndex = 1, GetNumSpellTabs() do
+   		local _, _, offset, numSlots = GetSpellTabInfo(tabIndex);
+   		for i = offset + 1, offset + numSlots do
+      		local spellName, _, spellID = GetSpellBookItemName( i, "spell");
+      		local isPassive = IsPassiveSpell( i, "spell");
+
+   			if spellID and not isPassive then
+   				if not n.allPlayerSpell[spellID] then n.allPlayerSpell[spellID] = {} end
+   				n.allPlayerSpell[spellID]["ability"] = true
+   			end
+   		end
+	end
+	--MACROS
+	local a = GetNumMacros()
+	for i = 1, a do
+   		local name, iconTexture, body, isLocal = GetMacroInfo( i);
+   		--if not n.allPlayerSpell[spellID] then n.allPlayerSpell[spellID] = {} end
+   		--n.allPlayerSpell[spellID]["macros"] = true
+   		--print( name)
+	end
+end
+
 itemInfoReceived:SetScript("OnEvent", function( self, event)
   if event == "PLAYER_LOGIN" then
 
 	for k,v in pairs( templates.class) do
-	  if k ~= yo.myClass then
+	  if k ~= n.myClass then
 		templates.class[k] = nil
 		classLegendaries[k] = nil
 	  end
@@ -4849,6 +5114,8 @@ itemInfoReceived:SetScript("OnEvent", function( self, event)
 	enrichDatabase();
 	n.templates = templates
 	n.classLegendaries = classLegendaries
+
+	loadSpellsTable()
   end
 
   if (not delayedEnrichDatabase) then

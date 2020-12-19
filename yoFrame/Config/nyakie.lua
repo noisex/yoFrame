@@ -8,6 +8,41 @@ n.unitFrames 	= {}
 n.elemFrames	= {}
 --n.spellsBooks 	= {}
 
+texture 		= 	yo.Media.texture
+font 			= 	yo.Media.font
+
+n.texture 		= 	yo.Media.texture
+n.texhl 		=	yo.Media.texhl
+n.texglow 		= 	yo.Media.texglow
+n.font 			= 	yo.Media.font
+n.fontChat		=	yo.Chat.chatFont
+n.fontpx		=	yo.Media.fontpx
+n.fontsize 		=	yo.Media.fontsize
+n.fontstyle 	= 	"OUTLINE"
+n.sysfontsize	=	yo.Media.sysfontsize
+
+n.tCoord 		= {0.07, 0.93, 0.07, 0.93}
+--n.tCoord 		= {0,1,0,1}
+n.tCoordBig 	= {0.22, 0.78, 0.22, 0.78}
+n.tCoordSmall 	= {0.07, 0.93, 0.07, 0.93}
+
+n.myClass  		= select( 2, UnitClass( "player"))
+n.mySpec    	= GetSpecialization()
+--n.mySpecNum		= GetSpecializationInfo( n.mySpec)
+n.myGUID   		= UnitGUID('player')
+--mySpeClass  	= n.myClass .. n.mySpec
+n.myColor  		= RAID_CLASS_COLORS[n.myClass]
+n.myColorStr   	= "|c" .. RAID_CLASS_COLORS[n.myClass].colorStr
+n.myName   		= UnitName( "player")
+n.myRealm  		= GetRealmName()
+n.myRealmShort	= select( 2, UnitFullName("player"))
+n.myLogin  		= GetTime()
+n.myClient   	= GetLocale()
+n.myFaction  	= UnitFactionGroup("player")
+n.myLevel  		= UnitLevel( "player")
+n.myRace   		= select(2, UnitRace('player'))
+n.mySex    		= UnitSex('player')
+
 n.infoTexts  	= CreateFrame("Frame")
 n.version 	  	= GetAddOnMetadata( addonName, "Version")
 n.scanTooltip 	= CreateFrame('GameTooltip', 'yoFrame_STT', UIParent, 'GameTooltipTemplate')
@@ -30,11 +65,11 @@ end
 n.IsSoloFree = function ( ... )
   --local instanceType = select( 2, GetInstanceInfo())
 
-  if    UnitInParty("player") then return false
+  if      UnitInParty("player") then return false
   elseif  UnitInRaid("player")  then return false
-  elseif  IsInInstance()      then return false
+  elseif  IsInInstance()      	then return false
     --and instanceType ~= "scenario" then return false
-  else                 return true
+  else                 				 return true
   end
 end
 
@@ -167,55 +202,90 @@ n.pType = {
 	MONK 		= { powerID = 12, 	powerType = 'CHI', 				spec = 3},
 }
 
-
 n.classSpecsCoords = {
-  [577] = {128/512, 192/512, 256/512, 320/512}, --> havoc demon hunter
-  [581] = {192/512, 256/512, 256/512, 320/512}, --> vengeance demon hunter
+  [577] = { tCoord 		= {128/512, 192/512, 256/512, 320/512},
+			enchSlot 	= "FeetSlot",}, 							--> havoc demon hunter
+  [581] = { tCoord 		= {192/512, 256/512, 256/512, 320/512},
+			enchSlot 	= "FeetSlot",}, 							--> vengeance demon hunter
 
-  [250] = {0, 64/512, 0, 64/512}, --> blood dk
-  [251] = {64/512, 128/512, 0, 64/512}, --> frost dk
-  [252] = {128/512, 192/512, 0, 64/512}, --> unholy dk
+  [250] = { tCoord 		= {0, 64/512, 0, 64/512},
+			enchSlot 	= "HandsSlot",}, 							--> blood dk
+  [251] = { tCoord 		= {64/512, 128/512, 0, 64/512},
+			enchSlot 	= "HandsSlot",}, 							--> frost dk
+  [252] = { tCoord 		= {128/512, 192/512, 0, 64/512},
+			enchSlot 	= "HandsSlot",}, 							--> unholy dk
 
-  [102] = {192/512, 256/512, 0, 64/512}, -->  druid balance
-  [103] = {256/512, 320/512, 0, 64/512}, -->  druid feral
-  [104] = {320/512, 384/512, 0, 64/512}, -->  druid guardian
-  [105] = {384/512, 448/512, 0, 64/512}, -->  druid resto
+  [102] = { tCoord 		= {192/512, 256/512, 0, 64/512},
+			enchSlot 	= "WristSlot",}, 							-->  druid balance
+  [103] = { tCoord 		= {256/512, 320/512, 0, 64/512},
+			enchSlot 	= "FeetSlot",}, 							-->  druid feral
+  [104] = { tCoord 		= {320/512, 384/512, 0, 64/512},
+			enchSlot 	= "FeetSlot",}, 								-->  druid guardian
+  [105] = { tCoord 		= {384/512, 448/512, 0, 64/512},
+			enchSlot	= "WristSlot",}, 								-->  druid resto
 
-  [253] = {448/512, 512/512, 0, 64/512}, -->  hunter bm
-  [254] = {0, 64/512, 64/512, 128/512}, --> hunter marks
-  [255] = {64/512, 128/512, 64/512, 128/512}, --> hunter survivor
+  [253] = { tCoord 		= {448/512, 512/512, 0, 64/512},
+			enchSlot 	= "FeetSlot",}, 								-->  hunter bm
+  [254] = { tCoord 		= {0, 64/512, 64/512, 128/512},
+			enchSlot 	= "FeetSlot",}, 								--> hunter marks
+  [255] = { tCoord 		= {64/512, 128/512, 64/512, 128/512},
+			enchSlot 	= "FeetSlot",}, 								--> hunter survivor
 
-  [62] = {(128/512) + 0.001953125, 192/512, 64/512, 128/512}, --> mage arcane
-  [63] = {192/512, 256/512, 64/512, 128/512}, --> mage fire
-  [64] = {256/512, 320/512, 64/512, 128/512}, --> mage frost
+  [62] = { tCoord 		= {(128/512) + 0.001953125, 192/512, 64/512, 128/512},
+			enchSlot 	= "WristSlot",}, 								--> mage arcane
+  [63] = { tCoord 		= {192/512, 256/512, 64/512, 128/512},
+			enchSlot 	= "WristSlot",}, 								--> mage fire
+  [64] = { tCoord 		= {256/512, 320/512, 64/512, 128/512},
+			enchSlot 	= "WristSlot",}, 								--> mage frost
 
-  [268] = {320/512, 384/512, 64/512, 128/512}, --> monk bm
-  [269] = {448/512, 512/512, 64/512, 128/512}, --> monk ww
-  [270] = {384/512, 448/512, 64/512, 128/512}, --> monk mw
+  [268] = { tCoord 		= {320/512, 384/512, 64/512, 128/512},
+			enchSlot 	= "FeetSlot",}, 								--> monk bm
+  [269] = { tCoord 		= {448/512, 512/512, 64/512, 128/512},
+			enchSlot 	= "FeetSlot",}, 								--> monk ww
+  [270] = { tCoord 		= {384/512, 448/512, 64/512, 128/512},
+			enchSlot 	= "FeetSlot",}, 								--> monk mw
 
-  [65] = {0, 64/512, 128/512, 192/512}, --> paladin holy
-  [66] = {64/512, 128/512, 128/512, 192/512}, --> paladin protect
-  [70] = {(128/512) + 0.001953125, 192/512, 128/512, 192/512}, --> paladin ret
+  [65] = { 	tCoord 		= {0, 64/512, 128/512, 192/512},
+			enchSlot 	= "WristSlot",}, 								--> paladin holy
+  [66] = { 	tCoord 		= {64/512, 128/512, 128/512, 192/512},
+			enchSlot 	= "HandsSlot",}, 								--> paladin protect
+  [70] = { 	tCoord 		= {(128/512) + 0.001953125, 192/512, 128/512, 192/512},
+			enchSlot 	= "HandsSlot",}, 								--> paladin ret
 
-  [256] = {192/512, 256/512, 128/512, 192/512}, --> priest disc
-  [257] = {256/512, 320/512, 128/512, 192/512}, --> priest holy
-  [258] = {(320/512) + (0.001953125 * 4), 384/512, 128/512, 192/512}, --> priest shadow
+  [256] = { tCoord 		= {192/512, 256/512, 128/512, 192/512},
+			enchSlot 	= "WristSlot",}, 								--> priest disc
+  [257] = { tCoord 		= {256/512, 320/512, 128/512, 192/512},
+			enchSlot 	= "WristSlot",}, 								--> priest holy
+  [258] = { tCoord 		= {(320/512) + (0.001953125 * 4), 384/512, 128/512, 192/512},
+			enchSlot 	= "WristSlot",}, 								--> priest shadow
 
-  [259] = {384/512, 448/512, 128/512, 192/512}, --> rogue assassination
-  [260] = {448/512, 512/512, 128/512, 192/512}, --> rogue combat
-  [261] = {0, 64/512, 192/512, 256/512}, --> rogue sub
+  [259] = { tCoord 		= {384/512, 448/512, 128/512, 192/512},
+			enchSlot 	= "FeetSlot",}, 								--> rogue assassination
+  [260] = { tCoord 		= {448/512, 512/512, 128/512, 192/512},
+			enchSlot 	= "FeetSlot",}, 								--> rogue combat
+  [261] = { tCoord 		= {0, 64/512, 192/512, 256/512},
+			enchSlot 	= "FeetSlot",}, 								--> rogue sub
 
-  [262] = {64/512, 128/512, 192/512, 256/512}, --> shaman elemental
-  [263] = {128/512, 192/512, 192/512, 256/512}, --> shamel enhancement
-  [264] = {192/512, 256/512, 192/512, 256/512}, --> shaman resto
+  [262] = { tCoord 		= {64/512, 128/512, 192/512, 256/512},
+			enchSlot 	= "WristSlot",}, 								--> shaman elemental
+  [263] = { tCoord 		= {128/512, 192/512, 192/512, 256/512},
+			enchSlot 	= "FeetSlot",}, 								--> shamel enhancement
+  [264] = { tCoord 		= {192/512, 256/512, 192/512, 256/512},
+			enchSlot 	= "WristSlot",}, 								--> shaman resto
 
-  [265] = {256/512, 320/512, 192/512, 256/512}, --> warlock aff
-  [266] = {320/512, 384/512, 192/512, 256/512}, --> warlock demo
-  [267] = {384/512, 448/512, 192/512, 256/512}, --> warlock destro
+  [265] = { tCoord 		= {256/512, 320/512, 192/512, 256/512},
+			enchSlot 	= "WristSlot",}, 								--> warlock aff
+  [266] = { tCoord 		= {320/512, 384/512, 192/512, 256/512},
+			enchSlot 	= "WristSlot",}, 								--> warlock demo
+  [267] = { tCoord 		= {384/512, 448/512, 192/512, 256/512},
+			enchSlot 	= "WristSlot",}, 								--> warlock destro
 
-  [71] = {448/512, 512/512, 192/512, 256/512}, --> warrior arms
-  [72] = {0, 64/512, 256/512, 320/512}, --> warrior fury
-  [73] = {64/512, 128/512, 256/512, 320/512}, --> warrior protect
+  [71] = { 	tCoord 		= {448/512, 512/512, 192/512, 256/512},
+			enchSlot 	= "HandsSlot",}, 								--> warrior arms
+  [72] = { 	tCoord 		= {0, 64/512, 256/512, 320/512},
+			enchSlot 	= "HandsSlot",}, 								--> warrior fury
+  [73] = { 	tCoord 		= {64/512, 128/512, 256/512, 320/512},
+			enchSlot 	= "HandsSlot",}, 								--> warrior protect
 }
 
 -- List of spells to display ticks
@@ -334,6 +404,7 @@ n.badMobsCasts = {
     [346506] = true, --https://ru.wowhead.com/spell=346506
     [330822] = true, --https://ru.wowhead.com/spell=330822
     [298844] = true, -- Ужасающий вой
+    [242391] = true, -- https://ru.wowhead.com/spell=242391
 }
 --164926
 --163086

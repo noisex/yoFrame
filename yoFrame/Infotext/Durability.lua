@@ -40,9 +40,9 @@ function Stat:isWearingShield()
 end
 
 function Stat:avoidCheck()
-	targetlv, playerlv = UnitLevel('target'), yo.myLevel
+	targetlv, playerlv = UnitLevel('target'), n.myLevel
 
-	basemisschance = yo.myRace == 'NightElf' and 7 or 5
+	basemisschance = n.myRace == 'NightElf' and 7 or 5
 	if targetlv == -1 then
 		leveldifference = 3
 	elseif targetlv > playerlv then
@@ -71,7 +71,7 @@ function Stat:avoidCheck()
 	if parry <= 0 then parry = 0 end
 	if block <= 0 then block = 0 end
 
-	if yo.myClass == 'DRUID' and GetBonusBarOffset() == 3 then
+	if n.myClass == 'DRUID' and GetBonusBarOffset() == 3 then
 		parry = 0
 		numAvoidances = numAvoidances - 1
 	end
@@ -112,10 +112,10 @@ function Stat:onEvent( event)
 		elseif localSlots[1][3] <= 0.3 then
 			self.Text:SetText("Armor: ".. "|cffff1000" ..floor(localSlots[1][3]*100).."%" )
 		else
-			self.Text:SetText("Armor: ".. yo.myColorStr ..floor(localSlots[1][3]*100).."%" )
+			self.Text:SetText("Armor: ".. n.myColorStr ..floor(localSlots[1][3]*100).."%" )
 		end
 	else
-		self.Text:SetText("Armor: ".. yo.myColorStr..": 100%")
+		self.Text:SetText("Armor: ".. n.myColorStr..": 100%")
 	end
 
 	self:avoidCheck()
@@ -190,7 +190,7 @@ function Stat:Enable()
 	self:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)

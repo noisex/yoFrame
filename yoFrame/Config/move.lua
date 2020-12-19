@@ -1,10 +1,18 @@
 local addon, ns = ...
 local L, yo, n = unpack( ns)
 
-yo_AnchorFrames = {}
+local _G = _G
+--local moveUnlockState
+
+local UIParent, CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
+	= UIParent, CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
+
+n.moveFrames = {}
 yo_Position = {}
 
-SetAnchPosition = function(anch, realAnch)
+--GLOBALS: yo_Position
+
+n.setAnchPosition = function(anch, realAnch)
 
 	local ap, _, rp, x, y = anch:GetPoint()
 
@@ -22,7 +30,7 @@ end
 
 local OnDragStop = function(self)
 	self:StopMovingOrSizing()
-	SetAnchPosition(self)
+	n.setAnchPosition(self)
 end
 
 local function framemove(f)
@@ -35,12 +43,12 @@ local function framemove(f)
 	f:SetBackdropBorderColor(.23,.45,.13, 1)
 end
 
-function CreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
-	t1 = ( p1 or "CENTER")
-	t2 = ( p2 or "CENTER")
+function n.moveCreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
+	local t1 = ( p1 or "CENTER")
+	local t2 = ( p2 or "CENTER")
 	local anchorTo = anchor and anchor or UIParent
 
-	f = CreateFrame("Frame", name, anchorTo)
+	local f = CreateFrame("Frame", name, anchorTo)
 	f:SetPoint( t1, anchorTo, t2, x, y)
 	f:SetScale(1)
 	f:SetFrameLevel( 10)
@@ -75,14 +83,14 @@ function CreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
 	f.text:SetPoint("CENTER")
 	f.text:SetText(text)
 
-	tinsert(yo_AnchorFrames, f:GetName())
+	n.moveFrames[f:GetName()] = f
 end
 
-function AnchorsUnlock()
+function n.moveAnchorsUnlock()
 	print("|cff00a2ffyoFrame:|r all frames unlocked")
-	t_unlock = true
-	for _, v in pairs(yo_AnchorFrames) do
-		f = _G[v]
+	n.moveUnlockState = true
+	for _, f in pairs(n.moveFrames) do
+		--f = v --_G[v]
 		f.dragtexture:SetAlpha(1)
 		f.text:SetAlpha(1)
 		f:EnableMouse(true)
@@ -90,11 +98,11 @@ function AnchorsUnlock()
 	end
 end
 
-function AnchorsLock()
+function n.moveAnchorsLock()
 	print("|cff00a2ffyoFrame:|r all frames locked")
-	t_unlock = false
-	for _, v in pairs(yo_AnchorFrames) do
-		f = _G[v]
+	n.moveUnlockState = false
+	for _, f in pairs(n.moveFrames) do
+		--f = _G[v]
 		f.dragtexture:SetAlpha(0)
 		f.text:SetAlpha(0)
 		f:EnableMouse(nil)
@@ -103,7 +111,7 @@ function AnchorsLock()
 	end
 end
 
-function AnchorsReset()
+function n.moveAnchorsReset()
 	if( yo_Position) then yo_Position = nil end
 	ReloadUI()
 end
@@ -112,38 +120,38 @@ ns.toggleMove = function ()
 	if InCombatLockdown() then print("No, not in comabt only...") return end
 	--PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
 
-	if not t_unlock then
-		AnchorsUnlock()
+	if not n.moveUnlockState then
+		n.moveAnchorsUnlock()
 		isAligning = true
 		PlaySound(SOUNDKIT.IG_QUEST_LOG_OPEN);
-	elseif t_unlock == true then
-		AnchorsLock()
+	elseif n.moveUnlockState == true then
+		n.moveAnchorsLock()
 		isAligning = false
 		PlaySound(SOUNDKIT.IG_QUEST_LOG_CLOSE);
 	end
 end
 
-function ySlashCmd(cmd)
+function n.moveSlashCmd(cmd)
 	if InCombatLockdown() then print("No, not in comabt only...") return end
 	if (cmd:match"reset") then
-		AnchorsReset()
+		n.moveAnchorsReset()
 	else
-		if not t_unlock then
-			AnchorsUnlock()
+		if not n.moveUnlockState then
+			n.moveAnchorsUnlock()
 			isAligning = true
-		elseif t_unlock == true then
-			AnchorsLock()
+		elseif n.moveUnlockState == true then
+			n.moveAnchorsLock()
 			isAligning = false
 		end
 	end
 end
 
-local RestoreUI = function(self)
+n.moveRestoreUI = function(self)
 	if InCombatLockdown() then
 		if not self.shedule then self.shedule = CreateFrame("Frame", nil, self) end
 		self.shedule:RegisterEvent("PLAYER_REGEN_ENABLED")
 		self.shedule:SetScript("OnEvent", function(self)
-			RestoreUI(self:GetParent())
+			n.moveRestoreUI(self:GetParent())
 			self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 			self:SetScript("OnEvent", nil)
 		end)
@@ -161,23 +169,23 @@ local frame = CreateFrame("Frame")
 	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	frame:SetScript("OnEvent", function(self, event)
 		self:UnregisterEvent(event)
-		RestoreUI(self)
+		n.moveRestoreUI(self)
 	end)
 
-CreateAnchor("yoMoveplayer", 		"Move Player", 		200, 40, 500, 270, 	"BOTTOMLEFT", "BOTTOMLEFT")
-CreateAnchor("yoMovetarget", 		"Move Target", 		200, 40, -500, 270, "BOTTOMRIGHT", "BOTTOMRIGHT")
-CreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 5, 320, 	"TOPLEFT", "BOTTOMLEFT")
-CreateAnchor("yoMovefocustarget", 	"Move FocusTarget", 110, 25, 5, -1000)
-CreateAnchor("yoMovetargettarget", 	"Move Tar-Tar", 	100, 25, 0, -1000)
-CreateAnchor("yoMovepet", 			"Move Pet", 		100, 25, 00, -1000)
-CreateAnchor("yoMoveboss", 			"Move Boss", 		180, 35, -370, -200, "TOPRIGHT", "TOPRIGHT")
+n.moveCreateAnchor("yoMoveplayer", 		"Move Player", 		200, 40, 500, 270, 	"BOTTOMLEFT", "BOTTOMLEFT")
+n.moveCreateAnchor("yoMovetarget", 		"Move Target", 		200, 40, -500, 270, "BOTTOMRIGHT", "BOTTOMRIGHT")
+n.moveCreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 5, 320, 	"TOPLEFT", "BOTTOMLEFT")
+n.moveCreateAnchor("yoMovefocustarget", "Move FocusTarget", 110, 25, 5, -1000)
+n.moveCreateAnchor("yoMovetargettarget","Move Tar-Tar", 	100, 25, 0, -1000)
+n.moveCreateAnchor("yoMovepet", 		"Move Pet", 		100, 25, 00, -1000)
+n.moveCreateAnchor("yoMoveboss", 		"Move Boss", 		180, 35, -370, -200, "TOPRIGHT", "TOPRIGHT")
 
---CreateAnchor("yoMoveLeftPanel", 	"Move Left DataPanel", 440, 175, 3, 3, "BOTTOMLEFT","BOTTOMLEFT")
-CreateAnchor("yoMoveQuestFrame", 	"Move Quest Frame", 230, 500, -5, -175, "TOPRIGHT", "TOPRIGHT")
-CreateAnchor("yoMoveExperience", 	"Move Experience", 7, 173, -452, 4, "BOTTOM", "BOTTOMRIGHT")
-CreateAnchor("yoMovePlayerCastBar",	"Move Player CastBar", 436, 20, 0, 91, "CENTER", "BOTTOM")
-CreateAnchor("yoMoveRUP", 			"Move Utility Panel", 226, 18, 0, -10, "TOP", "TOP")
-CreateAnchor("yoMoveToolTip",		"Move ToolTips", 150, 100, -5, 230, "BOTTOMRIGHT", "BOTTOMRIGHT")
-CreateAnchor("yoMoveLoot", 			"Move Loot", 250, 50, 10, -270, "TOPLEFT","TOPLEFT")
+--n.moveCreateAnchor("yoMoveLeftPanel", 	"Move Left DataPanel", 440, 175, 3, 3, "BOTTOMLEFT","BOTTOMLEFT")
+n.moveCreateAnchor("yoMoveQuestFrame", 	"Move Quest Frame", 230, 500, -5, -175, "TOPRIGHT", "TOPRIGHT")
+n.moveCreateAnchor("yoMoveExperience", 	"Move Experience", 	7, 173, -452, 4, 	"BOTTOM", "BOTTOMRIGHT")
+n.moveCreateAnchor("yoMovePlayerCastBar","Move Player CastBar", 436, 20, 0, 91, "CENTER", "BOTTOM")
+n.moveCreateAnchor("yoMoveRUP", 		"Move Utility Panel", 226, 18, 0, -10, 	"TOP", "TOP")
+n.moveCreateAnchor("yoMoveToolTip",		"Move ToolTips", 	150, 100, -5, 230, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
+n.moveCreateAnchor("yoMoveLoot", 		"Move Loot", 		250, 50, 10, -270, 	"TOPLEFT","TOPLEFT")
 
-CreateAnchor("yoMoveAltPower", 		"Move Power Alt Bar", 250, 70, 0, -150, 	"CENTER", "TOP")
+n.moveCreateAnchor("yoMoveAltPower", 	"Move Power Alt Bar", 250, 70, 0, -150, "CENTER", "TOP")

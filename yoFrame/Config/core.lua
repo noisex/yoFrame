@@ -31,14 +31,15 @@ AlertFrame.ClearAllPoints = n.dummy
 AlertFrame.SetPoint = n.dummy
 
 local function enterEvent( self)
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	yo.mySpec = GetSpecialization()
-	myRole = UnitGroupRolesAssigned( "player")
+	--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	n.mySpec    = GetSpecialization()
+	n.mySpecNum	= GetSpecializationInfo( n.mySpec)
+	n.myRole	= UnitGroupRolesAssigned( "player")
 
 	SetCVar("countdownForCooldowns", 0)
 	SetCVar("multiBarRightVerticalLayout", 0)  -- уменьшает 4 и 5 бары, если включено
 
-	hooksecurefunc( "CloseAllWindows", checkToClose)
+	--hooksecurefunc( "CloseAllWindows", checkToClose)
 	--C_Timer.After( 2, function() buttonsUP(self) end )
 
 	if yo.NamePlates.enable then
@@ -79,9 +80,10 @@ local function enterEvent( self)
 		SetCVar("nameplateMaxDistance", yo.NamePlates.maxDispance)
 	end
 
+	-- утроба круг сдвинуть в угол
 	UIWidgetTopCenterContainerFrame:SetScale(0.75)
 	UIWidgetTopCenterContainerFrame:ClearAllPoints()
-	UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 200, -15)
+	UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -15)
 
 	UIWidgetTopCenterContainerFrame.SetScale = n.dummy
 	UIWidgetTopCenterContainerFrame.ClearAllPoints = n.dummy
@@ -93,13 +95,15 @@ end
 local function OnEvent( self, event, ...)
 
 	if event == "PLAYER_ROLES_ASSIGNED" then
-		myRole = UnitGroupRolesAssigned( "player")
+		yo.myRole = UnitGroupRolesAssigned( "player")
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		enterEvent( self)
 	elseif event == "ADDON_ACTION_BLOCKED" or event == "ADDON_ACTION_FORBIDDEN" then
 		--dprint(event, ...)
 	elseif event == "PLAYER_LEVEL_UP" then
-		yo.myLevel = UnitLevel("player")
+		n.myLevel = UnitLevel("player")
+	elseif event == "JAILERS_TOWER_LEVEL_UPDATE" then
+		--print(...)
 	end
 
 end
@@ -110,6 +114,8 @@ csf:RegisterEvent("PLAYER_ROLES_ASSIGNED")
 csf:RegisterEvent("PLAYER_LEVEL_UP")
 csf:RegisterEvent("ADDON_ACTION_BLOCKED")
 csf:RegisterEvent("ADDON_ACTION_FORBIDDEN")
+
+csf:RegisterEvent("JAILERS_TOWER_LEVEL_UPDATE")
 
 csf:SetScript("OnEvent", OnEvent)
 
@@ -122,7 +128,7 @@ csf:SetScript("OnEvent", OnEvent)
 --print("|cFF00A2FF/kb |r - Command to ActionBar KeyBinding.")
 --print("|cFF00A2FF/cfg |r - Ingame UI config.")
 
-SlashCmdList["YOMOVE"] = ySlashCmd
+SlashCmdList["YOMOVE"] = n.moveSlashCmd
 SLASH_YOMOVE1 = "/yo";
 SLASH_YOMOVE2 = "/нщ";
 SLASH_YOMOVE3 = "/move";

@@ -2,6 +2,14 @@ local L, yo, n = unpack( select( 2, ...))
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
+local GetContainerNumSlots, GetContainerItemInfo, date, time, strlower, print, strsub, CreateFrame, timeFormatMS, SendChatMessage
+	= GetContainerNumSlots, GetContainerItemInfo, date, time, strlower, print, strsub, CreateFrame, timeFormatMS, SendChatMessage
+
+local BACKPACK_CONTAINER = BACKPACK_CONTAINER
+local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local LANDING_PAGE_REPORT = LANDING_PAGE_REPORT
+local CHALLENGE_MODE_POWER_LEVEL = CHALLENGE_MODE_POWER_LEVEL
+
 local requestKeystoneCheck, registered
 
 local challengeMapID
@@ -13,22 +21,9 @@ local yo_OldKey, yo_OldKey2 = nil, nil
 local function CheckInventoryKeystone()
 	local keyslink = nil
 
-	local newname = UnitName("player")
-	local realm = GetRealmName()
-	if yo_AllData == nil then
-		yo_AllData = {}
-	end
-
-	if yo_AllData[realm] == nil then
-		yo_AllData[realm] = {}
-	end
-
-	if yo_AllData[realm][newname] == nil then
-		yo_AllData[realm][newname] = {}
-	end
-	yo_AllData[realm][newname]["KeyStone"] = nil
-	yo_AllData[realm][newname]["KeyStoneDay"] = nil
-	yo_AllData[realm][newname]["KeyStoneTime"] = nil
+	n.allData[n.myRealm][n.myName]["KeyStone"] = nil
+	n.allData[n.myRealm][n.myName]["KeyStoneDay"] = nil
+	n.allData[n.myRealm][n.myName]["KeyStoneTime"] = nil
 
 	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
 		local slots = GetContainerNumSlots(container)
@@ -38,9 +33,9 @@ local function CheckInventoryKeystone()
 
 			if itemString then
 				keyslink  = slotLink
-				yo_AllData[realm][newname]["KeyStone"] = slotLink
-				yo_AllData[realm][newname]["KeyStoneDay"] = date()
-				yo_AllData[realm][newname]["KeyStoneTime"] = time()
+				n.allData[n.myRealm][n.myName]["KeyStone"] = slotLink
+				n.allData[n.myRealm][n.myName]["KeyStoneDay"] = date()
+				n.allData[n.myRealm][n.myName]["KeyStoneTime"] = time()
 			end
 		end
 	end
@@ -97,7 +92,7 @@ local function OnEvent( self, event, name, sender, ...)
 
 	elseif event == "CHAT_MSG_LOOT" then
 
-		--local b = name:match("Эпохальный ключ")
+		local b --= name:match("Эпохальный ключ")
 		local c = name:match("|Hkeystone:")
 		local y = name:match("^Вы ")
 		local z = name:match("^Ваша ")
@@ -175,26 +170,31 @@ local timeFormatMS = timeFormatMS
 
 local function GetTimerFrame(block)
 	if not block.TimerFrame then
+
+		block.TimeLeft:SetFont(n.font, n.fontsize + 2)
+
 		local TimerFrame = CreateFrame("Frame", nil, block)
 		TimerFrame:SetAllPoints(block)
 
-		TimerFrame.Text2 = TimerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+		TimerFrame.Text2 = TimerFrame:CreateFontString(nil, "OVERLAY")--, "GameFontHighlightLarge")
+		TimerFrame.Text2:SetFont( n.font, n.fontsize +2)
 		TimerFrame.Text2:SetPoint("LEFT", block.TimeLeft, "LEFT", 70, 0)
 
-		TimerFrame.Text = TimerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+		TimerFrame.Text = TimerFrame:CreateFontString(nil, "OVERLAY")--, "GameFontHighlightLarge")
+		TimerFrame.Text:SetFont( n.font, n.fontsize +2)
 		TimerFrame.Text:SetPoint("LEFT", TimerFrame.Text2, "LEFT", 50, 0)
 
 		TimerFrame.Bar3 = TimerFrame:CreateTexture(nil, "OVERLAY")
 		TimerFrame.Bar3:SetPoint("TOPLEFT", block.StatusBar, "TOPLEFT", block.StatusBar:GetWidth() * (1 - TIME_FOR_3) - 4, 4)
 		TimerFrame.Bar3:SetSize(2, 14)
-		TimerFrame.Bar3:SetTexture( texture)
+		TimerFrame.Bar3:SetTexture( n.texture)
 		TimerFrame.Bar3:SetVertexColor( 0, 1, 0, 1)
 		--TimerFrame.Bar3:SetTexCoord(0, 0.5, 0, 1)
 
 		TimerFrame.Bar2 = TimerFrame:CreateTexture(nil, "OVERLAY")
 		TimerFrame.Bar2:SetPoint("TOPLEFT", block.StatusBar, "TOPLEFT", block.StatusBar:GetWidth() * (1 - TIME_FOR_2) - 4, 4)
 		TimerFrame.Bar2:SetSize(2, 14)
-		TimerFrame.Bar2:SetTexture( texture)
+		TimerFrame.Bar2:SetTexture( n.texture)
 		TimerFrame.Bar2:SetVertexColor(0, 1, 0, 1)
 		--TimerFrame.Bar2:SetTexCoord(0.5, 1, 0, 1)
 
@@ -236,7 +236,7 @@ local function UpdateTime(block, elapsedTime)
 	end
 
 	if elapsedTime > block.timeLimit then
-		block.TimeLeft:SetText(GetTimeStringFromSeconds(elapsedTime - block.timeLimit, false, true))
+		--block.TimeLeft:SetText(GetTimeStringFromSeconds(elapsedTime - block.timeLimit, false, true))
 	end
 end
 
@@ -269,3 +269,6 @@ end
 hooksecurefunc("Scenario_ChallengeMode_UpdateTime", UpdateTime)
 hooksecurefunc("Scenario_ChallengeMode_ShowBlock", ShowBlock)
 hooksecurefunc("ScenarioTrackerProgressBar_SetValue", ProgressBar_SetValue)
+
+--name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
+--name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel = GetLFGDungeonInfo(dungeonID)

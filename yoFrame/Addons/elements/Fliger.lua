@@ -9,8 +9,8 @@ local _G = _G
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame, tinsert
-	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame, tinsert
+local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame, tinsert, wipe
+	= UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame, tinsert, wipe
 
 ------------------------------------------------------------------------------------------------------------
 ---								Buf Icons Anime
@@ -165,7 +165,7 @@ local function MakeFligerFrame( self)
 	local cdSize		= yo.fliger.pCDSize
 
 	if yo.fliger.tDebuffEnable then
-		CreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	300, 	0, 		"CENTER", "CENTER")
+		n.moveCreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	300, 	0, 		"CENTER", "CENTER")
 		local tDebuff = CreateFrame("Frame", nil, self)
 		tDebuff:SetPoint("CENTER", T_DEBUFF, "CENTER",  0, 0)
 		tDebuff:SetWidth( tdebuffSize)
@@ -176,7 +176,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pProcEnable then
-		CreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-300, 	-50, 	"CENTER", "CENTER")
+		n.moveCreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-300, 	-50, 	"CENTER", "CENTER")
 		local pProc = CreateFrame("Frame", nil, self)
 		pProc:SetPoint("CENTER", P_PROC, "CENTER",  0, 0)
 		pProc:SetWidth( pProcSize)
@@ -192,7 +192,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pBuffEnable then
-		CreateAnchor("P_BUFF", 				"Player Buff", 				pbuffSize, pbuffSize,	-300, 	50, 		"CENTER", "CENTER")
+		n.moveCreateAnchor("P_BUFF", 	"Player Buff", 				pbuffSize, pbuffSize,	-300, 	50, 		"CENTER", "CENTER")
 		local pBuff = CreateFrame("Frame", nil, self)
 		pBuff:SetPoint("CENTER", P_BUFF, "CENTER",  0, 0)
 		pBuff:SetWidth( pbuffSize)
@@ -209,7 +209,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pDebuffEnable then
-		CreateAnchor("P_DEBUFF",			"Player Debuff",			pdebuffSize,	pdebuffSize,-300, 	150, 	"CENTER", "CENTER")
+		n.moveCreateAnchor("P_DEBUFF",	"Player Debuff",			pdebuffSize,	pdebuffSize,-300, 	150, 	"CENTER", "CENTER")
 		local pDebuff = CreateFrame("Frame", nil, self)
 		pDebuff:SetPoint("CENTER", P_DEBUFF, "CENTER",  0, 0)
 		pDebuff:SetWidth( pdebuffSize)
@@ -220,7 +220,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pCDEnable then
-		CreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", LeftDataPanel)
+		n.moveCreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", LeftDataPanel)
 		local pCD = CreateFrame("Frame", nil, self)
 		pCD:SetPoint("CENTER", P_CD, "CENTER",  0, 0)
 		pCD:SetWidth( cdSize)
@@ -236,7 +236,7 @@ local function CheckClassTemplates( myClass, mySpec)
 
 	if mySpec == 5 then return 	end
 
-	for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][1]["args"]) do
+	for i,v in pairs( n.templates.class[n.myClass][n.mySpec][1]["args"]) do
 		local spellId = GetSpellInfo( v.spell)
 		if spellId then
 			n.playerBuffList[spellId] = true
@@ -245,8 +245,8 @@ local function CheckClassTemplates( myClass, mySpec)
 		end
 	end
 
-	if n.templates.class[yo.myClass][yo.mySpec][5]["args"] then
-		for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][5]["args"]) do
+	if n.templates.class[n.myClass][n.mySpec][5]["args"] then
+		for i,v in pairs( n.templates.class[n.myClass][n.mySpec][5]["args"]) do
 			local spellId = GetSpellInfo( v.spell)
 			if spellId then
 				n.playerBuffList[spellId] = true
@@ -257,9 +257,9 @@ local function CheckClassTemplates( myClass, mySpec)
 	for i,v in pairs( n.playerBuffListAll) do n.playerBuffList[GetSpellInfo( i)] = v end
 
 	n.targetDebuffList = {}
-	for i,v in pairs( n.templates.class[yo.myClass][yo.mySpec][2]["args"]) do
+	for i,v in pairs( n.templates.class[n.myClass][n.mySpec][2]["args"]) do
 		if GetSpellInfo( v.spell) then
-			--print( v.spell, yo.myClass, yo.mySpec, GetSpellInfo( v.spell))
+			--print( v.spell, n.myClass, n.mySpec, GetSpellInfo( v.spell))
 			n.targetDebuffList[GetSpellInfo( v.spell)] = true
 		end
 	end
@@ -268,17 +268,17 @@ end
 
 local function CheckTemplates( myClass, mySpec)
 
-	for i, v in pairs( n.templates.items)    			do n.playerProcWhiteList[ v] 	  = true end
+	for i, v in pairs( n.templates.items)    			do n.playerProcWhiteList[v] 	  = true end
 	for i, v in pairs( n.generalLegendaries) 			do n.playerProcWhiteList[v.spell] = true end
-	for i, v in pairs( n.classLegendaries[yo.myClass]) 	do n.playerProcWhiteList[v.spell] = true end
+	for i, v in pairs( n.classLegendaries[n.myClass]) 	do n.playerProcWhiteList[v.spell] = true end
 
 	if n.templates.covenants and yo.fliger.gAzetit then
 
 		local covaData = n.templates.covenants[C_Covenants.GetActiveCovenantID()]
-		if covaData.args then
+		if covaData and covaData.args then
 			for k, spellData in pairs( covaData.args) do
 
-				if spellData.class and spellData.class ~= yo.myClass then
+				if spellData.class and spellData.class ~= n.myClass then
 				else
 					if 		spellData.type == "buff" and 	spellData.unit == "player" then n.playerBuffList[ GetSpellInfo( spellData.spell)] = true
 					elseif 	spellData.type == "debuff" and 	spellData.unit == "target" then n.targetDebuffList[ GetSpellInfo( spellData.spell)] = true
@@ -291,7 +291,7 @@ local function CheckTemplates( myClass, mySpec)
 		wipe( n.templates.covenants)
 	end
 
-	CheckClassTemplates( yo.myClass, yo.mySpec)
+	CheckClassTemplates( n.myClass, n.mySpec)
 end
 
 
@@ -300,7 +300,7 @@ local function OnEvent( self, event, ...)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
 		MakeFligerFrame( self)
-		CheckTemplates( yo.myClass, GetSpecialization())
+		CheckTemplates( n.myClass, GetSpecialization())
 		checkAnimeSpells()
 
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -317,8 +317,8 @@ local function OnEvent( self, event, ...)
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		UpdateAura( self, "target")
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
-		yo.mySpec = GetSpecialization()
-		CheckClassTemplates( yo.myClass, yo.mySpec)
+		n.mySpec = GetSpecialization()
+		CheckClassTemplates( n.myClass, n.mySpec)
 	end
 end
 
@@ -328,4 +328,4 @@ Fliger:SetFrameLevel( 0)
 Fliger:RegisterEvent("PLAYER_ENTERING_WORLD")
 Fliger:SetScript("OnEvent", OnEvent)
 
---CreateAnchor("SPECIAL_P_BUFF_ICON_Anchor", "SPECIAL_P_BUFF",	C["filger"].buffs_size, C["filger"].buffs_size,			-300, -50, "CENTER", "CENTER")
+--n.moveCreateAnchor("SPECIAL_P_BUFF_ICON_Anchor", "SPECIAL_P_BUFF",	C["filger"].buffs_size, C["filger"].buffs_size,			-300, -50, "CENTER", "CENTER")

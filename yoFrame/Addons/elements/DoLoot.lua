@@ -37,7 +37,7 @@ local function afterClearIcons( index)
 	for i = index, #frame do
 		frame[i]:Hide()
 		frame[i].icon:SetTexture(nil)
-		frame[i].nameItem:SetText("")
+		frame[i].nameDungeon:SetText("")
 		frame[i].stats:SetText("")
 		frame[i].onuse:SetText("")
 		frame[i].onEquip :SetText("")
@@ -74,13 +74,20 @@ local function OnLeave( self)
 	GameTooltip:Hide()
 end
 
+local function linkClick( self)
+	local preString, hyperlinkString = self.link:match("^(.*)|H(.+)|h(.*)$")
+	LoadAddOn( "Blizzard_EncounterJournal")
+	EncounterJournal_OpenJournalLink( strsplit(":", hyperlinkString));
+end
+
 local function CreateIcon( index)
 	local frame, size = yoEF.duLoot.scrollChild, 40
 
 	if frame[index] then return frame[index] end
 
-	local button = CreateFrame("Frame", nil, frame)
+	local button = CreateFrame("Button", nil, frame)
 	button:SetHeight( size)
+	--button:EnableMouse( true)
 
 	if index == 1 then
 		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -7)
@@ -97,35 +104,57 @@ local function CreateIcon( index)
 	CreateStyle( iconBack, 3)
 
 	local icon = button:CreateTexture(nil, "OVERLAY")
-	icon:SetTexCoord( unpack( yo.tCoord))
+	icon:SetTexCoord( unpack( n.tCoord))
 	icon:SetAllPoints( iconBack)
 
+	local nameDungeon = button:CreateFontString( nil, "OVERLAY")
+	nameDungeon:SetFont( n.font, 13, "THINOUTLINE")
+	nameDungeon:SetJustifyH("LEFT")
+	nameDungeon:SetPoint("TOPLEFT", button, "TOPLEFT", 50, 0)
+	--nameDungeon:SetPoint("TOPRIGHT", button, "TOPRIGHT", 10, 0)
+
+	local linkDungeon = CreateFrame("Button", nil, button)
+	linkDungeon:SetAllPoints(nameDungeon)
+	linkDungeon:EnableMouse( true)
+	linkDungeon:SetScript("OnClick", linkClick)
+
+	local nameEncounter = button:CreateFontString( nil, "OVERLAY")
+	nameEncounter:SetFont( n.font, 13, "THINOUTLINE")
+	nameEncounter:SetJustifyH("LEFT")
+	nameEncounter:SetPoint("LEFT", nameDungeon, "RIGHT", 0, 0)
+	nameEncounter:SetPoint("TOPRIGHT", button, "TOPRIGHT", 10, 0)
+
+	local linkEncounter = CreateFrame("Button", nil, button)
+	linkEncounter:SetAllPoints(nameEncounter)
+	linkEncounter:EnableMouse( true)
+	linkEncounter:SetScript("OnClick", linkClick)
+
 	local nameItem = button:CreateFontString( nil, "OVERLAY")
-	nameItem:SetFont( yo.font, 13, "THINOUTLINE")
+	nameItem:SetFont( n.font, 13, "THINOUTLINE")
 	nameItem:SetJustifyH("LEFT")
-	nameItem:SetPoint("TOPLEFT", button, "TOPLEFT", 50, 0)
-	nameItem:SetPoint("TOPRIGHT", button, "TOPRIGHT", 10, 0)
+	nameItem:SetPoint("TOPLEFT", nameDungeon, "BOTTOMLEFT", 0, -5)
+	nameItem:SetPoint("RIGHT", button, "TOPRIGHT", 10, 0)
 
 	local stats = button:CreateFontString( nil, "OVERLAY")
-	stats:SetFont( yo.font, 11)--, "THINOUTLINE")
+	stats:SetFont( n.font, 11)--, "THINOUTLINE")
 	stats:SetJustifyH("LEFT")
 	stats:SetPoint("TOPLEFT", nameItem, "BOTTOMLEFT", 0, -0)
 	stats:SetPoint("TOPRIGHT", nameItem, "BOTTOMRIGHT", 0, -0)
 
 	local onuse = button:CreateFontString( nil, "OVERLAY")
-	onuse:SetFont( yo.font, 10)--, "THINOUTLINE")
+	onuse:SetFont( n.font, 10)--, "THINOUTLINE")
 	onuse:SetJustifyH("LEFT")
 	onuse:SetPoint("TOPLEFT", stats, "BOTTOMLEFT", 0, -0)
 	onuse:SetPoint("TOPRIGHT", stats, "BOTTOMRIGHT", 0, -0)
 
 	local onEquip = button:CreateFontString( nil, "OVERLAY")
-	onEquip:SetFont( yo.font, 10)--, "THINOUTLINE")
+	onEquip:SetFont( n.font, 10)--, "THINOUTLINE")
 	onEquip:SetJustifyH("LEFT")
 	onEquip:SetPoint("TOPLEFT", onuse, "BOTTOMLEFT", 0, -0)
 	onEquip:SetPoint("TOPRIGHT", onuse, "BOTTOMRIGHT", 0, -0)
 
 	local equipSet = button:CreateFontString( nil, "OVERLAY")
-	equipSet:SetFont( yo.font, 10)--, "THINOUTLINE")
+	equipSet:SetFont( n.font, 10)--, "THINOUTLINE")
 	equipSet:SetJustifyH("LEFT")
 	equipSet:SetPoint("TOPLEFT", onEquip, "BOTTOMLEFT", 0, -0)
 	equipSet:SetPoint("TOPRIGHT", onEquip, "BOTTOMRIGHT", 0, -0)
@@ -141,16 +170,20 @@ local function CreateIcon( index)
 	bg.shadow:SetBackdropColor(0.126, 0.129, 0.145, 1)
 	bg.shadow:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5)
 
-	button.nameItem = nameItem
-	button.icon 	= icon
-	button.stats 	= stats
-	button.onuse 	= onuse
-	button.onEquip 	= onEquip
-	button.equipSet = equipSet
-	button.iconBack = iconBack
-	button.bg 		= bg
+	button.nameDungeon 	= nameDungeon
+	button.nameEncounter= nameEncounter
+	button.nameItem		= nameItem
+	button.linkDungeon 	= linkDungeon
+	button.linkEncounter= linkEncounter
+	button.icon 		= icon
+	button.stats 		= stats
+	button.onuse 		= onuse
+	button.onEquip 		= onEquip
+	button.equipSet 	= equipSet
+	button.iconBack 	= iconBack
+	button.bg 			= bg
 
-	frame[index] 	= button
+	frame[index] 		= button
 	frame[index]:Show()
   	frame:SetHeight(40)
 
@@ -165,7 +198,7 @@ local function checkDungeLoot( filterType)
 	local class, _, classID = UnitClass('player')
 	local frame = yoEF.duLoot
 	frame.filterType = filterType
-	frame.headerKeeper.textHeader:SetText( yo.myColorStr .. class .. " | " .. frame.specLootName )
+	frame.headerKeeper.textHeader:SetText( n.myColorStr .. class .. " | " .. frame.specLootName )
 
 	EJ_SetLootFilter(classID, frame.specLootID )
 	--EJ_SetDifficulty( DifficultyUtil.ID.PrimaryRaidMythic)
@@ -214,8 +247,13 @@ local function checkDungeLoot( filterType)
 					--print(found, itemInfo.link, frame.seting.haste, frame.seting.master, frame.seting.crit, frame.seting.versa, frame.seting.allstat, foundH, foundM, foundC, foundV )
 					if found or filterType == 13 then
 						local lolButton = CreateIcon( indexLol, itemInfo.link, itemInfo.icon)
+						local encounterName, _, _, _, encounterLink = EJ_GetEncounterInfo( itemInfo.encounterID);
 						lolButton.icon:SetTexture( itemInfo.icon)
-						lolButton.nameItem:SetText( link .. " |r" .. itemInfo.link)
+						lolButton.nameDungeon:SetText( link) -- .. " |r" .. encounterLink .. " |r" .. )
+						lolButton.linkDungeon.link = link
+						lolButton.nameEncounter:SetText( encounterLink)
+						lolButton.linkEncounter.link = encounterLink
+						lolButton.nameItem:SetText( itemInfo.link)
 						lolButton.bg.link = itemInfo.link
 						lolButton.stats:SetText(temptext, 1, 1, 1, 0)
 						lolButton.onuse:SetText("")
@@ -223,8 +261,6 @@ local function checkDungeLoot( filterType)
 						lolButton.equipSet:SetText( "")
 						lolButton.iconBack:Show()
 						lolButton.bg:Show()
-						--local item = Item:CreateFromItemLink( itemInfo.link)
-						--print( indexLol, link, itemInfo.link)
 
 						local name, spellID = GetItemSpell( itemInfo.link)
 						if name then
@@ -347,7 +383,7 @@ local function createDuLoot( self)
 	self:RegisterForDrag( "LeftButton")
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing() end)
-	self:SetScript("OnShow", 		function() ContainerFrame4:Show() end)
+	--self:SetScript("OnShow", 		function() ContainerFrame14:Show() end)
 	self:Hide()
 	self:SetBackdropColor(0.075, 0.078, 0.086, 1)
 
@@ -360,7 +396,7 @@ local function createDuLoot( self)
 	CreateStyle( headerKeeper, 2)
 
 	local textHeader = headerKeeper:CreateFontString(nil, "OVERLAY")
-	textHeader:SetFont( yo.font, 13, "THINOUTLINE")
+	textHeader:SetFont( n.font, 13, "THINOUTLINE")
 	textHeader:SetText("")
 	textHeader:SetPoint("TOP", headerKeeper, "TOP", 0, -2)
 
@@ -437,10 +473,6 @@ local function OnEvent( self, event, ...)
 		self.specLootIcon 	= looticon
 		self.specLootName 	= lootname
 	end
-	if not ContainerFrame4  then
-		ContainerFrame4 = CreateFrame("Frame", "ContainerFrame4", UIParent)
-		ContainerFrame4:SetPoint("CENTER")
-	end
 
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -458,6 +490,8 @@ duLoot:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 duLoot:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 duLoot:SetScript("OnEvent", OnEvent)
 yoEF.duLoot = duLoot
+
+tinsert( UISpecialFrames, "yo_DuLoot")
 
 for _, slot in pairs(n.slots) do
 	local button = _G["Character"..slot]

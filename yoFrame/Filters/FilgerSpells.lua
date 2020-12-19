@@ -75,17 +75,17 @@ C["filger"] = {
 	["barHeight"]		= 10,
 }
 
-CreateAnchor("PVE_PVP_DEBUFF_Anchor", 	"PVE_PVP_DEBUFF", 		C["filger"].pvp_size, C["filger"].pvp_size, 			-300,  40, "CENTER", "CENTER")
-CreateAnchor("SPECIAL_P_BUFF_ICON_Anchor", "SPECIAL_P_BUFF",	C["filger"].buffs_size, C["filger"].buffs_size,			-300, -50, "CENTER", "CENTER")
-CreateAnchor("P_BUFF_ICON_Anchor", 		"P_BUFF", 				C["filger"].buffs_size, C["filger"].buffs_size,		 	-300, -100, "CENTER", "CENTER")
-CreateAnchor("COOLDOWN_Anchor", 		"COOLDOWNS", 			C["filger"].cooldown_size, C["filger"].cooldown_size, 	 470, 165, "LEFT", "BOTTOMLEFT")
+n.moveCreateAnchor("PVE_PVP_DEBUFF_Anchor", 	"PVE_PVP_DEBUFF", 		C["filger"].pvp_size, C["filger"].pvp_size, 			-300,  40, "CENTER", "CENTER")
+n.moveCreateAnchor("SPECIAL_P_BUFF_ICON_Anchor", "SPECIAL_P_BUFF",	C["filger"].buffs_size, C["filger"].buffs_size,			-300, -50, "CENTER", "CENTER")
+n.moveCreateAnchor("P_BUFF_ICON_Anchor", 		"P_BUFF", 				C["filger"].buffs_size, C["filger"].buffs_size,		 	-300, -100, "CENTER", "CENTER")
+n.moveCreateAnchor("COOLDOWN_Anchor", 		"COOLDOWNS", 			C["filger"].cooldown_size, C["filger"].cooldown_size, 	 470, 165, "LEFT", "BOTTOMLEFT")
 
-CreateAnchor("T_BUFF_Anchor", 			"T_BUFF", 				C["filger"].pvp_size, C["filger"].pvp_size, 			300,  40, "CENTER", "CENTER")
-CreateAnchor("P_PROC_ICON_Anchor", 		"P_PROC", 				C["filger"].buffs_size, C["filger"].buffs_size, 		300, -50, "CENTER", "CENTER")
-CreateAnchor("T_DEBUFF_ICON_Anchor", 	"T_DEBUFF", 			C["filger"].buffs_size, C["filger"].buffs_size, 		300, -100, "CENTER", "CENTER")
+n.moveCreateAnchor("T_BUFF_Anchor", 			"T_BUFF", 				C["filger"].pvp_size, C["filger"].pvp_size, 			300,  40, "CENTER", "CENTER")
+n.moveCreateAnchor("P_PROC_ICON_Anchor", 		"P_PROC", 				C["filger"].buffs_size, C["filger"].buffs_size, 		300, -50, "CENTER", "CENTER")
+n.moveCreateAnchor("T_DEBUFF_ICON_Anchor", 	"T_DEBUFF", 			C["filger"].buffs_size, C["filger"].buffs_size, 		300, -100, "CENTER", "CENTER")
 
-CreateAnchor("PVE_PVP_CC_Anchor", 	"PVE_PVP_CC_BAR",			C["filger"].cooldown_size, C["filger"].cooldown_size,	-440, 600, "CENTER", "BOTTOMRIGHT")
-CreateAnchor("T_DE_BUFF_BAR_Anchor", 	"T_DE_BUFF_BAR",		C["filger"].buffs_size, C["filger"].buffs_size, 		300, -150, "CENTER", "CENTER")
+n.moveCreateAnchor("PVE_PVP_CC_Anchor", 	"PVE_PVP_CC_BAR",			C["filger"].cooldown_size, C["filger"].cooldown_size,	-440, 600, "CENTER", "BOTTOMRIGHT")
+n.moveCreateAnchor("T_DE_BUFF_BAR_Anchor", 	"T_DE_BUFF_BAR",		C["filger"].buffs_size, C["filger"].buffs_size, 		300, -150, "CENTER", "CENTER")
 
 C["filger_spells"] = {
 	["DEATHKNIGHT"] = {

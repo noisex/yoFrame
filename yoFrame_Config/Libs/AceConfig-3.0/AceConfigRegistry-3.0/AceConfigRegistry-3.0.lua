@@ -277,7 +277,7 @@ function AceConfigRegistry:ValidateOptionsTable(options,name,errlvl)
 	errlvl=(errlvl or 0)+1
 	name = name or "Optionstable"
 	if not options.name then
-		options.name=name	-- bit of a hack, the root level doesn't really need a .name :-/
+		options.name=name 	-- bit of a hack, the root level doesn't really need a .name :-/
 	end
 	validate(options,errlvl,name)
 end

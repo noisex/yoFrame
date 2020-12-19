@@ -1,6 +1,9 @@
 -- [spellID] = true / false ( buff / debuff)
 local L, yo, n = unpack( select( 2, ...))
 
+local next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, UnitFactionGroup
+	= next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, UnitFactionGroup
+
 local LOP = LibStub("LibObjectiveProgress-1.0", true);
 local isTeeming
 
@@ -24,6 +27,57 @@ local function MouseoverUnitID()
 	return nil;
 end
 --https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/AddOns/Blizzard_APIDocumentation/ChallengeModeInfoDocumentation.lua
+local function get_progress_value(npc_id, is_teeming)
+  -- resolve npc progress data
+  if true then return end
+
+  local progress_key = "npc_progress"
+  if is_teeming then
+    progress_key = "npc_progress_teeming"
+  end
+
+  local npc_progress = addon.c(progress_key)
+  if not npc_progress then
+    return
+  end
+
+  if not npc_progress[npc_id] then
+    return
+  end
+
+  -- get progress value
+  local value, occurrences = nil, -1
+  for val, val_occurrences in pairs(npc_progress[npc_id]) do
+    if val_occurrences > occurrences then
+      value, occurrences = val, val_occurrences
+    end
+  end
+
+  return value
+end
+
+local function resolve_npc_progress_value(npc_id, is_teeming)
+  	local value = nil
+  	local is_mdt_value = false
+  	if MDT ~= nil then
+    	local mdtValue, _, _, mdtTeemingValue = MDT:GetEnemyForces(npc_id)
+
+    	if is_teeming and mdtTeemingValue then
+      		value = mdtTeemingValue
+    	else
+      		value = mdtValue
+    	end
+
+    		is_mdt_value = true
+  	end
+
+  	if not value or value == 0 then
+    	value = get_progress_value(npc_id, is_teeming)
+    	is_mdt_value = false
+  	end
+
+  	return value, is_mdt_value
+end
 
 local function OnEvent( self, event, ...)
 
@@ -44,12 +98,13 @@ local function OnEvent( self, event, ...)
     			isAlternate = true
   			end
 
-			local weight = LOP:GetNPCWeightByMap( mapID, npcID, isTeeming, isAlternate);
-			if (weight ~= nil) then
+			--local weight = LOP:GetNPCWeightByMap( mapID, npcID, isTeeming, isAlternate);
+			local value = resolve_npc_progress_value( npcID, isTeeming)
+			if (value ~= nil) then
 				local a, b, steps, c = C_Scenario.GetStepInfo();
 				local name, _, status, curValue = C_Scenario.GetCriteriaInfo( steps);
 				if curValue then
-					local appendString = string.format("|cff00ff00%.2f%%|r / |cffff0000%.2f%%", weight, curValue);
+					local appendString = string.format("|cff00ff00%.2f%%|r / |cffff0000%.2f%%", value, curValue);
 					GameTooltip:AddDoubleLine( name, appendString)
 				end
 				GameTooltip:Show()

@@ -34,8 +34,8 @@ local defaults = {
 	[356] = {false, false},	-- Fishing
 }
 
-if yo.myClass == "DEATHKNIGHT" then spells[#spells + 1] = 53428 end	-- Runeforging
-if yo.myClass == "ROGUE" then spells[#spells + 1] = 1804 end			-- Pick Lock
+if n.myClass == "DEATHKNIGHT" then spells[#spells + 1] = 53428 end	-- Runeforging
+if n.myClass == "ROGUE" then spells[#spells + 1] = 1804 end			-- Pick Lock
 
 local function UpdateSelectedTabs(object)
 	if not handler:IsEventRegistered("CURRENT_SPELL_CAST_CHANGED") then

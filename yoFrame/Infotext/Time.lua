@@ -8,7 +8,7 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local GameTooltip, GetTime, GetNumSavedInstances, GetGameTime, SecondsToClock, type, date, GetSavedInstanceInfo
 	= GameTooltip, GetTime, GetNumSavedInstances, GetGameTime, SecondsToClock, type, date, GetSavedInstanceInfo
 
---local yo_AllData = yo_AllData
+--local n.allData = n.allData
 local Hr24, Min
 
 local infoText = n.infoTexts
@@ -35,7 +35,7 @@ function Stat:update(t)
 		if pendingCalendarInvites and pendingCalendarInvites > 0 then
 			self.Text:SetText( "|cffFF0000NEW "..Hr24..":"..Min)
 		else
-			self.Text:SetText( yo.myColorStr..Hr24..":"..yo.myColorStr..Min)
+			self.Text:SetText( n.myColorStr..Hr24..":"..n.myColorStr..Min)
 		end
 		--self:SetWidth( self.Text:GetWidth())
 	end
@@ -45,20 +45,20 @@ function Stat:onEnter()
 	--OnLoad = function(self) RequestRaidInfo() end
 
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
-	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - yo.myLogin))
+	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - n.myLogin))
 
-	if yo_AllData[yo.myRealm][yo.myName].PlayedLvl then
-		if yo_AllData[yo.myRealm][yo.myName].PlayedLvl < 86400 then
-			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[yo.myRealm][yo.myName].PlayedLvl))
+	if n.allData[n.myRealm][n.myName].PlayedLvl then
+		if n.allData[n.myRealm][n.myName].PlayedLvl < 86400 then
+			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(n.allData[n.myRealm][n.myName].PlayedLvl))
 		else
-			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(yo_AllData[yo.myRealm][yo.myName].PlayedLvl, true, true))
+			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(n.allData[n.myRealm][n.myName].PlayedLvl, true, true))
 		end
 
 		GameTooltip:AddLine' '
 		GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
 
 		local totalPlayed, oneDate = 0
-		for realmName, realm in pairs ( yo_AllData) do
+		for realmName, realm in pairs ( n.allData) do
 			if type( realm) == "table"  and realmName ~= "editHistory" then
 
 				local tkeys = {}
@@ -146,9 +146,9 @@ function Stat:onEnter()
 	--GameTooltip:AddDoubleLine("ResetTime", SecondsToClock( GetQuestResetTime(), true))
 	--GameTooltip:AddDoubleLine("Time", SecondsToClock( GetTime()))
 
-	--local questID = yo.myFaction == "Horde" and 53435 or 53436
+	--local questID = n.myFaction == "Horde" and 53435 or 53436
 
-	--if yo.myLevel == MAX_PLAYER_LEVEL and not IsQuestFlaggedCompleted( questID) then
+	--if n.myLevel == MAX_PLAYER_LEVEL and not IsQuestFlaggedCompleted( questID) then
 	--	GameTooltip:AddLine( " ")
 	--	GameTooltip:AddLine( L["EXPEDIT_COMPLETE"],1,0,0)
 	--end
@@ -183,7 +183,7 @@ function Stat:Enable()
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 
 	--CreateStyle( self, 2)

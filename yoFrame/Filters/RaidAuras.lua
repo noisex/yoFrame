@@ -41,380 +41,213 @@ n.blackSpells = {
 	[271571] = true, -- сделай выбор
 	[124013] = true, -- Убийца хозенов
 	[287825] = true, -- конфета какая-то
+
+	[338906] = true, -- цепи тюремщика
 }
+
+local function SpellName(id)
+	local name = GetSpellInfo(id)
+	if name then
+		return id
+		--return name
+	else
+		print("|cffff0000WARNING: spell ID ["..tostring(id).."] no longer exists! Report this to Shestak.|r")
+		return "Empty"
+	end
+end
 
 n.RaidDebuffList = {
-	-- Mythic Dungeons
-	--[209858] = true, -- Necrotic
-	--[226512] = true, -- Sanguine
-	--[240559] = true, -- Grievous
-	--[240443] = true, -- Bursting
-	--[196376] = true, -- Grievous Tear
-	--BFA Dungeons
-	--Freehold
-	--[258323] = true, -- Infected Wound
-	--[257775] = true, -- Plague Step
-	--[257908] = true, -- Oiled Blade
-	--[257436] = true, -- Poisoning Strike
-	--[274389] = true, -- Rat Traps
-	--[274555] = true, -- Scabrous Bites
-	--[258875] = true, -- Blackout Barrel
-	--[256363] = true, -- Ripper Punch
-	----Shrine of the Storm
-	--[264560] = true, -- Choking Brine
-	--[268233] = true, -- Electrifying Shock
-	--[268322] = true, -- Touch of the Drowned
-	--[268896] = true, -- Mind Rend
-	--[268104] = true, -- Explosive Void
-	--[267034] = true, -- Whispers of Power
-	--[276268] = true, -- Heaving Blow
-	--[264166] = true, -- Undertow
-	--[264526] = true, -- Grasp of the Depths
-	--[274633] = true, -- Sundering Blow
-	--[268214] = true, -- Carving Flesh
-	--[267818] = true, -- Slicing Blast
-	--[268309] = true, -- Unending Darkness
-	--[268317] = true, -- Rip Mind
-	--[268391] = true, -- Mental Assault
-	--[274720] = true, -- Abyssal Strike
-	----Siege of Boralus
-	--[257168] = true, -- Cursed Slash
-	--[272588] = true, -- Rotting Wounds
-	--[272571] = true, -- Choking Waters
-	--[274991] = true, -- Putrid Waters
-	--[275835] = true, -- Stinging Venom Coating
-	--[273930] = true, -- Hindering Cut
-	--[257292] = true, -- Heavy Slash
-	--[261428] = true, -- Hangman's Noose
-	--[256897] = true, -- Clamping Jaws
-	--[272874] = true, -- Trample
-	--[273470] = true, -- Gut Shot
-	--[272834] = true, -- Viscous Slobber
-	--[257169] = true, -- Terrifying Roar
-	--[272713] = true, -- Crushing Slam
-	---- Tol Dagor
-	--[258128] = true, -- Debilitating Shout
-	--[265889] = true, -- Torch Strike
-	--[257791] = true, -- Howling Fear
-	--[258864] = true, -- Suppression Fire
-	--[257028] = true, -- Fuselighter
-	--[258917] = true, -- Righteous Flames
-	--[257777] = true, -- Crippling Shiv
-	--[258079] = true, -- Massive Chomp
-	--[258058] = true, -- Squeeze
-	--[260016] = true, -- Itchy Bite
-	--[257119] = true, -- Sand Trap
-	--[260067] = true, -- Vicious Mauling
-	--[258313] = true, -- Handcuff
-	--[259711] = true, -- Lockdown
-	--[256198] = true, -- Azerite Rounds: Incendiary
-	--[256101] = true, -- Explosive Burst
-	--[256044] = true, -- Deadeye
-	--[256474] = true, -- Heartstopper Venom
-	----Waycrest Manor
-	--[260703] = true, -- Unstable Runic Mark
-	--[263905] = true, -- Marking Cleave
-	--[265880] = true, -- Dread Mark
-	--[265882] = true, -- Lingering Dread
-	--[264105] = true, -- Runic Mark
-	--[264050] = true, -- Infected Thorn
-	--[261440] = true, -- Virulent Pathogen
-	--[263891] = true, -- Grasping Thorns
-	--[264378] = true, -- Fragment Soul
-	--[266035] = true, -- Bone Splinter
-	--[266036] = true, -- Drain Essence
-	--[260907] = true, -- Soul Manipulation
-	--[260741] = true, -- Jagged Nettles
-	--[264556] = true, -- Tearing Strike
-	--[265760] = true, -- Thorned Barrage
-	--[260551] = true, -- Soul Thorns
-	--[263943] = true, -- Etch
-	--[265881] = true, -- Decaying Touch
-	--[261438] = true, -- Wasting Strike
-	--[268202] = true, -- Death Lens
-	---- Atal'Dazar
-	--[252781] = true, -- Unstable Hex
-	--[250096] = true, -- Wracking Pain
-	--[250371] = true, -- Lingering Nausea
-	--[253562] = true, -- Wildfire
-	--[255582] = true, -- Molten Gold
-	--[255041] = true, -- Terrifying Screech
-	--[255371] = true, -- Terrifying Visage
-	--[252687] = true, -- Venomfang Strike
-	--[254959] = true, -- Soulburn
-	--[255814] = true, -- Rending Maul
-	--[255421] = true, -- Devour
-	--[255434] = true, -- Serrated Teeth
-	--[256577] = true, -- Soulfeast
-	----King's Rest
-	--[270492] = true, -- Hex
-	--[267763] = true, -- Wretched Discharge
-	--[276031] = true, -- Pit of Despair
-	--[265773] = true, -- Spit Gold
-	--[270920] = true, -- Seduction
-	--[270865] = true, -- Hidden Blade
-	--[271564] = true, -- Embalming Fluid
-	--[270507] = true, -- Poison Barrage
-	--[267273] = true, -- Poison Nova
-	--[270003] = true, -- Suppression Slam
-	--[270084] = true, -- Axe Barrage
-	--[267618] = true, -- Drain Fluids
-	--[267626] = true, -- Dessication
-	--[270487] = true, -- Severing Blade
-	--[266238] = true, -- Shattered Defenses
-	--[266231] = true, -- Severing Axe
-	--[266191] = true, -- Whirling Axes
-	--[272388] = true, -- Shadow Barrage
-	--[271640] = true, -- Dark Revelation
-	--[268796] = true, -- Impaling Spear
-	----Motherlode
-	--[263074] = true, -- Festering Bite
-	--[280605] = true, -- Brain Freeze
-	--[257337] = true, -- Shocking Claw
-	--[270882] = true, -- Blazing Azerite
-	--[268797] = true, -- Transmute: Enemy to Goo
-	--[259856] = true, -- Chemical Burn
-	--[269302] = true, -- Toxic Blades
-	--[280604] = true, -- Iced Spritzer
-	--[257371] = true, -- Tear Gas
-	--[257544] = true, -- Jagged Cut
-	--[268846] = true, -- Echo Blade
-	--[262794] = true, -- Energy Lash
-	--[262513] = true, -- Azerite Heartseeker
-	--[260829] = true, -- Homing Missle (travelling)
-	--[260838] = true, -- Homing Missle (exploded)
-	--[263637] = true, -- Clothesline
-	----Temple of Sethraliss
-	--[269686] = true, -- Plague
-	--[268013] = true, -- Flame Shock
-	--[268008] = true, -- Snake Charm
-	--[273563] = true, -- Neurotoxin
-	--[272657] = true, -- Noxious Breath
-	--[267027] = true, -- Cytotoxin
-	--[272699] = true, -- Venomous Spit
-	--[263371] = true, -- Conduction
-	--[272655] = true, -- Scouring Sand
-	--[263914] = true, -- Blinding Sand
-	--[263958] = true, -- A Knot of Snakes
-	--[266923] = true, -- Galvanize
-	--[268007] = true, -- Heart Attack
-	----Underrot
-	--[265468] = true, -- Withering Curse
-	--[278961] = true, -- Decaying Mind
-	--[259714] = true, -- Decaying Spores
-	--[272180] = true, -- Death Bolt
-	--[272609] = true, -- Maddening Gaze
-	--[269301] = true, -- Putrid Blood
-	--[265533] = true, -- Blood Maw
-	--[265019] = true, -- Savage Cleave
-	--[265377] = true, -- Hooked Snare
-	--[265625] = true, -- Dark Omen
-	--[260685] = true, -- Taint of G'huun
-	--[266107] = true, -- Thirst for Blood
-	--[260455] = true, -- Serrated Fangs
-
-	-- Uldir
-	-- MOTHER
-	--[268277] = true, -- Purifying Flame
-	--[268253] = true, -- Surgical Beam
-	--[268095] = true, -- Cleansing Purge
-	--[267787] = true, -- Sundering Scalpel
-	--[268198] = true, -- Clinging Corruption
-	--[267821] = true, -- Defense Grid
-	---- Vectis
-	--[265127] = true, -- Lingering Infection
-	--[265178] = true, -- Mutagenic Pathogen
-	--[265206] = true, -- Immunosuppression
-	--[265212] = true, -- Gestate
-	--[265129] = true, -- Omega Vector
-	--[267160] = true, -- Omega Vector
-	--[267161] = true, -- Omega Vector
-	--[267162] = true, -- Omega Vector
-	--[267163] = true, -- Omega Vector
-	--[267164] = true, -- Omega Vector
-	---- Mythrax
-	----[272146] = true, -- Annihilation
-	--[272536] = true, -- Imminent Ruin
-	--[274693] = true, -- Essence Shear
-	--[272407] = true, -- Oblivion Sphere
-	---- Fetid Devourer
-	--[262313] = true, -- Malodorous Miasma
-	--[262292] = true, -- Rotting Regurgitation
-	--[262314] = true, -- Deadly Disease
-	---- Taloc
-	--[270290] = true, -- Blood Storm
-	--[275270] = true, -- Fixate
-	--[271224] = true, -- Plasma Discharge
-	--[271225] = true, -- Plasma Discharge
-	---- Zul
-	--[273365] = true, -- Dark Revelation
-	--[273434] = true, -- Pit of Despair
-	--[274195] = true, -- Corrupted Blood
-	--[272018] = true, -- Absorbed in Darkness
-	---- Zek'voz, Herald of N'zoth
-	--[265237] = true, -- Shatter
-	--[265264] = true, -- Void Lash
-	--[265360] = true, -- Roiling Deceit
-	--[265662] = true, -- Corruptor's Pact
-	--[265646] = true, -- Will of the Corruptor
-	--[272146] = true, -- Аннигиляция
-	---- G'huun
-	--[263436] = true, -- Imperfect Physiology
-	--[263227] = true, -- Putrid Blood
-	--[263372] = true, -- Power Matrix
-	--[272506] = true, -- Explosive Corruption
-	--[267409] = true, -- Dark Bargain
-	--[267430] = true, -- Torment
-	--[263235] = true, -- Blood Feast
-	--[270287] = true, -- Blighted Ground
-	--[270447] = true,  -- growing-corruption
-
 	[160029] = true, -- Воскрешение
 
-			-- Lady Ashvane
-	[296693] = true, -- Waterlogged
-	[296725] = true, -- Barnacle Bash
-	[296942] = true, -- Arcing Azerite
-	[296938] = true, -- Arcing Azerite
-	[296941] = true, -- Arcing Azerite
-	[296939] = true, -- Arcing Azerite
-	[296943] = true, -- Arcing Azerite
-	[296940] = true, -- Arcing Azerite
-	[296752] = true, -- Cutting Coral
-	[297333] = true, -- Briny Bubble
-	[297397] = true, -- Briny Bubble
-	-- Abyssal Commander Sivara
-	[300701] = true, -- Rimefrost
-	[300705] = true, -- Septic Taint
-	[294847] = true, -- Unstable Mixture
-	[295850] = true, -- Delirious
-	[295421] = true, -- Overflowing Venom
-	[295348] = true, -- Overflowing Chill
-	[295807] = true, -- Frozen
-	[300883] = true, -- Inversion Sickness
-	[295705] = true, -- Toxic Bolt
-	[295704] = true, -- Frost Bolt
-	[294711] = true, -- Frost Mark
-	[294715] = true, -- Toxic Brand
-	-- The Queens Court
-	[301830] = true, -- Pashmar's Touch
-	[296851] = true, -- Fanatical Verdict
-	[297836] = true, -- Potent Spark
-	[297586] = true, -- Suffering
-	[304410] = true, -- Repeat Performance
-	[299914] = true, -- Frenetic Charge
-	[303306] = true, -- Sphere of Influence
-	[300545] = true, -- Mighty Rupture
-	-- Radiance of Azshara
-	[296566] = true, -- Tide Fist
-	[296737] = true, -- Arcane Bomb
-	[296746] = true, -- Arcane Bomb
-	[295920] = true, -- Ancient Tempest
-	[296462] = true, -- Squall Trap
-	-- Orgozoa
-	[298156] = true, -- Desensitizing Sting
-	[298306] = true, -- Incubation Fluid
-	-- Blackwater Behemoth
-	[292127] = true, -- Darkest Depths
-	[292138] = true, -- Radiant Biomass
-	[292167] = true, -- Toxic Spine
-	[301494] = true, -- Piercing Barb
-	-- Zaqul
-	[295495] = true, -- Mind Tether
-	[295480] = true, -- Mind Tether
-	[295249] = true, -- Delirium Realm
-	[303819] = true, -- Nightmare Pool
-	[293509] = true, -- Manifest Nightmares
-	[295327] = true, -- Shattered Psyche
-	[294545] = true, -- Portal of Madness
-	[298192] = true, -- Dark Beyond
-	[292963] = true, -- Dread
-	[300133] = true, -- Snapped
-	-- Queen Azshara
-	[298781] = true, -- Arcane Orb
-	[297907] = true, -- Cursed Heart
-	[302999] = true, -- Arcane Vulnerability
-	[302141] = true, -- Beckon
-	[299276] = true, -- Sanction
-	[303657] = true, -- Arcane Burst
-	[298756] = true, -- Serrated Edge
-	[301078] = true, -- Charged Spear
-	[298014] = true, -- Cold Blast
-	[298018] = true, -- Frozen
--- Ny'alotha
-	-- Wrathion
-	[313255] = true, -- Creeping Madness (Slow Effect)
-	[306163] = true, -- Incineration
-	[306015] = true, -- Searing Armor [tank]
-	-- Maut
-	[307805] = true, -- Devour Magic
-	[314337] = true, -- Ancient Curse
-	[306301] = true, -- Forbidden Mana
-	[314992] = true, -- Darin Essence
-	[307399] = true, -- Shadow Claws [tank]
-	-- Prophet Skitra
-	[306387] = true, -- Shadow Shock
-	[313276] = true, -- Shred Psyche
-	-- Dark Inquisitor
-	[306311] = true, -- Soul Flay
-	[312406] = true, -- Void Woken
-	[311551] = true, -- Abyssal Strike [tank]
-	-- Hivemind
-	[313461] = true, -- Corrosion
-	[313672] = true, -- Acid Pool
-	[313460] = true, -- Nullification
-	-- Shadhar
-	[307471] = true, -- Crush [tank]
-	[307472] = true, -- Dissolve [tank]
-	[307358] = true, -- Debilitating Spit
-	[306928] = true, -- Umbral Breath
-	[312530] = true, -- Entropic Breath
-	[306929] = true, -- Bubbling Breath
-	[318078] = true, -- Fixated
-	-- Drest
-	[310406] = true, -- Void Glare
-	[310277] = true, -- Volatile Seed [tank]
-	[310309] = true, -- Volatile Vulnerability
-	[310358] = true, -- Mutterings of Insanity
-	[310552] = true, -- Mind Flay
-	[310478] = true, -- Void Miasma
-	-- Ilgy
-	[309961] = true, -- Eye of Nzoth [tank]
-	[310322] = true, -- Morass of Corruption
-	[311401] = true, -- Touch of the Corruptor
-	[314396] = true, -- Cursed Blood
-	[275269] = true, -- Fixate
-	[312486] = true, -- Recurring Nightmare
-	-- Vexiona
-	[307317] = true, -- Encroaching Shadows
-	[307359] = true, -- Despair
-	[315932] = true, -- Brutal Smash
-	[307218] = true, -- Twilight Decimator
-	[307284] = true, -- Terrifying Presence
-	[307421] = true, -- Annihilation
-	[307019] = true, -- Void Corruption [tank]
-	-- Raden
-	[306819] = true, -- Nullifying Strike [tank]
-	[306279] = true, -- Insanity Exposure
-	[315258] = true, -- Dread Inferno
-	[306257] = true, -- Unstable Vita
-	[313227] = true, -- Decaying Wound
-	[310019] = true, -- Charged Bonds
-	[316065] = true, -- Corrupted Existence
-	-- Carapace
-	[315954] = true, -- Black Scar [tank]
-	[306973] = true, -- Madness
-	[316848] = true, -- Adaptive Membrane
-	[307044] = true, -- Nightmare Antibody
-	[313364] = true, -- Mental Decay
-	[317627] = true, -- Infinite Void
-	-- Nzoth
-	[318442] = true, -- Paranoia
-	[313400] = true, -- Corrupted Mind
-	[313793] = true, -- Flames of Insanity
-	[316771] = true, -- Mindwrack
-	[314889] = true, -- Probe Mind
-	[317112] = true, -- Evoke Anguish
-	[318976] = true, -- Stupefying Glare
-
+-----------------------------------------------------------------
+-- Castle Nathria
+-----------------------------------------------------------------
+	-- Shriekwing
+	[SpellName(328897)] = 3, -- Exsanguinated
+	[SpellName(330713)] = 3, -- Reverberating Pain
+	[SpellName(342923)] = 3, -- Deadly Descent
+	[SpellName(342863)] = 3, -- Echo Screech
+	-- Huntsman Altimor
+	[SpellName(335304)] = 3, -- Sinseeker
+	[SpellName(334971)] = 3, -- Jagged Claws
+	[SpellName(335111)] = 3, -- Huntsman's Mark
+	[SpellName(334945)] = 3, -- Bloody Thrash
+	-- Hungering Destroyer
+	[SpellName(334228)] = 3, -- Volatile Ejection
+	[SpellName(329298)] = 3, -- Gluttonous Miasma
+	-- Lady Inerva Darkvein
+	[SpellName(325936)] = 3, -- Shared Cognition
+	[SpellName(335396)] = 3, -- Hidden Desire
+	[SpellName(324983)] = 3, -- Shared Suffering
+	[SpellName(324982)] = 3, -- Shared Suffering (Partner)
+	[SpellName(332664)] = 3, -- Concentrate Anima
+	[SpellName(325382)] = 3, -- Warped Desires
+	-- Sun King's Salvation
+	[SpellName(333002)] = 3, -- Vulgar Brand
+	[SpellName(326078)] = 3, -- Infuser's Boon
+	[SpellName(325251)] = 3, -- Sin of Pride
+	-- Artificer Xy'mox
+	[SpellName(327902)] = 3, -- Fixate
+	[SpellName(326302)] = 3, -- Stasis Trap
+	[SpellName(325236)] = 3, -- Glyph of Destruction
+	[SpellName(327414)] = 3, -- Possession
+	-- The Council of Blood
+	[SpellName(327052)] = 3, -- Drain Essence
+	[SpellName(346651)] = 3, -- Drain Essence Mythic
+	[SpellName(328334)] = 3, -- Tactical Advance
+	[SpellName(330848)] = 3, -- Wrong Moves
+	[SpellName(331706)] = 3, -- Scarlet Letter
+	[SpellName(331636)] = 3, -- Dark Recital
+	-- Sludgefist
+	[SpellName(335470)] = 3, -- Chain Slam
+	[SpellName(339181)] = 3, -- Chain Slam (Root)
+	[SpellName(331209)] = 3, -- Hateful Gaze
+	[SpellName(335293)] = 3, -- Chain Link
+	[SpellName(335295)] = 3, -- Shattering Chain
+	-- Stone Legion Generals
+	[SpellName(334498)] = 3, -- Seismic Upheaval
+	[SpellName(337643)] = 3, -- Unstable Footing
+	[SpellName(334765)] = 3, -- Heart Rend
+	[SpellName(333377)] = 3, -- Wicked Mark
+	[SpellName(334616)] = 3, -- Petrified
+	[SpellName(334541)] = 3, -- Curse of Petrification
+	[SpellName(339690)] = 3, -- Crystalize
+	[SpellName(342655)] = 3, -- Volatile Anima Infusion
+	[SpellName(342698)] = 3, -- Volatile Anima Infection
+	-- Sire Denathrius
+	[SpellName(326851)] = 3, -- Blood Price
+	[SpellName(327796)] = 3, -- Night Hunter
+	[SpellName(327992)] = 3, -- Desolation
+	[SpellName(328276)] = 3, -- March of the Penitent
+	[SpellName(326699)] = 3, -- Burden of Sin
+	[SpellName(329181)] = 3, -- Wracking Pain
+	[SpellName(335873)] = 3, -- Rancor
+	[SpellName(329951)] = 3, -- Impale
 }
+-----------------------------------------------------------------
+-- Dungeons
+-----------------------------------------------------------------
+--local any = {
+--	-- Mythic+ Affixes
+--	[SpellName(226489)] = 5,	-- Sanguine Ichor
+--	[SpellName(209858)] = 5,	-- Necrotic Wound
+--	[SpellName(240559)] = 5,	-- Grievous Wound
+--	[SpellName(240443)] = 5,	-- Burst
+
+--	-- Halls of Atonement
+--	[SpellName(335338)] = 3, -- Ritual of Woe
+--	[SpellName(326891)] = 3, -- Anguish
+--	[SpellName(329321)] = 3, -- Jagged Swipe
+--	[SpellName(319603)] = 3, -- Curse of Stone
+--	[SpellName(319611)] = 3, -- Turned to Stone
+--	[SpellName(325876)] = 3, -- Curse of Obliteration
+--	[SpellName(326632)] = 3, -- Stony Veins
+--	[SpellName(323650)] = 3, -- Haunting Fixation
+--	[SpellName(326874)] = 3, -- Ankle Bites
+--	[SpellName(340446)] = 3, -- Mark of Envy
+--	-- Mists of Tirna Scithe
+--	[SpellName(325027)] = 3, -- Bramble Burst
+--	[SpellName(323043)] = 3, -- Bloodletting
+--	[SpellName(322557)] = 3, -- Soul Split
+--	[SpellName(331172)] = 3, -- Mind Link
+--	[SpellName(322563)] = 3, -- Marked Prey
+--	[SpellName(322487)] = 3, -- Overgrowth
+--	[SpellName(328756)] = 3, -- Repulsive Visage
+--	[SpellName(325021)] = 3, -- Mistveil Tear
+--	[SpellName(321891)] = 3, -- Freeze Tag Fixation
+--	[SpellName(325224)] = 3, -- Anima Injection
+--	[SpellName(326092)] = 3, -- Debilitating Poison
+--	[SpellName(325418)] = 3, -- Volatile Acid
+--	-- Plaguefall
+--	[SpellName(336258)] = 3, -- Solitary Prey
+--	[SpellName(331818)] = 3, -- Shadow Ambush
+--	[SpellName(329110)] = 3, -- Slime Injection
+--	[SpellName(325552)] = 3, -- Cytotoxic Slash
+--	[SpellName(336301)] = 3, -- Web Wrap
+--	[SpellName(322358)] = 3, -- Burning Strain
+--	[SpellName(322410)] = 3, -- Withering Filth
+--	[SpellName(328180)] = 3, -- Gripping Infection
+--	[SpellName(320542)] = 3, -- Wasting Blight
+--	[SpellName(340355)] = 3, -- Rapid Infection
+--	[SpellName(328395)] = 3, -- Venompiercer
+--	[SpellName(320512)] = 3, -- Corroded Claws
+--	[SpellName(333406)] = 3, -- Assassinate
+--	[SpellName(332397)] = 3, -- Shroudweb
+--	[SpellName(330069)] = 3, -- Concentrated Plague
+--	-- The Necrotic Wake
+--	[SpellName(321821)] = 3, -- Disgusting Guts
+--	[SpellName(323365)] = 3, -- Clinging Darkness
+--	[SpellName(338353)] = 3, -- Goresplatter
+--	[SpellName(333485)] = 3, -- Disease Cloud
+--	[SpellName(338357)] = 3, -- Tenderize
+--	[SpellName(328181)] = 3, -- Frigid Cold
+--	[SpellName(320170)] = 3, -- Necrotic Bolt
+--	[SpellName(323464)] = 3, -- Dark Ichor
+--	[SpellName(323198)] = 3, -- Dark Exile
+--	[SpellName(343504)] = 3, -- Dark Grasp
+--	[SpellName(343556)] = 3, -- Morbid Fixation
+--	[SpellName(324381)] = 3, -- Chill Scythe
+--	[SpellName(320573)] = 3, -- Shadow Well
+--	[SpellName(333492)] = 3, -- Necrotic Ichor
+--	[SpellName(334748)] = 3, -- Drain FLuids
+--	[SpellName(333489)] = 3, -- Necrotic Breath
+--	[SpellName(320717)] = 3, -- Blood Hunger
+--	-- Theater of Pain
+--	[SpellName(333299)] = 3, -- Curse of Desolation
+--	[SpellName(319539)] = 3, -- Soulless
+--	[SpellName(326892)] = 3, -- Fixate
+--	[SpellName(321768)] = 3, -- On the Hook
+--	[SpellName(323825)] = 3, -- Grasping Rift
+--	[SpellName(342675)] = 3, -- Bone Spear
+--	[SpellName(323831)] = 3, -- Death Grasp
+--	[SpellName(330608)] = 3, -- Vile Eruption
+--	[SpellName(330868)] = 3, -- Necrotic Bolt Volley
+--	[SpellName(323750)] = 3, -- Vile Gas
+--	[SpellName(323406)] = 3, -- Jagged Gash
+--	[SpellName(330700)] = 3, -- Decaying Blight
+--	[SpellName(319626)] = 3, -- Phantasmal Parasite
+--	[SpellName(324449)] = 3, -- Manifest Death
+--	[SpellName(341949)] = 3, -- Withering Blight
+--	-- Sanguine Depths
+--	[SpellName(326827)] = 3, -- Dread Bindings
+--	[SpellName(326836)] = 3, -- Curse of Suppression
+--	[SpellName(322554)] = 3, -- Castigate
+--	[SpellName(321038)] = 3, -- Burden Soul
+--	[SpellName(328593)] = 3, -- Agonize
+--	[SpellName(325254)] = 3, -- Iron Spikes
+--	[SpellName(335306)] = 3, -- Barbed Shackles
+--	[SpellName(322429)] = 3, -- Severing Slice
+--	[SpellName(334653)] = 3, -- Engorge
+--	-- Spires of Ascension
+--	[SpellName(338729)] = 3, -- Charged Stomp
+--	[SpellName(323195)] = 3, -- Purifying Blast
+--	[SpellName(327481)] = 3, -- Dark Lance
+--	[SpellName(322818)] = 3, -- Lost Confidence
+--	[SpellName(322817)] = 3, -- Lingering Doubt
+--	[SpellName(324205)] = 3, -- Blinding Flash
+--	[SpellName(331251)] = 3, -- Deep Connection
+--	[SpellName(328331)] = 3, -- Forced Confession
+--	[SpellName(341215)] = 3, -- Volatile Anima
+--	[SpellName(323792)] = 3, -- Anima Field
+--	[SpellName(317661)] = 3, -- Insidious Venom
+--	[SpellName(330683)] = 3, -- Raw Anima
+--	[SpellName(328434)] = 3, -- Intimidated
+--	-- De Other Side
+--	[SpellName(320786)] = 3, -- Power Overwhelming
+--	[SpellName(334913)] = 3, -- Master of Death
+--	[SpellName(325725)] = 3, -- Cosmic Artifice
+--	[SpellName(328987)] = 3, -- Zealous
+--	[SpellName(334496)] = 3, -- Soporific Shimmerdust
+--	[SpellName(339978)] = 3, -- Pacifying Mists
+--	[SpellName(323692)] = 3, -- Arcane Vulnerability
+--	[SpellName(333250)] = 3, -- Reaver
+--	[SpellName(330434)] = 3, -- Buzz-Saw
+--	[SpellName(331847)] = 3, -- W-00F
+--	[SpellName(327649)] = 3, -- Crushed Soul
+--	[SpellName(331379)] = 3, -- Lubricate
+--	[SpellName(332678)] = 3, -- Gushing Wound
+--	[SpellName(322746)] = 3, -- Corrupted Blood
+--	[SpellName(323687)] = 3, -- Arcane Lightning
+--	[SpellName(323877)] = 3, -- Echo Finger Laser X-treme
+--	[SpellName(334535)] = 3, -- Beak Slice
+--}

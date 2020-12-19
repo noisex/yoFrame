@@ -28,6 +28,7 @@ local function handleFrame(baseName, doNotReparent)
 
 	if(frame) then
 		frame:UnregisterAllEvents()
+		frame.RegisterEvents = dummy
 		frame:Hide()
 
 		if(not doNotReparent) then
@@ -124,8 +125,10 @@ function oUF:DisableBlizzard(unit)
 			if(not frame.UnitFrame.isHooked) then
 				frame.UnitFrame:HookScript('OnShow', insecureOnShow)
 				frame.UnitFrame.isHooked = true
+			--print( unit)
 			end
 
+			handleFrame( frame.driverFrame, true)
 			handleFrame(frame.UnitFrame, true)
 		end
 	end

@@ -55,7 +55,7 @@ function Stat:onEvent( event, ...)
 
 		if ( sourceMask == 4369 or sourceMask == 8465) and not infoText.petBlacklist[sourceGUID] then infoText:checkPets( sourceGUID)	end
 
-		if sourceGUID == yo.myGUID or infoText.pets[sourceGUID] then
+		if sourceGUID == n.myGUID or infoText.pets[sourceGUID] then
 
 			local spellID 		= cleuInfo[12]
 			local spellName 	= cleuInfo[13]
@@ -81,7 +81,7 @@ function Stat:onEvent( event, ...)
 			--over 		= events[Event] == true and cleuInfo[ defaultArgs.arg4 ] or cleuInfo[ events[Event].arg4] or events[Event].val4 or 0
 			--spellSchool = events[Event] == true and cleuInfo[ defaultArgs.arg5 ] or cleuInfo[ events[Event].arg5] or events[Event].val5
 
-			infoText.checkNewSpell( self, yo.myGUID, spellID, spellName, spellDMG, spellOver, spellSchool, spellCrit)
+			infoText.checkNewSpell( self, n.myGUID, spellID, spellName, spellDMG, spellOver, spellSchool, spellCrit)
 		end
 
 	elseif event == 'UNIT_PET' then
@@ -108,6 +108,7 @@ function Stat:Enable()
 	self.timeBegin 		= 0
 	self.combatTime 	= 0
 	self.amountTotal 	= 0
+	self.displayName 	= "dps"
 	self.spellInfo		= {}
 	self.spellDamage 	= {}
 
@@ -131,8 +132,8 @@ function Stat:Enable()
 	self:SetScript("OnMouseDown", self.onClick)
 
 	self.Text  = self.Text or self:CreateFontString(nil, "OVERLAY")
-	self.Text:SetFont( yo.font, yo.fontsize, "OVERLAY")
-	self.Text:SetFormattedText( infoText.displayString, "dps", 0, "") --,  SecondsToClocks( self.combatTime))
+	self.Text:SetFont( n.font, n.fontsize, "OVERLAY")
+	self.Text:SetFormattedText( infoText.displayString, self.displayName, 0, "") --,  SecondsToClocks( self.combatTime))
 	self.Text:ClearAllPoints()
 	self.Text:SetPoint( self.textSide, self, self.textSide, self.textShift, 0)
 

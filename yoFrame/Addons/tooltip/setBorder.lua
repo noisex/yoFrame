@@ -52,21 +52,21 @@ end
 
 local function SkinHealthBar()
 	HealthBar:SetScript("OnValueChanged", OnValueChanged)
-	HealthBar:SetStatusBarTexture( yo.texture)
+	HealthBar:SetStatusBarTexture( n.texture)
 	HealthBar:ClearAllPoints()
-	HealthBar:SetPoint("BOTTOMLEFT", HealthBar:GetParent(), "TOPLEFT", 0, 5)
-	HealthBar:SetPoint("BOTTOMRIGHT", HealthBar:GetParent(), "TOPRIGHT", 0, 5)
+	HealthBar:SetPoint("BOTTOMLEFT", HealthBar:GetParent(), "TOPLEFT", 0, 4)
+	HealthBar:SetPoint("BOTTOMRIGHT", HealthBar:GetParent(), "TOPRIGHT", 0, 4)
 
 	HealthBar.icon = HealthBar:CreateTexture(nil, "OVERLAY")
 	HealthBar.icon:SetPoint("TOPRIGHT", HealthBar, "BOTTOMRIGHT", -10, -10)
 	HealthBar.icon:SetSize(30, 30)
 	HealthBar.icon:SetTexture( icon)
 	HealthBar.icon:Hide()
-	CreateStyle( HealthBar, 1)
+	CreateStyle( HealthBar, 4)
 
 	if not HealthBar.Text then
 		HealthBar.Text = HealthBar:CreateFontString(nil, "OVERLAY")
-		HealthBar.Text:SetFont( yo.fontpx, yo.fontsize +5, "OUTLINE")
+		HealthBar.Text:SetFont( n.fontpx, n.fontsize +5, "OUTLINE")
 		HealthBar.Text:SetPoint("CENTER", HealthBar, "TOP", 0, 2)
 	end
 end
@@ -95,7 +95,7 @@ end
 local function getMyColor()
 	local R, G, B = 0.3, 0.3, 0.3
 	if yo.ToolTip.borderClass then
-		R, G, B = yo.myColor.r, yo.myColor.g, yo.myColor.b
+		R, G, B = n.myColor.r, n.myColor.g, n.myColor.b
 	end
 	return R, G, B
 end
