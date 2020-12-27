@@ -42,7 +42,7 @@ local auraFilter = { "HARMFUL", "HELPFUL"}
 
 --glowColor, glowN, glowLength, glowBadStart, glowBadStop
 
-local aGlow 			= LibStub("LibCustomGlow-1.0", true)
+local aGlow 			= n.LIBS.ButtonGlow
 
 np.glowTargetStart		= yo.NamePlates.glowTarget and aGlow.PixelGlow_Start or n.dummy
 np.glowTargetStop 		= yo.NamePlates.glowTarget and aGlow.PixelGlow_Stop  or n.dummy
@@ -86,19 +86,6 @@ local badClassTypes = {
 }
 
 local badTypes = classDispell and badClassTypes[n.myClass] or badClassTypes["HUNTER"]
-
-local badMobes = {
-	--[130771] = true,	--	Дамми у ханта
-	[93619] = true, 	--	Дамми у лока
-	[144082]	= true,
-
-	[136330] = true, 	-- голиаф шипы
-	[137103] = true, 	-- кровавый образ
-	[120651] = true,  	-- 	Взрывчатка
-
-	[136461] = true,	--  Порождение Г'ууна
-	[141851] = true, 	--  Порождение Г'ууна 2
-}
 
 local treatColor = {
 	[0]			={	strsplit(",", yo.NamePlates.c0)},
@@ -147,9 +134,9 @@ local function updateBuffs(self)
 			local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, _, _, _, namepmateshowall = UnitAura(unit, index, filter)
 			if not name then break end
 
-			--if not yo.NamePlates.moreDebuffIcons then nameplateShowPersonal = false end
-			--if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( n.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or n.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
-			if ((caster == "player" or caster == "pet" or caster == "vehicle") and n.DebuffWhiteList[name] ) or namepmateshowall or n.tauntsSpell[name] then
+			if not yo.NamePlates.moreDebuffIcons then nameplateShowPersonal = false end
+			if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( n.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or n.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
+			--if ((caster == "player" or caster == "pet" or caster == "vehicle") and n.DebuffWhiteList[name] ) or namepmateshowall or n.tauntsSpell[name] then
 				debuffType = blueDebuff and debuffType or nil
 
 				local aIcon = n.createAuraIcon( self.debuffIcons, idebuff)
@@ -299,11 +286,18 @@ local function updateName( self)
 		local _, _, _, _, _, mobID = strsplit( "-", UnitGUID( self.unit))
 		mobID = tonumber( mobID)
 
-		if mobID and badMobes[mobID] then
+		if mobID and n.badMobs[mobID] then
+			local cols = n.badMobs[mobID]
 			--lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key)
-			np.glowBadStart( self.Health, np.glowColor, np.glowN, 0.2, np.glowLength, 3, 0, 0, false, 2)
+			--np.glowBadStart( self.Health, np.glowColor, np.glowN, 0.2, np.glowLength, 3, 0, 0, false, 2)
+			np.glowBadStart( self.Health, cols, np.glowN, 0.2, np.glowLength, 2, 2, 2, false, 2)
+			self.Health.focusInd:SetVertexColor( cols[1], cols[2], cols[3], 0.3)
+			self.Health.focusInd:Show()
+			--self.Health.shadow:SetBackdropBorderColor( self.mcols[1], self.mcols[2], self.mcols[3], 1)
 		else
 			np.glowBadStop( self.Health, 2)
+			self.Health.focusInd:Hide()
+			--self.Health.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.9)
 		end
 
 		--if 	--UnitClass( self.unit)
@@ -392,7 +386,13 @@ local function updateHealthColor(self, elapsed)
 	--self.Health.shadow:SetBackdropBorderColor( cols[1]*fader, cols[2]*fader, cols[3]*fader)
 	self.name:SetTextColor( cols[1], cols[2], cols[3])
 
-	self.Health.focusInd:SetShown( UnitIsUnit ( unit, "focus"))
+	self.cols = cols
+
+	--if self.mcols then cols = 	self.mcols end
+	--self.name:SetTextColor( cols[1], cols[2], cols[3])
+
+	--self.Health.focusInd:SetShown( UnitIsUnit ( unit, "focus"))
+
 end
 
 local function updateHealth(self)--, unit, minHealth, maxHealth)
@@ -451,7 +451,7 @@ local function callback(self, event, unit)
 	if self then
 		self.UpdateAllElements( self)
 	end
-	oUF:DisableBlizzard( unit)
+	--oUF:DisableBlizzard( unit)
 	ClassNameplateManaBar 	= yo.dummy
 	NamePlateDriverMixin 	= yo.dummy
 end
@@ -509,10 +509,13 @@ local function createNP(self, unit)
 	self.Health.HightLight:Hide()
 
 	self.Health.focusInd = self.Health:CreateTexture(nil, "OVERLAY", 2)
-   	self.Health.focusInd:SetAllPoints( self.Health)
+   	--self.Health.focusInd:SetAllPoints( self.Health)
+   	self.Health.focusInd:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+   	self.Health.focusInd:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
 	self.Health.focusInd:SetVertexColor( 0, 0.7, 0.9)
 	self.Health.focusInd:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\overlay_indicator_1.blp")
-	self.Health.focusInd:SetAlpha( 0.4)
+	--self.Health.focusInd:SetBlendMode("ADD")
+	--self.Health.focusInd:SetAlpha( 0.4)
 
 	self.Health.perc = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Health.perc:SetFont( n.font, n.fontsize, "THINOUTLINE")

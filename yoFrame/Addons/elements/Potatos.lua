@@ -382,7 +382,7 @@ local potatos = CreateFrame("Frame", "yo_Potatos", UIParent)
 		C_ChatInfo.RegisterAddonMessagePrefix("D4") -- DBM
 
 		--if not yo["Addons"].Potatos or UnitLevel("player") < MAX_PLAYER_LEVEL then return end
-		n.moveCreateAnchor("yoMovePotatos", 		"Move Potatos", 40, 40, 100, 0, "LEFT", "RIGHT", LeftDataPanel)
+		n.moveCreateAnchor("yoMovePotatos", 		"Move Potatos", 40, 40, 100, 0, "LEFT", "RIGHT", n.infoTexts.LeftDataPanel)
 		CreatePotatos( self)
 		initPotatos( self)
 	end)

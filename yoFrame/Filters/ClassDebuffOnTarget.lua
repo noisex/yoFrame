@@ -127,9 +127,10 @@ DebuffWhiteListTemplate = {
 		[SpellName(80240)] = true,	-- хаос
 	},
 	["WARRIOR"] = {
-		[SpellName(5246)] = true,	-- Intimidating Shout
+		[SpellName(5246)] 	= true,	-- Intimidating Shout
 		[SpellName(132168)] = true,	-- Shockwave
 		[SpellName(115767)] = true,	-- Deep Wounds
+		[SpellName(772)] 	= true,	-- REnd
 	},
 	["DEMONHUNTER"] = {
 		[SpellName(217832)] = true,	--Пленение
@@ -215,9 +216,8 @@ logan:SetScript("OnEvent", function(self, ...)
 	n.BuffWhiteList   	= BuffWhiteListTemplate[n.myClass]
 	n.tauntsSpell		= {}
 	wipe( n.tauntsSpell)
-	--wipe( DebuffWhiteListTemplate)
-	--wipe( BuffWhiteListTemplate)
-	n.mySpec    	= GetSpecialization()
+
+	n.mySpec    = GetSpecialization()
 	n.mySpecNum	= GetSpecializationInfo( n.mySpec)
 
 	if yo.NamePlates.showTauntDebuff or n.tankSpecIDs[n.mySpecNum] then

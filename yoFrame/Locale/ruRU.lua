@@ -71,7 +71,7 @@ if ns:IsSameLocale("ruRU") then
 	L["features"] 	= "особенностей."
 
 	L["instead"] 	= " вместо "
-	L["put on"] 	= "|cffff0000После боя надень: |r"
+	L["put on"] 	= "|cffff0000После боя попытаемся надеть: |r"
 	L["weared"] 	= "|cffff0000Надето: |r"
 	L["can change"] 	= "|cffff0000Можно сменить: |r"
 

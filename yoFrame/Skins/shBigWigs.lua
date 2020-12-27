@@ -5,13 +5,13 @@ local L, yo, n = unpack( select( 2, ...))
 ----------------------------------------------------------------------------------------
 -- Init some tables to store backgrounds
 local freebg = {i}
+local registred
 
 -- Styling functions
 local createbg = function()
 	local bg = CreateFrame("Frame")
 	if not bg.shadow then
-		CreateStyle( bg, 3)
-		--bg:SetTemplate("Default")
+		CreateStyle( bg, 4)
 	end
 
 	return bg
@@ -21,6 +21,7 @@ local function freestyle(bar)
 	--print("we free!!!")
 	-- Reparent and hide bar background
 	local bg = bar:Get("bigwigs:yoframe:bg")
+
 	if bg then
 		bg:ClearAllPoints()
 		bg:SetParent(UIParent)
@@ -36,35 +37,6 @@ local function freestyle(bar)
 		ibg:Hide()
 		freebg[#freebg + 1] = ibg
 	end
-
-	-- Replace dummies with original method functions
-	bar.candyBarBar.SetPoint = bar.candyBarBar.OldSetPoint
-	bar.candyBarIconFrame.SetWidth = bar.candyBarIconFrame.OldSetWidth
-	bar.SetScale = bar.OldSetScale
-
-	---- Reset Positions
-	---- Icon
-	bar.candyBarIconFrame:ClearAllPoints()
-	bar.candyBarIconFrame:SetPoint("TOPLEFT")
-	bar.candyBarIconFrame:SetPoint("BOTTOMLEFT")
-	bar.candyBarIconFrame:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-
-	---- Status Bar
-	bar.candyBarBar:ClearAllPoints()
-	bar.candyBarBar:SetPoint("TOPRIGHT")
-	bar.candyBarBar:SetPoint("BOTTOMRIGHT")
-
-	---- BG
-	bar.candyBarBackground:SetAllPoints()
-
-	---- Duration
-	bar.candyBarDuration:ClearAllPoints()
-	bar.candyBarDuration:SetPoint("RIGHT", bar.candyBarBar, "RIGHT", -2, 0)
-
-	---- Name
-	bar.candyBarLabel:ClearAllPoints()
-	bar.candyBarLabel:SetPoint("LEFT", bar.candyBarBar, "LEFT", 2, 0)
-	bar.candyBarLabel:SetPoint("RIGHT", bar.candyBarBar, "RIGHT", -2, 0)
 end
 
 local applystyle = function(bar)
@@ -73,8 +45,8 @@ local applystyle = function(bar)
 	--print("apply style")
 	bar:SetHeight(20)
 	bar:SetScale(1)
-	bar.OldSetScale = bar.SetScale
-	bar.SetScale = n.dummy
+	--bar.OldSetScale = bar.SetScale
+	--bar.SetScale = n.dummy
 
 	-- Create or reparent and use bar background
 	local bg = nil
@@ -110,7 +82,7 @@ local applystyle = function(bar)
 		bar:Set("bigwigs:yoframe:ibg", ibg)
 	end
 
-	-- Setup timer and bar name fonts and positions
+	 --Setup timer and bar name fonts and positions
 	bar.candyBarLabel:SetFont( n.font, n.fontsize +1, "THINOUTLINE")
 	bar.candyBarLabel:SetJustifyH("LEFT")
 	bar.candyBarLabel:ClearAllPoints()
@@ -122,20 +94,20 @@ local applystyle = function(bar)
 	bar.candyBarDuration:SetPoint("RIGHT", bar, "RIGHT", 1, 0)
 	bar.candyBarDuration:SetTextColor(1, 1, 0, 1)
 
-	-- Setup bar positions and look
+	 --Setup bar positions and look
 	bar.candyBarBar:ClearAllPoints()
 	bar.candyBarBar:SetAllPoints(bar)
 	bar.candyBarBar.OldSetPoint = bar.candyBarBar.SetPoint
 	bar.candyBarBar.SetPoint = n.dummy
-	bar.candyBarBar:SetStatusBarTexture( texture)
-	--if not bar.data["bigwigs:emphasized"] == true then
-	--	bar.candyBarBar:SetStatusBarColor( 1, 1, 1, 1)
-	--end
+	bar.candyBarBar:SetStatusBarTexture( n.texture)
+	if not bar.data["bigwigs:emphasized"] == true then
+		--bar.candyBarBar:SetStatusBarColor( 1, 1, 1, 1)
+	end
 	bar.candyBarBackground:ClearAllPoints()
 	bar.candyBarBackground:SetAllPoints(bar)
-	bar.candyBarBackground:SetTexture( texture)
+	bar.candyBarBackground:SetTexture( n.texture)
 
-	-- Setup icon positions and other things
+	 --Setup icon positions and other things
 	bar.candyBarIconFrame:ClearAllPoints()
 	bar.candyBarIconFrame:SetPoint("RIGHT", bar, "LEFT", -6, 0)
 	bar.candyBarIconFrame:SetSize( bar:GetHeight(), bar:GetHeight())
@@ -144,6 +116,63 @@ local applystyle = function(bar)
 	bar.candyBarIconFrame:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 end
 
+local function registerBWStyle(...)
+
+	BigWigsAPI:RegisterBarStyle("yoFrame", {
+		apiVersion = 1,
+		version = 1,
+		GetSpacing = function(bar) return 5 end,
+		ApplyStyle = applystyle, --function(bar) end,
+		BarStopped = freestyle, --function(bar) end,
+		GetStyleName = function() return "yoFrame" end,
+	})
+	registred = true
+end
+
+local f = CreateFrame("Frame")
+--f:RegisterEvent("ADDON_LOADED")
+f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:SetScript("OnEvent", function(self, event, addon)
+
+	if event == "ADDON_LOADED" then
+
+	elseif event == "PLAYER_ENTERING_WORLD" then
+
+		if BigWigsAPI and not registred then registerBWStyle() end
+
+		--LoadAddOn("BigWigs_Plugins")
+		--LoadAddOn("BigWigs_Options")
+		if not BigWigs3DB then return end
+		if not BigWigs3DB.namespaces then return end
+
+		local settingBar = BigWigs3DB.namespaces.BigWigs_Plugins_Bars.profiles.Default
+		if settingBar then
+			settingBar.barStyle = "yoFrame"
+			settingBar.fontName = "yoMagistral"
+			settingBar.texture = n.texture
+			settingBar.emphasizeGrowup = true
+		end
+
+		local settingMess = BigWigs3DB.namespaces.BigWigs_Plugins_Messages.profiles.Default
+		if settingMess then
+			settingMess.fontName = "yoMagistral"
+			settingMess.fontSize = 22
+		end
+
+		local settingProx = BigWigs3DB.namespaces.BigWigs_Plugins_Proximity.profiles.Default
+		if settingProx then
+			settingProx.fontName = "yoMagistral"
+			--settingProx.fontSize = 40
+		end
+
+		--print( BigWigs3DB.namespaces.BigWigs_Plugins_Messages.profiles.Default.fontName) -- yoFram
+		--f:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+end)
+
+if BigWigsAPI and not registred then registerBWStyle() end
+
+--[[
 local function registerStyle()
 	if not BigWigs then return end
 	local bars = BigWigs:GetPlugin("Bars", true)
@@ -184,21 +213,4 @@ local function registerStyle()
 	end
 end
 
-local f = CreateFrame("Frame")
-f:RegisterEvent("ADDON_LOADED")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:SetScript("OnEvent", function(self, event, addon)
-
-	if event == "ADDON_LOADED" then
-		if addon == "BigWigs_Plugins" then
-			--registerStyle()
-			--print("sdfsdfsdfd")
-			f:UnregisterEvent("ADDON_LOADED")
-		end
-
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		local loaded, reason = LoadAddOn( "BigWigs_Plugins")
-		registerStyle()
-		f:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-end)
+]]

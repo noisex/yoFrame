@@ -4,7 +4,7 @@ local L, yo, n = unpack( ns)
 if not yo.Chat.EnableChat then return end
 
 local _G = _G
-local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
+local LSM = n.LIBS.LSM
 local yoEF = n.elemFrames
 
 local hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print, Kill
@@ -216,7 +216,7 @@ local function SetChatStyle(frame)
 	if (wowtocversion > 90000) then Mixin( editbox, BackdropTemplateMixin) end
 
 	editbox:ClearAllPoints();
-	editbox:SetPoint("CENTER", LeftInfoPanel)
+	editbox:SetPoint("CENTER", n.infoTexts.LeftInfoPanel)
 	editbox:SetWidth(440)
 	editbox:SetHeight(15)
 	editbox:SetFrameLevel(1)
@@ -303,10 +303,10 @@ local function SetupChatPosAndFont(self)
 		chat.ScrollBar:ClearAllPoints()
 		chat.ScrollBar.SetPoint = function() return end
 		chat.ScrollBar.ClearAllPoints = function() return end
-		--chat.ScrollBar:SetPoint( "TOPRIGHT", LeftDataPanel, "TOPRIGHT", 50, 0)
+		--chat.ScrollBar:SetPoint( "TOPRIGHT", n.infoTexts.LeftDataPanel, "TOPRIGHT", 50, 0)
 
 		chat.ScrollToBottomButton:ClearAllPoints()
-		chat.ScrollToBottomButton:SetPoint( "TOPRIGHT", LeftDataPanel, "TOPRIGHT", 0, 0)
+		chat.ScrollToBottomButton:SetPoint( "TOPRIGHT", n.infoTexts.LeftDataPanel, "TOPRIGHT", 0, 0)
 		chat.ScrollToBottomButton.SetPoint = function() return end
 		chat.ScrollToBottomButton.ClearAllPoints = function() return end
 
@@ -318,7 +318,7 @@ local function SetupChatPosAndFont(self)
 		if i == 1 then
 			chat:ClearAllPoints()
 			chat:SetSize(435, 132)
-			chat:SetPoint("BOTTOMLEFT", LeftDataPanel, "BOTTOMLEFT", 3, 20)
+			chat:SetPoint("BOTTOMLEFT", n.infoTexts.LeftDataPanel, "BOTTOMLEFT", 3, 20)
 
 			FCF_SavePositionAndDimensions(chat)
 		elseif i == 2 then
@@ -341,7 +341,7 @@ local function SetupChatPosAndFont(self)
 		--end
 	end
 
-	local wimButton = CreateFrame("Button", nil, LeftDataPanel)
+	local wimButton = CreateFrame("Button", nil, n.infoTexts.LeftDataPanel)
 	wimButton:SetPoint( "RIGHT",ChatFrame1.ScrollToBottomButton, "LEFT", -3, 0)
 	wimButton:SetSize( 1, 1)
 	if yoEF.wim and yo.Chat.wim then
@@ -403,21 +403,21 @@ local function SetupChatPosAndFont(self)
 	end
 
 	--ChatFrame1ButtonFrame:ClearAllPoints()
-	ChatFrame1ButtonFrame:SetPoint( "TOPRIGHT", LeftDataPanel, "TOPRIGHT", 0, 0)
+	ChatFrame1ButtonFrame:SetPoint( "TOPRIGHT", n.infoTexts.LeftDataPanel, "TOPRIGHT", 0, 0)
 
 	FCF_SetLocked( ChatFrame1, true)
 
 	-- Reposition battle.net popup over chat #1
 	ChatAlertFrame:ClearAllPoints()
-	ChatAlertFrame:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 0, 35)
+	ChatAlertFrame:SetPoint( "BOTTOMLEFT", n.infoTexts.LeftDataPanel, "TOPLEFT", 0, 35)
 	--QuickJoinToastButton.FriendsButton:SetTexture("Interface\\CHATFRAME\\UI-ChatIcon-Battlenet.blp")
 	--QuickJoinToastButton.FriendsButton.SetTexture = n.dummy
 	-- BNToastFrame:ClearAllPoints()
-	-- BNToastFrame:SetPoint("BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 5, 5)
+	-- BNToastFrame:SetPoint("BOTTOMLEFT", n.infoTexts.LeftDataPanel, "TOPLEFT", 5, 5)
 
 	BNToastFrame:HookScript("OnShow", function(self)
 		self:ClearAllPoints()
-		self:SetPoint("BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 5, 15)
+		self:SetPoint("BOTTOMLEFT", n.infoTexts.LeftDataPanel, "TOPLEFT", 5, 15)
 	end)
 end
 

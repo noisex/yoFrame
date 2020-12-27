@@ -4,8 +4,11 @@ if not yo.Addons.FlashIconCooldown then return end
 
 local GetItemIcon, GetSpellInfo, select = GetItemIcon, GetSpellInfo, select
 
-local lib = LibStub("LibCooldown")
+local lib = n.LIBS.LibCooldown
+
 if not lib then error("CooldownFlash requires LibCooldown") return end
+
+--print(n.LIBS.LibCooldown)
 
 local filter = {
 	["pet"] = "all",

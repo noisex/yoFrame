@@ -10,6 +10,9 @@ local GameTooltip, UIParent, IsShiftKeyDown, CreateFrame, GetSpecializationInfo,
 local GetItemStats, GetSpellDescription, CreatePanel, hex, GetLootSpecialization, GetSpecializationInfoByID, SecondsToClock, EJ_SetLootFilter, EJ_SetDifficulty, EJ_GetInstanceByIndex, EJ_SelectInstance, EJ_GetNumLoot, GameTooltip_ShowCompareItem
 	= GetItemStats, GetSpellDescription, CreatePanel, hex, GetLootSpecialization, GetSpecializationInfoByID, SecondsToClock, EJ_SetLootFilter, EJ_SetDifficulty, EJ_GetInstanceByIndex, EJ_SelectInstance, EJ_GetNumLoot, GameTooltip_ShowCompareItem
 
+local LoadAddOn, strsplit, EJ_GetEncounterInfo, EncounterJournal_OpenJournalLink, SetItemRef
+	= LoadAddOn, strsplit, EJ_GetEncounterInfo, EncounterJournal_OpenJournalLink, SetItemRef
+
 local ITEM_SPELL_TRIGGER_ONUSE = ITEM_SPELL_TRIGGER_ONUSE
 local ITEM_SPELL_TRIGGER_ONEQUIP= ITEM_SPELL_TRIGGER_ONEQUIP
 
@@ -75,9 +78,9 @@ local function OnLeave( self)
 end
 
 local function linkClick( self)
-	local preString, hyperlinkString = self.link:match("^(.*)|H(.+)|h(.*)$")
-	LoadAddOn( "Blizzard_EncounterJournal")
-	EncounterJournal_OpenJournalLink( strsplit(":", hyperlinkString));
+	local preString, hyperlinkString, postString = self.link:match("^(.*)|H(.+)|h(.*)$")
+
+	SetItemRef(hyperlinkString, self.link, self, nil)
 end
 
 local function CreateIcon( index)
@@ -373,7 +376,7 @@ local function settingDoIt( self)
 end
 
 local function createDuLoot( self)
-	CreatePanel( self, 460, CharacterFrame:GetHeight() - 8, "LEFT", CharacterFrame, "RIGHT", 10, 0, 0.3, 0)
+	CreatePanel( self, 460, _G.CharacterFrame:GetHeight() - 8, "LEFT", _G.CharacterFrame, "RIGHT", 10, 0, 0.3, 0)
 	self:EnableMouse(true)
 	self:SetClampedToScreen(true)
 	self:SetMovable(true)

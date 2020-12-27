@@ -553,7 +553,9 @@ local function updateHealthColor( f, event, unit, ...)
 		end
 	end
 
-	if f.holyShards then f.holyShards:recolorShards( cols) end
+	if unit == "player" and f.holyShards then
+		--print( "EVENT = ", event)
+		f.holyShards:recolorShards( cols) end
 
 	if yo.Raid.classcolor == 1 then
 		f.Health:SetStatusBarColor( f.colr * f.fader, f.colg * f.fader, f.colb * f.fader, 0.9)
@@ -586,6 +588,7 @@ local function updateHealthColor( f, event, unit, ...)
 			f.Health.AbsorbBar:SetStatusBarColor( 0.3, 0.3, 0.3, 0.9)
 		end
 	end
+
 	if f.Health.stoper then
 		f.Health.stoper:SetStatusBarColor( f.colr * f.darkAbsorb, f.colg * f.darkAbsorb, f.colb * f.darkAbsorb , 0.9)
 	end

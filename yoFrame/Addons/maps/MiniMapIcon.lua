@@ -26,8 +26,7 @@ local prevButton
 local buttonList = {}
 
 local function ButtonEnter(self)
-	local color = RAID_CLASS_COLORS[select(2,  UnitClass( "player") )]
-	self:SetBackdropBorderColor(color.r, color.g, color.b)
+	self:SetBackdropBorderColor(n.myColor.r, n.myColor.g, n.myColor.b)
 	self:SetAlpha( 0.9)
 end
 

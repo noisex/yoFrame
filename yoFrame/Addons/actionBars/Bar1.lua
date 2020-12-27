@@ -3,8 +3,8 @@ local L, yo, n = unpack( ns)
 
 local _G = _G
 
-local ceil, CreateFrame, select, UnitClass
-	= ceil, CreateFrame, select, UnitClass
+local ceil, CreateFrame, select, UnitClass, ActionButtonDesign
+	= ceil, CreateFrame, select, UnitClass, ActionButtonDesign
 
 if not yo.ActionBar.enable then return end
 

@@ -32,12 +32,12 @@ Stat:EnableMouse(true)
 Stat:SetFrameStrata("MEDIUM")
 Stat:SetFrameLevel(3)
 
-local Text  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
+local Text  = n.infoTexts.LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 --Text:SetFont( n.font, n.fontsize, "OVERLAY")
-Text:SetHeight(LeftInfoPanel:GetHeight())
-Text:SetPoint("RIGHT", LeftInfoPanel, "RIGHT", -30, 0)
+Text:SetHeight(n.infoTexts.LeftInfoPanel:GetHeight())
+Text:SetPoint("RIGHT", n.infoTexts.LeftInfoPanel, "RIGHT", -30, 0)
 Stat:SetParent(Text:GetParent())
-LeftInfoPanel.friendText = Text
+n.infoTexts.LeftInfoPanel.friendText = Text
 
 
 local menuFrame = CreateFrame("Frame", "FriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
@@ -278,7 +278,7 @@ local function Update(self, event, ...)
 		self:SetScript("OnEvent", nil)
 		self:SetScript("OnUpdate", nil)
 		Text = nil
-		LeftInfoPanel.friendText = nil
+		n.infoTexts.LeftInfoPanel.friendText = nil
 		return
 	end
 

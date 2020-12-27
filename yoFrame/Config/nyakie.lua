@@ -65,7 +65,8 @@ end
 n.IsSoloFree = function ( ... )
   --local instanceType = select( 2, GetInstanceInfo())
 
-  if      UnitInParty("player") then return false
+  if 	  UnitExists("party1") or UnitExists("raid1") then return false
+  elseif  UnitInParty("player") then return false
   elseif  UnitInRaid("player")  then return false
   elseif  IsInInstance()      	then return false
     --and instanceType ~= "scenario" then return false
@@ -350,62 +351,7 @@ n.dungensTypes = {
     [2087]  = "Heroic Shadowlands",
 }
 
--- "url": "https://wago.io/7KA6ZDIRW/8",
-n.badMobsCasts = {
-    [330614] = true,
-    [330868] = true,
-    [333294] = true,
-    [330562] = true,
-    [327413] = true,
-    [317936] = true,
-    [328295] = true,
-    [328288] = true,
-    [334329] = true,
-    [322433] = true,
-    [322429] = true,
-    [320991] = true,
-    [326836] = true,
-    [335305] = true,
-    [328395] = true,
-    [328400] = true,
-    [318949] = true,
-    [336450] = true,
-    [327233] = true,
-    [327155] = true,
-    [323496] = true,
-    [327130] = true,
-    [324293] = true,
-    [320208] = true,
-    [323496] = true,
-    [320822] = true,
-    [335143] = true,
-    [326046] = true,
-    [331718] = true,
-    [321828] = true,
-    [324914] = true,
-    [322938] = true,
-    [324776] = true,
-    [321968] = true,
-    [326607] = true,
-    [325701] = true,
-    [325701] = true,
-    [326450] = true,
-    [325523] = true,
-    [325700] = true,
-    [333227] = true,
-    [327646] = true,
-    [334493] = true,
-    [326171] = true,
-    [332612] = true,
-    [332706] = true,
-    [332612] = true,
-    [332671] = true,
 
-    [346506] = true, --https://ru.wowhead.com/spell=346506
-    [330822] = true, --https://ru.wowhead.com/spell=330822
-    [298844] = true, -- Ужасающий вой
-    [242391] = true, -- https://ru.wowhead.com/spell=242391
-}
 --164926
 --163086
 

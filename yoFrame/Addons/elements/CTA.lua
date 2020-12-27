@@ -5,7 +5,7 @@ if not yo.CTA.enable then return end
 local _G = _G
 local yo_CTA = {}
 local tRole, hRole, dRole, timer
-local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
+local LSM = n.LIBS.LSM
 
 local CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, GetTime, format, GetLFGMode, GetLFGCategoryForID
 	= CreateFrame, GameTooltip, UnitInParty, UnitInRaid, PlaySoundFile, select, GetRFDungeonInfo, GetNumRFDungeons, GetLFGRoles, GetLFGRoleShortageRewards, GetTime, format, GetLFGMode, GetLFGCategoryForID

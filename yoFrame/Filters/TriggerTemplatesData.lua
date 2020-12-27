@@ -4968,7 +4968,7 @@ tinsert(templates.race.Vulpera, { spell = 312370, type = "ability" });
 --}
 
 tinsert( templates.class.DRUID[1][1].args, { spell = 157228, type = "buff", unit = "player"}) -- Бешенство совуха
-
+--772
 
 local delayedEnrichDatabase = false;
 local itemInfoReceived = CreateFrame("frame")

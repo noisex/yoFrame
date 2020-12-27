@@ -1,34 +1,37 @@
 local L, yo, n = unpack( select( 2, ...))
 
-LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+local _G = _G
+local UIParent, GetScreenWidth, GetScreenHeight, CreateFrame, PlaySound, format, ReloadUI, DoReadyCheck, UnitLevel, UnitGroupRolesAssigned, SetCVar, UnitGroupRolesAssigned, GetSpecializationInfo, GetSpecialization, SlashCmdList
+	= UIParent, GetScreenWidth, GetScreenHeight, CreateFrame, PlaySound, format, ReloadUI, DoReadyCheck, UnitLevel, UnitGroupRolesAssigned, SetCVar, UnitGroupRolesAssigned, GetSpecializationInfo, GetSpecialization, SlashCmdList
 
-n.infoTexts.LeftInfoPanel  = LeftInfoPanel
-n.infoTexts.LeftDataPanel  = LeftDataPanel
-n.infoTexts.RightDataPanel = RightDataPanel
-n.infoTexts.RightInfoPanel = RightInfoPanel
+local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
 
-CreatePanel( RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
-CreateStyle( RightDataPanel, 3, 0, 0, 0.7)
+n.LIBS = {}
+n.LIBS.LibCooldown 	= _G.LibStub("LibCooldown")
+n.LIBS.Search 		= _G.LibStub('LibItemSearch-1.2')
+n.LIBS.LSM 			= _G.LibStub:GetLibrary("LibSharedMedia-3.0");
+n.LIBS.LOP 			= _G.LibStub("LibObjectiveProgress-1.0", true);
+n.LIBS.ButtonGlow 	= _G.LibStub("LibCustomGlow-1.0", true)
 
-CreatePanel( LeftDataPanel, 440, 175, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 3, 3, 0.5, 0)
-CreateStyle( LeftDataPanel, 3, 0, 0, 0.7)
+n.infoTexts.LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+n.infoTexts.LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+n.infoTexts.RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+n.infoTexts.RightInfoPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
-SimpleBackground( RightInfoPanel, 440, 15, "BOTTOM", RightDataPanel, "BOTTOM", 0, 0)
-CreateStyle( RightInfoPanel, 3, 0)
+CreatePanel( n.infoTexts.RightDataPanel, 440, 175, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -3, 3, 0.5, 0)
+CreateStyle( n.infoTexts.RightDataPanel, 3, 0, 0, 0.7)
 
-SimpleBackground( LeftInfoPanel, 440, 15, "BOTTOM", LeftDataPanel, "BOTTOM", 0, 0)
-CreateStyle( LeftInfoPanel, 3, 0)
+CreatePanel( n.infoTexts.LeftDataPanel, 440, 175, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 3, 3, 0.5, 0)
+CreateStyle( n.infoTexts.LeftDataPanel, 3, 0, 0, 0.7)
 
-if not yo.Addons.BlackPanels then RightDataPanel:Hide() LeftDataPanel:Hide() end
-if not yo.Addons.InfoPanels  then RightInfoPanel:Hide() LeftInfoPanel:Hide() end
+SimpleBackground( n.infoTexts.RightInfoPanel, 440, 15, "BOTTOM", n.infoTexts.RightDataPanel, "BOTTOM", 0, 0)
+CreateStyle( n.infoTexts.RightInfoPanel, 3, 0)
 
-AlertFrame:ClearAllPoints()
-AlertFrame:SetPoint("TOPLEFT", UIParent, "CENTER", 0, -150)
-AlertFrame.ClearAllPoints = n.dummy
-AlertFrame.SetPoint = n.dummy
+SimpleBackground( n.infoTexts.LeftInfoPanel, 440, 15, "BOTTOM", n.infoTexts.LeftDataPanel, "BOTTOM", 0, 0)
+CreateStyle( n.infoTexts.LeftInfoPanel, 3, 0)
+
+if not yo.Addons.BlackPanels then n.infoTexts.RightDataPanel:Hide() n.infoTexts.LeftDataPanel:Hide() end
+if not yo.Addons.InfoPanels  then n.infoTexts.RightInfoPanel:Hide() n.infoTexts.LeftInfoPanel:Hide() end
 
 local function enterEvent( self)
 	--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -81,14 +84,18 @@ local function enterEvent( self)
 	end
 
 	-- утроба круг сдвинуть в угол
-	UIWidgetTopCenterContainerFrame:SetScale(0.75)
-	UIWidgetTopCenterContainerFrame:ClearAllPoints()
-	UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -15)
+	_G.UIWidgetTopCenterContainerFrame:SetScale(0.75)
+	_G.UIWidgetTopCenterContainerFrame:ClearAllPoints()
+	_G.UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -15)
 
-	UIWidgetTopCenterContainerFrame.SetScale = n.dummy
-	UIWidgetTopCenterContainerFrame.ClearAllPoints = n.dummy
-	UIWidgetTopCenterContainerFrame.SetPoint = n.dummy
+	_G.UIWidgetTopCenterContainerFrame.SetScale = n.dummy
+	_G.UIWidgetTopCenterContainerFrame.ClearAllPoints = n.dummy
+	_G.UIWidgetTopCenterContainerFrame.SetPoint = n.dummy
 
+	_G.AlertFrame:ClearAllPoints()
+	_G.AlertFrame:SetPoint("TOPLEFT", UIParent, "CENTER", 0, -150)
+	_G.AlertFrame.ClearAllPoints = n.dummy
+	_G.AlertFrame.SetPoint = n.dummy
 	--UIWidgetTopCenterContainerFrame:HookScript("OnShow", function(self, ...) print("...") end)
 end
 
@@ -224,3 +231,38 @@ SlashCmdList.GRIDONSCREEN = function()
 end
 SLASH_GRIDONSCREEN1 = "/align"
 SLASH_GRIDONSCREEN2 = "/фдшпт"
+
+--E.ActionBars = E:NewModule('ActionBars','AceHook-3.0','AceEvent-3.0')
+--local AB = E:GetModule('ActionBars')
+
+--function AB:PLAYER_ENTERING_WORLD()
+--end
+
+--function AB:ReassignBindings(event)
+--end
+
+--function AB:Initialize()
+	--AB:RegisterEvent('PLAYER_ENTERING_WORLD')
+	--AB:RegisterEvent('UPDATE_BINDINGS', 'ReassignBindings')
+--end
+
+--E:RegisterModule(AB:GetName())
+
+--DT.tooltip = CreateFrame('GameTooltip', 'DataTextTooltip', E.UIParent, 'GameTooltipTemplate')
+--DT.EasyMenu = CreateFrame('Frame', 'DataTextEasyMenu', E.UIParent, 'UIDropDownMenuTemplate')
+--DT.EasyMenu:SetClampedToScreen(true)
+--	DT.EasyMenu:EnableMouse(true)
+--	DT.EasyMenu.MenuSetItem = function(dt, value)
+--		DT.db.panels[dt.parentName][dt.pointIndex] = value
+--		DT:UpdatePanelInfo(dt.parentName, dt.parent)
+
+--		if ActivateHyperMode then
+--			DT:EnableHyperMode(dt.parent)
+--		end
+
+--		DT.SelectedDatatext = nil
+--		CloseDropDownMenus()
+--	end
+--	DT.EasyMenu.MenuGetItem = function(dt, value)
+--		return dt and (DT.db.panels[dt.parentName] and DT.db.panels[dt.parentName][dt.pointIndex] == value)
+--	end

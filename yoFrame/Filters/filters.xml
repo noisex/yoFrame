@@ -4,5 +4,6 @@
 	<Script file="RaidAuras.lua"/>
 	<Script file="RaidSpels.lua"/>
 	<Script file="TriggerTemplatesData.lua"/>
+	<Script file="badMobs.lua"/>
 
  </Ui>

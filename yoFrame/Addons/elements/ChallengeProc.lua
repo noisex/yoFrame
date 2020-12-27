@@ -1,11 +1,12 @@
 -- [spellID] = true / false ( buff / debuff)
 local L, yo, n = unpack( select( 2, ...))
 
-local next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, UnitFactionGroup
-	= next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, UnitFactionGroup
+local _G = _G
+local next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, UnitFactionGroup, floor, print
+	= next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, UnitFactionGroup, floor, print
 
-local LOP = LibStub("LibObjectiveProgress-1.0", true);
-local isTeeming
+local npcVals
+--local LOP = n.LIBS.LOP
 
 local function HasTeeming( affixes)
 	if (next(affixes) ~= nil) then
@@ -27,103 +28,62 @@ local function MouseoverUnitID()
 	return nil;
 end
 --https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/AddOns/Blizzard_APIDocumentation/ChallengeModeInfoDocumentation.lua
-local function get_progress_value(npc_id, is_teeming)
-  -- resolve npc progress data
-  if true then return end
-
-  local progress_key = "npc_progress"
-  if is_teeming then
-    progress_key = "npc_progress_teeming"
-  end
-
-  local npc_progress = addon.c(progress_key)
-  if not npc_progress then
-    return
-  end
-
-  if not npc_progress[npc_id] then
-    return
-  end
-
-  -- get progress value
-  local value, occurrences = nil, -1
-  for val, val_occurrences in pairs(npc_progress[npc_id]) do
-    if val_occurrences > occurrences then
-      value, occurrences = val, val_occurrences
-    end
-  end
-
-  return value
-end
 
 local function resolve_npc_progress_value(npc_id, is_teeming)
   	local value = nil
-  	local is_mdt_value = false
-  	if MDT ~= nil then
-    	local mdtValue, _, _, mdtTeemingValue = MDT:GetEnemyForces(npc_id)
 
-    	if is_teeming and mdtTeemingValue then
-      		value = mdtTeemingValue
-    	else
-      		value = mdtValue
-    	end
-
-    		is_mdt_value = true
+  	if npcVals and npcVals[npc_id] then
+		for val, count in pairs( npcVals[npc_id]) do
+			value = val
+		end
   	end
 
-  	if not value or value == 0 then
-    	value = get_progress_value(npc_id, is_teeming)
-    	is_mdt_value = false
-  	end
-
-  	return value, is_mdt_value
+  	return value
 end
 
 local function OnEvent( self, event, ...)
 
-	if event == "UPDATE_MOUSEOVER_UNIT" and C_Scenario.IsInScenario then
+	if event == "UPDATE_MOUSEOVER_UNIT"
+		--and C_Scenario.IsInScenario
+		then
 		local npcID = MouseoverUnitID();
-		local _, _, difficulty, _, _, _, _, currentZoneID = GetInstanceInfo();
-		local mapID, _ = currentZoneID
+		--local _, _, difficulty, _, _, _, _, currentZoneID = GetInstanceInfo();
+		--local mapID, _ = currentZoneID
 
-		if (npcID ~= nil and mapID ~= nil and isTeeming ~= nil) then
-			-- Upper Karazhan Check Should Be Param 4
-			--local cmID = C_ChallengeMode.GetActiveChallengeMapID();
-			--local upper = cmID == 234
+		if npcID ~= nil then
 
-			-- For Siege of Boralus, isAlternate=false means Alliance and isAlternate=true means Horde
-			local isAlternate = nil
-
-			if mapID == 1822 and UnitFactionGroup("player") == "Horde" then
-    			isAlternate = true
-  			end
+  			local _, _, steps = C_Scenario.GetStepInfo()
+  			if not steps or steps <= 0 then return end
 
 			--local weight = LOP:GetNPCWeightByMap( mapID, npcID, isTeeming, isAlternate);
-			local value = resolve_npc_progress_value( npcID, isTeeming)
+			local value = resolve_npc_progress_value( npcID)
 			if (value ~= nil) then
-				local a, b, steps, c = C_Scenario.GetStepInfo();
-				local name, _, status, curValue = C_Scenario.GetCriteriaInfo( steps);
-				if curValue then
-					local appendString = string.format("|cff00ff00%.2f%%|r / |cffff0000%.2f%%", value, curValue);
-					GameTooltip:AddDoubleLine( name, appendString)
-				end
+
+				local absolute_number = " /|cff00ffff +" .. value .. "%|r"
+				local name, _, _, _, final_value = C_Scenario.GetCriteriaInfo(steps)
+  				local quantity_percent = (value / final_value) * 100
+  				local mult = 10 ^ 2
+  				quantity_percent = floor(quantity_percent * mult + 0.5) / mult
+  				if (quantity_percent > 100) then
+    				quantity_percent = 100
+  				end
+
+  				GameTooltip:AddDoubleLine( "yo " .. name .. ":", "|cffffff00+" .. quantity_percent .. "%|r" .. absolute_number, 1, 1, 0, 1, 1, 0)
 				GameTooltip:Show()
-				--GameTooltip:AppendText(appendString);
-				--print( mapID, npcID, isTeeming, upper, appendString)
 			end
 		end
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
+		if _G.MythicPlusTimerDB then
+			npcVals = _G.MythicPlusTimerDB.config.npc_progress
+		end
+
 		if not yo.Addons.mythicProcents then
 			self:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
 			self:SetScript("OnEvent", nil)
 		end
-
-		--local affixName, affixDesc, affixNum = C_ChallengeMode.GetAffixInfo( 5);
-		local cmLevel, affixes, empowered = C_ChallengeMode.GetActiveKeystoneInfo();
-		isTeeming = HasTeeming( affixes);
 	end
 end
 
@@ -131,3 +91,12 @@ local Amarker = CreateFrame("Frame")
 Amarker:RegisterEvent("PLAYER_ENTERING_WORLD")
 Amarker:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 Amarker:SetScript("OnEvent", OnEvent)
+
+
+
+--local a, b, steps, c = C_Scenario.GetStepInfo();
+--local name, _, status, curValue = C_Scenario.GetCriteriaInfo( steps);
+--if curValue then
+--	local appendString = string.format("|cff00ff00%.2f%%|r / |cffff0000%.2f%%", value, curValue);
+--	GameTooltip:AddDoubleLine( name, appendString)
+--end

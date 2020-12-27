@@ -3,8 +3,12 @@ local L, yo, n = unpack( ns)
 
 if not yo.ActionBar.enable then return end
 
-local ActionBars = n["ActionBars"]
+local _G = _G
+local ActionBars = n.ActionBars
 local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
+
+local ceil, CreateFrame, hooksecurefunc, RegisterStateDriver, PetActionBar_UpdateCooldowns, ActionButtonDesign
+	= ceil, CreateFrame, hooksecurefunc, RegisterStateDriver, PetActionBar_UpdateCooldowns, ActionButtonDesign
 
 function ActionBars:CreatePetBar()
 
@@ -15,13 +19,13 @@ function ActionBars:CreatePetBar()
 	local PetSize = 30
 	local Spacing = 2
 	local Size = 30
-	local PetActionBarFrame = PetActionBarFrame
+	local PetActionBarFrame = _G.PetActionBarFrame
 	local PetActionBar_UpdateCooldowns = PetActionBar_UpdateCooldowns
 	local ButtonsPerRow = 10
 	local NumRow = ceil(10 / ButtonsPerRow)
 
 	local Bar = CreateFrame("Frame", "yoPetActionBar", n.PetHider, "SecureHandlerStateTemplate")
-	Bar:SetPoint("RIGHT", yoMovePetBar, "RIGHT")
+	Bar:SetPoint("RIGHT", n.moveFrames.yoMovePetBar, "RIGHT")
 	Bar:SetFrameStrata("LOW")
 	Bar:SetFrameLevel(10)
 	Bar:SetWidth((PetSize * ButtonsPerRow) + (Spacing * (ButtonsPerRow + 1)))

@@ -22,14 +22,6 @@ if not IsAddOnLoaded("yoFrame_Config") then
 	return
 end
 
---local _, yoConfig, N = unpack( _G.yoFrame_Config)
-
-local yoConfig = _G.yoFrame_Config[2]
-
-ns[2] = yoConfig
-yo = ns[2]
-
-
 local myName   = UnitName( "player")
 local myRealm  = GetRealmName()
 

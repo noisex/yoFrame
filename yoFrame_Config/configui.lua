@@ -4,23 +4,27 @@ local L, yo, N, defConfig = unpack( ns)
 N.Config = N:NewModule( 'Config','AceHook-3.0','AceEvent-3.0')
 
 local _G 	= _G
-local aceDB = _G.LibStub("AceDB-3.0")
 local AB 	= N:GetModule('Config')
+
+local ADB 	= _G.LibStub("AceDB-3.0")
+local ADBO 	= _G.LibStub("AceDBOptions-3.0")
+local AC 	= _G.LibStub("AceConfig-3.0")
+local LDS 	= _G.LibStub("LibDualSpec-1.0")
+local LSM 	= _G.LibStub("LibSharedMedia-3.0")
+
 local ACD
 local needReload = false
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame
-	= strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame
+local strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar
+	= strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar
 
 local db, n
 local aConf = {}
 
--- GLOBALS: Setlers
-
-local LSM = LibStub:GetLibrary("LibSharedMedia-3.0");
+-- GLOBALS: Setlers, yoFrameDB
 
 LSM:Register("statusbar", "yo Plain Gray", 	"Interface\\AddOns\\yoFrame\\Media\\bar16")
 LSM:Register("statusbar", "yo Plain White", "Interface\\AddOns\\yoFrame\\Media\\plain_white")
@@ -387,7 +391,7 @@ local function InitOptions()
 			UF = {
 				order = 37,	name = L["UF"], type = "group",
 				get = function(info) return yo["UF"][info[#info]] end,
-				set = function(info,val) Setlers( "UF#" .. info[#info], val) end,
+				set = function(info,val) Setlers( "UF#" .. info[#info], val) end, --n.updateAllUF()
 				disabled = function( info) if #info > 1 then return not yo[info[1]].unitFrames; end end,
 				args = {
 					--enable 			= {	order = 1, 	type = "toggle",	name = L["UFenable"], width = "full", disabled = false,},
@@ -587,11 +591,10 @@ local function InitOptions()
 					wim 	= {	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
-					--chatBubble		= {	order = 40, type = "select", 	name = "Чат-бабл:",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},
-					--chatBubbleFont	= {	order = 44,	type = "range", 	name = "Размер шрифта", min = 5, max = 15, step = 1, 	disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
-					--chatBubbleShift	= {	order = 46,	type = "range", 	name = "Уменьшить размер", min = 0, max = 15, step = 1, disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
-					--chatBubbleShadow= {	order = 42,  type = "toggle",	name = "Добавить тень у шрифта чат-бабла", 				disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
-
+					chatBubble		= {	order = 50, type = "select", 	name = "Чат-бабл (сообщение в облачках):",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},
+					chatBubbleShadow= {	order = 52, type = "toggle",	name = "Добавить тень у шрифта чат-бабла", 				disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
+					chatBubbleFont	= {	order = 54,	type = "range", 	name = "Размер шрифта", min = 5, max = 15, step = 1, 	disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
+					chatBubbleShift	= {	order = 56,	type = "range", 	name = "Уменьшить размер", min = 0, max = 15, step = 1, disabled = function( info) if yo[info[1]].chatBubble == "none" then return true end end,},
 				},
 			},
 
@@ -656,8 +659,12 @@ local function InitOptions()
 					fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					fligerShowHint	= {	order = 05, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 
-					fligerBuffCount	= { order = 08, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.5,},
-					fligerBuffSpell = { order = 09, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.7,},
+					fligerBuffCount	= { order = 06, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.5,},
+					fligerBuffSpell = { order = 07, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.7,},
+					fligerSpell		= { order = 08, type = 'input', name = "добавить что-то куда-то", 	dialogControl = "Spell_EditBox", width = 1.7,
+										set = function(info,val) yo.fliger.fligerBuffSpell = yo.fliger.fligerBuffSpell .. "\n" .. val end,
+					},
+
 
 					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
@@ -1029,7 +1036,9 @@ local function InitOptions()
 		};
 	};
 
-	options.args.profiles = _G.LibStub("AceDBOptions-3.0"):GetOptionsTable(AB.db)
+	options.args.profiles = ADBO:GetOptionsTable( AB.db)
+	--options.args.profiles.order = 1
+	LDS:EnhanceOptions( options.args.profiles, AB.db)
 
 	return options
 end
@@ -1038,8 +1047,9 @@ function ns.InitOptions()
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
 
 	if not ACD then
-		LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", InitOptions())
-		ACD = LibStub("AceConfigDialog-3.0")
+		AC:RegisterOptionsTable("yoFrame", InitOptions())
+
+		ACD = _G.LibStub("AceConfigDialog-3.0")
 		ACD:SetDefaultSize( "yoFrame", 700, 620)
 		ACD:AddToBlizOptions( "yoFrame", "yoFrame")--, parent, ...)
 		--conf.ACD = ACD
@@ -1070,11 +1080,12 @@ function AB:OnInitialize()
 
 	--_G.yo_AllData.personalProfiles
 	--ACD:AddToBlizOptions( addonName, addonName)
-	self.db = aceDB:New( "yoFrameDB", defaults, not _G.yo_AllData.personalProfiles)
+	self.db = ADB:New( "yoFrameDB", defaults, not _G.yo_AllData.personalProfiles)
 	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
 
+	LDS:EnhanceDatabase( self.db, "yoFrameDB")
 	--yoFrameDB.profiles.Default = CopyTable( defConfig.constants)
 
 	db = self.db.profile
@@ -1109,7 +1120,7 @@ function AB:OnEnable()
 	N.myClass  	= select( 2, UnitClass( "player"))
 	N.myColor  	= RAID_CLASS_COLORS[N.myClass]
 
-	_, _, n = unpack( _G["yoFrame"])
+	_, _, n = unpack( _G.yoFrame)
 
 	-- копируем натсройки в текущий профиль
 	if n.allData and n.allData.configData and n.allData.configData[N.myRealm] and n.allData.configData[N.myRealm][N.myName] then
@@ -1144,18 +1155,18 @@ function AB:OnProfileChanged(event, database, newProfileKey)
 		self.db.profile = CopyTable( defConfig.constants)
 
 	elseif event == "OnProfileChanged" then
-		 self.db.profile = self.db.profile[newProfileKey] --, silent)
+		 --self.db.profile = self.db.profile[newProfileKey] --, silent)
 	end
 	--tprint( database.profile)
 	db 		= self.db.profile --CopyTable( database.profile)
-	ns[2] 	= CopyTable( db)
-	yo 		= CopyTable( db)
+	ns[2] 	= db --CopyTable( db)
+	yo 		= bd --CopyTable( db)
 
 	if event == "OnProfileChanged" then
 		ReloadUI()
 	end
 
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", InitOptions())
+	_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", InitOptions())
 end
 
 --n:RegisterModule( AB:GetName())

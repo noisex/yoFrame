@@ -16,6 +16,8 @@
 	<Script file="Config\iconAuras.lua"/>
 	<Script file="Config\antiTaint.lua"/>
 
+	<Script file="Addons\temporales\sayBubble.lua"/>
+
 	<Include file="Filters\filters.xml"/>
  	<Include file="Infotext\infotexts.xml"/>
  	<Include file="addons\frames\frames.xml"/>

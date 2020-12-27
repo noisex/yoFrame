@@ -49,6 +49,7 @@ function n.SetBorderParent(self, parent)
 end
 
 function n.SetBorderSize(self, size, dL, dR, dT, dB)
+
 	local t = self.BorderTextures
 	if not t then return end
 
@@ -147,7 +148,7 @@ function n.CreateBorder(self, size, offset, parent, layer)
 
 	self:SetBorderColor()
 	self:SetBorderParent(parent)
-	self:SetBorderSize(size, offset)
+	self:SetBorderSize(size, offset, offset, offset, offset)
 
 	return true
 end

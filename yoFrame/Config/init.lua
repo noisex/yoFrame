@@ -1,11 +1,18 @@
-local addon, engine = ...
+local AddOnName, engine = ...
+
+local AceAddon, AceAddonMinor = _G.LibStub('AceAddon-3.0')
+local addon = AceAddon:NewAddon( AddOnName, 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 
 engine[1] = {}	-- L, Locales
-engine[2] = {}	-- yo, Config
-engine[3] = {}	-- N,
+engine[2] = _G.yoFrame_Config[2] --{}	-- yo, Config
+engine[3] = addon	-- N,
+engine[4] = {}
 
-yoFrame = engine
+_G[AddOnName] = engine
 
+--function addon.OnInitialize()
+--	print("...")
+--end
 
 -- 0.075, 0.078, 0.086  back
 -- 0.126, 0.129, 0.145  fore
@@ -14,8 +21,7 @@ yoFrame = engine
 
 -- item maska 20569, 20570, 49215, 20392, 34001, 20565
 
--- оповещения всякие
---local qq = "Помните: отыскав свое тело, вы воскреснете без потерь. Если же я воскрешу вас, прочность всех ваших предметов понизится на 25%, а сами вы будете в течение %s испытывать слабость. Вы уверены, что хотите этого?"
+---local qq = "Помните: отыскав свое тело, вы воскреснете без потерь. Если же я воскрешу вас, прочность всех ваших предметов понизится на 25%, а сами вы будете в течение %s испытывать слабость. Вы уверены, что хотите этого?"
 CONFIRM_XP_LOSS_AGAIN = "Shut up and ресай меня скорее!!!"
 
 _G ["BINDING_HEADER_YOFRAME"]	= "yoFrame"
@@ -38,15 +44,6 @@ _G ["BINDING_NAME_TAR_MARK_0"] 	= "Очистителька"
 
 --_G ["BINDING_NAME_DETAILS_SCROLL_UP"] = Loc ["STRING_KEYBIND_SCROLL_UP"]
 --_G ["BINDING_NAME_DETAILS_SCROLL_DOWN"] = Loc ["STRING_KEYBIND_SCROLL_DOWN"]
-
---<Layer level="OVERLAY" textureSubLevel="2">
---	<Texture parentKey="IconOverlay2" hidden="true">
---		<Size x="37" y="37"/>
---		<Anchors>
---			<Anchor point="CENTER"/>
---		</Anchors>
---	</Texture>
---</Layer>
 
 local originalSetItemButtonOverlay = SetItemButtonOverlay
 

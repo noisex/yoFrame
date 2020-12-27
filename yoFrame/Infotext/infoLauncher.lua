@@ -25,7 +25,7 @@ function infoText:infoLauncher()
 
 		local infosObj  = infoText.infos[infosName]
 		if infosObj and infosObj.Enable and yo.InfoTexts.enable then
-			infosObj.parent 		= LeftInfoPanel
+			infosObj.parent 		= n.infoTexts.LeftInfoPanel
 			infosObj.parentCount	= yo.InfoTexts.countLeft
 			infosObj.textSide		= ( i == 1 and "LEFT") or ( i == yo.InfoTexts.countLeft and "RIGHT") or "CENTER"
 			infosObj.textShift		= ( i == 1 and 5) or (i == yo.InfoTexts.countLeft and -15) or 0
@@ -42,7 +42,7 @@ function infoText:infoLauncher()
 
 		local infosObj  = infoText.infos[infosName]
 		if infosObj and infosObj.Enable and yo.InfoTexts.enable then
-			infosObj.parent 		= RightInfoPanel
+			infosObj.parent 		= n.infoTexts.RightInfoPanel
 			infosObj.parentCount	= yo.InfoTexts.countRight
 			infosObj.shift 			= infoText.shift
 			infosObj.textSide		= ( i == 1 and "LEFT") or ( i == yo.InfoTexts.countRight and "RIGHT") or "CENTER"

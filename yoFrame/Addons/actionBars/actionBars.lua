@@ -528,7 +528,7 @@ end
 --	ZoneAbilityFrame:SetParent(UIParent)
 --	ZoneAbilityFrame:SetScale( 0.6)
 --	ZoneAbilityFrame:ClearAllPoints()
---	ZoneAbilityFrame:SetPoint('LEFT', LeftDataPanel, 'RIGHT', 170, 20)
+--	ZoneAbilityFrame:SetPoint('LEFT', n.infoTexts.LeftDataPanel, 'RIGHT', 170, 20)
 --	--DraenorZoneAbilityFrame:SetScript("OnShow", DraenorZoneAbilityFrame.Hide)
 --	ZoneAbilityFrame.ignoreFramePositionManager = true
 

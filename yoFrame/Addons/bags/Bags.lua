@@ -5,13 +5,13 @@ if not yo.Bags.enable then return end
 local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert = table.insert
---local BankFrame = BankFrame
+--local _G.BankFrame = _G.BankFrame
 local floor, ceil, abs, mod = math.floor, math.ceil, math.abs, math.fmod
 local format, len, sub = string.format, string.len, string.sub
 local BankFrameItemButton_Update = BankFrameItemButton_Update
 local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
 local C_NewItems_IsNewItem = C_NewItems.IsNewItem
-local Search = LibStub('LibItemSearch-1.2')
+local Search = n.LIBS.Search
 local defcol = 0.17
 LE_ITEM_QUALITY_POOR = 0
 
@@ -33,8 +33,8 @@ local CooldownFrame_Set, SetItemButtonTextureVertexColor, SetItemButtonQuality, 
 local GetCVarBitfield, IsReagentBankUnlocked, DepositReagentBank, GetContainerNumFreeSlots, ReagentButtonInventorySlot, BankFrameItemButton_OnEnter, HelpTip, Kill, BankFrameTab2, UIDropDownMenu_Initialize, Setlers
 	= GetCVarBitfield, IsReagentBankUnlocked, DepositReagentBank, GetContainerNumFreeSlots, ReagentButtonInventorySlot, BankFrameItemButton_OnEnter, HelpTip, Kill, BankFrameTab2, UIDropDownMenu_Initialize, Setlers
 
-local SortBankBags, SortReagentBankBags, PurchaseSlot, SetInsertItemsLeftToRight, SetSortBagsRightToLeft, StaticPopupDialogs, HideUIPanel, MoneyFrame_Update, StaticPopup_Show, hooksecurefunc
-	= SortBankBags, SortReagentBankBags, PurchaseSlot, SetInsertItemsLeftToRight, SetSortBagsRightToLeft, StaticPopupDialogs, HideUIPanel, MoneyFrame_Update, StaticPopup_Show, hooksecurefunc
+local SortBankBags, SortReagentBankBags, PurchaseSlot, SetInsertItemsLeftToRight, SetSortBagsRightToLeft, StaticPopupDialogs, HideUIPanel, MoneyFrame_Update, StaticPopup_Show, hooksecurefunc, ToggleFrame
+	= SortBankBags, SortReagentBankBags, PurchaseSlot, SetInsertItemsLeftToRight, SetSortBagsRightToLeft, StaticPopupDialogs, HideUIPanel, MoneyFrame_Update, StaticPopup_Show, hooksecurefunc, ToggleFrame
 
 local BANK = BANK
 local SEARCH_STRING
@@ -567,7 +567,7 @@ local function IsItemEligibleForItemLevelDisplay(classID, subClassID, equipLoc, 
 end
 
 local doEquip
-local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
+local function equipItem( slot, bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 	-- body
 	--dprint("doEquip = ", doEquip)
 	if doEquip then return	end
@@ -594,6 +594,18 @@ local function equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquip
 		doEquip = true
 		if InCombatLockdown() then
 			print( L["put on"] .. text)
+
+			slot.clink 	= clink
+			slot.text 	= text
+
+			slot:RegisterEvent("PLAYER_REGEN_ENABLED")
+			slot:SetScript("OnEvent", function(self, ...)
+				self:UnregisterAllEvents()
+				print( L["weared"] .. self.text)
+				EquipItemByName( self.clink)
+				ConfirmBindOnUse()
+				self.clink = nil
+			end)
 		else
 			print( L["weared"] .. text)
 			EquipItemByName( clink)
@@ -642,9 +654,9 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 			if item:IsItemEmpty() and locSlotID < 16 and C_NewItems_IsNewItem(bagID, slotID) == true then
 
 				if locSlotID >= 11 and locSlotID <= 15 then 				-- ring and trinkets slots
-					equipItem( bagID, slotID, clink, iLvl)
+					equipItem( slot, bagID, slotID, clink, iLvl)
 				elseif locSlotID >= 1 and locSlotID <= 10 and canWear then 	-- armor slots
-					equipItem( bagID, slotID, clink, iLvl)
+					equipItem( slot, bagID, slotID, clink, iLvl)
 				else 														-- reserv for weapon slots, look down
 				end
 
@@ -658,7 +670,7 @@ local function checkSloLocUpdate( bagID, slotID, slot, itemEquipLoc, itemSubType
 					--dprint("прошли 2й чек")
 					if ( C_NewItems_IsNewItem(bagID, slotID) == true) then
 						--dprint("прошли 3й чек")
-						equipItem( bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
+						equipItem( slot, bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 					end
 				elseif locSlotID >= 16 then
 
@@ -905,7 +917,7 @@ function addon:OnHide()
 	--print( "Event addonBANK_ONhide")
 	addon:Close()
 	addon.bankFrame:Hide()
-	BankFrame:Hide()
+	_G.BankFrame:Hide()
 	CloseBankFrame()
 end
 
@@ -1423,6 +1435,19 @@ function addon:CreateBagFrame( Bag, isBank)
 		f:RegisterEvent("QUEST_REMOVED");
 		f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 		f:RegisterEvent("USE_BIND_CONFIRM")
+	else
+		--f:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED");
+		f:RegisterEvent("ITEM_LOCK_CHANGED");
+		f:RegisterEvent("ITEM_UNLOCKED");
+		--f:RegisterEvent("BAG_UPDATE_COOLDOWN")
+		f:RegisterEvent("BAG_UPDATE");
+		f:RegisterEvent("BAG_SLOT_FLAGS_UPDATED");
+		--f:RegisterEvent("BANK_BAG_SLOT_FLAGS_UPDATED");
+		--f:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
+		--f:RegisterEvent("QUEST_ACCEPTED");
+		--f:RegisterEvent("QUEST_REMOVED");
+		f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+		--f:RegisterEvent("USE_BIND_CONFIRM")
 	end
 	f:SetScript("OnEvent", addon.OnEvent)
 
@@ -1430,9 +1455,9 @@ function addon:CreateBagFrame( Bag, isBank)
 	f.Bags = {};
 
 	if isBank then
-		f:SetPoint( "BOTTOMLEFT", LeftDataPanel, "TOPLEFT", 2, 46)
+		f:SetPoint( "BOTTOMLEFT", n.infoTexts.LeftDataPanel, "TOPLEFT", 2, 46)
 	else
-		f:SetPoint( "BOTTOMRIGHT", RightDataPanel, "TOPRIGHT", -2, 46)
+		f:SetPoint( "BOTTOMRIGHT", n.infoTexts.RightDataPanel, "TOPRIGHT", -2, 46)
 	end
 
 	f:SetMovable(true)
@@ -1462,7 +1487,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags Button
 		f.bagsButton = CreateFrame("Button", Bag..'BagsButton', f);
 		f.bagsButton:SetSize( 16, 16)
-		CreateStyleSmall( f.bagsButton, 2)
+		CreateStyleSmall( f.bagsButton, 1)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", -2, 0)
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1482,7 +1507,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Banks Sort Button
 		f.bagsSortButton = CreateFrame("Button", Bag..'bagsSortButton', f);
 		f.bagsSortButton:SetSize( 17, 17)
-		CreateStyleSmall( f.bagsSortButton, 2)
+		CreateStyleSmall( f.bagsSortButton, 1)
 		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -3, 0)
 		f.bagsSortButton:SetNormalTexture("Interface\\ICONS\\INV_Pet_Broom")
 		f.bagsSortButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1507,7 +1532,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags to Reageng Button
 		f.bagsToReagent = CreateFrame("Button", Bag..'bagsToReagent', f);
 		f.bagsToReagent:SetSize( 17, 17)
-		CreateStyleSmall( f.bagsToReagent, 2)
+		CreateStyleSmall( f.bagsToReagent, 1)
 		f.bagsToReagent:SetPoint("RIGHT", f.bagsSortButton, "LEFT", -4, 0)
 		f.bagsToReagent:SetNormalTexture("Interface\\ICONS\\INV_Misc_Flower_02")
 		f.bagsToReagent:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1524,7 +1549,7 @@ function addon:CreateBagFrame( Bag, isBank)
 
 		f.purchaseBagButton = CreateFrame('Button', nil, f)
 		f.purchaseBagButton:SetSize( 17, 17)
-		CreateStyleSmall( f.purchaseBagButton, 2)
+		CreateStyleSmall( f.purchaseBagButton, 1)
 		f.purchaseBagButton:SetPoint("RIGHT", f.bagsToReagent, "LEFT", -5, 0)
 		f.purchaseBagButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Coin_01")
 		f.purchaseBagButton:GetNormalTexture():SetTexCoord(unpack( f.texCoord))
@@ -1596,14 +1621,14 @@ function addon:CreateBagFrame( Bag, isBank)
 		f.bankToggle:SetScript("OnMouseUp", function()
 			PlaySound(841) --IG_CHARACTER_INFO_TAB
 			if f.holderFrame:IsShown() then
-				BankFrame.selectedTab = 2
+				_G.BankFrame.selectedTab = 2
 				f.holderFrame:Hide()
 				f.reagentFrame:Show()
 				f.bagsSortButton.ttText = "|cffFFFFFF" ..KEY_BUTTON2 .. ": |r" .. BAG_CLEANUP_REAGENT_BANK
 				f.bankToggle.text:SetText( REAGENT_BANK)
 				--addon:CreateLayout( true)
 			else
-				BankFrame.selectedTab = 1
+				_G.BankFrame.selectedTab = 1
 				f.reagentFrame:Hide()
 				f.holderFrame:Show()
 				f.bagsSortButton.ttText = "|cffFFFFFF"..KEY_BUTTON2 ..": |r"..BAG_CLEANUP_BANK
@@ -1629,7 +1654,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags Button
 		f.bagsButton = CreateFrame("Button", Bag..'BankButton', f);
 		f.bagsButton:SetSize( 17, 17)
-		CreateStyleSmall( f.bagsButton, 2)
+		CreateStyleSmall( f.bagsButton, 1)
 		f.bagsButton:SetPoint("RIGHT", f.holderFrame.closeButton, "LEFT", 0, 0)
 		f.bagsButton:RegisterForClicks('anyUp')
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
@@ -1649,7 +1674,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags Sort Button
 		f.bagsSortButton = CreateFrame("Button", Bag..'BankSortButton', f);
 		f.bagsSortButton:SetSize( 17, 17)
-		CreateStyleSmall( f.bagsSortButton, 2)
+		CreateStyleSmall( f.bagsSortButton, 1)
 		f.bagsSortButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -4, 0)
 		f.bagsSortButton:SetNormalTexture("Interface\\ICONS\\INV_Pet_Broom")
 		f.bagsSortButton:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1670,7 +1695,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Bags to Reageng Button
 		f.bagsToReagent = CreateFrame("Button", Bag..'BankToReagent', f);
 		f.bagsToReagent:SetSize( 17, 17)
-		CreateStyleSmall( f.bagsToReagent, 2)
+		CreateStyleSmall( f.bagsToReagent, 1)
 		f.bagsToReagent:SetPoint("RIGHT", f.bagsSortButton, "LEFT", -4, 0)
 		f.bagsToReagent:SetNormalTexture("Interface\\ICONS\\INV_Misc_Flower_02")
 		f.bagsToReagent:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1688,7 +1713,7 @@ function addon:CreateBagFrame( Bag, isBank)
 		--Auto to Reageng Button
 		f.bagsAutoReagent = CreateFrame("Button", Bag..'BankAutoReagent', f);
 		f.bagsAutoReagent:SetSize( 17, 17)
-		CreateStyleSmall( f.bagsAutoReagent, 2)
+		CreateStyleSmall( f.bagsAutoReagent, 1)
 		f.bagsAutoReagent:SetPoint("RIGHT", f.bagsToReagent, "LEFT", -4, 0)
 		f.bagsAutoReagent:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Check.blp")
 		f.bagsAutoReagent:GetNormalTexture():SetTexCoord( unpack( f.texCoord))
@@ -1825,9 +1850,9 @@ function addon:BANKFRAME_OPENED()
 		self:InitBank()
 	end
 
-	BankFrame:UnregisterAllEvents()
-	BankFrame:UnregisterEvent( "BAG_UPDATE_COOLDOWN")
-	BankFrame:Show()
+	_G.BankFrame:UnregisterAllEvents()
+	_G.BankFrame:UnregisterEvent( "BAG_UPDATE_COOLDOWN")
+	_G.BankFrame:Show()
 
 	self:CreateLayout( true)
 
@@ -1855,7 +1880,7 @@ function addon:TRADE_SKILL_SHOW() 			addon:Open() end
 function addon:TRADE_SKILL_CLOSE() 			addon:Close() end
 function addon:BANKFRAME_CLOSED()
 	HideUIPanel(self);
-	BankFrame:Hide()
+	_G.BankFrame:Hide()
 
 	if self.bankFrame then
 		self.bankFrame:Hide()
@@ -1911,19 +1936,19 @@ function addon:PLAYER_ENTERING_WORLD()
 	---- self:RegisterEvent("BAG_UPDATE_COOLDOWN")
 	--self:RegisterEvent("REAGENTBANK_UPDATE")
 
-	BankFrame:UnregisterAllEvents()
-	Kill( BankFrame)
+	_G.BankFrame:UnregisterAllEvents()
+	Kill( _G.BankFrame)
 
 	for i=1, NUM_CONTAINER_FRAMES do
 		Kill( _G['ContainerFrame'..i])
 	end
 
-	BankFrame:SetScale(0.00001)
-	BankFrame:SetSize(1, 1)
-	BankFrame:SetAlpha(0)
-	BankFrame:SetPoint("TOPLEFT")
+	_G.BankFrame:SetScale(0.00001)
+	_G.BankFrame:SetSize(1, 1)
+	_G.BankFrame:SetAlpha(0)
+	_G.BankFrame:SetPoint("TOPLEFT")
 
-	BankFrame.GetRight = function() return 100 end
+	_G.BankFrame.GetRight = function() return 100 end
 
 	SetInsertItemsLeftToRight( yo.Bags.LeftToRight)
 	SetSortBagsRightToLeft( not yo.Bags.LeftToRight)

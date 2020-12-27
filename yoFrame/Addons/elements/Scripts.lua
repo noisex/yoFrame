@@ -21,7 +21,6 @@ end)
 ----------------------------------------------------------------------------------------
 --	Test Icons
 ----------------------------------------------------------------------------------------
---LibStub("LibButtonGlow-1.0").ShowOverlayGlow(f)
 
 local function test_icon()
 	f = CreateFrame( "Button", "yo_test", UIParent) --, "SecureUnitButtonTemplate")

@@ -16,6 +16,7 @@ local frames = {
 }
 
 local AddOnFrames = {
+	["Blizzard_WeeklyRewards"] = {"WeeklyRewardsFrame"},
 	["Blizzard_AchievementUI"] = {"AchievementFrame"},
 	["Blizzard_ArchaeologyUI"] = {"ArchaeologyFrame"},
 	["Blizzard_AuctionUI"] = {"AuctionFrame"},
@@ -65,7 +66,11 @@ frame:SetScript("OnEvent", function(self, event, addon)
 					_G[v]:SetMovable(true)
 					_G[v]:SetClampedToScreen(true)
 					_G[v]:RegisterForDrag("LeftButton")
-					_G[v]:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
+					_G[v]:SetScript("OnDragStart", function(self)
+						--if IsShiftKeyDown() then
+							self:StartMoving()
+						--	 end
+					end)
 					_G[v]:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 				end
 			end
@@ -81,7 +86,11 @@ frame:SetScript("OnEvent", function(self, event, addon)
 				_G[v]:SetMovable(true)
 				_G[v]:SetClampedToScreen(true)
 				_G[v]:RegisterForDrag("LeftButton")
-				_G[v]:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
+				_G[v]:SetScript("OnDragStart", function(self)
+				--	if IsShiftKeyDown() then
+						self:StartMoving()
+				--	end
+				end)
 				_G[v]:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 			end
 		end

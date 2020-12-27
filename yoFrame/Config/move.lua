@@ -174,7 +174,7 @@ local frame = CreateFrame("Frame")
 
 n.moveCreateAnchor("yoMoveplayer", 		"Move Player", 		200, 40, 500, 270, 	"BOTTOMLEFT", "BOTTOMLEFT")
 n.moveCreateAnchor("yoMovetarget", 		"Move Target", 		200, 40, -500, 270, "BOTTOMRIGHT", "BOTTOMRIGHT")
-n.moveCreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 5, 320, 	"TOPLEFT", "BOTTOMLEFT")
+n.moveCreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 0, 320, 	"TOPLEFT", "BOTTOMLEFT")
 n.moveCreateAnchor("yoMovefocustarget", "Move FocusTarget", 110, 25, 5, -1000)
 n.moveCreateAnchor("yoMovetargettarget","Move Tar-Tar", 	100, 25, 0, -1000)
 n.moveCreateAnchor("yoMovepet", 		"Move Pet", 		100, 25, 00, -1000)

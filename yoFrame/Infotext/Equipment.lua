@@ -3,7 +3,7 @@ local L, yo, n = unpack( select( 2, ...))
 if not yo.InfoTexts.enable then return end
 
 local menuFrame = CreateFrame("Frame", "ExampleMenuFrame", UIParent, "UIDropDownMenuTemplate")
-local eText  = LeftInfoPanel:CreateFontString(nil, "OVERLAY")
+local eText  = n.infoTexts.LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 
 local function TMenu( self)
 	local name = {}
@@ -37,7 +37,7 @@ local function OnEvent(self, event, ...)
 	if not yo.Addons.InfoPanels then
 		self:UnregisterAllEvents()
 		self:SetScript("OnUpdate", nil)
-		LeftInfoPanel.equipText = nil
+		n.infoTexts.LeftInfoPanel.equipText = nil
 		return
 	end
 
@@ -47,9 +47,9 @@ local function OnEvent(self, event, ...)
 
 
 		eText:SetFont( n.font, n.fontsize, "OVERLAY")
-		eText:SetHeight(LeftInfoPanel:GetHeight())
-		eText:SetPoint("LEFT", LeftInfoPanel, "RIGHT", -120, 0)
-		LeftInfoPanel.equipText = eText
+		eText:SetHeight(n.infoTexts.LeftInfoPanel:GetHeight())
+		eText:SetPoint("LEFT", n.infoTexts.LeftInfoPanel, "RIGHT", -120, 0)
+		n.infoTexts.LeftInfoPanel.equipText = eText
 
 	elseif event == "EQUIPMENT_SWAP_FINISHED" then
 		wear, set = ...

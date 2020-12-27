@@ -285,17 +285,19 @@ end
 function CreateStyle(f, size, level, alpha, alphaborder)
     if f.shadow then return end
     local size = size or 0
-    size = max( 3, size + yo.Media.edgeSize)
+    --size = max( 3, size + yo.Media.edgeSize)
+    size = size + yo.Media.edgeSize
+
     local sSize = yo.Media.bdbSize
 	local style = {
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
-		edgeFile = texglow,
+		edgeFile = n.texglow,
 		edgeSize = sSize,
 		insets = { left = sSize, right = sSize, top = sSize, bottom = sSize }
 	}
 
     local shadow = CreateFrame("Frame", nil, f, BackdropTemplateMixin and "BackdropTemplate")
-    shadow:SetFrameLevel( f:GetFrameLevel() - (level or 1))
+    shadow:SetFrameLevel( level or 0) --f:GetFrameLevel())-- - (level or 1))
     shadow:SetFrameStrata( f:GetFrameStrata())
     shadow:SetPoint("TOPLEFT", f, "TOPLEFT", -size, size)
     shadow:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", size, -size)

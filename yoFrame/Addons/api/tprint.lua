@@ -72,6 +72,56 @@ function tprint(t, s, indent)
     end
 end
 
+
+function tdump (t, s, deep)
+    s = s or ""
+    deep = deep or 0
+    local space = ""
+    for i = 1, deep do
+        space = space .. "   "
+    end
+
+    for key, value in pairs (t) do
+        local tpe = _type (value)
+
+        if (type (key) == "function") then
+            key = "#function#"
+        elseif (type (key) == "table") then
+            key = "#table#"
+        end
+
+        if (type (key) ~= "string" and type (key) ~= "number") then
+            key = "unknown?"
+        end
+
+        if (tpe == "table") then
+            if (type (key) == "number") then
+                s = s .. space .. "[" .. key .. "] = |cFFa9ffa9 {|r\n"
+            else
+                s = s .. space .. "[\"" .. key .. "\"] = |cFFa9ffa9 {|r\n"
+            end
+            s = s .. DF.table.dump (value, nil, deep+1)
+            s = s .. space .. "|cFFa9ffa9},|r\n"
+
+        elseif (tpe == "string") then
+            s = s .. space .. "[\"" .. key .. "\"] = \"|cFFfff1c1" .. value .. "|r\",\n"
+
+        elseif (tpe == "number") then
+            s = s .. space .. "[\"" .. key .. "\"] = |cFFffc1f4" .. value .. "|r,\n"
+
+        elseif (tpe == "function") then
+            s = s .. space .. "[\"" .. key .. "\"] = function()end,\n"
+
+        elseif (tpe == "boolean") then
+            s = s .. space .. "[\"" .. key .. "\"] = |cFF99d0ff" .. (value and "true" or "false") .. "|r,\n"
+        end
+    end
+
+    return s
+end
+
+
+
 --function tprint(t, s, indent)
 --	if not indent then indent = 0 end
 

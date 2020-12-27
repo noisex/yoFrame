@@ -56,7 +56,7 @@ local GameTooltip, pcall, unpack, max, GetTime, DebuffTypeColor, CreateFrame, ce
 --auras:RegisterEvent("UNIT_AURA")
 --auras:SetScript("OnEvent", auras.onEvent)
 
-local aGlow = LibStub("LibCustomGlow-1.0", true)
+local aGlow = n.LIBS.ButtonGlow
 
 local posz = {
     [1] =  { [1] = "LEFT",   	 [2] = 1,    [3] = 0},

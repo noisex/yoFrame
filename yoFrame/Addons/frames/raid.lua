@@ -94,6 +94,7 @@ local function raidShared(self, unit)
 	self:RegisterForClicks("AnyUp")
 
 	CreateStyleSmall(self, 1)
+	CreateStyle(self.shadow, 3)
 
 	local posInfo		= {"LEFT", self, "LEFT", 2, 2}
 	local posDead 		= {"TOPRIGHT", self, "TOPRIGHT", -2, -1}
@@ -114,7 +115,7 @@ local function raidShared(self, unit)
 	local enableAbsorb	= false
 	local enableLFD		= yo.Raid.showLFD
 	local enableIcons 	= true
-	local sizeAuras 	= self:GetHeight() * 0.8
+	local sizeAuras 	= self:GetHeight() * 0.7
 	local spacingAuras 	= 5
 	local numAuras 		= 10
 	local initialAnchor = "LEFT"
@@ -128,6 +129,7 @@ local function raidShared(self, unit)
 	local hpBarVertical = yo.Raid.hpBarVertical
 	local hpBarRevers	= yo.Raid.hpBarRevers
 	local showBorder
+	local styleSize 	= 1
 
 	if yo.Raid.raidTemplate == 2 then
 		posInfo			= {"LEFT",  self, "RIGHT", 12, 0}
@@ -210,6 +212,7 @@ local function raidShared(self, unit)
 		anchTankAura 	= "LEFT"
 		hpBarVertical	= false
 		hpBarRevers		= false
+		styleSize 		= 3
 
 		if self.unitT then
 			enableBorder 	= true
@@ -410,6 +413,11 @@ local function raidShared(self, unit)
    		self.ReadyCheckIndicator:SetSize(17, 17)
    		self.ReadyCheckIndicator:SetPoint( unpack( posRCheck))
 		self.ReadyCheckIndicator.finishedTime = 5
+
+		self.SummonIndicator = self.SummonIndicator or self:CreateTexture(nil, 'OVERLAY')
+    	self.SummonIndicator:ClearAllPoints()
+    	self.SummonIndicator:SetPoint('CENTER', self)
+    	self.SummonIndicator:SetSize(40, 40)
 	end
 
 	self.DeadText = self.DeadText or self.Overlay:CreateFontString(nil ,"OVERLAY")

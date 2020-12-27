@@ -3,8 +3,8 @@ local L, yo, n = unpack( select( 2, ...))
 local _G = _G
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
-local GameTooltip, CreateFrame, ipairs, hooksecurefunc, select, GetContainerNumSlots, GetContainerItemInfo, pairs, unpack, CreateStyle, LoadAddOn, GameTooltip_Hide, PickupContainerItem, CursorHasItem
-	= GameTooltip, CreateFrame, ipairs, hooksecurefunc, select, GetContainerNumSlots, GetContainerItemInfo, pairs, unpack, CreateStyle, LoadAddOn, GameTooltip_Hide, PickupContainerItem, CursorHasItem
+local GameTooltip, CreateFrame, ipairs, hooksecurefunc, select, GetContainerNumSlots, GetContainerItemInfo, pairs, unpack, CreateStyle, LoadAddOn, GameTooltip_Hide, PickupContainerItem, CursorHasItem, ToggleFrame
+	= GameTooltip, CreateFrame, ipairs, hooksecurefunc, select, GetContainerNumSlots, GetContainerItemInfo, pairs, unpack, CreateStyle, LoadAddOn, GameTooltip_Hide, PickupContainerItem, CursorHasItem, ToggleFrame
 
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local BACKPACK_CONTAINER= BACKPACK_CONTAINER
@@ -425,7 +425,7 @@ local function makeSoulsBitton(...)
 		panel.NewButton:SetScript("OnClick", function(self, ...)
 			--frame:Hide()
 			LoadAddOn("Blizzard_WeeklyRewards");
-			_G.WeeklyRewardsFrame:SetShown( not _G.WeeklyRewardsFrame:IsShown())
+			ToggleFrame( _G.WeeklyRewardsFrame)
 		end)
 		--panel.NewButton.Portrait:SetTexture( n.texture)
 		--panel.NewButton.Portrait:SetAtlas("shadowlands-landingpage-soulbindsbutton-theotar")
@@ -435,7 +435,10 @@ end
 local function OnEvent( self, event, name, sender, ...)
 	if name == "Blizzard_ChallengesUI" then
 		Blizzard_ChallengesUI( self)
-		ChallengesKeystoneFrame:HookScript("OnShow", SlotKeystone)
+		_G.ChallengesKeystoneFrame:HookScript("OnShow", SlotKeystone)
+
+	elseif name == "Blizzard_WeeklyRewards" then
+		_G.WeeklyRewardsFrame:SetScale(0.8)
 
 	--elseif name == "Blizzard_LandingSoulbinds" then
 	--	C_Timer.After( 0.5, makeSoulsBitton)

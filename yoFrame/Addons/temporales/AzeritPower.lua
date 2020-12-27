@@ -7,7 +7,7 @@ local yoUF = n.unitFrames
 ----------------------------------------------------------------------------------------
 --	Based on oUF_ArtifactPower(by Rainrider)
 ----------------------------------------------------------------------------------------
-n.moveCreateAnchor("yoMoveArtifact", 	"Move Artifact", 7, 173, 5, -1, "TOPLEFT", "TOPRIGHT", LeftDataPanel)
+n.moveCreateAnchor("yoMoveArtifact", 	"Move Artifact", 7, 173, 5, -1, "TOPLEFT", "TOPRIGHT", n.infoTexts.LeftDataPanel)
 
 local function ShowTooltip(element)
 	element:SetAlpha(element.onAlpha)

@@ -16,7 +16,7 @@ function ActionBars:CreateStanceBar()
 
 	local StanceBar = CreateFrame("Frame", "yoStanceBar", n.PetHider, "SecureHandlerStateTemplate")
 	StanceBar:SetSize((PetSize * 10) + (Spacing * 11), PetSize + (Spacing * 2))
-	StanceBar:SetPoint("BOTTOMRIGHT", yoMovePetBar, "BOTTOMRIGHT", 0, 0)
+	StanceBar:SetPoint("BOTTOMRIGHT", n.moveFrames.yoMovePetBar, "BOTTOMRIGHT", 0, 0)
 	StanceBar:SetFrameStrata("LOW")
 	StanceBar:SetFrameLevel(10)
 

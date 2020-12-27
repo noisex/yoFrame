@@ -14,6 +14,7 @@ local recolorShards = function(self, cols)
 	self.cols = cols or self.cols
 	--tprint(...)
 	for i = 1, self.idx do
+		--print(i, cols[1], cols[2], cols[3])
 		self[i]:SetStatusBarColor( cols[1], cols[2], cols[3], 1)
 	end
 end
@@ -46,7 +47,12 @@ end
 
  local function CreateShards( self)
 
-	if not self.powerID or ( self.spec and self.spec ~= GetSpecialization()) then return end
+	if not self.powerID or ( self.spec and self.spec ~= GetSpecialization()) then
+		self:Hide()
+		return
+	else
+		self:Show()
+	end
 
 	self.idx = UnitPowerMax( self.unit, self.powerID)
 	self:SetWidth( self:GetParent():GetWidth() / 2)
@@ -57,7 +63,7 @@ end
 		self.cols[2] = self:GetParent().colg
 		self.cols[3] = self:GetParent().colb
 	end
-
+--print ( "IDX = : ", self.idx)
 	for i = 1, self.idx do
 		self[i] = self[i] or CreateFrame('StatusBar', nil, self)
 		self[i]:SetStatusBarTexture( n.texture)

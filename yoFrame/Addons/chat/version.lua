@@ -1,11 +1,13 @@
 local addonName, ns = ...
 local L, yo, n = unpack( ns)
 
-L_MISC_UI_OUTDATED = "Звиняйте, хлопці, но ваш |cff00ffffyoFrame|r безбожно устарел!!! Подумайте об этом на досуге..."
+local L_MISC_UI_OUTDATED = "Звиняйте, хлопці, но ваш |cff00ffffyoFrame|r безбожно устарел!!! Подумайте об этом на досуге..."
 
-local tonumber, print, IsInGroup
-	= tonumber, print, IsInGroup
+local tonumber, print, IsInGroup, IsInRaid
+	= tonumber, print, IsInGroup, IsInRaid
 
+local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
+local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 
 local check = function(self, event, prefix, message, _, sender)
 

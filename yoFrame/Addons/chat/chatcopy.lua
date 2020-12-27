@@ -29,7 +29,7 @@ local function CreatCopyFrame()
 	CreateStyle(frame, 2)
 	frame:SetWidth(440)
 	frame:SetHeight(400)
-	frame:SetPoint("BOTTOM", LeftDataPanel, "TOP", 0, 38)
+	frame:SetPoint("BOTTOM", n.infoTexts.LeftDataPanel, "TOP", 0, 38)
 	frame:SetFrameStrata("DIALOG")
 	tinsert(UISpecialFrames, "CopyFrame")
 	frame:Hide()
@@ -87,7 +87,7 @@ end
 for i = 1, NUM_CHAT_WINDOWS do
 	local cf = _G[format("ChatFrame%d", i)]
 	local button = CreateFrame("Button", format("ButtonCF%d", i), cf, BackdropTemplateMixin and "BackdropTemplate")
-	button:SetPoint("TOPRIGHT", LeftDataPanel, "TOPRIGHT", -21, -27)
+	button:SetPoint("TOPRIGHT", n.infoTexts.LeftDataPanel, "TOPRIGHT", -21, -27)
 	button:SetSize( 30, 30)
 	button:SetAlpha(0.1)
 	--CreateStyle(button, 2)

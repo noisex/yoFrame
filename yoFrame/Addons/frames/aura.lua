@@ -295,8 +295,8 @@ logan:SetScript("OnEvent", function(self)
 	for i = 1, MAX_BOSS_FRAMES do
 		local bFrame = yoUF["boss" .. i]
 		if not bFrame then break end
-		CreateBuff(    bFrame, "aurabar",  bFrame:GetHeight(), 10, "LEFT", "RIGHT", 6, 0, 1, 7)
-		CreateBuff(    bFrame, "aurabuff", bFrame:GetHeight(), 10, "RIGHT", "LEFT", 7, 0, -1, 8)
+		CreateBuff(    bFrame, "aurabar",  bFrame:GetHeight(), 5, "LEFT", "RIGHT", 6, 0, 1, 7)
+		CreateBuff(    bFrame, "aurabuff", bFrame:GetHeight(), 5, "RIGHT", "LEFT", 7, 0, -1, 8)
 	end
 	BuffDEbuffDesign()
 	BuffFrame.moved = false

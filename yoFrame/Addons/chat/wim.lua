@@ -16,7 +16,7 @@ local PlaySound, SendChatMessage, UnitName, UnitIsSameServer, GetAutoCompleteRes
 	= PlaySound, SendChatMessage, UnitName, UnitIsSameServer, GetAutoCompleteResults, SetUpAnimGroup, Setlers, Kill, strlower, Ambiguate, GetPlayerInfoByGUID, InCombatLockdown, tremove
 --https://wowwiki.fandom.com/wiki/UI_escape_sequences
 
-n.moveCreateAnchor("yoMoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", LeftDataPanel)
+n.moveCreateAnchor("yoMoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT", "TOPLEFT", n.infoTexts.LeftDataPanel)
 --ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
 --ContainerFrame3:SetPoint("CENTER")
 

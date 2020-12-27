@@ -88,7 +88,7 @@ end
 local function CBStyle( self)
 
 	local chatbar = CreateFrame('Frame', 'yo_ChatBarFrame', UIParent)
-	chatbar:SetPoint('RIGHT', LeftDataPanel, 'RIGHT', -5, -5)
+	chatbar:SetPoint('RIGHT', n.infoTexts.LeftDataPanel, 'RIGHT', -5, -5)
 	chatbar:SetSize( height, height * 11)
 	chatbar:SetAlpha(0.05)
 

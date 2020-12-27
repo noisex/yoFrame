@@ -2,10 +2,9 @@ local L, yo, n = unpack( select( 2, ...))
 
 if not yo.fliger.enable then return end
 
-local lib = LibStub("LibCooldown")
-if not lib then error("CooldownFlash requires LibCooldown") return end
-
 local _G = _G
+local lib = n.LIBS.LibCooldown
+
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
@@ -220,7 +219,7 @@ local function MakeFligerFrame( self)
 	end
 
 	if yo.fliger.pCDEnable then
-		n.moveCreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", LeftDataPanel)
+		n.moveCreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", n.infoTexts.LeftDataPanel)
 		local pCD = CreateFrame("Frame", nil, self)
 		pCD:SetPoint("CENTER", P_CD, "CENTER",  0, 0)
 		pCD:SetWidth( cdSize)
