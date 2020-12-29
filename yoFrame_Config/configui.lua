@@ -1,5 +1,5 @@
 local addonName, ns = ...
-local L, yo, N, defConfig = unpack( ns)
+local L, yoCon, N, defConfig = unpack( ns)
 
 N.Config = N:NewModule( 'Config','AceHook-3.0','AceEvent-3.0')
 
@@ -21,7 +21,7 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 local strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar
 	= strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar
 
-local db, n
+local db, yo, n
 local aConf = {}
 
 -- GLOBALS: Setlers, yoFrameDB
@@ -1037,7 +1037,6 @@ local function InitOptions()
 	};
 
 	options.args.profiles = ADBO:GetOptionsTable( AB.db)
-	--options.args.profiles.order = 1
 	LDS:EnhanceOptions( options.args.profiles, AB.db)
 
 	return options
@@ -1084,14 +1083,14 @@ function AB:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
-
+	self.db.defaultProfile = defaults.profile
 	LDS:EnhanceDatabase( self.db, "yoFrameDB")
-	--yoFrameDB.profiles.Default = CopyTable( defConfig.constants)
 
 	db = self.db.profile
 
 	ns[2] = db
-	yo = ns[2]
+	yoCon = ns[2]
+	--yo = ns[2]
 
 	--LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable( addonName, options)
 	local GameMenuButton = CreateFrame("Button", "GameMenuButtonQulightUI", GameMenuFrame, "GameMenuButtonTemplate")
@@ -1120,24 +1119,12 @@ function AB:OnEnable()
 	N.myClass  	= select( 2, UnitClass( "player"))
 	N.myColor  	= RAID_CLASS_COLORS[N.myClass]
 
-	_, _, n = unpack( _G.yoFrame)
-
+	yo = _G.yoFrame[2]
+	n  = _G.yoFrame[3]
 	-- копируем натсройки в текущий профиль
 	if n.allData and n.allData.configData and n.allData.configData[N.myRealm] and n.allData.configData[N.myRealm][N.myName] then
 		yoFrameDB.profiles[N.myName .. " ( старенький)"] = n.allData.configData[N.myRealm][N.myName]
 	end
-
-	--print( "CONFIG LOAD")
-	--if _G["n.allData"][N.myRealm][N.myName].PersonalConfig then 	aConf = _G["yo_PersonalConfig"]
-	--else															aConf = _G["yo_AllConfig"]	end
-
-	--DB.profiles = db
-	--tprint( DB)
-	--if not db.enabled then
-	--	self:Disable()
-	--	return
-	--end
-	--self:RegisterMessage("HandyNotes_NotifyUpdate", "UpdatePluginMap")
 end
 
 function AB:OnDisable()
@@ -1148,25 +1135,61 @@ function AB:OnProfileChanged(event, database, newProfileKey)
 	--print("CHANGE ", event, database, newProfileKey)
 
 	if event == "OnProfileCopied" then
+		--print("COPY")
 		needReload = true
-		--database.profile = self.db:CopyProfile( newProfileKey) --, silent)
+		--wipe( self.db.profile)
+		--self.db.profile = n:CopyTable( self.db.profile, self.db.defaultProfile)
+		--self.db.profile = n:CopyTable( self.db.profile, database.profiles[newProfileKey])
 
 	elseif event == "OnProfileReset" then
-		self.db.profile = CopyTable( defConfig.constants)
+		self.db.profile = defConfig.constants
 
 	elseif event == "OnProfileChanged" then
-		 --self.db.profile = self.db.profile[newProfileKey] --, silent)
-	end
-	--tprint( database.profile)
-	db 		= self.db.profile --CopyTable( database.profile)
-	ns[2] 	= db --CopyTable( db)
-	yo 		= bd --CopyTable( db)
 
-	if event == "OnProfileChanged" then
-		ReloadUI()
 	end
+
+	db 		= self.db.profile
+	yoCon 	= self.db.profile
+
+	wipe( yo)
+	yo 		= n:CopyTable( yo, db)
+
+	--yoCon 	= n:CopyTable( self.db.defaultProfile, db)
+	--yo 	  	= n:CopyTable( self.db.defaultProfile, db)
+	--_G.yoFrame[2] = yo
+	--print( event, " db ", db, " yFR ", _G.yoFrame[2], " yo ", yo, " yoCon ", yoCon)
+	if event == "OnProfileChanged" then ReloadUI() end
 
 	_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("yoFrame", InitOptions())
 end
 
+
 --n:RegisterModule( AB:GetName())
+--[[
+	-- Shamelessly taken from AceDB-3.0 and stripped down by Simpy
+	function E:CopyDefaults(dest, src)
+		for k, v in pairs(src) do
+			if type(v) == 'table' then
+				if not rawget(dest, k) then rawset(dest, k, {}) end
+				if type(dest[k]) == 'table' then E:CopyDefaults(dest[k], v) end
+			elseif rawget(dest, k) == nil then
+				rawset(dest, k, v)
+			end
+		end
+	end
+
+	function E:RemoveDefaults(db, defaults)
+		setmetatable(db, nil)
+
+		for k, v in pairs(defaults) do
+			if type(v) == 'table' and type(db[k]) == 'table' then
+				E:RemoveDefaults(db[k], v)
+				if next(db[k]) == nil then db[k] = nil end
+			elseif db[k] == defaults[k] then
+				db[k] = nil
+			end
+		end
+	end
+
+	E.serverID = tonumber(serverID)
+	]]

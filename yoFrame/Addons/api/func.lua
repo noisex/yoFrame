@@ -23,7 +23,7 @@ function isDruid( self)
 	end
 end
 
-myDev = {
+local myDev = {
 	["Нойзекс"] 	= true,
 	["Дэмьер"] 		= true,
 	["Ковальска"] 	= true,
@@ -42,6 +42,19 @@ local CreateStyleR = function( f, size, level, alpha, alphaborder)
 	print(f, size, level, alpha, alphaborder)
 end
 
+function n:CopyTable(current, default)
+	if type(current) ~= 'table' then
+		current = {}
+	end
+
+	if type(default) == 'table' then
+		for option, value in pairs(default) do
+			current[option] = (type(value) == 'table' and n:CopyTable(current[option], value)) or value
+		end
+	end
+
+	return current
+end
 -------------------------------------------------------------------------------------------
 -- 						Where are my point
 -------------------------------------------------------------------------------------------
@@ -286,6 +299,8 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     if f.shadow then return end
     local size = size or 0
     --size = max( 3, size + yo.Media.edgeSize)
+    --print(yo)
+    --print( yo.Media.edgeSize)
     size = size + yo.Media.edgeSize
 
     local sSize = yo.Media.bdbSize

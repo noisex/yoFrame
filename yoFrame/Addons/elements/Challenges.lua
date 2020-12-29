@@ -140,12 +140,13 @@ local function OnEvent( self, event, name, sender, ...)
 		print("|cff00ffff--------------------------------------------------------------------------")
 
 		yo_OldKey2 = CheckInventoryKeystone()
+
 		C_Timer.After( 2, function()
 			local newKey = CheckInventoryKeystone()
-			print("Debug: OLd: ", yo_OldKey, ". OLd2: ", yo_OldKey2, ". New: " , newKey)
+			--print("Debug: OLd: ", yo_OldKey, ". OLd2: ", yo_OldKey2, ". New: " , newKey)
 			if newKey and newKey ~= yo_OldKey then
 				--print(yo_OldKey, newKey)
-				SendChatMessage( newKey, "PARTY")
+				SendChatMessage( "My new key is: " .. newKey, "PARTY")
 			end
 		end)
 	end

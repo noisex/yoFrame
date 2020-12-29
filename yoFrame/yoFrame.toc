@@ -5,7 +5,7 @@
 ## Notes: Foo frames... Based on ElvUI, Qulight, ShestakUI and more code and design ideas. Thanks.
 ## OptionalDeps: yoFrame_Config
 ## SavedVariables:  yo_BB, yo_BBCount, yo_WIMSTER
-## SavedVariablesPerCharacter: yo_Position
+## SavedVariablesPerCharacter: yo_Position, yo_talkingHead
 
 ## X-Curse-Project-ID: 300674
 yoFrame.xml

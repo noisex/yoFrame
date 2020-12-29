@@ -23,10 +23,11 @@ local function pwUpdate( self, powerID)
 	local unitPower = UnitPower( self.unit, powerID)
 
 	for i = 1, min( unitPower, #self) do
-		if not self[i].on then
+		if not self[i].on or self[i]:GetAlpha() < self.maxAlpha then
 			self:TurnOn( self[i], self[i], self.maxAlpha)
 		end
 	end
+
 	for i = unitPower + 1, self.idx do
 		if self[i].on then
 			self:TurnOff( self[i], self[i], self.minAlpha);
@@ -63,7 +64,7 @@ end
 		self.cols[2] = self:GetParent().colg
 		self.cols[3] = self:GetParent().colb
 	end
---print ( "IDX = : ", self.idx)
+	--print ( "IDX = ", self.idx, self, self.cols[1], self.cols[2], self.cols[3])
 	for i = 1, self.idx do
 		self[i] = self[i] or CreateFrame('StatusBar', nil, self)
 		self[i]:SetStatusBarTexture( n.texture)
@@ -73,6 +74,10 @@ end
 		self[i]:SetAlpha( self.minAlpha)
 		self[i]:SetFrameLevel(10)
 		self[i]:Show()
+		self[i].cols = self.cols
+		self[i].colr = self:GetParent().colr
+		self[i].colg = self:GetParent().colg
+		self[i].colb = self:GetParent().colb
 		--tinsert( n.statusBars, self[i])
 
 		if i == 1 then

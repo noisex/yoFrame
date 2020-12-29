@@ -28,7 +28,7 @@ local mythicRewards = {
 	{8,200,216},
 	{9,200,216},
 	{10,204,220},
-	{11,204,200},
+	{11,204,220},
 	{12,207,223},
 	{13,207,223},
 	{14,207,226},
@@ -257,7 +257,7 @@ local function UpdateAffixes( self)
 
     designed = true
 	skinDungens()
-	C_Timer.After( 0.5, CreateLiders) --CreateLiders( self)
+	C_Timer.After( 0.7, CreateLiders) --CreateLiders( self)
 end
 
 local function makeAffix(parent)

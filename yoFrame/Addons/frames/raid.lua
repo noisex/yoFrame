@@ -162,7 +162,7 @@ local function raidShared(self, unit)
 		hpBarRevers		= yo.healBotka.hpBarRevers
 
 		if unit == "raid" then
-			sizeAuras 		= 14
+			sizeAuras 		= 15
 			spacingAuras 	= 1
 	 		numAuras 		= 3
 			initialAnchor 	= "TOPRIGHT"
@@ -170,7 +170,7 @@ local function raidShared(self, unit)
 			growAuraTank 	= "LEFT"
 			posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -1, -3}
 
-			CustomFilter 	= funcBlackList -- funcWhiteList --funcBlackList
+			CustomFilter 	= funcWhiteList --funcBlackList
 		end
 
 		CreateStyleSmall( self.shadow, yo.healBotka.borderS and 2 or 1)

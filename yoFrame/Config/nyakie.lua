@@ -62,6 +62,15 @@ n.conFunc = function( var, ...)
 	end
 end
 
+n.updateConfigData = function( db)
+
+	print( db)
+	n.yo = db
+	_G[addonName][2] = db
+end
+
+n.talkingHead = yo_talkingHead and yo_talkingHead or {}
+
 n.IsSoloFree = function ( ... )
   --local instanceType = select( 2, GetInstanceInfo())
 

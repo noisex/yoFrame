@@ -21,7 +21,7 @@ local updateAllElements = function(frame)
 		v(frame, "UpdateElement", frame.unit)
 	end
 
-	--if frame.holyShards then frame.holyShards:recolorShards( frame.holyShards.cols) end
+	if frame.holyShards then frame.holyShards:recolorShards( frame.cols) end
 end
 
 function n.updateAllUF(...)

@@ -538,6 +538,7 @@ local function updateHealthColor( f, event, unit, ...)
 	end
 
 	f.colr, f.colg, f.colb = cols[1] or 1, cols[2] or 1, cols[3] or 1
+	f.cols = cols
 
 	if f.Power then
 		f.Power.colr, f.Power.colg, f.Power.colb = cols[1], cols[2], cols[3]
