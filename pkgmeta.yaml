@@ -21,6 +21,6 @@ externals:
 manual-changelog: README.txt
 
 move-folders:
-  yoFrame/Libs: AuctionDB
+  yoFrame/yoFrame: yoFrame
 
 enable-nolib-creation: no
