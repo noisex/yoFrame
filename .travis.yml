@@ -1,13 +1,36 @@
-sudo: false
-language: c
 
-addons:
-  apt:
-    packages:
-    - pandoc
+name: Build addon zip
 
-script: curl -s [url]https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh[/url] | bash
+on:
+  push:
+    tags:
+    - '*'
 
-branches:
-  only:
-  - /^\d+\.\d+(\.\d+)?(-\S*)?$/
+jobs:
+  build:
+    name: packager
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1 # get the source tree
+      # Copied from DynamicBoxer's itself inspired from
+      # from https://github.com/WeakAuras/WeakAuras2/blob/master/.github/workflows/build.yml
+      # should probably be a docker so a lot of this is cached/created once
+      - name: Get the packager
+        run: |
+          curl -s https://raw.githubusercontent.com/mooreatv/packager/master/release.sh > ./release.sh
+          chmod 755 ./release.sh
+      - name: Create Classic Package
+        run: ./release.sh -g 1.13.5 -m pkgmeta.yaml -p 336518 -w 25159
+        env:
+         CF_API_KEY: ${{ secrets.CF_API_KEY }}
+         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+         WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+      - name: Create BfA Package
+        run: ./release.sh -m pkgmeta.yaml -p 336518
+        env:
+         CF_API_KEY: ${{ secrets.CF_API_KEY }}
+         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+      - uses: noisex
+        with:
+          name: DynamicBoxerBuild-${{ github.sha }}
+          path: .release/
