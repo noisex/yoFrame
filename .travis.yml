@@ -12,9 +12,6 @@ before_script:
 - PATH=$HOME/.luarocks/bin:$PATH
 - eval $(luarocks path --bin)
 
-script:
-- luacheck .
-
 before_deploy:
 - lua .release/libstrip
 - lua .release/changelog > CHANGELOG.md
