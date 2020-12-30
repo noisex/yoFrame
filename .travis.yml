@@ -42,7 +42,7 @@ jobs:
       #    exec /home/runner/.luarocks/bin/luacheck AuctionDB/*.lua --no-color --config ./AuctionDB/.luacheckrc -q
       - name: Get the packager
         run: |
-          curl -s https://raw.githubusercontent.com/mooreatv/packager/master/release.sh > ./release.sh
+          curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh > ./release.sh
           chmod 755 ./release.sh
       - name: Create BfA Package
         run: ./release.sh -m pkgmeta.yaml -p 336518
