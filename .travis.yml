@@ -1,42 +1,35 @@
-anguage: c
 
-sudo: false
+name: Build addon zip
 
-env:
-  global:
-    - LUAROCKS=2.3.0
-  matrix:
-    - LUA=lua5.1
-    - LUA=lua5.2
-    - LUA=lua5.3
-    - LUA=luajit     # latest stable version (2.0.4)
-    - LUA=luajit2.0  # current head of 2.0 branch
-    - LUA=luajit2.1  # current head of 2.1 branch
+on:
+  push:
+    tags:
+    - '*'
 
-branches:
-  only:
-    - master
-
-before_install:
-  - source .travis/setenv_lua.sh
-  - pip install --user cpp-coveralls
-  - luarocks install Lua-cURL         --server=https://luarocks.org/dev
-  - luarocks install luacov-coveralls --server=https://luarocks.org/dev
-  - luarocks install lunitx
-
-install:
-  - luarocks make rockspecs/foo-scm-0.rockspec CFLAGS="-O2 -fPIC -ftest-coverage -fprofile-arcs" LIBFLAG="-shared --coverage"
-
-script:
-  - cd test
-  - lua -e "print(require'cURL'.version())"
-  - lunit.sh test.lua
-
-after_success:
-  - coveralls -b .. -r .. -i ./src --dump c.report.json
-  - luacov-coveralls -j c.report.json -v
-
-notifications:
-  email:
-    on_success: change
-    on_failure: always
+jobs:
+  build:
+    name: packager
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1 # get the source tree
+      # Copied from DynamicBoxer's itself inspired from
+      # from https://github.com/WeakAuras/WeakAuras2/blob/master/.github/workflows/build.yml
+      # should probably be a docker so a lot of this is cached/created once
+      - name: Install and run Luacheck
+        run: |
+          sudo apt-get install luarocks
+          luarocks install --local luacheck
+          exec /home/runner/.luarocks/bin/luacheck AuctionDB/*.lua --no-color --config ./AuctionDB/.luacheckrc -q
+      - name: Get the packager
+        run: |
+          curl -s https://raw.githubusercontent.com/mooreatv/packager/master/release.sh > ./release.sh
+          chmod 755 ./release.sh
+      - name: Create BfA Package
+        run: ./release.sh -m pkgmeta.yaml -p 336518
+        env:
+         CF_API_KEY: ${{ secrets.CF_API_KEY }}
+         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@master
+        with:
+          name: DynamicBoxerBuild-${{ github.sha }}
+          path: .release/
