@@ -3,7 +3,7 @@ local L, yo, n = unpack( select( 2, ...))
 -- if not yo.InfoTexts.enable then return end
 
 -- собрать таблицу бнет, выловить ключи вмелто флист, сорт и по ней вывод. вов в топ
-local yoEF = n.elemFrames
+local yoEF = n.Addons.elements.elemFrames
 local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 

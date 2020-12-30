@@ -5,7 +5,7 @@ if not yo.Chat.EnableChat then return end
 
 local _G = _G
 local LSM = n.LIBS.LSM
-local yoEF = n.elemFrames
+local yoEF = n.Addons.elements.elemFrames
 
 local hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print, Kill
 	= hooksecurefunc, PlaySoundFile, InCombatLockdown, gsub, ChatTypeInfo, format, select, GameTooltip, strmatch, pairs, CreateStyle, GetBuildInfo, print, Kill

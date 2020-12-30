@@ -1,7 +1,7 @@
 local L, yo, n = unpack( select( 2, ...))
 
 local tick, ptick = 1, 0
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
 
 local cfg = {
   	scale = 1,

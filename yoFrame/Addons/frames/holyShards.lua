@@ -2,7 +2,7 @@ local L, yo, n = unpack( select( 2, ...))
 
 if not yo.UF.unitFrames or not yo.UF.showShards	then return end
 
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -78,7 +78,7 @@ end
 		self[i].colr = self:GetParent().colr
 		self[i].colg = self:GetParent().colg
 		self[i].colb = self:GetParent().colb
-		--tinsert( n.statusBars, self[i])
+		--tinsert( n.Addons.elements.statusBars, self[i])
 
 		if i == 1 then
 			self[i]:SetPoint('LEFT', self, 'LEFT', 1, 0)

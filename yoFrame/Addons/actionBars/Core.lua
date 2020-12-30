@@ -387,7 +387,7 @@ n.moveCreateAnchor("yoMoveABar4", 	"Move Action Bar #4", 445, 35, -1, 	182, 	"BO
 n.moveCreateAnchor("yoMoveABar5", 	"Move Action Bar #5", 35, 445, -5, 	-110, 	"RIGHT", "RIGHT")
 n.moveCreateAnchor("yoMoveAMicro", 	"Move MicroMenu Bar", 220, 18, 350,5, 		"BOTTOM", "BOTTOM")
 n.moveCreateAnchor("yoMovePetBar", 	"Move Pet Bar", 	  330, 30, 0, 	5, 		"BOTTOMRIGHT", "TOPRIGHT", n.infoTexts.LeftDataPanel)
-n.moveCreateAnchor("yoMoveExtr", 	"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", n.moveFrames.yoMoveplayer)
+n.moveCreateAnchor("yoMoveExtr", 	"Move Extro Button",  130, 60, 0, 	150, 	"BOTTOM", "TOP", n.Addons.moveFrames.yoMoveplayer)
 
 PlayerPowerBarAlt:ClearAllPoints()
 PlayerPowerBarAlt:SetPoint('CENTER', yoMoveAltPower, 'CENTER')

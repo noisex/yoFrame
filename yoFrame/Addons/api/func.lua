@@ -1,14 +1,11 @@
 local addon, ns = ...
 local L, yo, n = unpack( ns)
 
-local yoEF = n.elemFrames
+--local yoEF = n.Addons.elements.elemFrames
 
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs, type, select, unpack, tremove, max
 	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs, type, select, unpack, tremove, max
 local texture, texglow = n.texture, n.texglow
-
---local n.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, n.myName
---	= n.myClass, yo_WIM, yo_BBFrame, yo_Bags, yo_DuLoot, n.myName
 
 local GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
 	= GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
@@ -129,7 +126,7 @@ end
 
 -------------------------------------------------------------------------------------------
 local function updateStatusBars()
-	for k, bar in pairs( n.statusBars) do
+	for k, bar in pairs( n.Addons.elements.statusBars) do
 
 		if bar and bar:GetStatusBarTexture() then
 			bar:SetStatusBarTexture( yo.Media.texture)
@@ -140,7 +137,7 @@ n.conFuncs["texture"] = updateStatusBars
 
 local function updateStrings( var, newVal, curVal)
 	curVal = curVal or 0
-	for k, string in pairs( n.strings) do
+	for k, string in pairs( n.Addons.elements.strings) do
 		if string then
 			local fn, fs, fc = string:GetFont()
 			string:SetFont( fn, fs - curVal + newVal, fc)
@@ -150,7 +147,7 @@ end
 n.conFuncs["fontsize"] = updateStrings
 
 function UpdateShadows( r, g, b)
-	for k, bar in pairs( n.shadows) do
+	for k, bar in pairs( n.Addons.elements.shadows) do
 		bar:SetBackdropBorderColor(r, g, b, 0.9)
 	end
 end
@@ -324,7 +321,7 @@ function CreateStyle(f, size, level, alpha, alphaborder)
     local r, g, b = strsplit( ",", yo.Media.bdbColor)
 	shadow:SetBackdropBorderColor( r, g, b, alphaborder or yo.Media.bdbAlpha)
     f.shadow = shadow
-    tinsert( n.shadows, f.shadow)
+    tinsert( n.Addons.elements.shadows, f.shadow)
     return shadow
 end
 
@@ -354,7 +351,7 @@ function CreateStyleSmall(f, size, level, alpha, alphaborder)
     local r, g, b = strsplit( ",", yo.Media.bdbColor)
 	shadow:SetBackdropBorderColor( r, g, b, alphaborder or yo.Media.bdbAlpha)
 
-	tinsert( n.shadows, f.shadow)
+	tinsert( n.Addons.elements.shadows, f.shadow)
     f.shadow = shadow
     return shadow
 end

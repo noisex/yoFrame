@@ -256,7 +256,7 @@ local function addAbsorbBar( self)
 	AbsorbBar:SetFillStyle( 'REVERSE')
 	AbsorbBar:SetFrameLevel(2)
 	self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED", self.updateHealth)
-	tinsert( n.statusBars, AbsorbBar)
+	tinsert( n.Addons.elements.statusBars, AbsorbBar)
 	return AbsorbBar
 end
 
@@ -270,7 +270,7 @@ local function addHealPred( self)
 	healPred:SetStatusBarTexture( n.texture)
 	healPred:SetStatusBarColor( 0.3, 0.9, 0.3, 0.6)
 	healPred:SetFrameLevel(2)
-	tinsert( n.statusBars, healPred)
+	tinsert( n.Addons.elements.statusBars, healPred)
 
 	self:RegisterEvent("UNIT_HEAL_PREDICTION", self.updateHealth)
 	self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", self.updateHealth)
@@ -311,7 +311,7 @@ local function addBuffHost( self)
 		self.buffHots.hotaBar:Hide()
 		self.buffHots.hotaBar:SetScript( "OnUpdate", function( bar, elapsed) bar:SetValue( bar.expirationTime - GetTime()) end)
 		CreateStyle( self.buffHots.hotaBar, 1, 9, 0.3)
-		tinsert( n.statusBars, self.buffHots.hotaBar)
+		tinsert( n.Addons.elements.statusBars, self.buffHots.hotaBar)
 	end
 
 	self.buffHots.swift = self.buffHots.swift or self.buffHots:CreateTexture(nil, "OVERLAY")

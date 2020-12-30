@@ -6,7 +6,7 @@ local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find,
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, math.min
 
 local _G = _G
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
 
 local CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle, CopyTable
 	= CreateStyle, UIParent, UnitExists, GetColors, CreateFrame, UnitClass, UnitReaction, UnitIsPlayer, utf8sub, GetTime, UnitChannelInfo, print, UnitCastingInfo, GetCVar, UnitSpellHaste, UnitControllingVehicle, CopyTable
@@ -352,7 +352,7 @@ function CreateCastBar( frame, cfg)
 	bar.castBar:SetHeight( height)
 	bar.castBar:SetWidth( width)
 	bar.castBar:SetFrameLevel( 12)
-	tinsert( n.statusBars, bar.castBar)
+	tinsert( n.Addons.elements.statusBars, bar.castBar)
 
 	bar.castBar.unit 		= unit
 	bar.castBar.noLag 		= noLag

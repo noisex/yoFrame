@@ -3,7 +3,7 @@ local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 local _G = _G
-local yoEF = n.elemFrames
+local yoEF = n.Addons.elements.elemFrames
 local minAlpha 	= 1
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
@@ -167,9 +167,9 @@ local function CreateTabs(self, ID)
 	textBox:SetScript("OnDragStart", function() yoEF.wim:StartMoving() end)
 	textBox:SetScript("OnDragStop", function()
 		yoEF.wim:StopMovingOrSizing()
-		n.moveFrames.yoMoveWIM:ClearAllPoints()
-		n.moveFrames.yoMoveWIM:SetPoint( self:GetPoint())
-		n.setAnchPosition( n.moveFrames.yoMoveWIM, yoEF.wim)
+		n.Addons.moveFrames.yoMoveWIM:ClearAllPoints()
+		n.Addons.moveFrames.yoMoveWIM:SetPoint( self:GetPoint())
+		n.setAnchPosition( n.Addons.moveFrames.yoMoveWIM, yoEF.wim)
 	end)
 	tab.textBox = textBox
 
@@ -333,9 +333,9 @@ local function CreateWIM( self)
 	self:SetScript("OnShow", 		function() self:stopFlash( self.wimButton) if yo.Chat.wimLastTab then CheckTabForUnit( self, strsplit( ",", yo.Chat.wimLastTab)) end end)
 	self:SetScript("OnDragStart", 	function() self:StartMoving() end)
 	self:SetScript("OnDragStop", 	function() self:StopMovingOrSizing()
-		n.moveFrames.yoMoveWIM:ClearAllPoints()
-		n.moveFrames.yoMoveWIM:SetPoint( self:GetPoint())
-		n.setAnchPosition( n.moveFrames.yoMoveWIM, yoEF.wim)
+		n.Addons.moveFrames.yoMoveWIM:ClearAllPoints()
+		n.Addons.moveFrames.yoMoveWIM:SetPoint( self:GetPoint())
+		n.setAnchPosition( n.Addons.moveFrames.yoMoveWIM, yoEF.wim)
 	end)
 	--self:SetScript("OnEscapePressed", function(self) self:Hide() end)
 

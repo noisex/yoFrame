@@ -3,7 +3,7 @@ local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Addons.ArtifactPowerbar then return end
 
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
 ----------------------------------------------------------------------------------------
 --	Based on oUF_ArtifactPower(by Rainrider)
 ----------------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ local function ArtifactPower( f)
 	ArtifactPower:SetSize( yoMoveArtifact:GetSize())
 	ArtifactPower:SetOrientation("VERTICAL")
 	ArtifactPower:SetFrameLevel(2)
-	table.insert( n.statusBars, ArtifactPower)
+	table.insert( n.Addons.elements.statusBars, ArtifactPower)
 	CreateStyle( ArtifactPower)
 
 	f.ArtifactPower = ArtifactPower

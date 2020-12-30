@@ -7,7 +7,8 @@ local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
 local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
 
 local _G = _G
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
+
 local MAX_BOSS_FRAMES= MAX_BOSS_FRAMES
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
@@ -17,15 +18,19 @@ local GetColors, CreateFrame, CreateStyle, GetTime, IsResting, tinsert, print, t
 	= GetColors, CreateFrame, CreateStyle, GetTime, IsResting, tinsert, print, type
 
 local updateAllElements = function(frame)
-	for _, v in ipairs(frame.__elements) do
-		v(frame, "UpdateElement", frame.unit)
+	for _, element in ipairs(frame.__elements) do
+		element(frame, "UpdateElement", frame.unit)
+		--print( element, frame:GetName())
+		--element( frame, "Disable", frame.unit)
+		--print(v(frame, "DisableElement"))
+		--frame:DisableElement("Power")
 	end
 
 	if frame.holyShards then frame.holyShards:recolorShards( frame.cols) end
 end
 
 function n.updateAllUF(...)
-	for ind, button in pairs( n.unitFrames) do
+	for ind, button in pairs( n.Addons.unitFrames) do
 		if type(button) == "table" then
 			if button.updateOptions then
 				button:updateOptions( button.unit)
@@ -98,7 +103,7 @@ local function unitShared(self, unit)
 	self.Health:SetStatusBarTexture( n.texture)
 	self.Health:SetFrameLevel( 1)
 	self.Health:GetStatusBarTexture():SetHorizTile(false)
-	tinsert( n.statusBars, self.Health)
+	tinsert( n.Addons.elements.statusBars, self.Health)
 
 	self.Health.hbg = self.Health.hbg or self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
@@ -128,7 +133,7 @@ local function unitShared(self, unit)
 		self.Health.stoper:SetFrameLevel( 5)
 		self.Health.stoper:SetWidth( 1)
 		self.Health.stoper:SetHeight( 4)
-		tinsert( n.statusBars, self.Health.stoper)
+		tinsert( n.Addons.elements.statusBars, self.Health.stoper)
 		CreateStyle( self.Health.stoper, 2, 4, .3, .9)
 
 		--self.Health.stoper.bg = self.Health.stoper:CreateTexture(nil, 'BORDER')
@@ -159,7 +164,7 @@ local function unitShared(self, unit)
 		self.Power:SetFrameLevel( 5)
 		self.Power:SetWidth( self.Health:GetWidth() - 10)
 		self.Power:SetHeight( powerHeight)
-		tinsert( n.statusBars, self.Power)
+		tinsert( n.Addons.elements.statusBars, self.Power)
 
 		self.Power.bg = self.Power.bg or self.Power:CreateTexture(nil, 'BORDER')
 		self.Power.bg:ClearAllPoints()
@@ -181,7 +186,7 @@ local function unitShared(self, unit)
 			powerFlashBar:SetValue( 0)
 			self.Power.powerFlashBar = powerFlashBar
 			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", self.updateManaCost)
-			tinsert( n.statusBars, self.Power.powerFlashBar)
+			tinsert( n.Addons.elements.statusBars, self.Power.powerFlashBar)
 
 		elseif unit == "targettarget" then
 			self.Power.pDebuff = self.Power.pDebuff or CreateFrame("Frame", nil, self)
@@ -227,7 +232,7 @@ local function unitShared(self, unit)
 	if unit == "targettarget" or unit == "focustarget" or unit == "focus" or unit == "pet" then
 			self:Tag( self.nameText, "[GetNameColor][unitLevel][nameshort][afk]")
 	else	self:Tag( self.nameText, "[GetNameColor][unitLevel][".. nameLeight .."][afk]")end
-	tinsert( n.strings, self.nameText)
+	tinsert( n.Addons.elements.strings, self.nameText)
 
 	if unit ~= "pet" or unit ~= "targettarget" or unit ~= "focus" or unit ~= "focustarget" then
 
@@ -235,14 +240,14 @@ local function unitShared(self, unit)
 		self.Health.healthText:ClearAllPoints()
 		self.Health.healthText:SetPoint( unpack( healthTextPos))
 		self.Health.healthText:SetFont( n.font, n.fontsize -1, "OUTLINE")
-		tinsert( n.strings, self.Health.healthText)
+		tinsert( n.Addons.elements.strings, self.Health.healthText)
 
 		if enablePower and enablePowerText then
 			self.Power.powerText = self.Power.powerText or self.Overlay:CreateFontString(nil ,"OVERLAY")
 			self.Power.powerText:ClearAllPoints()
 			self.Power.powerText:SetPoint("TOPRIGHT", self.Health.healthText, "BOTTOMRIGHT", 0, -3)
 			self.Power.powerText:SetFont( n.font, n.fontsize -1, "OUTLINE")
-			tinsert( n.strings, self.Power.powerText)
+			tinsert( n.Addons.elements.strings, self.Power.powerText)
 		end
 		if showLeader then
 			self.rText = self.rText or self:CreateFontString(nil ,"OVERLAY")
@@ -399,21 +404,21 @@ logan:SetScript("OnEvent", function(self, event)
 		oUF:SetActiveStyle("yoFrames")
 
 		yoUF.player = oUF:Spawn("player", "yo_Player")
-		if yo.UF.simpleUF then 	yoUF.player:SetPoint( "TOPRIGHT", n.moveFrames.yoMoveplayer, "TOPRIGHT", 15, 40)
-		else 					yoUF.player:SetPoint( "CENTER", n.moveFrames.yoMoveplayer, "CENTER", 0 , 0)
+		if yo.UF.simpleUF then 	yoUF.player:SetPoint( "TOPRIGHT", n.Addons.moveFrames.yoMoveplayer, "TOPRIGHT", 15, 40)
+		else 					yoUF.player:SetPoint( "CENTER", n.Addons.moveFrames.yoMoveplayer, "CENTER", 0 , 0)
 		end
 
 		yoUF.target = oUF:Spawn("target", "yo_Target")
 
-		if yo.UF.simpleUF then 	yoUF.target:SetPoint( "TOPLEFT", n.moveFrames.yoMovetarget, "TOPLEFT", -15, 40)
-		else					yoUF.target:SetPoint( "CENTER", n.moveFrames.yoMovetarget, "CENTER", 0 , 0)
+		if yo.UF.simpleUF then 	yoUF.target:SetPoint( "TOPLEFT", n.Addons.moveFrames.yoMovetarget, "TOPLEFT", -15, 40)
+		else					yoUF.target:SetPoint( "CENTER", n.Addons.moveFrames.yoMovetarget, "CENTER", 0 , 0)
 		end
 
 		yoUF.targetTarget = oUF:Spawn("targettarget", "yo_ToT")
 		yoUF.targetTarget:SetPoint( "TOPLEFT", yoUF.target, "TOPRIGHT", 8 , 0)
 
 		yoUF.focus = oUF:Spawn("focus", "yo_Focus")
-		yoUF.focus:SetPoint( "CENTER", n.moveFrames.yoMovefocus, "CENTER", 0 , 0)
+		yoUF.focus:SetPoint( "CENTER", n.Addons.moveFrames.yoMovefocus, "CENTER", 0 , 0)
 
 		yoUF.focusTarget = oUF:Spawn("focustarget", "yo_FocusTarget")
 		yoUF.focusTarget:SetPoint( "TOPLEFT", yoUF.focus, "TOPRIGHT", 7 , 0)
@@ -425,7 +430,7 @@ logan:SetScript("OnEvent", function(self, event)
 		for i = 1, MAX_BOSS_FRAMES do
 			--boses[i] = "boss"..i.."Frame"
 			yoUF["boss" .. i] = oUF:Spawn( "boss" .. i, "yo_Boss" .. i)
-			yoUF["boss" .. i]:SetPoint( "CENTER", n.moveFrames.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
+			yoUF["boss" .. i]:SetPoint( "CENTER", n.Addons.moveFrames.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
 			--yoUF["boss" .. i] = boses[i]
 
 			updateAllElements( yoUF["boss" .. i])

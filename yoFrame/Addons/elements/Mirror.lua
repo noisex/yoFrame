@@ -66,7 +66,7 @@ do
 	function Spawn(type)
 		if(barPool[type]) then return barPool[type] end
 		local frame = CreateFrame('StatusBar', "yo_Mirror", UIParent)
-		table.insert( n.statusBars, frame)
+		table.insert( n.Addons.elements.statusBars, frame)
 
 		frame:SetScript("OnUpdate", OnUpdate)
 

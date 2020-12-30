@@ -88,7 +88,7 @@ local function ArtifactPower( f)
 	ArtifactPower:SetSize( yoMoveArtifact:GetSize())
 	ArtifactPower:SetOrientation("VERTICAL")
 	ArtifactPower:SetFrameLevel(2)
-	table.insert( n.statusBars, ArtifactPower)
+	table.insert( n.Addons.elements.statusBars, ArtifactPower)
 	CreateStyle( ArtifactPower)
 
 	f.ArtifactPower = ArtifactPower

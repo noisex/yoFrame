@@ -11,7 +11,9 @@
 	<Script file="Config\fonts.lua"/>
 	<Script file="Config\blizzard.lua"/>
 	<Script file="Config\move.lua"/>
+
 	<Include file="addons\api\api.xml"/>
+
 	<Script file="Config\core.lua"/>
 	<Script file="Config\iconAuras.lua"/>
 	<Script file="Config\antiTaint.lua"/>

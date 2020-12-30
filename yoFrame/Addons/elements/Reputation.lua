@@ -2,7 +2,7 @@ local L, yo, n = unpack( select( 2, ...))
 
 if not yo.Addons.ArtifactPowerbar then return end
 
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
 
 local function GetXP(unit)
 	return UnitXP(unit), UnitXPMax(unit)
@@ -116,7 +116,7 @@ local function Experience( f)
 	Experience:SetSize( yoMoveExperience:GetSize())
 	Experience:SetOrientation("VERTICAL")
 	Experience:SetFrameLevel(3)
-	table.insert( n.statusBars, Experience)
+	table.insert( n.Addons.elements.statusBars, Experience)
 	CreateStyle(Experience, 3)
 
 	f.Experience = Experience

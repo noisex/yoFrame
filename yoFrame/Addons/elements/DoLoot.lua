@@ -2,7 +2,7 @@ local addon, ns = ...
 local L, yo, n = unpack( ns)
 
 local _G = _G
-local yoEF = n.elemFrames
+local yoEF = n.Addons.elements.elemFrames
 
 local GameTooltip, UIParent, IsShiftKeyDown, CreateFrame, GetSpecializationInfo, GetSpecialization, CreateStyle, unpack, UnitClass, pairs, Round, GetItemSpell, GetSpellBaseCooldown, select, format, GetItemInfo, GetItemSetInfo
 	= GameTooltip, UIParent, IsShiftKeyDown, CreateFrame, GetSpecializationInfo, GetSpecialization, CreateStyle, unpack, UnitClass, pairs, Round, GetItemSpell, GetSpellBaseCooldown, select, format, GetItemInfo, GetItemSetInfo

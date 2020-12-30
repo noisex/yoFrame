@@ -486,7 +486,7 @@ local function createNP(self, unit)
 	self.Health:SetSize( nameplatewidth, nameplateheight)
 	self.Health:SetMinMaxValues(0, 1)
 	self.Health:SetStatusBarTexture( n.texture)
-	tinsert( n.statusBars, self.Health)
+	tinsert( n.Addons.elements.statusBars, self.Health)
 
 	self.Health.frequentUpdates = true
 	self.Health.Override = updateHealth --n.dummy
@@ -521,26 +521,26 @@ local function createNP(self, unit)
 	self.Health.perc:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	self.Health.perc:SetPoint("RIGHT", self.Health, "RIGHT", -5, 0)
 	self.Health.perc:SetTextColor(1, 1, 1)
-	tinsert( n.strings, self.Health.perc)
+	tinsert( n.Addons.elements.strings, self.Health.perc)
 
 	self.name = self:CreateFontString(nil, "OVERLAY")
 	self.name:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	self.name:SetPoint("BOTTOM", self.Health, "TOP", 0, 2)
 	self.name:SetTextColor(1, 1, 1)
-	tinsert( n.strings, self.name)
+	tinsert( n.Addons.elements.strings, self.name)
 
 	self.level = self.Health:CreateFontString(nil, "OVERLAY")
 	self.level:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	self.level:SetTextColor(1, 1, 1)
 	self.level:SetPoint("LEFT", self.Health, "LEFT", 10, 0)
-	tinsert( n.strings, self.level)
+	tinsert( n.Addons.elements.strings, self.level)
 
 	--if yo.NamePlates.showPercTreat then
 		self.threat = self.Health:CreateFontString(nil, "OVERLAY")
 		self.threat:SetFont( n.font, n.fontsize, "THINOUTLINE")
 		self.threat:SetTextColor(1, 1, 1)
 		self.threat:SetPoint("LEFT", self.level, "RIGHT", 6, 0)
-		tinsert( n.strings, self.threat)
+		tinsert( n.Addons.elements.strings, self.threat)
 	--end
 
 	if showArrows then

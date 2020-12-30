@@ -119,7 +119,19 @@ n.CreateClique = function( self)
 ]===])
 end
 
+n.cleanQuiButton = function(self)
+	if self.atributed then
+		for k, attr in pairs( self.atributed) do
+			--print(k, attr)
+			self:SetAttribute( attr, nil)
+		end
+	end
+end
+
 n.makeQuiButton = function ( self )
+
+	self.atributed = self.atributed or {}
+	n.cleanQuiButton(self)
 
 	self:SetAttribute("*type1", nil)
 	self:SetAttribute("*type2", nil)
@@ -154,6 +166,9 @@ n.makeQuiButton = function ( self )
 			local macroAttr, macroButton = n.makeMacroButton( button)
 			self:SetAttribute( macroAttr, "macro")
 			self:SetAttribute( macroButton, beforCast .. "/cast [help,nodead,@mouseover] " .. spell)
+
+			tinsert( self.atributed, macroAttr)
+			tinsert( self.atributed, macroButton)
 		end
 	end
 end

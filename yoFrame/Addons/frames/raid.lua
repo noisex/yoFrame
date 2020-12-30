@@ -1,9 +1,8 @@
- local _, ns = ...
-local oUF 	= ns.oUF or oUF
---local colors = oUF.colors
-local cols 	= {}
+ local _, ns 	= ...
+local L, yo, n 	= unpack( ns)
+local oUF 		= ns.oUF or oUF
+local cols 		= {}
 
-local L, yo, n = ns[1], ns[2], ns[3]
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -250,7 +249,7 @@ local function raidShared(self, unit)
 	self.Health:SetWidth( self:GetWidth())
 	self.Health:SetFrameLevel(1)
 	self.Health:SetStatusBarTexture( n.texture)
-	tinsert( n.statusBars, self.Health)
+	tinsert( n.Addons.elements.statusBars, self.Health)
 
 	self.Health.hbg = self.Health.hbg or self.Health:CreateTexture(nil, "BACKGROUND")		-- look 	AssistantIndicator.PostUpdate
 	self.Health.hbg:SetAllPoints()
@@ -322,7 +321,7 @@ local function raidShared(self, unit)
 		self.Power:SetFrameStrata( "MEDIUM")
 		self.Power:SetWidth( self:GetWidth() - 6)
 		self.Power:SetHeight( 1)
-		tinsert( n.statusBars, self.Power)
+		tinsert( n.Addons.elements.statusBars, self.Power)
 
 		self.Power:SetFrameLevel(10)
 		self.Power.frequentUpdates = false
@@ -357,7 +356,7 @@ local function raidShared(self, unit)
 	self.Info:SetFont( n.font, sizeInfoFont, "OUTLINE")
 	--self.Info:SetShadowOffset( 1, -1)
 	--self.Info:SetShadowColor( 0, 0, 0, 1)
-	tinsert( n.strings, self.Info)
+	tinsert( n.Addons.elements.strings, self.Info)
 
 	if unit == "tank" then
 		self:Tag( self.Info, "[GetNameColor][nameshort]")
@@ -367,7 +366,7 @@ local function raidShared(self, unit)
 			self.threat:SetFont( n.fontpx, n.fontsize +1)--, "THINOUTLINE")
 			self.threat:SetShadowOffset( 1, -1)
 			self.threat:SetPoint("BOTTOMLEFT", self.Overlay, "BOTTOMLEFT", 3, 2)
-			tinsert( n.strings, self.threat)
+			tinsert( n.Addons.elements.strings, self.threat)
 		end
 	elseif  yo.Raid.raidTemplate == 3 then
 		 self:Tag( self.Info, "[GetNameColor][namemedium]\n[afk]")
@@ -425,14 +424,14 @@ local function raidShared(self, unit)
 	self.DeadText:SetPoint( unpack( posDead))
 	self.DeadText:SetShadowOffset( 1, -1)
 	self.DeadText:SetShadowColor( 0, 0, 0, 1)
-	tinsert( n.strings, self.DeadText)
+	tinsert( n.Addons.elements.strings, self.DeadText)
 	self:Tag( self.DeadText, "[GetNameColor]".. yo.Raid.showHPValue)
 
 	if unit == "raid" and yo.Raid.showGroupNum and ( not self.unitTT or self.unitT) then
 		self.rText = self.rText or self.Overlay:CreateFontString(nil ,"OVERLAY")
 		self.rText:SetFont( n.fontpx, n.fontsize, "OUTLINE")
 		self.rText:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, -4)
-		tinsert( n.strings, self.rText)
+		tinsert( n.Addons.elements.strings, self.rText)
 		self:Tag(self.rText, "[GetNameColor][group]")
 	end
 
@@ -603,7 +602,7 @@ local function CreateMovier(frame, f)
 	movePartyFrame:SetMovable(true)
 	movePartyFrame:RegisterForDrag("LeftButton", "RightButton")
 	movePartyFrame:ClearAllPoints()
-	movePartyFrame:SetPoint( n.moveFrames.yoMoveRaid:GetPoint())
+	movePartyFrame:SetPoint( n.Addons.moveFrames.yoMoveRaid:GetPoint())
 	movePartyFrame:SetWidth( frame:GetWidth() + delta * 2)
 	movePartyFrame:SetHeight( frame:GetHeight() + delta * 2)
 
@@ -615,23 +614,23 @@ local function CreateMovier(frame, f)
 
 	movePartyFrame:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
-		n.moveFrames.yoMoveRaid:ClearAllPoints()
-		n.moveFrames.yoMoveRaid:SetPoint( self:GetPoint())
-		n.setAnchPosition( n.moveFrames.yoMoveRaid, self)
+		n.Addons.moveFrames.yoMoveRaid:ClearAllPoints()
+		n.Addons.moveFrames.yoMoveRaid:SetPoint( self:GetPoint())
+		n.setAnchPosition( n.Addons.moveFrames.yoMoveRaid, self)
 	end)
 
 	movePartyFrame:SetScript("OnShow", function(self)
 		if InCombatLockdown() then return end
 
 		self:ClearAllPoints()
-		self:SetPoint( n.moveFrames.yoMoveRaid:GetPoint())
+		self:SetPoint( n.Addons.moveFrames.yoMoveRaid:GetPoint())
 	end)
 
 	movePartyFrame:SetScript("OnHide", function(self)
 		if InCombatLockdown() then return end
 
-		n.moveFrames.yoMoveRaid:ClearAllPoints()
-		n.moveFrames.yoMoveRaid:SetPoint( self:GetPoint())
+		n.Addons.moveFrames.yoMoveRaid:ClearAllPoints()
+		n.Addons.moveFrames.yoMoveRaid:SetPoint( self:GetPoint())
 	end)
 
 	frame:SetScript("OnSizeChanged", function(self, w, h)
@@ -833,7 +832,7 @@ logan:SetScript("OnEvent", function(self, event)
             		self:SetScale(%d)
             	]]):format( widthMT, heightMT, 1)
 			)
-			mt:SetPoint("BOTTOMLEFT", n.moveFrames.yoMoveTanks, "BOTTOMLEFT", 0, 0)
+			mt:SetPoint("BOTTOMLEFT", n.Addons.moveFrames.yoMoveTanks, "BOTTOMLEFT", 0, 0)
 		end
 	end)
 end)

@@ -21,7 +21,7 @@ function ActionBars:CreateTotemBar()
 	local NumRow = ceil(10 / ButtonsPerRow)
 
 	local Bar = CreateFrame("Frame", "yoTotemBar", n.PetHider, "SecureHandlerStateTemplate")
-	Bar:SetPoint("RIGHT", n.moveFrames.yoMovePetBar, "RIGHT")
+	Bar:SetPoint("RIGHT", n.Addons.moveFrames.yoMovePetBar, "RIGHT")
 	Bar:SetFrameStrata("LOW")
 	Bar:SetFrameLevel(10)
 	Bar:SetWidth((PetSize * ButtonsPerRow) + (Spacing * (ButtonsPerRow + 1)))

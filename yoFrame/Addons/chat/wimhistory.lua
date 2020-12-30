@@ -2,7 +2,7 @@ local addon, ns = ...
 local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
-local yoEF = n.elemFrames
+local yoEF = n.Addons.elements.elemFrames
 local wim = yoEF.wim
 
 if not wim then return end

@@ -7,7 +7,9 @@ local _G = _G
 local UIParent, CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
 	= UIParent, CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
 
-n.moveFrames = {}
+n.Addons.moveFrames = {}
+local mf = n.Addons.moveFrames
+
 yo_Position = {}
 
 --GLOBALS: yo_Position
@@ -83,13 +85,13 @@ function n.moveCreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
 	f.text:SetPoint("CENTER")
 	f.text:SetText(text)
 
-	n.moveFrames[f:GetName()] = f
+	n.Addons.moveFrames[f:GetName()] = f
 end
 
 function n.moveAnchorsUnlock()
 	print("|cff00a2ffyoFrame:|r all frames unlocked")
 	n.moveUnlockState = true
-	for _, f in pairs(n.moveFrames) do
+	for _, f in pairs(n.Addons.moveFrames) do
 		--f = v --_G[v]
 		f.dragtexture:SetAlpha(1)
 		f.text:SetAlpha(1)
@@ -101,7 +103,7 @@ end
 function n.moveAnchorsLock()
 	print("|cff00a2ffyoFrame:|r all frames locked")
 	n.moveUnlockState = false
-	for _, f in pairs(n.moveFrames) do
+	for _, f in pairs(n.Addons.moveFrames) do
 		--f = _G[v]
 		f.dragtexture:SetAlpha(0)
 		f.text:SetAlpha(0)

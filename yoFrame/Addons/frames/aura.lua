@@ -9,7 +9,7 @@ local CreateStyle, unpack, GameTooltip, Round, CreateFrame, UnitAura, BuffFrame,
 	= CreateStyle, unpack, GameTooltip, Round, CreateFrame, UnitAura, BuffFrame, formatTime, UnitExists, ipairs, GetTime
 
 local lastID
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
 
 local function OnUpdate(f, elapsed)
 	f.elapsed = (f.elapsed or 0) + elapsed

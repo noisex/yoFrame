@@ -1,6 +1,6 @@
 local L, yo, n = unpack( select( 2, ...))
 
-local yoUF = n.unitFrames
+local yoUF = n.Addons.unitFrames
 
 local function OnEvent( f)
 	local uhpm = UnitHealthMax( "player")

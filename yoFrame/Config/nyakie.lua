@@ -1,12 +1,20 @@
 local addonName, ns = ...
 local L, yo, n = unpack( ns)
 
-n.statusBars 	= {}
-n.strings		= {}
-n.shadows		= {}
-n.unitFrames 	= {}
-n.elemFrames	= {}
---n.spellsBooks 	= {}
+n.Addons = {}
+n.Addons.unitFrames = {}
+n.Addons.actionBars = {}
+n.Addons.raidFrames = {}
+n.Addons.infoFrames = {}
+n.Addons.filters 	= {}
+n.Addons.moveFrames = {}
+n.Addons.nameFrames = {}
+n.Addons.elements 	= {}
+
+n.Addons.elements.statusBars 	= {}
+n.Addons.elements.strings		= {}
+n.Addons.elements.shadows		= {}
+n.Addons.elements.elemFrames	= {}
 
 texture 		= 	yo.Media.texture
 font 			= 	yo.Media.font
@@ -47,6 +55,7 @@ n.infoTexts  	= CreateFrame("Frame")
 n.version 	  	= GetAddOnMetadata( addonName, "Version")
 n.scanTooltip 	= CreateFrame('GameTooltip', 'yoFrame_STT', UIParent, 'GameTooltipTemplate')
 n.menuFrame 	= CreateFrame("Frame", "FriendRightClickMenu", UIParent, "UIDropDownMenuTemplate")
+n.Addons.infoFrames = n.infoTexts
 
 n.slots = {
 	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot",
