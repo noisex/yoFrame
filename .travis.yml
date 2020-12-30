@@ -14,11 +14,11 @@ jobs:
       # Copied from DynamicBoxer's itself inspired from
       # from https://github.com/WeakAuras/WeakAuras2/blob/master/.github/workflows/build.yml
       # should probably be a docker so a lot of this is cached/created once
-      # - name: Install and run Luacheck
-      #   run: |
-      #     sudo apt-get install luarocks
-      #     luarocks install --local luacheck
-      #     exec /home/runner/.luarocks/bin/luacheck yoFrame/*.lua --no-color --config ./yoFrame/.luacheckrc -q
+      - name: Install and run Luacheck
+        run: |
+          sudo apt-get install luarocks
+          luarocks install --local luacheck
+          exec /home/runner/.luarocks/bin/luacheck yoFrame/*.lua --no-color --config ./yoFrame/.luacheckrc -q
       - name: Get the packager
         run: |
           curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh > ./release.sh
