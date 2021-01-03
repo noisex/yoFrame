@@ -25,27 +25,45 @@ local pStrErr = "Дано: |cffff0000%s,|r А получилось: |cffff0000%s
 
 local function checkAnimeSpells()
 	local atemp = {}
-	for buffCount in gmatch( yo.fliger.fligerBuffCount, "(%d+)" ) do
-    	tinsert( atemp, tonumber(buffCount) or 1)
-    	--print( tonumber(buffCount))
-	end
+	--for buffCount in gmatch( yo.fliger.fligerBuffCount, "(%d+)" ) do
+	--	print( yo.fliger.fligerBuffCount:find( "t"), yo.fliger.fligerBuffCount)
+	--	if yo.fliger.fligerBuffCount:find( "t") then
+	--		tinsert( atemp, { timer = tonumber(buffCount)})
+	--	else
+	--		tinsert( atemp, { stack = (tonumber(buffCount) or 1)})
+	--	end
+	--end
+	local str = gsub( yo.fliger.fligerBuffCount, "\n", ",")  	-- чистим перенос строки
+	for buffCount in gmatch( str, "%s*(%P+)" ) do   			-- без пробелов впереди по знакам препинания
+    	buffCount = gsub( buffCount, "%s+$", "" ) 				-- чистим пробелы сзади
 
-	local str = gsub( yo.fliger.fligerBuffSpell, "\n", ",")  -- чистим перенос строки
+    	if buffCount:find( "t") or buffCount:find( "т") then
+			tinsert( atemp, { timer = tonumber( string.match( buffCount, "(%d+)" )) or 5})
+		else
+			tinsert( atemp, { stack = ( tonumber( string.match( buffCount, "(%d+)" )) or 1)})
+		end
+    end
+
+	local str = gsub( yo.fliger.fligerBuffSpell, "\n", ",")  	-- чистим перенос строки
 	local index = 1
-	for buffSpell in gmatch( str, "%s*(%P+)" ) do   			-- без пробелов впереди по знакам препинания
-    	buffSpell = gsub( buffSpell, "%s+$", "" ) 			-- чистим пробелы сзади
-    	local spellName = select( 1, GetSpellInfo( buffSpell))
+	for spellName in gmatch( str, "%s*(%P+)" ) do   			-- без пробелов впереди по знакам препинания
+    	spellName = gsub( spellName, "%s+$", "" ) 				-- чистим пробелы сзади
+    	--local spellName = select( 1, GetSpellInfo( buffSpell))
     	local spellCount = atemp[index]
 
-    	if spellName and spellCount and not n.filgerBuffSpells[spellName] then
-    		n.filgerBuffSpells[spellName] = spellCount
-    		if yo.fliger.fligerShowHint then
-    			print( format( pStr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
+    	if spellName and spellCount then --and not n.filgerBuffSpells[spellName]
+    		n.filgerBuffSpells[spellName] = n.filgerBuffSpells[spellName] or {}
+
+    		if spellCount.timer then 		n.filgerBuffSpells[spellName].timer = spellCount.timer
+    		elseif spellCount.stack then 	n.filgerBuffSpells[spellName].stack = spellCount.stack
     		end
-    	else
-    		if yo.fliger.fligerShowHint then
-    			print( format( pStrErr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
-    		end
+    		--if yo.fliger.fligerShowHint then
+    		--	print( format( pStr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
+    		--end
+    	--else
+    	--	if yo.fliger.fligerShowHint then
+    	--		print( format( pStrErr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
+    	--	end
     	end
 
     	index = index + 1
@@ -171,6 +189,10 @@ local function MakeFligerFrame( self)
 		tDebuff:SetHeight( tdebuffSize)
 		tDebuff.direction 	= yo.fliger.tDebuffDirect
 		tDebuff.unit 		= "target"
+		tDebuff.buffFilter 	= n.filgerBuffSpells
+		tDebuff.countGlow 	= yo.fliger.fligerBuffGlow
+		tDebuff.countAnim 	= yo.fliger.fligerBuffAnim
+		tDebuff.countColor	= yo.fliger.fligerBuffColr
 		self.tDebuff 		= tDebuff
 	end
 
@@ -186,7 +208,7 @@ local function MakeFligerFrame( self)
 		pProc.countAnim 	= yo.fliger.fligerBuffAnim
 		pProc.countColor	= yo.fliger.fligerBuffColr
 		pProc.showBorder	= nil--"border"
-		pProc.countFilter 	= n.filgerBuffSpells
+		pProc.buffFilter 	= n.filgerBuffSpells
 		self.pProc 			= pProc
 	end
 
@@ -203,7 +225,7 @@ local function MakeFligerFrame( self)
 		pBuff.countAnim 	= yo.fliger.fligerBuffAnim
 		pBuff.countColor	= yo.fliger.fligerBuffColr
 		pBuff.showBorder	= nil--"border"
-		pBuff.countFilter 	= n.filgerBuffSpells
+		pBuff.buffFilter 	= n.filgerBuffSpells
 		self.pBuff 			= pBuff
 	end
 

@@ -1,6 +1,9 @@
 local L, yo, n = unpack( select( 2, ...))
 
+local _G = _G
 local hoocked
+
+--yo_talkingHead = {}
 
 local function RemoveAnchor()
 	for i, alertSubSystem in pairs(AlertFrame.alertFrameSubSystems) do
@@ -26,6 +29,8 @@ end
 local function moveTH(self, event, name)
 	--print(self, event, name)
 	if name == "Blizzard_TalkingHeadUI" then
+		n.talkingHead = _G.yo_talkingHead
+
 		TalkingHeadFrame.ignoreFramePositionManager = true
 		TalkingHeadFrame:ClearAllPoints()
 		TalkingHeadFrame:SetPoint("TOP", UIParent, "TOP", 0, -70)

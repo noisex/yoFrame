@@ -448,7 +448,7 @@ local function CheckLFR( self, ...)
 		end
 	end
 
-	if index == 0 or not n.IsSoloFree or yo.CTA.hide then
+	if index == 0 or not n:IsSoloFree() or yo.CTA.hide then
 		self.LFRFrame:Hide()
 	else
 		self.LFRFrame:Show()

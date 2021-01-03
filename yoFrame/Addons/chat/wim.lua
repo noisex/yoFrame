@@ -20,7 +20,8 @@ n.moveCreateAnchor("yoMoveWIM", 	"Move PM Chat", 370, 250, 10, 90, "BOTTOMLEFT",
 --ContainerFrame3 = CreateFrame("Frame", "ContainerFrame3", UIParent)
 --ContainerFrame3:SetPoint("CENTER")
 
---GLOBALS: yo_WIMSTER
+--GLOBALS: _G.yo_WIMSTER
+n.wimster = {}
 
 local function UpdateTabs( self)
 	if not self.lastTab then return end
@@ -253,12 +254,12 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 	if self.tabber.tabs[tabID].preHistoric then
 		local target = btag and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( unit, "none"))
 
-		if not yo_WIMSTER then yo_WIMSTER = {} end
-		if not yo_WIMSTER[n.myRealm] then yo_WIMSTER[n.myRealm] = {} end
-		if not yo_WIMSTER[n.myRealm][n.myName] then yo_WIMSTER[n.myRealm][n.myName] = {} end
+		if not n.wimster then n.wimster = {} end
+		if not n.wimster[n.myRealm] then n.wimster[n.myRealm] = {} end
+		if not n.wimster[n.myRealm][n.myName] then n.wimster[n.myRealm][n.myName] = {} end
 
-		if yo_WIMSTER[n.myRealm][n.myName][target] then
-			local logArray 	= yo_WIMSTER[n.myRealm][n.myName][target]
+		if n.wimster[n.myRealm][n.myName][target] then
+			local logArray 	= n.wimster[n.myRealm][n.myName][target]
 			local longArray = #logArray
 
 			if longArray > 0 then
@@ -469,7 +470,7 @@ local function CreateWIM( self)
 	self.buttons.grabber = grabber
 
 	self.tabber = CreateFrame("Frame", nil, self)
-	self.tabber:SetHeight( 20)
+	self.tabber:SetHeight( 16)
 	self.tabber:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4) --3
 	self.tabber:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 4)
 	self.tabber:SetScript("OnSizeChanged", self.ResizeTabs)
@@ -488,11 +489,11 @@ local function SaveLines( self, msg, event, tabID, target, bnet, colorLine)
 	--print(self, target, bnet)
 	target = bnet and self.tabber.tabs[tabID].fullTag or strlower( Ambiguate( target, "none"))
 
-	if not yo_WIMSTER then yo_WIMSTER = {} end
-	if not yo_WIMSTER[n.myRealm] then yo_WIMSTER[n.myRealm] = {} end
-	if not yo_WIMSTER[n.myRealm][n.myName] then yo_WIMSTER[n.myRealm][n.myName] = {} end
-	if not yo_WIMSTER[n.myRealm][n.myName][target] then yo_WIMSTER[n.myRealm][n.myName][target] = {} end
-	local logArray = yo_WIMSTER[n.myRealm][n.myName][target]
+	if not n.wimster then n.wimster = {} end
+	if not n.wimster[n.myRealm] then n.wimster[n.myRealm] = {} end
+	if not n.wimster[n.myRealm][n.myName] then n.wimster[n.myRealm][n.myName] = {} end
+	if not n.wimster[n.myRealm][n.myName][target] then n.wimster[n.myRealm][n.myName][target] = {} end
+	local logArray = n.wimster[n.myRealm][n.myName][target]
 	--print( strfind( msg, "|K%a+%d+|k"), self.tabber.tabs[tabID].name)
 
 	local array = { msg = msg, time = time(), event = event}
@@ -557,6 +558,7 @@ local function OnEvent( self, event, ...)
 		self.wimHMaxistory	= yo.Chat.wimMaxHistory
 		self.wimPrehistoric	= yo.Chat.wimPrehistoric
 
+		n.wimster = _G.yo_WIMSTER
 		CreateWIM( self)
 		hooksecurefunc("ChatEdit_ExtractTellTarget", CF_ExtractTellTarget);
 		hooksecurefunc("ChatFrame_SendBNetTell", ChatFrame_SendBNet)

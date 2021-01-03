@@ -86,14 +86,29 @@ end
 --math.mod(number, 2) == 0
 local function checkForFilter( button)
 
-	if button.countFilter[button.name] then
-		local checkForShow = button.countCount >= button.countFilter[button.name]
+	if button.buffFilter[button.name] then
+
+		local checkForShow
+		local buffFilter = button.buffFilter[button.name]
+
+		if buffFilter.timer and buffFilter.stack then
+			if ( button.est <= buffFilter.timer) and ( button.countCount >= buffFilter.stack ) then
+				checkForShow = true
+			end
+
+		elseif buffFilter.timer then
+			checkForShow = button.est <=buffFilter.timer
+
+		elseif buffFilter.stack then
+
+			checkForShow = button.countCount >= buffFilter.stack
+		end
 
 		if button.countGlow then
 			if checkForShow then
 				if not button.glowing then
 					--aGlow.PixelGlow_Start( button, {0.95, 0.95, 0.32, 1}, 7, 0.5, 8, 4, 2, 2, false, 1 )
-					aGlow.PixelGlow_Start( button, { 1, 1, 0, 1}, 7, 0.5, 6, 3, 4, 4, false, 1 )
+					aGlow.PixelGlow_Start( button, { 1, 1, 0, 1}, 7, 0.5, 6, 2, 4, 4, false, 1 )
 					button.glowing = true
 				end
 			else
@@ -154,7 +169,7 @@ function n.createAuraIcon( parent, index)
 	parent.timerPos 	= parent.timerPos or "BOTTOM"
 	button.unit 		= parent.unit
 	button.countGlow 	= parent.countGlow
-	button.countFilter 	= parent.countFilter
+	button.buffFilter 	= parent.buffFilter
 	button.countAnim	= parent.countAnim
 	button.countColor	= parent.countColor
 	button.showBorder	= parent.showBorder 	-- по-дефолту = фэлс, что бы рисовать смолстайл
@@ -290,19 +305,19 @@ function n.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 		button.count:SetText( "")
 	end
 
-	if button.countFilter then checkForFilter( button) end
-
 	button:SetScript("OnUpdate", function(self, el)
 		button.tick = button.tick + el
 		if button.tick <= 0.1 then return end
 		button.tick = 0
 
-		local est = expirationTime - GetTime()
+		button.est = expirationTime - GetTime()
 
-		if est <= button.redTimer then
+		if button.buffFilter then checkForFilter( button) end
+
+		if button.est <= button.redTimer then
 			button.timer:SetTextColor( button.timerRedCol[1], button.timerRedCol[2], button.timerRedCol[3])
 
-		elseif est <= 0 then
+		elseif button.est <= 0 then
 			button:Hide()
 			self:SetScript("OnUpdate", nil)
 			return
@@ -310,9 +325,9 @@ function n.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 		--	button.timer:SetTextColor( 1, 1, 0)
 		end
 
-		if ( duration and duration > 0) and est > 0.1 then
-			if est < button.minTimer then
-				button.timer:SetText( button.tFormat( est, true)) --formatTime( est))
+		if ( duration and duration > 0) and button.est > 0.1 then
+			if button.est < button.minTimer then
+				button.timer:SetText( button.tFormat( button.est, true)) --formatTime( est))
 			else
 				button.timer:SetText( "")
 			end

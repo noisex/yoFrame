@@ -58,7 +58,7 @@ local function SkinBubble(frame, holder)
 		holder.shadow:SetBackdropBorderColor(0, 0, 0, 0)
 
 	elseif yo.Chat.chatBubble == "skin" then
-		holder.shadow:SetBackdropColor(0.09, 0.09, 0.09, 0.7)
+		holder.shadow:SetBackdropColor(0.09, 0.09, 0.09, 0.6)
 		holder.shadow:SetBackdropBorderColor(0.09, 0.09, 0.09, 0.5)
 
 	elseif yo.Chat.chatBubble == "remove" then

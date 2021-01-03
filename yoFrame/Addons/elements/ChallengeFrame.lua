@@ -433,6 +433,7 @@ local function makeSoulsBitton(...)
 end
 
 local function OnEvent( self, event, name, sender, ...)
+
 	if name == "Blizzard_ChallengesUI" then
 		Blizzard_ChallengesUI( self)
 		_G.ChallengesKeystoneFrame:HookScript("OnShow", SlotKeystone)
@@ -440,8 +441,20 @@ local function OnEvent( self, event, name, sender, ...)
 	elseif name == "Blizzard_WeeklyRewards" then
 		_G.WeeklyRewardsFrame:SetScale(0.8)
 
-	--elseif name == "Blizzard_LandingSoulbinds" then
-	--	C_Timer.After( 0.5, makeSoulsBitton)
+	elseif name == "Blizzard_GarrisonUI" then
+		local missionComplete 	= _G.CovenantMissionFrame.MissionComplete
+		local butonContinue 	= _G.CovenantMissionFrame.MissionComplete.CompleteFrame.ContinueButton
+		local buttonComplete 	= _G.CovenantMissionFrame.MissionComplete.RewardsScreen.FinalRewardsPanel.ContinueButton
+
+		butonContinue:HookScript("OnShow", function(self, ...)
+			--C_Timer.After( 0.2, function() 	_G.CovenantMissionFrame.MissionComplete:AdvanceStage() end) end)
+			--print( missionComplete.autoCombatResult)
+			C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end)
+		end)
+
+		--buttonComplete:HookScript("OnShow", function(self, ...)
+		--	C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end) end)
+
 	end
 end
 

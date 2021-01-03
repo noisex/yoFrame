@@ -12,15 +12,16 @@ local GetShapeshiftFormID, UnitPower, GetSpecialization, UnitPowerMax, GetRuneCo
 
 local recolorShards = function(self, cols)
 	self.cols = cols or self.cols
-	--tprint(...)
 	for i = 1, self.idx do
-		--print(i, cols[1], cols[2], cols[3])
 		self[i]:SetStatusBarColor( cols[1], cols[2], cols[3], 1)
 	end
 end
 
 local function pwUpdate( self, powerID)
 	local unitPower = UnitPower( self.unit, powerID)
+	local idx 		= UnitPowerMax( self.unit, powerID)
+
+	if idx ~= self.idx then  CreateShards( self) end
 
 	for i = 1, min( unitPower, #self) do
 		if not self[i].on or self[i]:GetAlpha() < self.maxAlpha then

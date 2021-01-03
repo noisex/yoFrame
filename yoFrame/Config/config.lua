@@ -25,9 +25,10 @@ end
 local myName   = UnitName( "player")
 local myRealm  = GetRealmName()
 
-if yo_AllData 					== nil	then yo_AllData = {} end
-if yo_AllData[myRealm] 			== nil	then yo_AllData[myRealm] = {} end
-if yo_AllData[myRealm][myName] 	== nil 	then yo_AllData[myRealm][myName] = {} end
+if yo_AllData 					== nil then yo_AllData = {} end
+if yo_talkingHead 				== nil then yo_talkingHead = {} end
+if yo_AllData[myRealm] 			== nil then yo_AllData[myRealm] = {} end
+if yo_AllData[myRealm][myName] 	== nil then yo_AllData[myRealm][myName] = {} end
 
 n.allData = yo_AllData
 

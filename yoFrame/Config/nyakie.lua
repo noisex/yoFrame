@@ -16,6 +16,8 @@ n.Addons.elements.strings		= {}
 n.Addons.elements.shadows		= {}
 n.Addons.elements.elemFrames	= {}
 
+n.talkingHead 	= yo_talkingHead
+
 texture 		= 	yo.Media.texture
 font 			= 	yo.Media.font
 
@@ -77,8 +79,6 @@ n.updateConfigData = function( db)
 	n.yo = db
 	_G[addonName][2] = db
 end
-
-n.talkingHead = yo_talkingHead and yo_talkingHead or {}
 
 n.IsSoloFree = function ( ... )
   --local instanceType = select( 2, GetInstanceInfo())
