@@ -1,26 +1,21 @@
 package-as: yoFrame
 
 ignore:
-    - install.bat
-    - classictag.sh
-    - luaformat.cfg
-    - MoLib/installmolib.bat
-    - MoLib/MoLib.toc
-    - MoLib/luaformat.cfg
-    - MoLib/README.md
-    - MoLib/tests
-    - locale/genlocale.sh
-    - pkgmeta.yaml
-    - AuctionDB/locale/genlocale.sh
-    - MoLib/pkgmeta.yaml
+    - .github
+    - utils
+    - .luacheckrc
+    - .pkgmeta
+    - .travis.yml
+    - README.md
 
 externals:
     MoLib:
         url: https://github.com/mooreatv/MoLib
 
-manual-changelog: README.txt
+manual-changelog: README.md
 
 move-folders:
   yoFrame/yoFrame: yoFrame
+  yoFrame/yoFrame_Config: yoFrame_Config
 
 enable-nolib-creation: no
