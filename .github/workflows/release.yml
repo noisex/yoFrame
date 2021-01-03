@@ -24,10 +24,6 @@ jobs:
           sudo apt-get install -qq lua5.1
           echo '::endgroup::'
 
-      - name: Generate changelog
-        run: |
-          lua utils/changelog > CHANGELOG.md
-
       - name: Package and release
         uses: BigWigsMods/packager@cd13fb1
     env:
