@@ -9,8 +9,12 @@ ignore:
     - README.md
 
 externals:
-    MoLib:
-        url: https://github.com/mooreatv/MoLib
+  yoFrame/Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
+  yoFrame/Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+  yoFrame/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
+  yoFrame/Libs/LibSharedMedia-3.0: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
+  yoFrame/Libs/LibItemSearch-1.2: https://github.com/Jaliborc/LibItemSearch-1.2
+  yoFrame/Libs/oUF: https://github.com/oUF-wow/oUF
 
 manual-changelog: README.md
 
