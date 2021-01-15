@@ -209,7 +209,7 @@ local function CreateLFRStrings( parent, id)
 	local button = CreateFrame("Button", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
 	button:SetFrameLevel(parent:GetFrameLevel() + 10)
 	button:SetWidth( parent:GetWidth() - 4)
-	button:SetHeight( 20)
+	button:SetHeight( 21)
 	button:EnableMouse(true)
 	button:SetBackdrop({
 		bgFile =  [=[Interface\ChatFrame\ChatFrameBackground]=],
@@ -244,9 +244,9 @@ local function CreateLFRStrings( parent, id)
 	button.dd:SetTexture([[Interface\AddOns\yoFrame\Media\dps]])
 
 	if id == 1 then
-		button:SetPoint( "TOPLEFT", parent, "TOPLEFT", 2, -15)
+		button:SetPoint( "TOPLEFT", parent, "TOPLEFT", 2, -18)
 	else
-		button:SetPoint( "TOPLEFT", parent[id-1], "BOTTOMLEFT", 0, -2)
+		button:SetPoint( "TOPLEFT", parent[id-1], "BOTTOMLEFT", 0, -5)
 	end
 
 	button:SetScript("OnClick", function(self, ...)
@@ -338,7 +338,7 @@ function UpdateStrings(self)
 				id = id + 1
 			end
 		end
-		self.LFRFrame:SetHeight( ( id - 1) * 23 + 14)
+		self.LFRFrame:SetHeight( ( id - 1) * 25 + 17)
 		for index = id, #self.LFRFrame do self.LFRFrame[index]:Hide() end
 	else
 		self.LFRFrame:SetHeight( 14)
@@ -454,7 +454,7 @@ local function CheckLFR( self, ...)
 		self.LFRFrame:Show()
 	end
 
-   if newDate and n.IsSoloFree and not yo.CTA.nosound then
+   if newDate and n:IsSoloFree() and not yo.CTA.nosound then
 		PlaySoundFile( LSM:Fetch( "sound", yo.CTA.sound))
    end
 

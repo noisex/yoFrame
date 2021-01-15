@@ -39,8 +39,8 @@ local function updateScreenScale(...)
 		SetCVar("useUiScale", 0)
 	end
 end
-n.conFuncs["AutoScale"] = updateScreenScale
-n.conFuncs["ScaleRate"] = updateScreenScale
+n.conFuncs.AutoScale = updateScreenScale
+n.conFuncs.ScaleRate = updateScreenScale
 updateScreenScale()
 
 local function updateErrors()

@@ -1,7 +1,5 @@
 local L, yo, n = unpack( select( 2, ...))
 
-if not yo.InfoTexts.enable then return end
-
 local infoText = n.infoTexts
 local Stat = CreateFrame("Frame", nil, UIParent)
 

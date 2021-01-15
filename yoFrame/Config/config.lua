@@ -28,9 +28,19 @@ local myRealm  = GetRealmName()
 if yo_AllData 					== nil then yo_AllData = {} end
 if yo_talkingHead 				== nil then yo_talkingHead = {} end
 if yo_AllData[myRealm] 			== nil then yo_AllData[myRealm] = {} end
+if yo_AllData.talkingHead 		== nil then yo_AllData.talkingHead = {} end
 if yo_AllData[myRealm][myName] 	== nil then yo_AllData[myRealm][myName] = {} end
 
-n.allData = yo_AllData
+--yo_AllData.charData 			= nil
+
+if yo_AllData.charData 			== nil then yo_AllData.charData = {} end
+if yo_AllData.charData[myRealm] == nil then
+	--yo_AllData.charData[myRealm] = {}
+	yo_AllData.charData[myRealm] 	= CopyTable( yo_AllData[myRealm])
+end
+
+n.allData 		 = yo_AllData
+n.allData.myData = yo_AllData.charData[myRealm][myName]
 
 if yo.healBotka.enable then
 	Clique = Clique or CreateFrame("Frame", "yo_Clique", UIParent)

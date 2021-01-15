@@ -47,7 +47,9 @@ local funcTankList = function( self, button, ...)
 end
 
 local funcBlackList = function( self, button, ...)
-	local spellID = select( 11, ...)
+	local spellID 	= select( 11, ...)
+	--local spellName = select( 2, ...)
+
 	if n.RaidDebuffList[spellID] then
 		return true
 	else
@@ -99,7 +101,7 @@ local function raidShared(self, unit)
 	local posDead 		= {"TOPRIGHT", self, "TOPRIGHT", -2, -1}
 	local posLFD 		= {"RIGHT", self, "RIGHT", -1, -1}
 	local posAuras		= {'LEFT', self, 'RIGHT', 12, 0}
-	local posRCheck		= {'RIGHT', self, 'RIGHT', -15, 0}
+	local posRCheck		= {'RIGHT', self, 'RIGHT', -10, 0}
 	local posAuraTank	= { "LEFT", self, "LEFT", 5, 0}
 	local sizeInfoFont 	= n.fontsize
 	local sizeLFDFont 	= n.fontsize - 1
@@ -134,7 +136,7 @@ local function raidShared(self, unit)
 		posInfo			= {"LEFT",  self, "RIGHT", 12, 0}
 		posDead 		= {"RIGHT", self, "RIGHT", -8, 1}
 		posLFD			= {"RIGHT", self, "RIGHT", -1, 0}
-		posRCheck		= {"RIGHT", self, "RIGHT", -25, 0}
+		posRCheck		= {"RIGHT", self, "RIGHT", -15, 0}
 		sizeInfoFont 	= n.fontsize + 2
 		sizeLFDFont 	= n.fontsize - 3
 		sizeRTarget		= 12
@@ -471,6 +473,8 @@ local function raidShared(self, unit)
 			local fn, fs, fd = button.count:GetFont()
 			button.count:SetFont( n.fontpx, fs+2)
 			button.count:SetTextColor(1, 1, 0, 1)
+			button.count:SetShadowOffset( 1, -1)
+			button.count:SetShadowColor( 0, 0, 0, 1)
 			if sizeAuras >= 30 then
 				n.CreateBorder( button, sizeAuras / 3)
 				n.SetBorderColor( button, 0.19, 0.19, 0.19, 0.9)
@@ -511,9 +515,11 @@ local function raidShared(self, unit)
 		self.Buffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( unpack( n.tCoord))
 			--button.icon:ClearAllPoints()
-			button.cd.timerPos 	= { 'CENTER', button.cd, 'BOTTOM', 0, 2}
-			--button.cd.timerPos1 	= { 'RIGHT', button.cd, 'BOTTOMRIGHT', 0, 2}
-			--button.cd.timerPos2 	= { 'RIGHT', button.cd, 'BOTTOMRIGHT', 10, 2}
+
+			button.timerPos 	= { "TOP", button, "BOTTOM", 0, -3}
+			button.cd.timerPos 	= { 'TOP', button.cd, 'BOTTOM', 0, -2}
+			--button.cd.timerPos 	= { 'CENTER', button.cd, 'BOTTOM', 0, 2}
+
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
 
@@ -707,7 +713,7 @@ logan:SetScript("OnEvent", function(self, event)
 		if yo.Raid.groupingOrder == "GROUP" then
 			local raid = {}
 			for i = 1, yo.Raid.numgroups do
-				local raidgroup = self:SpawnHeader("yo_RaidGroup"..i, nil, "custom [@raid6,exists] show;hide",
+				local raidgroup = self:SpawnHeader("yo_RaidGroup"..i, nil, "custom [@raid6,exists] show;hide", --https://wow.gamepedia.com/Macro_conditionals
 					"oUF-initialConfigFunction", [[
 						local header = self:GetParent()
 						self:SetWidth(header:GetAttribute("initial-width"))

@@ -120,28 +120,30 @@ end
 
 
 function infoText:checkPets( serial)
-	n.scanTooltip:SetOwner (WorldFrame, "ANCHOR_NONE")
-	n.scanTooltip:SetHyperlink ("unit:" .. serial or "")
+	--n.scanTooltip:SetOwner (WorldFrame, "ANCHOR_NONE")
+	--n.scanTooltip:SetHyperlink ("unit:" .. serial or "")
 
-	local line1 = _G ["yoFrame_STTTextLeft2"]
-	local text1 = line1 and line1:GetText()
-	if (text1 and text1 ~= "") then
-		local playerName = n.myName
-		playerName = playerName:gsub ("%-.*", "") --remove realm name
-		if text1:find( playerName) then
-			self.pets[serial] = true
-		end
-	end
+	--local line1 = _G ["yoFrame_STTTextLeft2"]
+	--local text1 = line1 and line1:GetText()
+	--if (text1 and text1 ~= "") then
+	--	local playerName = n.myName
+	--	playerName = playerName:gsub ("%-.*", "") --remove realm name
+	--	if text1:find( playerName) then
+	--		self.pets[serial] = true
+	--	end
+	--end
 
-	local line2 = _G ["yoFrame_STTTextLeft3"]
-	local text2 = line2 and line2:GetText()
-	if (text2 and text2 ~= "") then
-		local playerName = n.myName
-		playerName = playerName:gsub ("%-.*", "") --remove realm name
-		if text2:find( playerName) then
-			self.pets[serial] = true
-		end
-	end
+	--local line2 = _G ["yoFrame_STTTextLeft3"]
+	--local text2 = line2 and line2:GetText()
+	--if (text2 and text2 ~= "") then
+	--	local playerName = n.myName
+	--	playerName = playerName:gsub ("%-.*", "") --remove realm name
+	--	if text2:find( playerName) then
+	--		self.pets[serial] = true
+	--	end
+	--end
+
+	self.pets[serial] = true 	---------------------!!!!!!!!!!!!!! временное дело
 	self.petBlacklist[serial] = true
 end
 

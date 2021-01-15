@@ -147,7 +147,7 @@ local function OnEvent( self, event, unit, pToken, ...)
 	elseif event == "UNIT_ENTERED_VEHICLE" then
 		self:Hide()
 
-	elseif event == "UNIT_EXITED_VEHICLE" then
+	elseif event == "UNIT_EXITED_VEHICLE" or event == "ZONE_CHANGED_NEW_AREA" then
 		--self:Show()
 		CreateShards( self)
 	end
@@ -172,6 +172,7 @@ function n.createShardsBar( f)
 	holyShards:RegisterUnitEvent("UNIT_MAXPOWER", f.unit)
 	holyShards:RegisterEvent("PLAYER_TARGET_CHANGED")
 	holyShards:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+	holyShards:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 	holyShards:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', "player")
 	holyShards:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")

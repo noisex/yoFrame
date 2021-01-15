@@ -21,9 +21,9 @@ local yo_OldKey, yo_OldKey2 = nil, nil
 local function CheckInventoryKeystone()
 	local keyslink = nil
 
-	n.allData[n.myRealm][n.myName]["KeyStone"] = nil
-	n.allData[n.myRealm][n.myName]["KeyStoneDay"] = nil
-	n.allData[n.myRealm][n.myName]["KeyStoneTime"] = nil
+	n.allData.myData.KeyStone 		= nil
+	n.allData.myData.KeyStoneDay 	= nil
+	n.allData.myData.KeyStoneTime 	= nil
 
 	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
 		local slots = GetContainerNumSlots(container)
@@ -33,9 +33,9 @@ local function CheckInventoryKeystone()
 
 			if itemString then
 				keyslink  = slotLink
-				n.allData[n.myRealm][n.myName]["KeyStone"] = slotLink
-				n.allData[n.myRealm][n.myName]["KeyStoneDay"] = date()
-				n.allData[n.myRealm][n.myName]["KeyStoneTime"] = time()
+				n.allData.myData.KeyStone 	  = slotLink
+				n.allData.myData.KeyStoneDay  = date()
+				n.allData.myData.KeyStoneTime = time()
 			end
 		end
 	end

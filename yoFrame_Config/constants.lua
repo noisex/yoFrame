@@ -112,6 +112,10 @@ yo["Addons"] = {
 	["AutoInvite"]					= true,
 	["AutoLeader"]					= false,
 	["disenchanting"]				= true,
+	["AutoCovenantsMission"]		= false,
+	["hideHead"]					= true,
+	["hideForAll"]					= false,
+	["hideSound"]					= false,
 }
 
 yo["ActionBar"] = {
@@ -264,8 +268,8 @@ yo["Media"] = {
 	["dgtexture"]	= "Interface\\AddOns\\yoFrame\\Media\\bar_dground",
 	["texhl"]   	= "Interface\\AddOns\\yoFrame\\Media\\raidbg",
 	["texglow"] 	= "Interface\\AddOns\\yoFrame\\Media\\glowTex",
-	["font"]     	= [=[Interface\AddOns\yoFrame\Media\qFont.ttf]=],
-	["fontpx"]   	= [=[Interface\AddOns\yoFrame\Media\pxFont.ttf]=],
+	["font"]     	= "Interface\\AddOns\\yoFrame\\Media\\qFont.ttf",
+	["fontpx"]   	= "Interface\\AddOns\\yoFrame\\Media\\pxFont.ttf",
 	["fontsize"] 	= 10,
 	["sysfontsize"]	= 10,
 	["AutoScale"] 	= "auto",
@@ -309,7 +313,7 @@ yo["Raid"] = {
 	["partyScale"] 		= 1.2,
 	["hpBarRevers"]		= false,
 	["hpBarVertical"]	= false,
-	["groupingOrder"] 	= "ID", -- "THD" "TDH" "GROUP"
+	["groupingOrder"] 	= "TDH", -- "THD" "TDH" "GROUP"
 	["showLFD"]			= true,
 	["showHPValue"]		= "[DDG]",
 	["noHealFrames"]	= false,

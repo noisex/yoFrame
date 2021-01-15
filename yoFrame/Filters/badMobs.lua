@@ -10,6 +10,77 @@ local L, yo, n = unpack( select( 2, ...))
 -- "url": "https://wago.io/7KA6ZDIRW/8",   v1.0.7
 -- https://wago.io/GwsXJnOam/9
 
+--(.*\()(\d+)(.*)  replace reg
+--[$2] = true,
+
+
+n.animainfoNPC = {
+    --All Wings
+    [152594] = 305308, --Broker Ve'ken
+    [170257] = 305308, --Broker Ve'nott
+    [151353] = 295187, --Mawrat
+    [154030] = 295187, --Oddly Large Mawrat
+    [155798] = 297413, --Mawsworn Shackler
+    --Skoldus Hall
+    [152708] = 304918, --Mawsworn Seeker
+    [153878] = 305269, --Mawsworn Archer
+    [150959] = 305269, --Mawsworn Interceptor
+    [150958] = 305266, --Mawsworn Guard
+    [153874] = 305266, --Mawsworn Sentry
+    --Fracture Chambers
+    [155790] = 305287, --Mawsworn Acolyte
+    [155830] = 305287, --Mawsworn Disciple
+    [157810] = 305287, --Mawsworn Endbringer
+    [155949] = 305287, --Mawsworn Soulbinder
+    [155824] = 305287, --Lumbering Creation
+    [155793] = 305288, --Skeletal Remains
+    [157819] = 305266, --Mawsworn Shadestalker
+    --Soulforges
+    [157584] = 305277, --Flameforge Master
+    [157583] = 305277, --Forge Keeper
+    [157572] = 305277, --Mawsworn Firecaller
+    [157571] = 305277, --Mawsworn Flametender
+    [157634] = 305266, --Flameforge Enforcer
+    --Coldheart Interstitia
+    [156212] = 305274, --Coldheart Agent
+    [170800] = 305274, --Coldheart Ambusher
+    [156157] = 305274, --Coldheart Ascendant
+    [156226] = 305274, --Coldheart Binder
+    [156213] = 305274, --Coldheart Guardian
+    [156159] = 305274, --Coldheart Javelineer
+    [156219] = 305274, --Coldheart Scout
+    --Upper Reaches
+    --All NPCs in Upper Reaches are also in other wings!
+    --Mort'Regar
+    [152644] = 295754, --Deadsoul Drifter
+    [151815] = 295754, --Deadsoul Echo
+    [151816] = 295754, --Deadsoul Scavenger
+    [151814] = 295754, --Deadsoul Shade
+    [153879] = 295754, --Deadsoul Shadow
+    [153885] = 295754, --Deadsoul Shambler
+    [153882] = 295754, --Deadsoul Spirit
+    [153552] = 295754, --Weeping Wraith
+    --Invasions
+    [154128] = 305277, --Blazing Elemental
+    [154129] = 305277, --Burning Emberguard
+    [155225] = 305282, --Faeleaf Grovesinger
+    [155221] = 305282, --Faeleaf Tender
+    [155216] = 305282, --Faeleaf Warden
+    [155226] = 305282, --Verdant Keeper
+    [155215] = 305282, --Faeleaf Lasher
+    [155211] = 305282, --Gormling Pest
+    [155219] = 305282, --Gormling Spitter
+    [154011] = 305293, --Armed Prisoner
+    [154015] = 305293, --Escaped Ritualist
+    [154014] = 305293, --Imprisoned Cabalist
+    [154020] = 305293, --Prisonbreak Cursewalker
+    [154018] = 305293, --Prisonbreak Mauler
+    [154016] = 305293, --Prisonbreak Soulmender
+    --Debug
+    [87318] = 305293, --Dungeoneer's Training Dummy
+    [88314] = 305282, --Dungeoneer's Training Dummy
+}
+
 n.badMobsCasts = {
     [330614] = true,
     [330868] = true,
@@ -104,10 +175,40 @@ n.badMobsCasts = {
     [342135] = true,
     [342675] = true,
 
+    -- Торгаст interupt
+    [288210] = true,
+    [294362] = true,
+    [304075] = true,
+    [270248] = true,
+    [270348] = true,
+    [263085] = true,
+    [294526] = true,
+    [298844] = true,
+    [332165] = true,
+    [294517] = true,
+    [296839] = true,
+    [294165] = true,
+    [330118] = true,
+    [258935] = true,
+    [277040] = true,
+    [242391] = true,
+    [330573] = true,
+    -- Торгаст warning
+    [215710] = true,
+    [292903] = true,
+    [270264] = true,
+    [295942] = true,
+    [308026] = true,
+    [330471] = true,
+    [294401] = true,
+    [297020] = true,
+    [335528] = true,
+    [295985] = true,
+
     [346506] = true, --https://ru.wowhead.com/spell=346506
     [330822] = true, --https://ru.wowhead.com/spell=330822
-    [298844] = true, -- Ужасающий вой
-    [242391] = true, -- https://ru.wowhead.com/spell=242391
+    --[298844] = true, -- Ужасающий вой
+    --[242391] = true, -- https://ru.wowhead.com/spell=242391
     [329608] = true, -- ужасающий-рев
 }
 
@@ -280,11 +381,12 @@ n.badMobs = {
 --         [165946] = "ff9883",
 
         -- explosives
-        [120651] = "ff7c01", --"Fel Explosive"
-        [156212] = {1, 0.411765, 0.705882, 1},  --"hotpink", -- Торгаст - Бессердечный посланнник
         --[165342] = {1, 0.411765, 0.705882, 1}, --"hotpink", --" Mawrat"
         --[151353] = {1, 0.411765, 0.705882, 1}, --"hotpink", --" Mawrat"
-        [174773] = {1, 0.411765, 0.705882, 1}, --"hotpink", --" Spiteful"
+        [120651] = "ff7c01", --"Fel Explosive"
+        [156212] = {1, 0.411765, 0.705882, 1},  --"hotpink", -- Торгаст - Бессердечный посланнник
+        [153885] = {1, 0.411765, 0.705882, 1},  --"hotpink", -- Торгаст - Бессердечный посланнник
+        [174773] = {1, 0.411765, 0.705882, 1},  --"hotpink", --" Spiteful"
 }
 
 for id, arg in pairs( n.badMobs) do

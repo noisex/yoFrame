@@ -53,6 +53,7 @@ function Stat:onEvent( event, ...)
 		--print(Event, sourceGUID, name, sourceMask)
 		--8465 = guardian
 
+		--if ( sourceMask == 4369 or sourceMask == 8465 or sourceMask == 1297 ) then
 		if ( sourceMask == 4369 or sourceMask == 8465) and not infoText.petBlacklist[sourceGUID] then infoText:checkPets( sourceGUID)	end
 
 		if sourceGUID == n.myGUID or infoText.pets[sourceGUID] then

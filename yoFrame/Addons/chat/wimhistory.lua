@@ -2,7 +2,7 @@ local addon, ns = ...
 local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
-local yoEF = n.Addons.elements.elemFrames
+local yoEF = n.Addons
 local wim = yoEF.wim
 
 if not wim then return end
@@ -183,7 +183,7 @@ local function CreateHistoryFrame( self)
 				self.userList.buttons[ind].realmName 	= realmName
 				self.userList.buttons[ind].userName 	= userName
 				self.userList.buttons[ind].targetName	= targetName
-				self.userList.buttons[ind].text:SetText( n.allData[realmName][userName].ColorStr .. userName .. "|r/" .. colorLine .. targetName)
+				self.userList.buttons[ind].text:SetText( n.allData.charData[realmName][userName].ColorStr .. userName .. "|r/" .. colorLine .. targetName)
 				self.userList.buttons[ind]:Show()
 				if self.userList.checked == fullName then
 					self.userList.buttons[ind]:LockHighlight();

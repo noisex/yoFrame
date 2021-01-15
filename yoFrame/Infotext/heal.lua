@@ -79,7 +79,7 @@ function Stat:Enable()
 	self.amountTotal 	= 0
 	self.spellInfo		= {}
 	self.spellDamage 	= {}
-	self.displayName 	= "dps"
+	self.displayName 	= "hps"
 
 	self:SetFrameStrata("BACKGROUND")
 	self:SetFrameLevel(3)

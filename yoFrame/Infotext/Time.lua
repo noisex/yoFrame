@@ -47,18 +47,18 @@ function Stat:onEnter()
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", -20, 6)
 	GameTooltip:AddDoubleLine( TIME_PLAYED_MSG, SecondsToClock( GetTime() - n.myLogin))
 
-	if n.allData[n.myRealm][n.myName].PlayedLvl then
-		if n.allData[n.myRealm][n.myName].PlayedLvl < 86400 then
-			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(n.allData[n.myRealm][n.myName].PlayedLvl))
+	if n.allData.myData.PlayedLvl then
+		if n.allData.myData.PlayedLvl < 86400 then
+			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock( n.allData.myData.PlayedLvl))
 		else
-			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock(n.allData[n.myRealm][n.myName].PlayedLvl, true, true))
+			GameTooltip:AddDoubleLine( format( TIME_PLAYED_LEVEL, ""), SecondsToClock( n.allData.myData.PlayedLvl, true, true))
 		end
 
 		GameTooltip:AddLine' '
 		GameTooltip:AddLine( format( TIME_PLAYED_TOTAL, " "))
 
 		local totalPlayed, oneDate = 0
-		for realmName, realm in pairs ( n.allData) do
+		for realmName, realm in pairs ( n.allData.charData) do
 			if type( realm) == "table"  and realmName ~= "editHistory" then
 
 				local tkeys = {}

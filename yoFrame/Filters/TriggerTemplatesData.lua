@@ -4348,6 +4348,8 @@ n.playerBuffListAll= {
 	},
   }
 
+
+
 templates.covenants = {
     [1] = { -- Kyrian
       title = C_Covenants.GetCovenantData(1).name,
@@ -4875,6 +4877,7 @@ templates.items = { -- Тринкеты вида [item ID] = spellID
   [173069]=334058,  [173078]=333734,  [173096]=311444,  [173087]=331624,  [184021]=345319,  [184017]=344384,  [175921]=345228,  [178447]=345231,  [181333]=336126,
 
   [347941]=347941,	[330376] = 330376, [330373]=330373, [330364]=330364, [330363] =330363, [330380]=330380, [330366]=330366, [330367]=330367, [330368] =330368, 	-- Непостижимое квантовое устройство
+  [181359]=336465,  [180117] = 345539,
 }
 
 ------------------------------
@@ -5114,6 +5117,7 @@ itemInfoReceived:SetScript("OnEvent", function( self, event)
 	enrichDatabase();
 	n.templates = templates
 	n.classLegendaries = classLegendaries
+
 
 	loadSpellsTable()
   end

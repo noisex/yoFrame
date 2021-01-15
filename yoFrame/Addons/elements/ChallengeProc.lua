@@ -6,6 +6,7 @@ local next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, U
 	= next, pairs, UnitGUID, strsplit, tonumber, GetInstanceInfo, GameTooltip, UnitFactionGroup, floor, print
 
 local npcVals
+local mult = 10 ^ 2
 --local LOP = n.LIBS.LOP
 
 local function HasTeeming( affixes)
@@ -33,9 +34,8 @@ local function resolve_npc_progress_value(npc_id, is_teeming)
   	local value = nil
 
   	if npcVals and npcVals[npc_id] then
-		for val, count in pairs( npcVals[npc_id]) do
-			value = val
-		end
+  		value = npcVals[npc_id]
+		--for val, count in pairs( npcVals[npc_id]) do value = val end
   	end
 
   	return value
@@ -59,16 +59,22 @@ local function OnEvent( self, event, ...)
 			local value = resolve_npc_progress_value( npcID)
 			if (value ~= nil) then
 
-				local absolute_number = " /|cff00ffff +" .. value .. "%|r"
-				local name, _, _, _, final_value = C_Scenario.GetCriteriaInfo(steps)
+
+				local name, _, _, curValue, final_value = C_Scenario.GetCriteriaInfo(steps)
+
+				local absolute_number= ""
+				if curValue then
+					absolute_number = " /|cffffff00 " .. curValue .. "%"
+				end
+
   				local quantity_percent = (value / final_value) * 100
-  				local mult = 10 ^ 2
   				quantity_percent = floor(quantity_percent * mult + 0.5) / mult
+
   				if (quantity_percent > 100) then
     				quantity_percent = 100
   				end
 
-  				GameTooltip:AddDoubleLine( "yo " .. name .. ":", "|cffffff00+" .. quantity_percent .. "%|r" .. absolute_number, 1, 1, 0, 1, 1, 0)
+  				GameTooltip:AddDoubleLine( name .. ":", "|cff00ffff+" .. quantity_percent .. "%|r" .. absolute_number, 1, 1, 0, 1, 1, 0)
 				GameTooltip:Show()
 			end
 		end
@@ -76,9 +82,11 @@ local function OnEvent( self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-		if _G.MythicPlusTimerDB then
-			npcVals = _G.MythicPlusTimerDB.config.npc_progress
-		end
+		--if _G.MythicPlusTimerDB then
+		--	npcVals = _G.MythicPlusTimerDB.config.npc_progress
+		--else
+			npcVals = n.npcProgress
+		--end
 
 		if not yo.Addons.mythicProcents then
 			self:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")

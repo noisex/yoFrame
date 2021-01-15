@@ -1,6 +1,7 @@
 local addon, ns = ...
 local L, yo, n = unpack( ns)
 
+if not yo.Chat.EnableChat then return end
 -----------------------------------------------------------------------------
 -- Copy Chat (by Shestak)
 -----------------------------------------------------------------------------

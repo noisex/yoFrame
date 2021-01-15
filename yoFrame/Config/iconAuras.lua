@@ -84,7 +84,7 @@ local function BuffOnEnter( self)
 end
 
 --math.mod(number, 2) == 0
-local function checkForFilter( button)
+local function checkFilter( button)
 
 	if button.buffFilter[button.name] then
 
@@ -92,68 +92,118 @@ local function checkForFilter( button)
 		local buffFilter = button.buffFilter[button.name]
 
 		if buffFilter.timer and buffFilter.stack then
-			if ( button.est <= buffFilter.timer) and ( button.countCount >= buffFilter.stack ) then
+			if ( button.est >= 0 and button.est <= buffFilter.timer) and ( button.countCount >= buffFilter.stack ) then
 				checkForShow = true
 			end
-
 		elseif buffFilter.timer then
-			checkForShow = button.est <=buffFilter.timer
-
+			if button.est <= buffFilter.timer and button.est >= 0 then
+				checkForShow = true
+			end
 		elseif buffFilter.stack then
-
 			checkForShow = button.countCount >= buffFilter.stack
 		end
 
-		if button.countGlow then
-			if checkForShow then
-				if not button.glowing then
-					--aGlow.PixelGlow_Start( button, {0.95, 0.95, 0.32, 1}, 7, 0.5, 8, 4, 2, 2, false, 1 )
-					aGlow.PixelGlow_Start( button, { 1, 1, 0, 1}, 7, 0.5, 6, 2, 4, 4, false, 1 )
-					button.glowing = true
-				end
-			else
+		if button.doGlowAnim and checkForShow then
+			if not button.playGlow then
+				--aGlow.PixelGlow_Start( button, {0.95, 0.95, 0.32, 1}, 7, 0.5, 8, 4, 2, 2, false, 1 )
+				aGlow.PixelGlow_Start( button, { 1, 1, 0, 1}, 7, 0.5, 6, 2, 2, 2, false, 1 )
+				button.playGlow = true
+			end
+		else
+			if button.playGlow then
 				aGlow.PixelGlow_Stop( button, 1)
-				button.glowing = false
+				button.playGlow = false
 			end
 		end
 
-		if button.countAnim then
-			if checkForShow then
-				if not button.icon.anim.playing then
-					button.icon.anim:Play()
-					button.icon.anim.playing = true
-				end
-			else
+		if button.doAlhpaAim and checkForShow then
+			if not button.playIconAnim then
+				button.icon.anim:Play()
+				button.playIconAnim = true
+			end
+		else
+			if button.playIconAnim then
 				button.icon.anim:Stop()
-				button.icon.anim.playing = nil;
+				button.playIconAnim = nil
 			end
 		end
 
-		if button.countColor then
-			if checkForShow then
-				if not button.countColor.anim.playing then
-					button.countColor.anim:Play()
-					button.countColor.anim.playing = true
-				end
-			else
-				button.countColor.anim:Stop()
-				button.countColor.anim.playing = nil;
+		if button.doColorAnim and checkForShow then
+			if not button.playColorAnim then
+				button.animeColor.anim:Play()
+				button.playColorAnim = true
 			end
+		elseif button.playColorAnim then
+			button.animeColor.anim:Stop()
+			button.playColorAnim = nil;
 		end
 	else
-		if button.countAnim then
+		if button.playIconAnim then
 			button.icon.anim:Stop()
-			button.icon.anim.playing = nil;
+			button.playIconAnim = nil;
 		end
-		if button.countColor then
-			button.countColor.anim:Stop()
-			button.countColor.anim.playing = nil;
+		if button.playColorAnim then
+			button.animeColor.anim:Stop()
+			button.playColorAnim = nil;
 		end
-		if button.countGlow then
+		if button.playGlow then
 			aGlow.PixelGlow_Stop( button, 1)
-			button.glowing = false
+			button.playGlow = false
 		end
 	end
+end
+
+local function updateTimer( button, el)
+
+	button.tick = button.tick + el
+	if button.tick <= 0.1 then return end
+	button.tick = 0
+
+	button.est = button.expirationTime - GetTime()
+
+	--if button.buffFilter then button.checkFilter( button) end
+	if button.buffTimer then button.checkFilter( button) end
+
+	if button.est <= button.redTimer then
+		button.timer:SetTextColor( button.timerRedCol[1], button.timerRedCol[2], button.timerRedCol[3])
+
+	elseif button.est <= 0 then
+		button:Hide()
+		button:SetScript("OnUpdate", nil)
+		return
+	--else
+	--	button.timer:SetTextColor( 1, 1, 0)
+	end
+
+	if ( button.duration and button.duration > 0) and button.est > 0.1 then
+		if button.est < button.minTimer then
+			button.timer:SetText( button.tFormat( button.est, true)) --formatTime( est))
+		else
+			button.timer:SetText( "")
+		end
+
+	elseif button.duration and button.duration == 0 then
+		button.timer:SetText( "")
+		button:SetScript("OnUpdate", nil)
+	else
+		button.timer:SetText( "")
+		button:Hide()
+		button:SetScript("OnUpdate", nil)
+	end
+end
+
+function n.setIconPosition( parent, button, index)
+	local sizeSh 	= parent:GetHeight() + button.sh
+	local anchor 	= parent.anchor or 'BOTTOMLEFT'
+	local growthx 	= ( parent.direction  == 'LEFT' and -1) or 1
+	local growthy 	= ( parent.directionY == 'DOWN' and -1) or 1
+	local cols 		= parent.inRow or 20  --math.floor(parent:GetWidth() / size + 0.5)
+
+	local col 		= (index - 1) % cols
+	local row 		= floor((index - 1) / cols)
+
+	button:ClearAllPoints()
+	button:SetPoint( anchor, parent, anchor, col * sizeSh * growthx, row * sizeSh * growthy)
 end
 
 function n.createAuraIcon( parent, index)
@@ -166,12 +216,11 @@ function n.createAuraIcon( parent, index)
 	button:SetWidth( size)
 	button:SetHeight( size)
 
+	button.sh 			= sh
+	button.updateTimer	= updateTimer
+	button.checkFilter 	= checkFilter
 	parent.timerPos 	= parent.timerPos or "BOTTOM"
 	button.unit 		= parent.unit
-	button.countGlow 	= parent.countGlow
-	button.buffFilter 	= parent.buffFilter
-	button.countAnim	= parent.countAnim
-	button.countColor	= parent.countColor
 	button.showBorder	= parent.showBorder 	-- по-дефолту = фэлс, что бы рисовать смолстайл
 	button.minTimer 	= button.minTimer or 100
 	button.tFormat 		= parent.timeSecOnly and formatTimeSec or formatTime
@@ -179,6 +228,10 @@ function n.createAuraIcon( parent, index)
 	button.timerDefCol	= parent.timerDefCol or { 1, 1, 0}
 	button.timerRedCol	= parent.timerRedCol or { 1, 0, 0}
 
+	button.buffFilter 	= parent.buffFilter
+	button.doGlowAnim 	= parent.doGlowAnim
+	button.doAlhpaAim	= parent.doAlhpaAim
+	button.doColorAnim	= parent.doColorAnim
 
 	button.icon = button:CreateTexture(nil, "BORDER")
 	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
@@ -211,45 +264,35 @@ function n.createAuraIcon( parent, index)
        button:SetPoint( posz[index][1], parent, posz[index][1], posz[index][2], posz[index][3])
 
  	else
-		local sizeSh 	= size + sh
-		local anchor 	= parent.anchor or 'BOTTOMLEFT'
-		local growthx 	= ( parent.direction  == 'LEFT' and -1) or 1
-		local growthy 	= ( parent.directionY == 'DOWN' and -1) or 1
-		local cols 		= parent.inRow or 20  --math.floor(parent:GetWidth() / size + 0.5)
-
-		local col 		= (index - 1) % cols
-		local row 		= floor((index - 1) / cols)
-
-		button:ClearAllPoints()
-		button:SetPoint( anchor, parent, anchor, col * sizeSh * growthx, row * sizeSh * growthy)
+ 		n.setIconPosition( parent, button, index)
  	end
 
 	if not button.showBorder then
-		CreateStyleSmall( button, max( 1, sh - 5))
+		CreateStyleSmall( button, floor( math.sqrt( size/10) -0 )) --max( 1, sh - 5))
 
 	elseif button.showBorder == "border" then
 		n.CreateBorder( button, size / 3)
 		n.SetBorderColor( button, 0.19, 0.19, 0.19, 0.9)
 	end
 
-	if button.countAnim then
+	--if button.countAnim then
 		SetUpAnimGroup( button.icon, "FlashLoop", 1, 0.2)
 		button.icon.anim.fadein:SetDuration( 1 * .5)
 		button.icon.anim.fadeout:SetDuration( 1)
-	end
+	--end
 
-	if button.countColor then
-		button.countColor = button:CreateTexture(nil, "OVERLAY")
-		button.countColor:SetAllPoints( button)
-		button.countColor:SetTexture( n.texture)  --texhl
-		button.countColor:SetBlendMode("ADD")
-		button.countColor:SetColorTexture( 1, 0, 0, 1) -- SetColorTexture SetVertexColor
-		button.countColor:SetAlpha( 0)
+	--if button.countColor then
+		button.animeColor = button:CreateTexture(nil, "OVERLAY")
+		button.animeColor:SetAllPoints( button)
+		button.animeColor:SetTexture( n.texture)  --texhl
+		button.animeColor:SetBlendMode("ADD")
+		button.animeColor:SetColorTexture( 1, 0, 0, 1) -- SetColorTexture SetVertexColor
+		button.animeColor:SetAlpha( 0)
 
-		SetUpAnimGroup( button.countColor, "FlashLoop", 1, 0)
-		button.countColor.anim.fadein:SetDuration( 1 * .4)
-		button.countColor.anim.fadeout:SetDuration( 1.3)
-	end
+		SetUpAnimGroup( button.animeColor, "FlashLoop", 1, 0)
+		button.animeColor.anim.fadein:SetDuration( 1 * .4)
+		button.animeColor.anim.fadeout:SetDuration( 1.3)
+	--end
 
 	if not parent.hideTooltip then
 		button:EnableMouse(true)
@@ -262,8 +305,6 @@ function n.createAuraIcon( parent, index)
 
 	return parent[index]
 end
-
-
 
 function n.updateAuraIcon(button, filter, icon, count, debuffType, duration, expirationTime, spellID, index, name)
 
@@ -305,42 +346,13 @@ function n.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 		button.count:SetText( "")
 	end
 
-	button:SetScript("OnUpdate", function(self, el)
-		button.tick = button.tick + el
-		if button.tick <= 0.1 then return end
-		button.tick = 0
+	if button.buffFilter and button.buffFilter[name] then
+		button.buffTimer = button.buffFilter[name].timer
+		button.buffStack = button.buffFilter[name].stack
+	end
 
-		button.est = expirationTime - GetTime()
+	if button.buffStack and not button.buffTimer then button.checkFilter( button) end
 
-		if button.buffFilter then checkForFilter( button) end
-
-		if button.est <= button.redTimer then
-			button.timer:SetTextColor( button.timerRedCol[1], button.timerRedCol[2], button.timerRedCol[3])
-
-		elseif button.est <= 0 then
-			button:Hide()
-			self:SetScript("OnUpdate", nil)
-			return
-		--else
-		--	button.timer:SetTextColor( 1, 1, 0)
-		end
-
-		if ( duration and duration > 0) and button.est > 0.1 then
-			if button.est < button.minTimer then
-				button.timer:SetText( button.tFormat( button.est, true)) --formatTime( est))
-			else
-				button.timer:SetText( "")
-			end
-
-		elseif duration and duration == 0 then
-			button.timer:SetText( "")
-			self:SetScript("OnUpdate", nil)
-		else
-			button.timer:SetText( "")
-			button:Hide()
-			self:SetScript("OnUpdate", nil)
-		end
-	end)
-
+	button:SetScript("OnUpdate", button.updateTimer)
 	button:Show()
 end

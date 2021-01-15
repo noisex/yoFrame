@@ -5,5 +5,6 @@
 	<Script file="RaidSpels.lua"/>
 	<Script file="TriggerTemplatesData.lua"/>
 	<Script file="badMobs.lua"/>
+	<Script file="npcCount.lua"/>
 
  </Ui>

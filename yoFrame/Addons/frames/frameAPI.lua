@@ -240,8 +240,8 @@ local function addDebuffHigh( self)
 	self.DebuffHighlightMy:SetAllPoints(self.Health:GetStatusBarTexture())
 	self.DebuffHighlightMy:SetTexture( n.texture)
 	self.DebuffHighlightMy:SetVertexColor(0, 1, 0, 0)
-	--self.DebuffHighlightMy:SetBlendMode("BLEND")
-	self.DebuffHighlightMyAlpha = 0.5
+	--self.DebuffHighlightMy:SetBlendMode("ADD")
+	self.DebuffHighlightMyAlpha = 0.4
 	self.DebuffHighlightMyFilter = yo.Raid.filterHighLight
 end
 

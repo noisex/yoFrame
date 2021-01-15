@@ -442,19 +442,20 @@ local function OnEvent( self, event, name, sender, ...)
 		_G.WeeklyRewardsFrame:SetScale(0.8)
 
 	elseif name == "Blizzard_GarrisonUI" then
-		local missionComplete 	= _G.CovenantMissionFrame.MissionComplete
-		local butonContinue 	= _G.CovenantMissionFrame.MissionComplete.CompleteFrame.ContinueButton
-		local buttonComplete 	= _G.CovenantMissionFrame.MissionComplete.RewardsScreen.FinalRewardsPanel.ContinueButton
+		if yo.Addons.AutoCovenantsMission then
+			local missionComplete 	= _G.CovenantMissionFrame.MissionComplete
+			local butonContinue 	= _G.CovenantMissionFrame.MissionComplete.CompleteFrame.ContinueButton
+			local buttonComplete 	= _G.CovenantMissionFrame.MissionComplete.RewardsScreen.FinalRewardsPanel.ContinueButton
 
-		butonContinue:HookScript("OnShow", function(self, ...)
-			--C_Timer.After( 0.2, function() 	_G.CovenantMissionFrame.MissionComplete:AdvanceStage() end) end)
-			--print( missionComplete.autoCombatResult)
-			C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end)
-		end)
+			butonContinue:HookScript("OnShow", function(self, ...)
+				--C_Timer.After( 0.2, function() 	_G.CovenantMissionFrame.MissionComplete:AdvanceStage() end) end)
+				--print( missionComplete.autoCombatResult)
+				C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end)
+			end)
 
-		--buttonComplete:HookScript("OnShow", function(self, ...)
-		--	C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end) end)
-
+			--buttonComplete:HookScript("OnShow", function(self, ...)
+			--	C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end) end)
+		end
 	end
 end
 

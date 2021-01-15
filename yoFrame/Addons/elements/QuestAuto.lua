@@ -206,17 +206,24 @@ local function OnEvent( self, event, ...)
 			local bestString, bestChoice, bestDelta = "", 1, -9999
 
 			for i=1, GetNumQuestChoices() do
-				local _, _, itemRarity, _, _, _, _, _, itemEquipLoc = GetItemInfo(GetQuestItemLink("choice", i))
-				local _, _, _, hexColor = GetItemQualityColor(itemRarity)
-
 				local itemLink = GetQuestItemLink("choice", i)
-				local clvl = GetDetailedItemLevelInfo( itemLink)
-				local azeritItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
+				--print(itemLink)
 
-				if ignorTypes[itemEquipLoc] == true or azeritItem then
+				if not itemLink then
 					print( L["MAKE_CHOICE"])
 					return
 				end
+
+				local _, _, itemRarity, _, _, _, _, _, itemEquipLoc, _, _, classID = GetItemInfo( itemLink)
+
+				if classID  ~= LE_ITEM_CLASS_ARMOR then 				--if ignorTypes[itemEquipLoc] == true then
+					print( L["MAKE_CHOICE"])
+					return
+				end
+
+				local _, _, _, hexColor = GetItemQualityColor(itemRarity)
+				local clvl = GetDetailedItemLevelInfo( itemLink)
+				--local azeritItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
 
 				if WeaponTypes[itemEquipLoc] == true then
 					slvl = CheckSlot( "INVTYPE_MYWEAPON")
@@ -233,8 +240,8 @@ local function OnEvent( self, event, ...)
 					end
 				end
 			end
-				print( bestString)
-				GetQuestReward( bestChoice)
+			print( bestString)
+			GetQuestReward( bestChoice)
 		else
 			GetQuestReward( 1)
 		end

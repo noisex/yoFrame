@@ -3,7 +3,7 @@ local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
 local _G = _G
-local yoEF = n.Addons.elements.elemFrames
+local yoEF = n.Addons
 local minAlpha 	= 1
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
@@ -547,6 +547,8 @@ local function OnEvent( self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		if not yo.Chat.wim then return end
+
+		SetCVar(  "whisperMode", "inline")
 
 		self:RegisterEvent("CHAT_MSG_WHISPER")
 		self:RegisterEvent("CHAT_MSG_BN_WHISPER")

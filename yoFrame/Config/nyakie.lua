@@ -14,7 +14,6 @@ n.Addons.elements 	= {}
 n.Addons.elements.statusBars 	= {}
 n.Addons.elements.strings		= {}
 n.Addons.elements.shadows		= {}
-n.Addons.elements.elemFrames	= {}
 
 n.talkingHead 	= yo_talkingHead
 
@@ -65,6 +64,9 @@ n.slots = {
 	"LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot"
 }
 
+n.conFuncs = {}
+--n.conFuncs.Texture = func -- прописываем в модулях по строке
+
 n.dummy = function() return end
 n.conFunc = function( var, ...)
 	if n.conFuncs[var] then
@@ -81,7 +83,9 @@ n.updateConfigData = function( db)
 end
 
 n.IsSoloFree = function ( ... )
-  --local instanceType = select( 2, GetInstanceInfo())
+
+  local instanceType = select( 2, GetInstanceInfo())
+  if instanceType ~= "none" then return false end
 
   if 	  UnitExists("party1") or UnitExists("raid1") then return false
   elseif  UnitInParty("player") then return false
@@ -95,10 +99,7 @@ end
 n.noReboot = {
 	"texture", "fontsize", "sysfontsize", "AutoScale", "ScaleRate", "scriptErrors",
 	"countLeft", "countRight", "left1", "left2", "left3", "left4", "left5", "left6", "right1", "right2", "right3", "right4", "right5", "right6",
-}
-
-n.conFuncs = {
-	--["texture"] =
+	"fligerBuffCount", "fligerBuffSpell",
 }
 
 -- БЛы в ПОтатосе

@@ -23,7 +23,7 @@ raid_CD_Spells = {
     [6552]   = 15, --Pummel
     [171140] = 24, --Shadow прист
 	[171138] = 24, --Shadow прист if used from pet bar
-	--[119910] = 24, -- warloc new pet
+	[119910] = 24, -- warloc new pet
 	[19647]	 = 24, -- Запрет чар
 
 	--[46968]  = 40, 	-- shockwave

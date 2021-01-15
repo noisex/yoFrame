@@ -1,9 +1,12 @@
 local L, yo, n = unpack( select( 2, ...))
 
-if not yo.fliger.enable then return end
+--if not yo.fliger.enable then return end
 
 local _G = _G
 local lib = n.LIBS.LibCooldown
+
+local fliger = CreateFrame( "Frame", "yo_Fliger", UIParent)
+n.Addons.fliger = fliger
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -16,54 +19,33 @@ local UnitAura, GetItemInfo, GetSpellInfo, GetSpecialization, print, CreateFrame
 ------------------------------------------------------------------------------------------------------------
 n.playerProcWhiteList = {}
 n.targetDebuffList = {}
+n.filgerBuffSpells = {}
+local icons = {}
 
-n.filgerBuffSpells = {
---	--[205473] 	= 5,
-}
-local pStr = "Дано: |cffffff00%s,|r А получилось: |cff00ffff%s|r >= |cff00ffff%d|r стаков"
-local pStrErr = "Дано: |cffff0000%s,|r А получилось: |cffff0000%s|r >= |cffff0000%d|r стаков"
+--local pStr = "Дано: |cffffff00%s,|r А получилось: |cff00ffff%s|r >= |cff00ffff%d|r стаков"
+--local pStrErr = "Дано: |cffff0000%s,|r А получилось: |cffff0000%s|r >= |cffff0000%d|r стаков"
 
 local function checkAnimeSpells()
-	local atemp = {}
-	--for buffCount in gmatch( yo.fliger.fligerBuffCount, "(%d+)" ) do
-	--	print( yo.fliger.fligerBuffCount:find( "t"), yo.fliger.fligerBuffCount)
-	--	if yo.fliger.fligerBuffCount:find( "t") then
-	--		tinsert( atemp, { timer = tonumber(buffCount)})
-	--	else
-	--		tinsert( atemp, { stack = (tonumber(buffCount) or 1)})
-	--	end
-	--end
-	local str = gsub( yo.fliger.fligerBuffCount, "\n", ",")  	-- чистим перенос строки
-	for buffCount in gmatch( str, "%s*(%P+)" ) do   			-- без пробелов впереди по знакам препинания
-    	buffCount = gsub( buffCount, "%s+$", "" ) 				-- чистим пробелы сзади
+	wipe( n.filgerBuffSpells)
 
-    	if buffCount:find( "t") or buffCount:find( "т") then
-			tinsert( atemp, { timer = tonumber( string.match( buffCount, "(%d+)" )) or 5})
-		else
-			tinsert( atemp, { stack = ( tonumber( string.match( buffCount, "(%d+)" )) or 1)})
-		end
-    end
+	local str = 	gsub( yo.fliger.fligerBuffCount, "\n", ";") -- чистим перенос строки
+	local buffStr = { strsplit( ";", str) }
 
 	local str = gsub( yo.fliger.fligerBuffSpell, "\n", ",")  	-- чистим перенос строки
 	local index = 1
 	for spellName in gmatch( str, "%s*(%P+)" ) do   			-- без пробелов впереди по знакам препинания
     	spellName = gsub( spellName, "%s+$", "" ) 				-- чистим пробелы сзади
     	--local spellName = select( 1, GetSpellInfo( buffSpell))
-    	local spellCount = atemp[index]
+    	local spellCount = buffStr[index]
 
-    	if spellName and spellCount then --and not n.filgerBuffSpells[spellName]
-    		n.filgerBuffSpells[spellName] = n.filgerBuffSpells[spellName] or {}
+    	if spellName and spellCount then
 
-    		if spellCount.timer then 		n.filgerBuffSpells[spellName].timer = spellCount.timer
-    		elseif spellCount.stack then 	n.filgerBuffSpells[spellName].stack = spellCount.stack
-    		end
-    		--if yo.fliger.fligerShowHint then
-    		--	print( format( pStr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
-    		--end
-    	--else
-    	--	if yo.fliger.fligerShowHint then
-    	--		print( format( pStrErr, buffSpell or "Error", spellName or "Error", atemp[index]) or 0)--n.filgerBuffSpells
-    	--	end
+    		local spellTimer = spellCount:find( "t") and tonumber( match( spellCount, "t(%d+)")) or nil
+    		local spellStack = spellCount:find( "s") and tonumber( match( spellCount, "s(%d+)")) or nil
+
+    		n.filgerBuffSpells[spellName] 		= n.filgerBuffSpells[spellName] or {}
+    		n.filgerBuffSpells[spellName].timer = spellTimer and spellTimer or nil
+    		n.filgerBuffSpells[spellName].stack = spellStack and spellStack or nil
     	end
 
     	index = index + 1
@@ -83,7 +65,7 @@ local function UpdateAura( self, unit)
 		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
 		if not name then break end
 
-		if yo.fliger.tDebuffEnable then
+		if self.tDebuff then
 			if unit == self.tDebuff.unit and caster == "player"	and n.targetDebuffList then -- n.DebuffWhiteList[name] then
 				--if not self.tDebuff[fligerTD] then self.tDebuff[fligerTD] = n.createAuraIcon( self.tDebuff, fligerTD) end
 
@@ -92,7 +74,7 @@ local function UpdateAura( self, unit)
 			end
 		end
 
-		if yo.fliger.pDebuffEnable then
+		if self.pDebuff then
 			if unit == self.pDebuff.unit and not n.blackSpells[spellID] then
 			--if unit == self.pDebuff.unit and n.RaidDebuffList[spellID] then
 				--if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = n.createAuraIcon( self.pDebuff, fligerPD) end
@@ -111,21 +93,21 @@ local function UpdateAura( self, unit)
 		local name, icon, count, _, duration, expirationTime, caster, _, _, spellID = UnitAura( unit, index, filter)
 		if not name then break end
 
-		if yo.fliger.tDebuffEnable then
+		if self.tDebuff then
 			if unit == self.tDebuff.unit and caster == "player" and n.BuffWhiteList[name] then
 				n.updateAuraIcon( n.createAuraIcon( self.tDebuff, fligerTD), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerTD = fligerTD + 1
 			end
 		end
 
-		if yo.fliger.pBuffEnable then
+		if self.pBuff then
 			if unit == self.pBuff.unit and n.playerBuffList[name] then
 				n.updateAuraIcon( n.createAuraIcon( self.pBuff, fligerPB), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerPB = fligerPB + 1
 			end
 		end
 
-		if yo.fliger.pProcEnable then
+		if self.pProc then
 			if unit == self.pProc.unit and n.playerProcWhiteList[spellID] then
 				n.updateAuraIcon( n.createAuraIcon( self.pProc, fligerProc), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerProc = fligerProc + 1
@@ -147,31 +129,43 @@ local function UpdateAura( self, unit)
 end
 
 local function UpdatePCD( watched)
-	local frame = _G["yo_Fliger"]
 	local fligerPCD = 1
-	local icon
 
 	--if watched then tprint(watched) end
 
 	for id, val in pairs( watched) do
-		local starttime = val.start
-		local duration = val.duration
-		local class = val.class
-		local expirationTime = starttime + duration
+		local starttime 	= val.start
+		local duration 		= val.duration
+		local class 		= val.class
+		local expirationTime= starttime + duration
+
 		if class == "item" then
-			icon = select( 10, GetItemInfo( id))
+			icons[id] = icons[id] or select( 10, GetItemInfo( id))
 		else
-			icon = select( 3, GetSpellInfo( id))
+			icons[id] = icons[id] or select( 3, GetSpellInfo( id))
 		end
+
 		if starttime ~= 0 and duration  >= yo.fliger.pCDTimer then
-			--print(id, val.start, val.duration)
-			--if not frame.pCD[fligerPCD] then frame.pCD[fligerPCD] = n.createAuraIcon( frame.pCD, fligerPCD)end
-			n.updateAuraIcon( n.createAuraIcon( frame.pCD, fligerPCD), "HELPFUL", icon, 0, nil, duration, expirationTime, id, fligerPCD)
+			n.updateAuraIcon( n.createAuraIcon( fliger.pCD, fligerPCD), "HELPFUL", icons[id], 0, nil, duration, expirationTime, id, fligerPCD)
 			fligerPCD = fligerPCD + 1
 		end
 	end
 
-	if frame.pCD then for index = fligerPCD,	#frame.pCD	do frame.pCD[index]:Hide() end end
+	if fliger.pCD then for index = fligerPCD,	#fliger.pCD	do fliger.pCD[index]:Hide() end end
+end
+
+local function setIcons( self)
+	for index, icon in ipairs( self) do
+		icon.buffFilter = n.filgerBuffSpells
+		icon.doGlowAnim 	= yo.fliger.fligerBuffGlow
+		icon.doAlhpaAim 	= yo.fliger.fligerBuffAnim
+		icon.doColorAnim	= yo.fliger.fligerBuffColr
+		icon:SetSize( self:GetSize())
+		n.setIconPosition( self, icon, index)
+	end
+end
+
+local function clearIcons( self)
 end
 
 local function MakeFligerFrame( self)
@@ -183,47 +177,56 @@ local function MakeFligerFrame( self)
 
 	if yo.fliger.tDebuffEnable then
 		n.moveCreateAnchor("T_DEBUFF",			"Target Debuff/Buff ", 		tdebuffSize, tdebuffSize,	300, 	0, 		"CENTER", "CENTER")
-		local tDebuff = CreateFrame("Frame", nil, self)
+		local tDebuff = self.tDebuff or CreateFrame("Frame", nil, self)
+		tDebuff:ClearAllPoints()
 		tDebuff:SetPoint("CENTER", T_DEBUFF, "CENTER",  0, 0)
 		tDebuff:SetWidth( tdebuffSize)
 		tDebuff:SetHeight( tdebuffSize)
 		tDebuff.direction 	= yo.fliger.tDebuffDirect
 		tDebuff.unit 		= "target"
 		tDebuff.buffFilter 	= n.filgerBuffSpells
-		tDebuff.countGlow 	= yo.fliger.fligerBuffGlow
-		tDebuff.countAnim 	= yo.fliger.fligerBuffAnim
-		tDebuff.countColor	= yo.fliger.fligerBuffColr
+		tDebuff.doGlowAnim 	= yo.fliger.fligerBuffGlow
+		tDebuff.doAlhpaAim 	= yo.fliger.fligerBuffAnim
+		tDebuff.doColorAnim	= yo.fliger.fligerBuffColr
 		self.tDebuff 		= tDebuff
+		setIcons( self.tDebuff)
+	else
+		self.tDebuff = nil
+		clearIcons( self.tDebuff)
 	end
 
 	if yo.fliger.pProcEnable then
 		n.moveCreateAnchor("P_PROC", 				"Player Trinkets Procs", 	pProcSize, pProcSize,	-300, 	-50, 	"CENTER", "CENTER")
-		local pProc = CreateFrame("Frame", nil, self)
+		local pProc = self.pProc or CreateFrame("Frame", nil, self)
+		pProc:ClearAllPoints()
 		pProc:SetPoint("CENTER", P_PROC, "CENTER",  0, 0)
 		pProc:SetWidth( pProcSize)
 		pProc:SetHeight( pProcSize)
 		pProc.direction 	= yo.fliger.pProcDirect
 		pProc.unit 			= "player"
-		pProc.countGlow 	= yo.fliger.fligerBuffGlow
-		pProc.countAnim 	= yo.fliger.fligerBuffAnim
-		pProc.countColor	= yo.fliger.fligerBuffColr
+		pProc.doGlowAnim 	= yo.fliger.fligerBuffGlow
+		pProc.doAlhpaAim 	= yo.fliger.fligerBuffAnim
+		pProc.doColorAnim	= yo.fliger.fligerBuffColr
 		pProc.showBorder	= nil--"border"
 		pProc.buffFilter 	= n.filgerBuffSpells
 		self.pProc 			= pProc
+	else
+		self.pProc = nil
 	end
 
 	if yo.fliger.pBuffEnable then
 		n.moveCreateAnchor("P_BUFF", 	"Player Buff", 				pbuffSize, pbuffSize,	-300, 	50, 		"CENTER", "CENTER")
-		local pBuff = CreateFrame("Frame", nil, self)
+		local pBuff = self.pBuff or CreateFrame("Frame", nil, self)
+		pBuff:ClearAllPoints()
 		pBuff:SetPoint("CENTER", P_BUFF, "CENTER",  0, 0)
 		pBuff:SetWidth( pbuffSize)
 		pBuff:SetHeight( pbuffSize)
 		pBuff.direction 	= yo.fliger.pBuffDirect
 		pBuff.hideTooltip	= true
 		pBuff.unit 			= "player"
-		pBuff.countGlow 	= yo.fliger.fligerBuffGlow
-		pBuff.countAnim 	= yo.fliger.fligerBuffAnim
-		pBuff.countColor	= yo.fliger.fligerBuffColr
+		pBuff.doGlowAnim 	= yo.fliger.fligerBuffGlow
+		pBuff.doAlhpaAim 	= yo.fliger.fligerBuffAnim
+		pBuff.doColorAnim	= yo.fliger.fligerBuffColr
 		pBuff.showBorder	= nil--"border"
 		pBuff.buffFilter 	= n.filgerBuffSpells
 		self.pBuff 			= pBuff
@@ -231,7 +234,8 @@ local function MakeFligerFrame( self)
 
 	if yo.fliger.pDebuffEnable then
 		n.moveCreateAnchor("P_DEBUFF",	"Player Debuff",			pdebuffSize,	pdebuffSize,-300, 	150, 	"CENTER", "CENTER")
-		local pDebuff = CreateFrame("Frame", nil, self)
+		local pDebuff = self.pDebuff or CreateFrame("Frame", nil, self)
+		pDebuff:ClearAllPoints()
 		pDebuff:SetPoint("CENTER", P_DEBUFF, "CENTER",  0, 0)
 		pDebuff:SetWidth( pdebuffSize)
 		pDebuff:SetHeight( pdebuffSize)
@@ -242,7 +246,8 @@ local function MakeFligerFrame( self)
 
 	if yo.fliger.pCDEnable then
 		n.moveCreateAnchor("P_CD", 				"Players Cooldowns",		cdSize,	cdSize,	20, 	0, 		"TOPLEFT", "TOPRIGHT", n.infoTexts.LeftDataPanel)
-		local pCD = CreateFrame("Frame", nil, self)
+		local pCD = self.pCD or CreateFrame("Frame", nil, self)
+		pCD:ClearAllPoints()
 		pCD:SetPoint("CENTER", P_CD, "CENTER",  0, 0)
 		pCD:SetWidth( cdSize)
 		pCD:SetHeight( cdSize)
@@ -253,7 +258,7 @@ local function MakeFligerFrame( self)
 	end
 end
 
-local function CheckClassTemplates( myClass, mySpec)
+local function checkClassTemplates( myClass, mySpec)
 
 	if mySpec == 5 then return 	end
 
@@ -287,7 +292,7 @@ local function CheckClassTemplates( myClass, mySpec)
 end
 
 
-local function CheckTemplates( myClass, mySpec)
+local function checkTemplates( myClass, mySpec)
 
 	for i, v in pairs( n.templates.items)    			do n.playerProcWhiteList[v] 	  = true end
 	for i, v in pairs( n.generalLegendaries) 			do n.playerProcWhiteList[v.spell] = true end
@@ -309,19 +314,21 @@ local function CheckTemplates( myClass, mySpec)
 			end
 		end
 
-		wipe( n.templates.covenants)
+		--wipe( n.templates.covenants)
 	end
 
-	CheckClassTemplates( n.myClass, n.mySpec)
+	checkClassTemplates( n.myClass, n.mySpec)
 end
 
+function fliger:updateAllOption()
+	if yo.fliger.enable then
 
-local function OnEvent( self, event, ...)
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		self:SetFrameStrata("BACKGROUND")
+		self:SetFrameLevel( 0)
 
 		MakeFligerFrame( self)
-		CheckTemplates( n.myClass, GetSpecialization())
+
+		checkTemplates( n.myClass, GetSpecialization())
 		checkAnimeSpells()
 
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -329,9 +336,28 @@ local function OnEvent( self, event, ...)
 		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 		if yo.fliger.pCDEnable then
-			lib:RegisterCallback("start", function( id, duration, class, watched) UpdatePCD( watched) end)
+			lib:RegisterCallback("start", function(id, class, watched) UpdatePCD( watched) end)
 			lib:RegisterCallback("stop", function(id, class, watched) UpdatePCD( watched) end)
 		end
+
+		fliger.checkAnimeSpells 	= checkAnimeSpells
+		n.conFuncs.fligerBuffCount 	= n.Addons.fliger.checkAnimeSpells
+		n.conFuncs.fligerBuffSpell 	= n.Addons.fliger.checkAnimeSpells
+	else
+		self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+		self:UnregisterEvent("UNIT_AURA")
+		self:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+
+		lib:RegisterCallback("start", nil)
+		lib:RegisterCallback("stop", nil)
+	end
+end
+
+local function onEvent( self, event, ...)
+
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		self:updateAllOption()
 
 	elseif event == "UNIT_AURA" then
 		UpdateAura( self, ...)
@@ -339,14 +365,9 @@ local function OnEvent( self, event, ...)
 		UpdateAura( self, "target")
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		n.mySpec = GetSpecialization()
-		CheckClassTemplates( n.myClass, n.mySpec)
+		checkClassTemplates( n.myClass, n.mySpec)
 	end
 end
 
-local Fliger = CreateFrame("Frame", "yo_Fliger", UIParent)
---fliger:SetFrameStrata("BACKGROUND")
-Fliger:SetFrameLevel( 0)
-Fliger:RegisterEvent("PLAYER_ENTERING_WORLD")
-Fliger:SetScript("OnEvent", OnEvent)
-
---n.moveCreateAnchor("SPECIAL_P_BUFF_ICON_Anchor", "SPECIAL_P_BUFF",	C["filger"].buffs_size, C["filger"].buffs_size,			-300, -50, "CENTER", "CENTER")
+fliger:RegisterEvent("PLAYER_ENTERING_WORLD")
+fliger:SetScript("OnEvent", onEvent)

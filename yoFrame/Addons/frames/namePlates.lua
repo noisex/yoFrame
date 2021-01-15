@@ -10,8 +10,8 @@ local np = n.namePlates
 
 local _G = _G
 
-local CreateStyle, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
-	= CreateStyle, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture
+local CreateStyle, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture, GameTooltip, GetSpellInfo
+	= CreateStyle, C_NamePlate, ShortValue, DebuffTypeColor, tinsert, SetRaidTargetIconTexture, GameTooltip, GetSpellInfo
 
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
@@ -39,6 +39,8 @@ local classDispell		= yo.NamePlates.classDispell
 local showToolTip		= yo.NamePlates.showToolTip
 
 local auraFilter = { "HARMFUL", "HELPFUL"}
+local tempSpells = {}
+--local tc = n.Addons.elements.torgastClicks.CELLS
 
 --glowColor, glowN, glowLength, glowBadStart, glowBadStop
 
@@ -108,6 +110,13 @@ if yo.Media.classBorder then
 	br, bg, bb = n.myColor.r, n.myColor.g, n.myColor.b
 end
 DebuffTypeColor.none = { r = br, g = bg, b = bb}
+
+local function OnLeave( self) GameTooltip:Hide() end
+local function OnEnter( self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 5)
+	GameTooltip:SetHyperlink( "spell:" .. self.id)
+	GameTooltip:Show()
+end
 
 local function updateMarks( self)
 	local index = GetRaidTargetIndex( self.unit)
@@ -300,6 +309,17 @@ local function updateName( self)
 			--self.Health.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.9)
 		end
 
+		if mobID and n.animainfoNPC[mobID] and ( n.namePlates.CELLS and n.namePlates.CELLS > 0 ) then
+			local spellID 	= n.animainfoNPC[mobID]
+            local icon 		= tempSpells[spellID] or select( 3, GetSpellInfo( spellID))
+
+            self.anima.id 	= spellID
+			self.animaIcon:SetTexture( icon)
+			self.anima:Show()
+		else
+			self.anima:Hide()
+		end
+
 		--if 	--UnitClass( self.unit)
 		--	UnitIsPlayer( self.unit) or eTeam[mobID] 	then
 
@@ -344,7 +364,7 @@ local function updateHealthColor(self, elapsed)
 		cols = { .6, .6, .6}
 
 	elseif UnitPlayerControlled( unit) then 											-- юнит-игрок / цвет класса
-		cols = oUF.colors.class[ select( 2, UnitClass( unit))]
+		cols = oUF.colors.class[ select( 2, UnitClass( unit))] or { .6, .6, .6}
 		fader = yo.Raid.fadeColor - 0.2
 		--self.castBar.spark:Hide()														-- прячем спарку на икроках
 
@@ -378,7 +398,7 @@ local function updateHealthColor(self, elapsed)
 		cols = treatColor.badGood
 
 	else 	--if UnitReaction( unit, 'player') then  --or UnitPlayerControlled( unit) then
-		cols = oUF.colors.reaction[UnitReaction( unit, "player")]						-- цвет реакшн
+		cols = oUF.colors.reaction[UnitReaction( unit, "player")]	or { .6, .6, .6}					-- цвет реакшн
 	end
 
 	self.threat:SetText( treatText)
@@ -575,8 +595,9 @@ local function createNP(self, unit)
 	self.debuffIcons:SetWidth( nameplatewidth / 2)
 	self.debuffIcons:SetHeight( auras_size)
 	self.debuffIcons:SetFrameLevel(self:GetFrameLevel() + 20)
-	self.debuffIcons.direction 	= "RIGHT"
-	self.debuffIcons.inRow  	= 3
+	self.debuffIcons.direction 	 = "RIGHT"
+	self.debuffIcons.hideTooltip = true
+	self.debuffIcons.inRow  	 = 3
 
 	self.buffIcons = CreateFrame("Frame", nil, self)
 	self.buffIcons:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT",  0, 15)
@@ -599,6 +620,19 @@ local function createNP(self, unit)
 	self.questIcon:SetPoint("RIGHT", self.Health, "LEFT", -2, 0)
 	self.questIcon:SetSize( 18, 18)
 	self.questIcon:Hide()
+
+	self.anima = CreateFrame("Button", nil, self.Health)
+	self.anima:SetPoint("BOTTOM", self.Health, "TOP", 0, 15)
+	self.anima:SetSize( 25, 25)
+	self.anima:createStyle( 2)
+	self.anima:EnableMouse( true)
+	self.anima:SetScript("OnLeave", OnLeave)
+	self.anima:SetScript("OnEnter", OnEnter)
+	self.anima:Hide()
+
+	self.animaIcon = self.anima:CreateTexture(nil, "OVERLAY")
+	self.animaIcon:SetAllPoints()
+	self.animaIcon:SetTexCoord( unpack( n.tCoord))
 
 	n.createCastBarNP( self)
 

@@ -65,15 +65,15 @@ local function start(id, starttime, duration, class, rduration)
 	update()
 
 	watched[id] = {
-		["start"] = starttime,
-		["dur"] = duration,
-		["class"] = class,
-		["duration"] = rduration
+		["start"] 	= starttime,
+		["dur"] 	= duration,
+		["class"] 	= class,
+		["duration"]= rduration
 	}
 	addon:Show()
 
 	for _, func in next, lib.startcalls do
-		func(id, duration, class, watched)
+		func(id, class, watched)
 	end
 
 	update()

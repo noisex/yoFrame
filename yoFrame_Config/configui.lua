@@ -18,8 +18,8 @@ local needReload = false
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar
-	= strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar
+local strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar, UnitClass, wipe
+	= strjoin, ReloadUI, PlaySound, print, UnitName, GetRealmName, HideUIPanel, CreateFrame, CopyTable, SetCVar, UnitClass, wipe
 
 local db, yo, n
 local aConf = {}
@@ -40,16 +40,17 @@ LSM:Register("statusbar", "yo Bar 07", 		"Interface\\AddOns\\yoFrame\\Media\\bar
 LSM:Register("statusbar", "yo Bar 17", 		"Interface\\AddOns\\yoFrame\\Media\\bar17")
 LSM:Register("statusbar", "yo Neal", 		"Interface\\AddOns\\yoFrame\\Media\\Neal")
 
-LSM:Register("sound", "Tick 01", 	"Interface\\Addons\\yoFrame\\Media\\Bip.ogg")
-LSM:Register("sound", "Tick 02", 	"Interface\\Addons\\yoFrame\\Media\\CSDroplet.ogg")
-LSM:Register("sound", "Applause", 	"Interface\\Addons\\yoFrame\\Media\\Applause.ogg")
-LSM:Register("sound", "Shotgun", 	"Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg")
-LSM:Register("sound", "Wisper", 	"Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
-LSM:Register("sound", "Murloc", 	"Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
+LSM:Register("sound", "Tick 01", 			"Interface\\Addons\\yoFrame\\Media\\Bip.ogg")
+LSM:Register("sound", "Tick 02", 			"Interface\\Addons\\yoFrame\\Media\\CSDroplet.ogg")
+LSM:Register("sound", "Applause", 			"Interface\\Addons\\yoFrame\\Media\\Applause.ogg")
+LSM:Register("sound", "Shotgun", 			"Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg")
+LSM:Register("sound", "Wisper", 			"Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
+LSM:Register("sound", "Murloc", 			"Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
 
-LSM:Register("font", "yoMagistral", "Interface\\Addons\\yoFrame\\Media\\qFont.ttf", 130)
-LSM:Register("font", "yoSansNarrow","Interface\\Addons\\yoFrame\\Media\\qSans.ttf", 130)
-LSM:Register("font", "yoPixelFont", "Interface\\AddOns\\yoFrame\\Media\\pxFont.ttf", 130)
+LSM:Register("font", "yoMagistral", 		"Interface\\AddOns\\yoFrame\\Media\\qFont.ttf", 130)
+LSM:Register("font", "yoSansNarrow",		"Interface\\AddOns\\yoFrame\\Media\\qSans.ttf", 130)
+LSM:Register("font", "yoPixelFont", 		"Interface\\AddOns\\yoFrame\\Media\\pxFont.ttf", 130)
+LSM:Register("font", "yoCormac", 			"Interface\\AddOns\\yoFrame\\Media\\cormac.ttf", 130)
 
 local function checkToReboot( var, ...)
 	local noReboot
@@ -140,16 +141,11 @@ local function InitOptions()
 				order = 10,
 				args = {
 					PersonalConfig = {
-						order = 1, type = "toggle", width = "full",	name = function(info) return tr( info[#info]) end,
-						desc = L["PERSONAL_DESC"],	descStyle = "inline",
+						order = 1, type = "toggle", width = "full",	name = function(info) return tr( info[#info]) end,  desc = L["PERSONAL_DESC"],	descStyle = "inline",
 						get = function(info) return n.allData.personalProfiles end,
-						set = function(info,val) n.allData.personalProfiles = val
-							--StaticPopup_Show ("CONFIRM_PERSONAL")
-							checkToReboot( val)
-						end,	},
+						set = function(info,val) n.allData.personalProfiles = val checkToReboot( val) end,	},
 					scriptErrors= {
-						name = function(info) return tr( info[#info]) end,
-						order = 9, type = "toggle",
+						name = function(info) return tr( info[#info]) end, order = 9, type = "toggle",
 						get = function(info) return yo["General"][info[#info]] end, width = "full",
 						set = function(info,val) Setlers( "General#" .. info[#info], val) end,	},
 			        ChangeSystemFonts = {
@@ -157,24 +153,17 @@ local function InitOptions()
 						get = function(info) return yo["Addons"][info[#info]] end,
 						set = function(info,val) Setlers( "Addons#" .. info[#info], val) end, 	},
 			        sysfontsize = {
-			        	order = 11,	type = "range", name = function(info) return tr( info[#info]) end,
-						desc = L["SYSFONT_DESC"], min = 9, max = 16, step = 1, width = "full",
+			        	order = 11,	type = "range", name = function(info) return tr( info[#info]) end, 	desc = L["SYSFONT_DESC"], min = 9, max = 16, step = 1, width = "full",
 						disabled = function() return not yo["Addons"].ChangeSystemFonts; end,
 						get = function(info) return yo["Media"].sysfontsize end,
 						set = function(info,val) Setlers( "Media#sysfontsize", val) ChangeSystemFonts( val) end,},
 			        fontsize = {
-			   			name = function(info) return tr( info[#info]) end,
-						order = 15,	type = "range",
-						desc = L["DEFAULT"] .. 10,
-						min = 9, max = 16, step = 1, width = "full",
+			   			name = L["fontSizeAddon"], order = 15,	type = "range", desc = L["DEFAULT"] .. 10, min = 9, max = 16, step = 1, width = "full",
 						get = function(info) return yo.Media.fontsize end,
 						set = function(info,val) Setlers( "Media#fontsize", val, yo.Media.fontsize) end,},
 						--UpdateStrings( val, yo.Media.fontsize)
 					texture = {
-						name = function(info) return tr( info[#info]) end,
-						order = 30,	type = "select",	width = "full",
-						--dialogControl = "LSM30_Sound", --values = LSM:HashTable("sound"),
-						dialogControl = "LSM30_Statusbar",	values = LSM:HashTable("statusbar"),
+						name = function(info) return tr( info[#info]) end, order = 30,	type = "select",	width = "full", dialogControl = "LSM30_Statusbar",	values = LSM:HashTable("statusbar"),
 						get = function(info)
 							for k, val in pairs( LSM:List("statusbar")) do
 								if yo["Media"][info[#info]] == LSM:Fetch("statusbar", val) then return val end
@@ -182,14 +171,11 @@ local function InitOptions()
 						set = function(info, val) Setlers( "Media#" .. info[#info], LSM:Fetch("statusbar", val)) end,},
 
 					AutoScale = {
-						name = function(info) return tr( info[#info]) end, 	order = 40, type = "select",
-						values = {["none"] = L["SCALE_NONE"], ["auto"] = L["SCALE_AUTO"], ["manual"] = L["SCALE_MANUAL"]},
+						name = function(info) return tr( info[#info]) end, 	order = 40, type = "select", values = {["none"] = L["SCALE_NONE"], ["auto"] = L["SCALE_AUTO"], ["manual"] = L["SCALE_MANUAL"]},
 						get = function(info) return yo.Media.AutoScale end,
 						set = function(info,val) Setlers( "Media#AutoScale", val) end,},
 					ScaleRate = {
-						name = function(info) return tr( info[#info]) end, order = 42,	type = "range",
-						desc = L["DEFAULT"] .. 0.64, min = 0.6, max = 1.2, step = 0.01,
-						disabled = function() if yo.Media.AutoScale ~= "manual" then return true end end	,
+						name = function(info) return tr( info[#info]) end, order = 42,	type = "range", desc = L["DEFAULT"] .. 0.64, min = 0.6, max = 1.2, step = 0.01, disabled = function() if yo.Media.AutoScale ~= "manual" then return true end end	,
 						get = function(info) return yo["Media"][info[#info]] end,
 						set = function(info,val) Setlers( "Media#" .. info[#info], val)
 						--	SetCVar("useUiScale", 1)	SetCVar("uiScale", val) UIParent:SetScale( val)
@@ -246,6 +232,13 @@ local function InitOptions()
 					stbEnable 		= {	order =12, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					MoveBlizzFrames = {	order =13, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
 					disenchanting 	= {	order =14, type = "toggle", name = function(info) return tr( info[#info]) end, 	width = "full",	},
+
+					addonFont 		= {	order = 20, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
+										get = function(info) for k, val in pairs( LSM:List("font")) do if yo.Media.font == LSM:Fetch("font", val) then return val end end end,
+										set = function(info, val) Setlers( "Media#font", LSM:Fetch("font", val))	end, },
+					pixelFont 		= {	order = 25, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
+										get = function(info) for k, val in pairs( LSM:List("font")) do if yo.Media.fontpx == LSM:Fetch("font", val) then return val end end	end,
+										set = function(info, val) Setlers( "Media#fontpx", LSM:Fetch("font", val))	end, },
 					-- lootbox
 					-- cooldowns
 						--CastWatcher = {
@@ -279,6 +272,7 @@ local function InitOptions()
 					equipNewItem			= {	order =17, type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					equipNewItemLevel		= {	order =18, type = "range",	name = function(info) return tr( info[#info]) end, 	min = 0, max = 800, step = 1,},
 					AutoQuestSkipScene 		= { order =20, type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = "full"},
+					AutoCovenantsMission	= { order =30, type = "toggle",	name = function(info) return tr( info[#info]) end, 	width = "full"},
 				},
 			},
 
@@ -302,6 +296,20 @@ local function InitOptions()
 							AutoQuestEnhance  ={order = 13, type = "toggle",	name = function(info) return tr( info[#info]) end, 	desc = L["QUCOM_ENCH"],},
 							AutoQuestComplete2Choice = {order = 15, type = "toggle",	name = function(info) return tr( info[#info]) end,
 								disabled = function() return not yo["Addons"].AutoQuestComplete; end,		desc = L["QU2CH_DESC"],},
+						},
+					},
+					TalkingHead = {
+						order = 40,	name = L["TalkingHeadHead"], type = "group",	inline = true,
+						args = {
+							hideHead 		= {	order = 10, type = "toggle",  name = function(info) return tr( info[#info]) end, width = "full",},
+							hideSound		= { order = 13, type = "toggle",  name = function(info) return tr( info[#info]) end, width = "full",},
+							hideForAll 		= { order = 15, type = "toggle",  name = function(info) return tr( info[#info]) end, width = "full",},
+
+							hideCopyData 	= { order = 20, type = "execute", name = function(info) return tr( info[#info]) end, width = 1, confirm  = true, func = function() n:CopyTable( n.allData.talkingHead, _G.yo_talkingHead) end,},
+							hideCopyBack 	= { order = 21, type = "execute", name = function(info) return tr( info[#info]) end, width = 1, confirm  = true, func = function() n:CopyTable( _G.yo_talkingHead, n.allData.talkingHead) end,},
+
+							hideClearData 	= { order = 25, type = "execute", name = function(info) return tr( info[#info]) .. " #" .. n.tCount( _G.yo_talkingHead) 	end, width = 1, confirm  = true, func = function() _G.yo_talkingHead = {} end,},
+							hideClearAll 	= { order = 26, type = "execute", name = function(info) return tr( info[#info]) .. " #" .. n.tCount( n.allData.talkingHead) end, width = 1, confirm  = true, func = function() n.allData.talkingHead = {} end,},
 						},
 					},
 				},
@@ -580,14 +588,8 @@ local function InitOptions()
 						set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, },
 
 					chatFont 		= {	order = 4, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
-						get = function(info)
-							for k, val in pairs( LSM:List("font")) do
-								--print( k, val, yo["Chat"][info[#info]], LSM:Fetch("font", val))
-								if yo["Chat"][info[#info]] == LSM:Fetch("font", val) then return val end
-							end	end,
-						set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end,
-					},
-
+										get = function(info) for k, val in pairs( LSM:List("font")) do if yo["Chat"][info[#info]] == LSM:Fetch("font", val) then return val end end	end,
+										set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end, },
 					wim 	= {	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 
 					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
@@ -648,24 +650,33 @@ local function InitOptions()
 			fliger = {
 				order = 90, name = L["fliger"], type = "group",
 				get = function(info) return yo[info[1]][info[#info]] end,
-				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
+				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) n.Addons.fliger:updateAllOption() end,
 				disabled = function( info) if #info > 1 then return not yo[info[1]].enable; end end,
 				args = {
 					enable 			= { width = "full",	order = 1, type = "toggle",	name = L["FLGenable"], disabled = false, },
 					--desc01			= {	order = 2, type = "description", name = L["DESC_FILGER"], width = "full"},
 
-					fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
-					fligerShowHint	= {	order = 05, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+					buffAnims = {
+						order = 2,	name = L["buffAnims"], type = "group",	inline = true,
+						args = {
+							fligerBuffGlow	= {	order = 02, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+							fligerBuffAnim	= {	order = 03, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+							fligerBuffColr	= {	order = 04, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
+							--fligerShowHint	= {	order = 05, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 
-					fligerBuffCount	= { order = 06, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.5,},
-					fligerBuffSpell = { order = 07, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.7,},
-					fligerSpell		= { order = 08, type = 'input', name = "добавить что-то куда-то", 	dialogControl = "Spell_EditBox", width = 1.7,
-										set = function(info,val) yo.fliger.fligerBuffSpell = yo.fliger.fligerBuffSpell .. "\n" .. val end,
+							fligerBuffCount	= { order = 06, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.5, desc = L["DESC_ST"],},
+							fligerBuffSpell = { order = 07, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.7, desc = L["DESC_BSPELL"],},
+							fligerSpell		= { order = 08, type = 'input', name = "добавить что-то куда-то", 	dialogControl = "Spell_EditBox", width = "full",
+										set = function(info,val)
+											local fligerBuffSpell = yo.fliger.fligerBuffSpell
+											local enka = #fligerBuffSpell >= 1 and "\n" or ""
+
+											fligerBuffSpell = fligerBuffSpell .. enka .. val
+											Setlers( "fliger#fligerBuffSpell", fligerBuffSpell)
+										end, },
+						},
 					},
-
-
+--n.Addons.fliger.checkAnimeSpells
 					tDebuffEnable	= {	order = 10, type = "toggle",name = "Target Buff/Debuff",width = 0.75},
 					pCDEnable 		= {	order = 20, type = "toggle",name = "Player Cooldowns",	width = 0.75},
 					pBuffEnable		= {	order = 30, type = "toggle",name = "Player Buff", 		width = 0.75},
@@ -923,8 +934,21 @@ local function InitOptions()
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
 				args = {
-					label08 = { order = 991, type = "description",
-						name = "|cff00ff002020.11.23|r"
+					label10 = { order = 989,  type = "description", name = "|cff00ff002021.01.15|r"
+						.."\n - [|cffff8000Торгаст|r] Панелька для прикупленных у местных барыг юзабельных всяких шняжек, что бы не забывал их тыкать и было хорошооооо..."
+						.."\n - [|cffff8000Торгаст|r] Из ДБМа ловко подрезал список опасных кастов торгаст-мобов и немедленно их добавил в сюда, заябись же?"
+						.."\n - [|cffff8000Торгаст|r] Если ты мажор и купил себе сферу за 250, то теперь, словной твой Нео, можешь видеть какие пепеги получишь с мобов, если потыкаешь в них своей этой сферкой."
+						.."\n - [|cffff8000Общее|r] В Близовском окошке 'Эпихальный ключь' ( кнопка I), центральная штука ( голубая дырка, ага) теперь тыкательная и открывает поглядеть элемент интерфейса 'Еженедельные награды для любимого мамкиного героя'"
+						.."\n - [|cffff8000Общее|r] Для любителей получать ачивки и прочей приятной хрени есть команда /tach, оно хоть вначале и выдает ошибки, но все равно весело. Можно тыкать много раз и все равно не надоедает... главно не забывать прерываться на покушать."
+						.."\n - [|cffff8000Общее|r] Для наших любителей поточнее, есть команда /align, хрен знает зачем она нужна на самом-то деле, но наверно можно ее совместить с /move... вай нот, кто я такой, что бы запрещать вам творить подобную дичь."
+						.."\n - [|cffff8000Аддон|r] Для особо одаренных работяг, точнее, в данном случае, совсем не одаренных, добавил изменение пиксельного шрифта, ну и, что бы дважды не вставать, то и для основного тоже шрифта тоже... прогнулся :(\n\n",
+					},
+					label09 = { order = 990, type = "description", name = "|cff00ff002021.01.13|r"
+						.."\n - [|cffff8000Задания|r] Говорящая голова обзавелась новыми настройками"
+						.."\n - [|cffff8000Общее|r] В М+ в тултипе показываются проценты мобов"
+						.."\n - [|cffff8000Филгер|r] Слегка допилена фигня с выделением бафов/дебафов, описание в подсказках к элементам\n\n",
+					},
+					label08 = { order = 991, type = "description", name = "|cff00ff002020.11.23|r"
 						.."\n - [|cffff8000Общее|r] в настройках биндов клавиш добались комбинации для установки рейдовых меток не беря жертву в цель, а просто при наведении на нее курсора ( MouseOver)"
 						.."\n - [|cffff8000Рейд|r] добавился метод сортировки рейда по цветовой гамме - \"Пихора эдишн\", пользы от него никакой ( как и от тебя, кстати), но зато красиво, особенно в 40 ппл рейде."
 						.."\n - [|cffff8000Хилботка|r] свершилось, то, о чем так долго говорили большевики - накодилось! Встречаем ноавый рассадник багов, глюков и моей жопоболи... Состоит эта пепега из трех частей: бинды, хотасы и шаблон рейда."
@@ -937,32 +961,27 @@ local function InitOptions()
 						.."\n - [|cffff8000Хилботка|r] в догонку плюнуть в спину: не обязательно всключать все, если оно не надо, например можно включить только Бинды, 'вернуть назад' на ПКМ-ЛКМ Таргет-Меню и забиндить какую-то свою ущербную абилку на кнопку мышки или клавы, не включая Хотки и Хилботку. Кто я такой, что бы вам запретить такое вытворять с этим убогим аддоном?"
 						.."\n - [|cffff8000Хилботка|r] и да, самое же почти главное в этой пепеге - включить |cffff0000`Персональные настройки`|r. Вдудь мужиком - сделай это прям сейчас. А?А?А?А?А?А!!!\n\n",
 					},
-					label07 = { order = 992, type = "description",
-						name = "|cff00ff002020.11.12|r"
+					label07 = { order = 992, type = "description", name = "|cff00ff002020.11.12|r"
 						.."\n - [|cffff8000WIM|r] научился принимать линки на предметы, квесты и прочее, это победа ящитаю"
 						.."\n - [|cffff8000Общее|r] коварно пролез в опции игры - Настройка клавиш, стало чутка удобней жить."
 						.."\n - [|cffff8000Сумки|r] в меню сумок вернулся рюкзак/backpack и добавился пункт меню 'пропускать сортировку сумки'\n\n",
 					},
-					label06 = { order = 993, type = "description",
-						name = "|cff00ff002020.11.07|r"
+					label06 = { order = 993, type = "description", name = "|cff00ff002020.11.07|r"
 						.."\n - [|cffff8000Инфотексты|r] почти полностью почти всё почти переписал почти заново... местами стало даже лучше"
 						.."\n - [|cffff8000Инфотексты|r] для особо упоротых написал инфотексты DPS und HPS ( Details MUST DIE!)"
 						.."\n - [|cffff8000Инфотексты|r] они обзавелись персональным настройками, но там творится какая-то дикая дичь"
 						.."\n - [|cffff8000Автоквесты|r] о, теперь при автопринятии квеста, если в чатике над ним мышкой поелозить, то показывается ихняя инфа о квесте\n\n",
 					},
-					label05 = { order = 994, type = "description",
-						name = "|cff00ff002020.11.01|r"
+					label05 = { order = 994, type = "description", name = "|cff00ff002020.11.01|r"
 						.."\n - [|cffff8000Ситема|r] Олдам, которые скучали по командам /move (+reset), /yo и /cfg, починил их взад "
 						.."\n - [|cffff8000Тултипсы|r] Царские рамочки, иконки спеков, таланты, море информации и прочие пепеги для тултипов в тематических настройках этого богом забытого аддона\n\n",
 					},
-					label04 = { order = 995, type = "description",
-						name = "|cff00ff002020.10.29|r"
+					label04 = { order = 995, type = "description", name = "|cff00ff002020.10.29|r"
 						.."\n - [|cffff8000Рейдфреймы|r] добавил МТТТ ( МэйнТанкТаргетТаргет), он не берется в цель, но зачем-то кому-то он может быть нужен ( отключаемо в настройках)"
 						.."\n - [|cffff8000Рейдфреймы|r] танки наконец-то растут вверх... Просто заябись!"
 						.."\n - [|cffff8000Рейдфреймы|r] на фрейме МТ показываются число набранного им аго и егойные проценты ( настройки присутствуют в Рейдфремах)\n\n",
 					},
-					label03 = { order = 996, type = "description",
-						name = "|cff00ff002020.10.26|r"
+					label03 = { order = 996, type = "description", name = "|cff00ff002020.10.26|r"
 						.."\n - [|cffff8000Юнитфреймы|r] разблокировалась настройка SimpleTemplate. Тестируем, ловим баги"
 						.."\n - [|cffff8000Юнитфреймы|r] возможность не показывать шардо-холиповер-комбо бар на фрейме игрока"
 						.."\n - [|cffff8000Система|r] проверка версии аддона на устаревание и бесполезность..."
@@ -970,8 +989,7 @@ local function InitOptions()
 						.."\n - [|cffff8000LFG|r] настройки фильтра поиска групп по его членам и их размерам"
 						.."\n - [|cffff8000LFG|r] в тултипе над группой показываются все ихние члены\n\n",
 					},
-					label02 = { order = 997, type = "description",
-						name = "|cff00ff002020.10.22|r"
+					label02 = { order = 997, type = "description", name = "|cff00ff002020.10.22|r"
 						.."\n - [|cffff8000Рейдфреймы|r] опция осветления/затемнения цвета абсорббара ( меньше 1 темнее, больше - светлее)"
 						.."\n - [|cffff8000Рейдфреймы|r] убрал абсорббар, оставил только на танкофреймах, плеере и таргете"
 						.."\n - [|cffff8000Юнитфреймы|r] показывать хайлайтом дебафы на юнитах\n\n",
@@ -994,8 +1012,7 @@ local function InitOptions()
 						.."\n - [|cffff8000Персонаж|r] в окне персонажа, правой кнопкой по надетой вещи показывает возможный лут из подземелий на текущий спек, в правом верхнем углу есть настройки фильтра шмота, если понять как оно работает, то очень полезная штука."
 						.."\n - [|cffff8000Кастбары|r] |cff00ff00Время окна очереди заклинания.|r Промежуток времени в конце текущего каста, в течении которого, использованное заклинание встанет в очередь на выполнение, автоматически по окончании каста без задержки по времени. Отображается красной зоной на кастбаре игрока ( не путать с лагометром, которого больше нет! Нет, красное это не лагометр.). Рекомендуется значение 200-250, но если плохо с реакцией на прожание каста в этот период, то задайте больше времени, но не больше 500, это уже вообще какой-то зашквар получится.",
 					},
-					label00 = { order = 999, type = "description",
-						name = "\n|cff999999ТуДушка:"
+					label00 = { order = 999, type = "description", name = "\n|cff999999ТуДушка:"
 						.."\n - wim"
 						.."\n - ошибка модификации..."
 						.."\n - оповещалки всякого"

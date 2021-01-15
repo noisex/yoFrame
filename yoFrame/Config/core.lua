@@ -52,7 +52,7 @@ local function enterEvent( self)
 		SetCVar("nameplateShowFriendlyNPCs", 0)
 
 		SetCVar("nameplateOverlapH",  0.8) 	--default is 0.8
-		SetCVar("nameplateOverlapV",  0.5) 	--default is 1.5
+		SetCVar("nameplateOverlapV",  0.7) 	--default is 1.5
 		SetCVar("nameplateTargetRadialPosition", 1)
 		SetCVar("nameplateMotion", 1)
 
@@ -166,11 +166,13 @@ SLASH_CLEAR_CHAT3 = "/cl"
 ----------------------------------------------------------------------------------------
 
 SlashCmdList.TEST_ACHIEVEMENT = function()
+	local r = math.random(100,1000)
+
 	PlaySound(SOUNDKIT.LFG_REWARDS)
 	if not AchievementFrame then
 		AchievementFrame_LoadUI()
 	end
-	AchievementAlertSystem:AddAlert(112)
+	AchievementAlertSystem:AddAlert( r) --(112)
 	CriteriaAlertSystem:AddAlert(9023, "Doing great!")
 	GuildChallengeAlertSystem:AddAlert(3, 2, 5)
 	InvasionAlertSystem:AddAlert(678, DUNGEON_FLOOR_THENEXUS1, true, 1, 1)
@@ -182,11 +184,11 @@ SlashCmdList.TEST_ACHIEVEMENT = function()
 	----LegendaryItemAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832:0:0:0:0:0:0:0:0:0:0\124h[Brutality Blade]\124h\124r")
 	----LootAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832::::::::::\124h[Brutality Blade]\124h\124r", 1, 1, 100, 2, false, false, 0, false, false)
 	LootUpgradeAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832::::::::::\124h[Brutality Blade]\124h\124r", 1, 1, 1, nil, nil, false)
-	MoneyWonAlertSystem:AddAlert(81500)
-	EntitlementDeliveredAlertSystem:AddAlert("", "Interface\\Icons\\Ability_pvp_gladiatormedallion", TRINKET0SLOT, 214)
-	RafRewardDeliveredAlertSystem:AddAlert("", "Interface\\Icons\\Ability_pvp_gladiatormedallion", TRINKET0SLOT, 214)
+	MoneyWonAlertSystem:AddAlert( r) --81500)
+	EntitlementDeliveredAlertSystem:AddAlert("", "Interface\\Icons\\Ability_pvp_gladiatormedallion", TRINKET0SLOT, r) --214)
+	RafRewardDeliveredAlertSystem:AddAlert("", "Interface\\Icons\\Ability_pvp_gladiatormedallion", TRINKET0SLOT, r) --214)
 	DigsiteCompleteAlertSystem:AddAlert("Human")
-	NewRecipeLearnedAlertSystem:AddAlert(204)
+	NewRecipeLearnedAlertSystem:AddAlert( r) --204)
 	---- BonusRollFrame_StartBonusRoll(242969, 'test', 20, 515, 15, 14)
 end
 SLASH_TEST_ACHIEVEMENT1 = "/tach"

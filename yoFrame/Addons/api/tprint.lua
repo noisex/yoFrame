@@ -1,3 +1,5 @@
+local addon, ns = ...
+local L, yo, n = unpack( ns)
 
 function spairs(t, order)
     -- collect the keys
@@ -26,6 +28,17 @@ end
 --for k,v in spairs( arr, function(t,a,b) return t[b] '<' / '>' t[a] end) do
 --    print(k,v)
 --end
+-----------------------------------------------------------------------------------------------
+--                  Count Piars Table
+-----------------------------------------------------------------------------------------------
+
+function n.tCount( table)
+    local index = 0
+    for k in pairs( table) do
+        index = index + 1
+    end
+    return index
+end
 
 -----------------------------------------------------------------------------------------------
 --                  DeepCopy Full Table

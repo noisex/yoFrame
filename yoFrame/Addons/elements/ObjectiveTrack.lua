@@ -177,7 +177,6 @@ local function ShowQuestLevelInWatchFrame()
 							designItemButton( block.itemButton, block)
 						end
 						if block.groupFinderButton then
-							--block.groupFinderButton:SetSize( 20, 20)
 							block.groupFinderButton.Icon:SetSize( 20, 20)
 							block.groupFinderButton:SetNormalTexture(nil)
 						end

@@ -12,6 +12,7 @@
 	<Script file="Experience.lua"/>
 	<Script file="lfgFilter.lua"/>
 	<Script file="Mail.lua"/>
+	<Script file="maw.lua"/>
 	<Script file="Mirror.lua"/>
 	<Script file="MoveBlizzFrames.lua"/>
 	<Script file="ObjectiveTrack.lua"/>
@@ -23,4 +24,5 @@
 	<Script file="ScrollText.lua"/>
 	<Script file="Scripts.lua"/>
 	<Script file="TalkingHead.lua"/>
+	<Script file="torgastClick.lua"/>
  </Ui>

@@ -51,6 +51,9 @@ function infoText:infoLauncher()
 			infosObj.Enable( infosObj)
 		end
 	end
+
+	n.infoTexts.RightInfoPanel:SetShown( yo.InfoTexts.enable)
+	n.infoTexts.LeftInfoPanel:SetShown(  yo.InfoTexts.enable)
 end
 
 infoText:infoLauncher()

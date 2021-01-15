@@ -322,10 +322,10 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag.text:SetTextColor( n.myColor.r, n.myColor.g, n.myColor.b)
 
 		local iconPers
-		if not n.allData[n.myRealm][name] or not n.allData[n.myRealm][name].Sex or not n.allData[n.myRealm][name].Race then
+		if not n.allData.charData[n.myRealm][name] or not n.allData.charData[n.myRealm][name].Sex or not n.allData.charData[n.myRealm][name].Race then
 			iconPers = RACE_TEMP
 		else
-			iconPers = format( RACE_PORTRAITS, gender[n.allData[n.myRealm][name].Sex], n.allData[n.myRealm][name].Race)
+			iconPers = format( RACE_PORTRAITS, gender[n.allData.charData[n.myRealm][name].Sex], n.allData.charData[n.myRealm][name].Race)
 		end
 
 		self.bag.bagButton:SetNormalTexture( iconPers)
@@ -336,8 +336,8 @@ local function CreateBag( self, name, bank, gtab)
 
 		bankList = bankas[bank]
 
-		if n.allData[n.myRealm][name] then
-			self.nameColor = n.allData[n.myRealm][name].Color
+		if n.allData.charData[n.myRealm][name] then
+			self.nameColor = n.allData.charData[n.myRealm][name].Color
 		else
 			self.nameColor = { ["r"] = 0.8, ["g"] = 0.8, ["b"] = 0.1}
 		end
@@ -505,10 +505,10 @@ function bagBro:CreateBagIconButton( self, parent)
 		for name, player in pairs( yo_BB[n.myRealm]) do
 			if not name:match( "*") then
 				local iconPers
-				if not n.allData[n.myRealm][name] or not n.allData[n.myRealm][name].Sex or not n.allData[n.myRealm][name].Race then
+				if not n.allData.charData[n.myRealm][name] or not n.allData.charData[n.myRealm][name].Sex or not n.allData.charData[n.myRealm][name].Race then
 					iconPers = RACE_TEMP
 				else
-					iconPers = format( RACE_PORTRAITS, gender[n.allData[n.myRealm][name].Sex], n.allData[n.myRealm][name].Race)
+					iconPers = format( RACE_PORTRAITS, gender[n.allData.charData[n.myRealm][name].Sex], n.allData.charData[n.myRealm][name].Race)
 				end
 
 				menuList[index] = {text = "|T" .. iconPers .. ":24:24:-5:0|t" .. name, notCheckable=true, hasArrow = true, func = function() CreateBag( yo_BBFrame, name, "bags") end,
@@ -594,7 +594,7 @@ local function SaveGuilds( self)
 	end
 
 	self.Realm[id] = guild
-	n.allData[n.myRealm][n.myName]["LGBTime"] = time()
+	n.allData.myData.LGBTime = time()
 end
 
 function bagBro:CheckForClean( self)
@@ -633,7 +633,7 @@ local function OnEvent( self, event, change)
 		self.needUpBag 	= {}
 		self.Realm  	= yo_BB[n.myRealm]
 		self.Player 	= yo_BB[n.myRealm][n.myName]
-		self.myColor 	= n.allData[n.myRealm][n.myName].Color
+		self.myColor 	= n.allData.myData.Color
 		--self.iRealm 	= yo_BBCount[n.myRealm]
 		--self.iPlayer 	= yo_BBCount[n.myRealm][n.myName]
 

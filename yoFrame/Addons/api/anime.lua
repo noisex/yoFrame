@@ -5,16 +5,19 @@ function SetUpAnimGroup(object, type, ...)
 	if not type then type = 'Flash' end
 
 	if type == 'Flash' then
+		local maxAlpha, minAlpha, delay = ...
 		object.anim = object:CreateAnimationGroup("Flash")
 		object.anim.fadein = object.anim:CreateAnimation("ALPHA", "FadeIn")
-		object.anim.fadein:SetFromAlpha(0)
-		object.anim.fadein:SetToAlpha(1)
-		object.anim.fadein:SetOrder(2)
+		object.anim.fadein:SetFromAlpha( minAlpha or 0)
+		object.anim.fadein:SetToAlpha( maxAlpha or 1)
+		object.anim.fadein:SetOrder( 1)
 
 		object.anim.fadeout = object.anim:CreateAnimation("ALPHA", "FadeOut")
-		object.anim.fadeout:SetFromAlpha(1)
-		object.anim.fadeout:SetToAlpha(0)
-		object.anim.fadeout:SetOrder(1)
+		object.anim.fadeout:SetStartDelay( delay or object.anim.fadein:GetDuration())
+		object.anim.fadeout:SetFromAlpha( maxAlpha or 1)
+		object.anim.fadeout:SetToAlpha( minAlpha or 0)
+		object.anim.fadeout:SetOrder( 1)
+
 	elseif type == 'FlashLoop' then
 		local maxAlpha, minAlpha, delay = ...
 		object.anim = object:CreateAnimationGroup("Flash")

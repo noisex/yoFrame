@@ -92,24 +92,23 @@ end
 
 local function newConfigData( personalConfig)
 
-	n.allData[n.myRealm][n.myName]["Money"] 	= GetMoney()
-	n.allData[n.myRealm][n.myName]["MoneyDay"] 	= date()
-	n.allData[n.myRealm][n.myName]["MoneyTime"]	= time()
-	n.allData[n.myRealm][n.myName]["Class"] 	= n.myClass
-	n.allData[n.myRealm][n.myName]["Race"]		= select(2, UnitRace('player'))
-	n.allData[n.myRealm][n.myName]["Sex"]		= UnitSex('player')
-	n.allData[n.myRealm][n.myName]["Color"] 	= { ["r"] = n.myColor.r, ["g"] = n.myColor.g, ["b"] = n.myColor.b, ["colorStr"] = n.myColor.colorStr}
-	n.allData[n.myRealm][n.myName]["ColorStr"] 	= n.myColorStr
-	--n.allData[n.myRealm][n.myName]["PersonalConfig"] = n.allData[n.myRealm][n.myName].PersonalConfig or personalConfig
-	n.allData[n.myRealm][n.myName]["WorldBoss"] =  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
+	n.allData.myData.Money 		= GetMoney()
+	n.allData.myData.MoneyDay 	= date()
+	n.allData.myData.MoneyTime	= time()
+	n.allData.myData.Class 		= n.myClass
+	n.allData.myData.Race		= select(2, UnitRace('player'))
+	n.allData.myData.Sex		= UnitSex('player')
+	n.allData.myData.Color 		= { ["r"] = n.myColor.r, ["g"] = n.myColor.g, ["b"] = n.myColor.b, ["colorStr"] = n.myColor.colorStr}
+	n.allData.myData.ColorStr 	= n.myColorStr
+	n.allData.myData.WorldBoss =  nil 							--FlagActiveBosses() ~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!
 end
 
 function Stat:onEvent( event, ...)
 
 	if event == "TIME_PLAYED_MSG" then
 		local playedtotal, playedlevel = ...
-		n.allData[n.myRealm][n.myName]["Played"] = playedtotal
-		n.allData[n.myRealm][n.myName]["PlayedLvl"] = playedlevel
+		n.allData.myData.Played 	= playedtotal
+		n.allData.myData.PlayedLvl  = playedlevel
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		OldMoney = GetMoney()						-- так надо, ибо не считает раньше деньгу
@@ -163,7 +162,7 @@ function Stat:onEnter()
 	GameTooltip:AddLine(L["General information"])
 
 	local oneDate
-	for k, realm in pairs ( n.allData) do
+	for k, realm in pairs ( n.allData.charData) do
 		if type( realm) == "table" and k ~= "editHistory" then
 
    			local tkeys = {}
@@ -230,7 +229,7 @@ function Stat:onClick( )
 		--if n.allData[n.myRealm][n.myName] and n.allData[n.myRealm][n.myName].PersonalConfig then
 		--	myPersonalConfig = true
 		--end
-		n.allData = nil
+		n.allData.charData = nil
 		newConfigData( myPersonalConfig)
 		print("|cffff0000All data reset.|r")
 	else

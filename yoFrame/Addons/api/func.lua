@@ -1,8 +1,6 @@
 local addon, ns = ...
 local L, yo, n = unpack( ns)
 
---local yoEF = n.Addons.elements.elemFrames
-
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs, type, select, unpack, tremove, max
 	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs, type, select, unpack, tremove, max
 local texture, texglow = n.texture, n.texglow
@@ -157,10 +155,10 @@ function n:updateCharacterData( key, value)
 end
 
 function n:newCgaracterData( personalConfig)
-	if not n.allData 										then n.allData= {} end
-	if not n.allData.charactersData 						then n.allData.charactersData = {} end
-	if not n.allData.charactersData[n.myRealm] 			then n.allData.charactersData[n.myRealm] = {} end
-	if not n.allData.charactersData[n.myRealm][n.myName] 	then n.allData.charactersData[n.myRealm][n.myName] = {} end
+	if not n.allData 									 then n.allData= {} end
+	if not n.allData.charactersData 					 then n.allData.charactersData = {} end
+	if not n.allData.charactersData[n.myRealm] 			 then n.allData.charactersData[n.myRealm] = {} end
+	if not n.allData.charactersData[n.myRealm][n.myName] then n.allData.charactersData[n.myRealm][n.myName] = {} end
 
 	local myData = n.allData.charactersData[n.myRealm][n.myName]
 
