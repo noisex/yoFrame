@@ -13,6 +13,7 @@ n.LIBS.LSM 			= _G.LibStub:GetLibrary("LibSharedMedia-3.0");
 n.LIBS.LOP 			= _G.LibStub("LibObjectiveProgress-1.0", true);
 n.LIBS.ButtonGlow 	= _G.LibStub("LibCustomGlow-1.0", true)
 
+
 n.infoTexts.LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 n.infoTexts.LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 n.infoTexts.RightDataPanel = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
@@ -38,6 +39,11 @@ local function enterEvent( self)
 	n.mySpec    = GetSpecialization()
 	n.mySpecNum	= GetSpecializationInfo( n.mySpec)
 	n.myRole	= UnitGroupRolesAssigned( "player")
+
+	local _, _, difficultyID = GetInstanceInfo()
+
+	n.myBossID = false
+	n.myDiffID = difficultyID
 
 	SetCVar("countdownForCooldowns", 0)
 	SetCVar("multiBarRightVerticalLayout", 0)  -- уменьшает 4 и 5 бары, если включено
@@ -82,21 +88,6 @@ local function enterEvent( self)
 
 		SetCVar("nameplateMaxDistance", yo.NamePlates.maxDispance)
 	end
-
-	-- утроба круг сдвинуть в угол
-	_G.UIWidgetTopCenterContainerFrame:SetScale(0.75)
-	_G.UIWidgetTopCenterContainerFrame:ClearAllPoints()
-	_G.UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -15)
-
-	_G.UIWidgetTopCenterContainerFrame.SetScale = n.dummy
-	_G.UIWidgetTopCenterContainerFrame.ClearAllPoints = n.dummy
-	_G.UIWidgetTopCenterContainerFrame.SetPoint = n.dummy
-
-	_G.AlertFrame:ClearAllPoints()
-	_G.AlertFrame:SetPoint("TOPLEFT", UIParent, "CENTER", 0, -150)
-	_G.AlertFrame.ClearAllPoints = n.dummy
-	_G.AlertFrame.SetPoint = n.dummy
-	--UIWidgetTopCenterContainerFrame:HookScript("OnShow", function(self, ...) print("...") end)
 end
 
 local function OnEvent( self, event, ...)

@@ -7,6 +7,7 @@ ignore:
     - .pkgmeta
     - .travis.yml
     - README.md
+    - changelog.txt
 
 # externals:
   # yoFrame/Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
@@ -16,7 +17,7 @@ ignore:
   # yoFrame/Libs/LibItemSearch-1.2: https://github.com/Jaliborc/LibItemSearch-1.2
   # yoFrame/Libs/oUF: https://github.com/oUF-wow/oUF
 
-manual-changelog: README.md
+manual-changelog: changelog.txt
 
 move-folders:
   yoFrame/yoFrame: yoFrame

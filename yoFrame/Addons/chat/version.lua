@@ -3,8 +3,8 @@ local L, yo, n = unpack( ns)
 
 local L_MISC_UI_OUTDATED = "Звиняйте, хлопці, но ваш |cff00ffffyoFrame|r безбожно устарел!!! Подумайте об этом на досуге..."
 
-local tonumber, print, IsInGroup, IsInRaid
-	= tonumber, print, IsInGroup, IsInRaid
+local tonumber, print, IsInGroup, IsInRaid, UnitGroupRolesAssigned
+	= tonumber, print, IsInGroup, IsInRaid, UnitGroupRolesAssigned
 
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
@@ -22,6 +22,8 @@ local check = function(self, event, prefix, message, _, sender)
 		C_ChatInfo.SendAddonMessage( addonName, tonumber(n.version), "GUILD")
 
 	else
+		n.myRole = UnitGroupRolesAssigned( "player")
+
 		if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then C_ChatInfo.SendAddonMessage( addonName, tonumber(n.version), "INSTANCE_CHAT")
 		elseif IsInRaid(LE_PARTY_CATEGORY_HOME)  then C_ChatInfo.SendAddonMessage( addonName, tonumber(n.version), "RAID")
 		elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then C_ChatInfo.SendAddonMessage( addonName, tonumber(n.version), "PARTY")

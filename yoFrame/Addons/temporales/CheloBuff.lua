@@ -1,11 +1,23 @@
 local L, yo, n = unpack( select( 2, ...))
 
+if not yo.Addons.cheloBuff then return end
+
 local markPool = {8, 7, 5, 4, 3, 1, 6, 2}
 local markIndex = 1
 
 local chatN = "party"
 local chatN = "raid"
 local chatN = "RAID_WARNING"
+
+local LSM = n.LIBS.LSM
+
+local cb = CreateFrame("Frame", nil, UIParent)
+n.Addons.cheloBuff = cb
+
+cb.tankOurHeros = {}
+cb.tankOurHeros.tanksPool = {}
+cb.tankOurHeros.tanksGood = {}
+cb.tankOurHeros.tanksBads = {}
 
 --local badCast = {
 --	--[8690]		= true,
@@ -15,10 +27,11 @@ local chatN = "RAID_WARNING"
 
 -- useMark, textWarning, withName, channelWarning, markClearDelay, foundTarget, delayAnonce
 
-local badDBM = {
+cb.badDBM = {
 	["SPELL_AURA_APPLIED"]	= {
 		--[164812] = { 2, "Used moon", true,	"RAID_WARNING"},
 		--[164815] = { 2, "Used sun",  true,	"RAID_WARNING"},
+		[774] = { 2, "Used sun",  true,	"RAID_WARNING"},
 
 		--01 - Талок 	: Выброс Плазмы		2144
 		[271224] = { 2, "Выброс начался 1й", true,	"RAID_WARNING"},
@@ -95,12 +108,12 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
 				extraArg1, extraArg2, extraArg3, extraArg4, extraArg5, extraArg6, extraArg7, extraArg8, extraArg9, extraArg10 = CombatLogGetCurrentEventInfo()
-		--print(CombatLogGetCurrentEventInfo())
+		print(CombatLogGetCurrentEventInfo())
 
-		if not badDBM[subEvent] then return end
-		if not badDBM[subEvent][extraArg1] then return end
+		if not cb.badDBM[subEvent] then return end
+		if not cb.badDBM[subEvent][extraArg1] then return end
 
-		local barArgs = badDBM[subEvent][extraArg1]
+		local barArgs = cb.badDBM[subEvent][extraArg1]
 		local useMark, textWarning, withName, channelWarning, markClearDelay, foundTarget, delayAnonce = barArgs[1], barArgs[2], barArgs[3], barArgs[4], barArgs[5], barArgs[6], barArgs[7]
 		local rt, dest = "", ""
 
@@ -139,30 +152,6 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 
 		--print( extraArg1, extraArg2, foundTarget, destName, dest, markIndex)
 
-
-	elseif event == "UNIT_SPELLCAST_START" then
-		local unit, spellID  = arg1, arg3
-		if not unit then return end
-
-		local unitTarget =  unit .. "target"
-
-		if badCast[spellID] then
-			local spellName, _, icon, startTime, endTime = UnitCastingInfo( unit)
-
-			if UnitExists( unitTarget) then
-				local targetName = UnitName( unitTarget)
-				if targetName then
-					local cTargetName = "|r|c" .. RAID_CLASS_COLORS[ select( 2, UnitClass( unitTarget))].colorStr .. strsplit( "-", targetName) .. "|r"
-					print( "--Target cast: {rt8} " .. cTargetName .. " {rt8} " .. spellName)
-					--SendChatMessage( "{rt8} " .. cTargetName .. " {rt8} " .. spellName, chatN)
-					--SetRaidTarget( unit .. "target", 8);
-				end
-			else
-				print( "--SoloCast: " .. UnitName( unit), spellName)
-				--SendChatMessage( "{rt8} " .. spellName .. " {rt8} " .. spellName, chatN)
-			end
-		end
-
 	elseif event == "ENCOUNTER_START" then
 		if UnitInRaid("player") or UnitInParty("player") then
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -177,29 +166,48 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 		self.bossID = false
 		self.isBoss = false
 
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	elseif event == "GROUP_ROSTER_UPDATE" then
+		n.myRole = UnitGroupRolesAssigned( "player")
 
-		if not yo.Addons.cheloBuff then return end
+		if IsInRaid(LE_PARTY_CATEGORY_HOME)  then
 
-		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		--self:RegisterUnitEvent("UNIT_SPELLCAST_START", "boss1", "boss2", "target", "player")
-		self:RegisterEvent("ENCOUNTER_START")
-		self:RegisterEvent("ENCOUNTER_END")
+			wipe ( cb.tankOurHeros.tanksPool)
+			wipe ( cb.tankOurHeros.tanksBads)
+			wipe ( cb.tankOurHeros.tanksGood)
 
-		if UnitExists( "boss1") then
-			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-			--self:RegisterUnitEvent("UNIT_SPELLCAST_START", "boss1", "boss2")
-		else
-			--self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-			--self:UnregisterEvent("UNIT_SPELLCAST_START")
+			for index = 1, 40 do
+				local unit = "raid" .. index
+				if not UnitExists( unit) then return end
+
+				local role = UnitGroupRolesAssigned( unit)
+				if role == "TANK" then
+					cb.tankOurHeros.tanksPool[unit] = { name = UnitName( unit), role = role, spells = {},}
+					cb.tankOurHeros.tanksGood[unit] = true
+					cb.tankOurHeros.tanksBads[unit] = false
+				end
+			end
 		end
 	end
 end
 
-local chelobuff = CreateFrame("Frame", nil, UIParent)
-chelobuff:RegisterEvent("PLAYER_ENTERING_WORLD")
-chelobuff:SetScript("OnEvent", cheloEvent)
+cb:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+--self:RegisterUnitEvent("UNIT_SPELLCAST_START", "boss1", "boss2", "target", "player")
+cb:RegisterEvent("ENCOUNTER_START")
+cb:RegisterEvent("ENCOUNTER_END")
+cb:RegisterEvent("GROUP_ROSTER_UPDATE")
+
+if UnitExists( "boss1") then
+	cb:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	--self:RegisterUnitEvent("UNIT_SPELLCAST_START", "boss1", "boss2")
+else
+	--cb:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	--self:UnregisterEvent("UNIT_SPELLCAST_START")
+end
+cb:RegisterEvent("PLAYER_ENTERING_WORLD")
+cb:SetScript("OnEvent", cheloEvent)
+
+
+
 
 
 		--if subEvent == "SPELL_AURA_APPLIED" then
@@ -229,3 +237,27 @@ chelobuff:SetScript("OnEvent", cheloEvent)
 		--		print("--SPELL_AURA_REMOVED", markIndex)
 		--	end
 		--end
+
+	--elseif event == "UNIT_SPELLCAST_START" then
+	--	local unit, spellID  = arg1, arg3
+	--	if not unit then return end
+
+	--	local unitTarget =  unit .. "target"
+
+	--	if badCast[spellID] then
+	--		local spellName, _, icon, startTime, endTime = UnitCastingInfo( unit)
+
+	--		if UnitExists( unitTarget) then
+	--			local targetName = UnitName( unitTarget)
+	--			if targetName then
+	--				local cTargetName = "|r|c" .. RAID_CLASS_COLORS[ select( 2, UnitClass( unitTarget))].colorStr .. strsplit( "-", targetName) .. "|r"
+	--				print( "--Target cast: {rt8} " .. cTargetName .. " {rt8} " .. spellName)
+	--				--SendChatMessage( "{rt8} " .. cTargetName .. " {rt8} " .. spellName, chatN)
+	--				--SetRaidTarget( unit .. "target", 8);
+	--			end
+	--		else
+	--			print( "--SoloCast: " .. UnitName( unit), spellName)
+	--			--SendChatMessage( "{rt8} " .. spellName .. " {rt8} " .. spellName, chatN)
+	--		end
+	--	end
+

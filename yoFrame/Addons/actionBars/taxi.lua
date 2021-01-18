@@ -19,7 +19,7 @@ function ActionBars:CreateExitButton()
    if not CanExitVehicle() then frame:Hide() end
 
 	local button = CreateFrame("CHECKBUTTON", "yoVehicleExitButton", frame, "ActionButtonTemplate, SecureHandlerClickTemplate")
-  button.icon:SetTexture("interface\\addons\\yoFrame\\Media\\vehicleexit")
+  button.icon:SetTexture( yo.Media.path .. "icons\\vehicleexit")
   button:RegisterForClicks("AnyUp")
  	button:ClearAllPoints()
  	button:SetPoint("CENTER", frame, "CENTER", 0, 0)

@@ -19,6 +19,7 @@
 	<Script file="Config\antiTaint.lua"/>
 
 	<Script file="Addons\temporales\sayBubble.lua"/>
+	<Script file="Addons\temporales\cheloBuff.lua"/>
 
 	<Include file="Filters\filters.xml"/>
  	<Include file="Infotext\infotexts.xml"/>

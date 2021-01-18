@@ -3,8 +3,8 @@ local oUF = ns.oUF or oUF
 --local colors = oUF.colors
 local L, yo, n = ns[1], ns[2], ns[3]
 
-local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
-local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
+local fontsymbol 	= yo.Media.path .. "fonts\\symbol.ttf"
+local texhl 		= yo.Media.texhl
 
 local _G = _G
 local yoUF = n.Addons.unitFrames
@@ -265,7 +265,7 @@ local function unitShared(self, unit)
 	self.RaidTargetIndicator = self.RaidTargetIndicator or self:CreateTexture(nil,'OVERLAY')
 	self.RaidTargetIndicator:ClearAllPoints()
     self.RaidTargetIndicator:SetPoint( unpack( rtargetPos))
-	self.RaidTargetIndicator:SetTexture("Interface\\AddOns\\yoFrame\\Media\\raidicons")
+	self.RaidTargetIndicator:SetTexture( yo.Media.path .. "icons\\raidicons")
     self.RaidTargetIndicator:SetSize(18, 18)
 
     if cunit ~= "boss" or unit ~= "focustarget" then

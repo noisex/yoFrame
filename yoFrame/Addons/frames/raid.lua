@@ -37,8 +37,7 @@ local funcWhiteList = function( self, button, ...)
 end
 
 local funcTankList = function( self, button, ...)
-	local spellID = select( 11, ...)
-
+	local spellID 	= select( 11, ...)
 	if n.tankDefs[spellID] then
 		return true
 	else
@@ -70,6 +69,15 @@ function n.updateAllRaid(...)
 	end
 end
 
+--local tankCustomFilter = function(element, unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll,timeMod, effect1, effect2, effect3)
+
+--	print( element, unit, name, texture, count, debuffType, duration, expiration, caster)
+
+--	if((element.onlyShowPlayer and button.isPlayer) or (not element.onlyShowPlayer and name)) then
+--		return true
+--	end
+--end
+
 --qwert = function(self, ...)
 --	print("...")
 --end
@@ -78,8 +86,8 @@ end
 -------------------------------------------------------------------------------------------------------
 local function raidShared(self, unit)
 
-	local fontsymbol 	= "Interface\\AddOns\\yoFrame\\Media\\symbol.ttf"
-	local texhl 		= "Interface\\AddOns\\yoFrame\\Media\\raidbg"
+	local fontsymbol 	= yo.Media.path .. "fonts\\symbol.ttf"
+	local texhl 		= yo.Media.texhl
 
 	local unit   = 	( self:GetParent():GetName():match( "yo_Part")) and "party" or
 					( self:GetParent():GetName():match( "yo_Raid")) and "raid" or
@@ -171,7 +179,7 @@ local function raidShared(self, unit)
 			growAuraTank 	= "LEFT"
 			posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -1, -3}
 
-			CustomFilter 	= funcWhiteList --funcBlackList
+			CustomFilter 	= funcBlackList--funcWhiteList --funcBlackList
 		end
 
 		CreateStyleSmall( self.shadow, yo.healBotka.borderS and 2 or 1)
@@ -379,7 +387,7 @@ local function raidShared(self, unit)
 	self.RaidTargetIndicator = self.RaidTargetIndicator or self.Overlay:CreateTexture(nil, 'OVERLAY')
     self.RaidTargetIndicator:SetSize( sizeRTarget, sizeRTarget)
     self.RaidTargetIndicator:SetPoint('CENTER', self, 'TOP', 0, 0)
-    self.RaidTargetIndicator:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidicons")
+    self.RaidTargetIndicator:SetTexture( yo.Media.path .. "icons\\raidicons")
 
     self.PhaseIndicator = CreateFrame('Frame', nil, self)
     self.PhaseIndicator:SetSize( 28, 28)
@@ -485,6 +493,12 @@ local function raidShared(self, unit)
 			end
 
 		end
+
+		--if true
+		--	or unit == "tank" and not self.unitT and not self.unitTT then
+
+		--	self.Debuffs.CustomFilter = tankCustomFilter
+		--end
 	end
 
 	if yo.Raid.raidTemplate == 3 or ( unit == "tank" and not self.unitTT) then
@@ -503,7 +517,7 @@ local function raidShared(self, unit)
 
 		self.Buffs.tankOverlay = self:CreateTexture(nil, "OVERLAY")
 		self.Buffs.tankOverlay:SetAllPoints(self)
-		self.Buffs.tankOverlay:SetTexture("Interface\\AddOns\\yoFrame\\Media\\aggro")
+		self.Buffs.tankOverlay:SetTexture( yo.Media.path .. "textures\\aggro")
 		self.Buffs.tankOverlay:SetVertexColor(1, 1, 0.3, 1)
 		self.Buffs.tankOverlay:SetBlendMode("ADD")
 		self.Buffs.tankOverlay:SetAlpha(0)
@@ -511,6 +525,11 @@ local function raidShared(self, unit)
 		SetUpAnimGroup( self.Buffs.tankOverlay, "FlashLoop", 1, 0)
    		self.Buffs.tankOverlay.anim.fadein:SetDuration( 0.4)
    		self.Buffs.tankOverlay.anim.fadeout:SetDuration( 1)
+
+
+		--if true then
+		--	self.Buffs.CustomFilter = tankCustomFilter
+		--end
 
 		self.Buffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( unpack( n.tCoord))

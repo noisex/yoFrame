@@ -8,7 +8,7 @@ local type, strmatch, CreateFrame
 
 function n.makeKeyNotWar( button)
 
-	local modder, modName, buttonNum = "", "", ""
+	local modder, modName, buttonNum, realbutton = "", "", "", button
 
 	if ( button and button ~= "") then
 		button = button:lower()
@@ -22,7 +22,7 @@ function n.makeKeyNotWar( button)
 
 	buttonNum = strmatch( button, "%d+")
 
-	return button, modder, modName, buttonNum
+	return button, modder, modName, buttonNum, realbutton
 end
 
 function n.makeMacroButton( button)
@@ -54,13 +54,12 @@ if not Clique then return end
 
 local Clique = Clique
 
-
-n.CreateClique = function( self)
+ n.CreateClique = function( self)
 	local header = Clique.header
 	local ret, cet = "", ""
 
 	for i = 1, 15 do
-		local button, modder, modName, buttonNum = n.makeKeyNotWar( yo.healBotka["key"..i])
+		local button, modder, modName, buttonNum, realbutton = n.makeKeyNotWar( yo.healBotka["key"..i])
 		local spell = yo.healBotka["spell"..i]
 
 		if button and button ~= "" and spell and spell ~= "" then
@@ -69,15 +68,15 @@ n.CreateClique = function( self)
 
 			elseif strmatch( button, "wheel") then
 				local bmod = strmatch( button, "down") or "up"
-				ret = format("%sself:SetBindingClick( true, \"%s\", self:GetName(), \"%s\");\n", ret, button, modder .. "wheel" .. bmod);
+				ret = format("%sself:SetBindingClick( true, \"%s\", self:GetName(), \"%s\");\n", ret, realbutton, modder .. "wheel" .. bmod);
 				cet = format("%sself:ClearBinding( \"%s\");\n", cet, button);
 
 			elseif strmatch( button, "numpad") then
-				ret = format("%sself:SetBindingClick( true, \"%s\", self:GetName(), \"%s\");\n", ret, button, modder .. "numpad" .. buttonNum);
+				ret = format("%sself:SetBindingClick( true, \"%s\", self:GetName(), \"%s\");\n", ret, realbutton, modder .. "numpad" .. buttonNum);
 				cet = format("%sself:ClearBinding( \"%s\");\n", cet, button);
 
 			else
-				ret = format("%sself:SetBindingClick( true, \"%s\", header:GetName(), \"%s\");\n", ret, button, modder .. button);
+				ret = format("%sself:SetBindingClick( true, \"%s\", header:GetName(), \"%s\");\n", ret, realbutton, modder .. button);
 				cet = format("%sself:ClearBinding( \"%s\");\n", cet, button);
 			end
 		end

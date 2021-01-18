@@ -30,7 +30,7 @@ function myButtonBorder( self, name, shift, alpha, cols)
 	local cols  = cols 	or { 1, 1, 1}
 
 	local texture = self:CreateTexture( nil, "BORDER")
-	texture:SetTexture("Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
+	texture:SetTexture( yo.Media.borders)
 	texture:SetVertexColor( cols[1], cols[2], cols[3], alpha)
 	texture:SetPoint("TOPLEFT", -shift, shift)
 	texture:SetPoint("BOTTOMRIGHT", shift, -shift)
@@ -268,8 +268,7 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		local texture 	= n.texture
 
 		if yo.ActionBar.hoverTexture then
-			--texture = "Interface\\AddOns\\yoFrame\\Media\\SimpleSquare.blp"
-			texture = "Interface\\AddOns\\yoFrame\\Media\\boder6px.blp"
+			texture = yo.Media.borders
 			shift = 3
 			alpfa = 0.9
 		end

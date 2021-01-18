@@ -329,7 +329,7 @@ function n.updateAuraIcon(button, filter, icon, count, debuffType, duration, exp
 	end
 
 	if button.color then
-		button.icon:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\plain_white.tga")--texture)
+		button.icon:SetTexture( yo.Media.path .. "statusbars\\plain_white.tga")--texture)
 		button.icon:SetVertexColor( unpack( button.color))
 	else
 		button.icon:SetTexture(icon)

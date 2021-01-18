@@ -135,7 +135,7 @@ n.createCastBarNP = function( f)
 	f.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
 	f.Castbar.spark = f.Castbar:CreateTexture(nil, "OVERLAY")
-	f.Castbar.spark:SetTexture([[Interface\Addons\yoFrame\Media\CastSparker.tga]])
+	f.Castbar.spark:SetTexture( yo.Media.path .. "icons\\CastSparker")
 	f.Castbar.spark:SetPoint("BOTTOM", f.Castbar:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, -19)
 	f.Castbar.spark:SetHeight( 56)
 	f.Castbar.spark:SetWidth(45)

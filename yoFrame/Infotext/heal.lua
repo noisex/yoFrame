@@ -23,9 +23,7 @@ function Stat:onEvent( event, ...)
 		if not self.inCombat then return end
 		if not events[Event] then return end
 
-		if sourceMask == 4369 and not infoText.petBlacklist[sourceGUID] then
-			infoText:checkPets( sourceGUID)
-		end
+		--if sourceMask == 4369 and not infoText.petBlacklist[sourceGUID] then infoText:checkPets( sourceGUID) end
 
 		--local a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24 = CombatLogGetCurrentEventInfo()
 		if Event == "SPELL_ABSORBED" then
@@ -50,7 +48,8 @@ function Stat:onEvent( event, ...)
 			end
 		end
 
-		if sourceGUID == n.myGUID or infoText.pets[sourceGUID] then
+		--if sourceGUID == n.myGUID or infoText.pets[sourceGUID] then
+		if sourceGUID == n.myGUID or sourceMask == 4369 or sourceMask == 8465 then
 			infoText.checkNewSpell( self, n.myGUID, spellID, spellName, spellDMG, overHeal, spellSchool, arg18)
 		end
 

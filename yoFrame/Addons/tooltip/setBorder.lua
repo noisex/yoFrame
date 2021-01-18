@@ -18,7 +18,7 @@ local DEAD = DEAD
 ------------------------------------------------------------------------------------------------------
 
 local HealthBar = GameTooltipStatusBar
-local icon = "Interface\\AddOns\\yoFrame\\Media\\spec_icons_normal"
+local icon = yo.Media.path .. "icons\\spec_icons_normal"
 
 local function SetHealthValue(self, unit)
 	if (UnitIsDeadOrGhost(unit)) then

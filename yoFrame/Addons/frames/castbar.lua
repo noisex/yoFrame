@@ -46,7 +46,7 @@ end
 --end
 
 local function UnitColors( f)
-	local cols = {}
+	local cols = { 0.9, 0.9, 0.9}
 	local unit = f.unit
 
 	if f.classcolor then
@@ -275,6 +275,8 @@ local function OnEvent( f, event, unit, ...)
 		f.inCombat = true
 
 	elseif event == "ENCOUNTER_END" then
+		n.myBossID = false
+
 		stopCast( f, unit, ...)
 		if f.castBoss then
 			f.isBoss = false
@@ -282,6 +284,9 @@ local function OnEvent( f, event, unit, ...)
 		end
 
 	elseif event == "ENCOUNTER_START" then
+		n.myBossID = unit
+		n.myDiffID = select( 2, ...)
+
 		if f.castBoss then
 			f.isBoss = true
 			f.unit = f.secondUnit
@@ -367,17 +372,6 @@ function CreateCastBar( frame, cfg)
 	bar.castBar.bgcBar:SetAllPoints( bar.castBar)
 	bar.castBar.bgcBar:SetVertexColor(0.09, 0.09, 0.09, 1)
 	bar.castBar.bgcBar:SetTexture( n.texture)
-
-	--bar.castBar.shield = bar.castBar:CreateTexture(nil, 'BACKGROUND')
-	--bar.castBar.shield:SetPoint( "RIGHT", bar.castBar, "LEFT", -4, 0)
-	--bar.castBar.shield:SetVertexColor(0.09, 0.09, 0.09, 1)
-	--bar.castBar.shield:SetSize( height * 1.3, height * 1.3)
-	--bar.castBar.shield:SetAtlas("nameplates-InterruptShield")
-	--bar.castBar.shield:SetTexture("Interface\\AddOns\\yoFrame\\Media\\Shield");
-
-	--bar.castBar.shield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Small-Shield");
-	--bar.castBar.shield:SetTexCoord(0.00, 0.145, 0, 1.00);
-	--bar.castBar.shield:SetSize( 70, 100)
 
 	bar.castBar.nameText =  bar.castBar:CreateFontString(nil ,"OVERLAY")
 	bar.castBar.nameText:SetFont( n.font, max( 10, height * 0.65), "OUTLINE")

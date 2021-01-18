@@ -1207,7 +1207,7 @@ function addon:CreateLayout( isBank)
 
 					if not(slot.questIcon) then
 						slot.questIcon = _G[slot:GetName()..'IconQuestTexture'] or _G[slot:GetName()].IconQuestTexture
-						slot.questIcon:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagQuestIcon");
+						slot.questIcon:SetTexture( yo.Media.path .. "icons\\bagQuestIcon");
 						slot.questIcon:SetTexCoord(0,1,0,1);
 						slot.questIcon:Show();
 					end
@@ -1217,7 +1217,7 @@ function addon:CreateLayout( isBank)
 						slot.UpgradeIcon:SetPoint("BOTTOMRIGHT", slot, "BOTTOMRIGHT", 8, -7)
 						slot.UpgradeIcon.ClearAllPoints 	= n.dummy
 						slot.UpgradeIcon.SetPoint 			= n.dummy
-						slot.UpgradeIcon:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagUpgradeIcon");
+						slot.UpgradeIcon:SetTexture( yo.Media.path .. "icons\\bagUpgradeIcon");
 						slot.UpgradeIcon:SetTexCoord(0,1,0,1);
 						slot.UpgradeIcon:Hide();
 					end
@@ -1269,9 +1269,7 @@ function addon:CreateLayout( isBank)
 
 					if not slot.newItemGlow then
 						local newItemGlow = slot:CreateTexture(nil, "OVERLAY")
-						--newItemGlow:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagNewItemGlow")
 						newItemGlow:SetTexture("Interface\\GLUES\\Models\\UI_LightforgedDraenei\\draenei_glow_blue.blp")
-						--newItemGlow:SetTexture([[Interface\Timer\HordeGlow-Logo.blp]])
 						newItemGlow:SetAllPoints( slot)
 						newItemGlow:Hide()
 						slot.newItemGlow = newItemGlow

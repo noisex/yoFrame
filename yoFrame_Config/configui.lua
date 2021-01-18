@@ -26,31 +26,31 @@ local aConf = {}
 
 -- GLOBALS: Setlers, yoFrameDB
 
-LSM:Register("statusbar", "yo Plain Gray", 	"Interface\\AddOns\\yoFrame\\Media\\bar16")
-LSM:Register("statusbar", "yo Plain White", "Interface\\AddOns\\yoFrame\\Media\\plain_white")
-LSM:Register("statusbar", "yo StatusBar", 	"Interface\\AddOns\\yoFrame\\Media\\statusbar4")
-LSM:Register("statusbar", "yo DGroung", 	"Interface\\AddOns\\yoFrame\\Media\\bar_dground")
---LSM:Register("statusbar", "yo Striped", 	"Interface\\AddOns\\yoFrame\\Media\\striped")
-LSM:Register("statusbar", "yo Smooth", 		"Interface\\AddOns\\yoFrame\\Media\\flatsmooth")
+LSM:Register("statusbar", "yo Plain Gray", 	"Interface\\AddOns\\yoFrame\\Media\\statusbars\\bar16")
+LSM:Register("statusbar", "yo Plain White", "Interface\\AddOns\\yoFrame\\Media\\statusbars\\plain_white")
+LSM:Register("statusbar", "yo StatusBar", 	"Interface\\AddOns\\yoFrame\\Media\\statusbars\\statusbar4")
+LSM:Register("statusbar", "yo DGroung", 	"Interface\\AddOns\\yoFrame\\Media\\statusbars\\bar_dground")
+--LSM:Register("statusbar", "yo Striped", 	"Interface\\AddOns\\yoFrame\\Media\\statusbars\\striped")
+LSM:Register("statusbar", "yo Smooth", 		"Interface\\AddOns\\yoFrame\\Media\\statusbars\\flatsmooth")
 
-LSM:Register("statusbar", "yo Smooth+", 	"Interface\\AddOns\\yoFrame\\Media\\lightflatsmooth")
-LSM:Register("statusbar", "yo Smooth++",	"Interface\\AddOns\\yoFrame\\Media\\verylightflatsmooth")
+LSM:Register("statusbar", "yo Smooth+", 	"Interface\\AddOns\\yoFrame\\Media\\statusbars\\lightflatsmooth")
+LSM:Register("statusbar", "yo Smooth++",	"Interface\\AddOns\\yoFrame\\Media\\statusbars\\verylightflatsmooth")
 
-LSM:Register("statusbar", "yo Bar 07", 		"Interface\\AddOns\\yoFrame\\Media\\bar7")
-LSM:Register("statusbar", "yo Bar 17", 		"Interface\\AddOns\\yoFrame\\Media\\bar17")
-LSM:Register("statusbar", "yo Neal", 		"Interface\\AddOns\\yoFrame\\Media\\Neal")
+LSM:Register("statusbar", "yo Bar 07", 		"Interface\\AddOns\\yoFrame\\Media\\statusbars\\bar7")
+LSM:Register("statusbar", "yo Bar 17", 		"Interface\\AddOns\\yoFrame\\Media\\statusbars\\bar17")
+LSM:Register("statusbar", "yo Neal", 		"Interface\\AddOns\\yoFrame\\Media\\statusbars\\Neal")
 
-LSM:Register("sound", "Tick 01", 			"Interface\\Addons\\yoFrame\\Media\\Bip.ogg")
-LSM:Register("sound", "Tick 02", 			"Interface\\Addons\\yoFrame\\Media\\CSDroplet.ogg")
-LSM:Register("sound", "Applause", 			"Interface\\Addons\\yoFrame\\Media\\Applause.ogg")
-LSM:Register("sound", "Shotgun", 			"Interface\\Addons\\yoFrame\\Media\\Shotgun.ogg")
-LSM:Register("sound", "Wisper", 			"Interface\\Addons\\yoFrame\\Media\\wisp.OGG")
-LSM:Register("sound", "Murloc", 			"Interface\\Addons\\yoFrame\\Media\\BabyMurlocA.ogg")
+LSM:Register("sound", "Tick 01", 			"Interface\\Addons\\yoFrame\\Media\\sound\\Bip.ogg")
+LSM:Register("sound", "Tick 02", 			"Interface\\Addons\\yoFrame\\Media\\sound\\CSDroplet.ogg")
+LSM:Register("sound", "Applause", 			"Interface\\Addons\\yoFrame\\Media\\sound\\Applause.ogg")
+LSM:Register("sound", "Shotgun", 			"Interface\\Addons\\yoFrame\\Media\\sound\\Shotgun.ogg")
+LSM:Register("sound", "Wisper", 			"Interface\\Addons\\yoFrame\\Media\\sound\\wisp.OGG")
+LSM:Register("sound", "Murloc", 			"Interface\\Addons\\yoFrame\\Media\\sound\\BabyMurlocA.ogg")
 
-LSM:Register("font", "yoMagistral", 		"Interface\\AddOns\\yoFrame\\Media\\qFont.ttf", 130)
-LSM:Register("font", "yoSansNarrow",		"Interface\\AddOns\\yoFrame\\Media\\qSans.ttf", 130)
-LSM:Register("font", "yoPixelFont", 		"Interface\\AddOns\\yoFrame\\Media\\pxFont.ttf", 130)
-LSM:Register("font", "yoCormac", 			"Interface\\AddOns\\yoFrame\\Media\\cormac.ttf", 130)
+LSM:Register("font", "yoMagistral", 		"Interface\\AddOns\\yoFrame\\Media\\fonts\\qFont.ttf", 130)
+LSM:Register("font", "yoSansNarrow",		"Interface\\AddOns\\yoFrame\\Media\\fonts\\qSans.ttf", 130)
+LSM:Register("font", "yoPixelFont", 		"Interface\\AddOns\\yoFrame\\Media\\fonts\\pxFont.ttf", 130)
+LSM:Register("font", "yoCormac", 			"Interface\\AddOns\\yoFrame\\Media\\fonts\\cormac.ttf", 130)
 
 local function checkToReboot( var, ...)
 	local noReboot
@@ -996,7 +996,7 @@ local function InitOptions()
 					},
 					label01 = { order = 998, type = "description",
 						name = "|cff999999Просто попробовал придумать какую-то херню, куда можно зачем-то что-то писать, хотя это никому вообще нахер не нужно. Буду пытаться писать сюда об новом, добавленном функционале...\n|r"
-						.."\n|cff00ff002020.10.19|r |cff999999( с этим мы пришли с ПТРа)|r"
+						.."\n|cff00ff002020.10.19|r |cff999999( с этим мы пришли с ПТРа после 2х лет застоя)|r"
 						.."\n - [|cffff8000Система|r] две осветленные версии текстурки Smooth ( ну вот нравится она мне)"
 						.."\n - [|cffff8000Юнитфреймы|r] ГКДшка над фреймом игрока"
 						.."\n - [|cffff8000Юнитфреймы|r] в тултипе таргета, при наведении на баф маунта, показывает информацию о его доступности у вас и способ его получения"

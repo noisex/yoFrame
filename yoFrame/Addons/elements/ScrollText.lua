@@ -9,7 +9,7 @@ local spam = {}
 local icons = {}
 local schools = {}
 local RT = " |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d.blp:6:6|t"
-local blankTga = "|TInterface\\AddOns\\yoFrame\\Media\\Blank.blp:11:11:0:0:44:44:4:40:4:40|t"
+local blankTga = "|T".. yo.Media.path .. "textures\\Blank.blp:11:11:0:0:44:44:4:40:4:40|t"
 
 local spellSchoolColor= {
 	[1] =	{"#FFFF00", 1, 1, 0}, 		--Physical

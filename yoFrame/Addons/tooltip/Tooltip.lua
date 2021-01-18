@@ -222,7 +222,7 @@ local OnTooltipSetUnit = function(self)
 
 	local raidIndex = GetRaidTargetIndex(unit)
 	if raidIndex then
-		ricon:SetTexture("Interface\\AddOns\\yoFrame\\Media\\raidicons")
+		ricon:SetTexture( yo.Media.path .. "icons\\raidicons")
 		SetRaidTargetIconTexture( ricon, raidIndex)
 		ricon:Show()
 	else

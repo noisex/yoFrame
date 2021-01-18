@@ -54,9 +54,9 @@ function Stat:onEvent( event, ...)
 		--8465 = guardian
 
 		--if ( sourceMask == 4369 or sourceMask == 8465 or sourceMask == 1297 ) then
-		if ( sourceMask == 4369 or sourceMask == 8465) and not infoText.petBlacklist[sourceGUID] then infoText:checkPets( sourceGUID)	end
+		--if ( sourceMask == 4369 or sourceMask == 8465) and not infoText.petBlacklist[sourceGUID] then infoText:checkPets( sourceGUID)	end
 
-		if sourceGUID == n.myGUID or infoText.pets[sourceGUID] then
+		if sourceGUID == n.myGUID or sourceMask == 4369 or sourceMask == 8465 then --infoText.pets[sourceGUID] then
 
 			local spellID 		= cleuInfo[12]
 			local spellName 	= cleuInfo[13]
@@ -85,12 +85,12 @@ function Stat:onEvent( event, ...)
 			infoText.checkNewSpell( self, n.myGUID, spellID, spellName, spellDMG, spellOver, spellSchool, spellCrit)
 		end
 
-	elseif event == 'UNIT_PET' then
-		local petGUID = UnitGUID('pet')
-		if petGUID then
-			infoText.pets[petGUID] = true
-			infoText.petBlacklist[petGUID] = true
-		end
+	--elseif event == 'UNIT_PET' then
+	--	local petGUID = UnitGUID('pet')
+	--	if petGUID then
+	--		infoText.pets[petGUID] = true
+	--		infoText.petBlacklist[petGUID] = true
+	--	end
 
 	elseif event == 'PLAYER_REGEN_DISABLED' or event == "ENCOUNTER_START" then infoText:start( self)
 	elseif event == 'PLAYER_REGEN_ENABLED'  or event == "ENCOUNTER_END"   then infoText:stop( self)
@@ -121,7 +121,7 @@ function Stat:Enable()
 	self:SetPoint("LEFT", self.parent, "LEFT", self.parent:GetWidth()/self.parentCount*( self.index - 1) + self.shift, 0)
 	self:SetWidth( self.parent:GetWidth() / self.parentCount)
 	self:RegisterEvent( 'COMBAT_LOG_EVENT_UNFILTERED')
-	self:RegisterEvent( "UNIT_PET")
+	--self:RegisterEvent( "UNIT_PET")
 	self:RegisterEvent( 'PLAYER_LEAVE_COMBAT')
 	self:RegisterEvent( 'PLAYER_REGEN_DISABLED')
 	self:RegisterEvent( "PLAYER_REGEN_ENABLED")

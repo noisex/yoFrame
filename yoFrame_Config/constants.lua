@@ -2,6 +2,7 @@ local addonName, ns = ...
 local L, conf, n, defConfig = unpack( ns)
 
 local yo = {}
+local media = "Interface\\AddOns\\yoFrame\\Media\\"
 defConfig.constants = yo
 
 yo["InfoTexts"] = {
@@ -264,12 +265,14 @@ yo["NamePlates"] = {
 
 yo["Media"] = {
 	--["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\statusbar4",
-	["texture"] 	= "Interface\\AddOns\\yoFrame\\Media\\lightflatsmooth",
-	["dgtexture"]	= "Interface\\AddOns\\yoFrame\\Media\\bar_dground",
-	["texhl"]   	= "Interface\\AddOns\\yoFrame\\Media\\raidbg",
-	["texglow"] 	= "Interface\\AddOns\\yoFrame\\Media\\glowTex",
-	["font"]     	= "Interface\\AddOns\\yoFrame\\Media\\qFont.ttf",
-	["fontpx"]   	= "Interface\\AddOns\\yoFrame\\Media\\pxFont.ttf",
+	["path"]		= "Interface\\AddOns\\yoFrame\\Media\\",
+	["texture"] 	= media .."statusbars\\lightflatsmooth",
+	["dgtexture"]	= media .. "statusbars\\bar_dground",
+	["texhl"]   	= media .. "textures\\raidbg",
+	["texglow"] 	= media .. "textures\\glowTex",
+	["font"]     	= media .. "fonts\\qFont.ttf",
+	["fontpx"]   	= media .. "fonts\\pxFont.ttf",
+	["borders"]		= media .. "borders\\boder6px",
 	["fontsize"] 	= 10,
 	["sysfontsize"]	= 10,
 	["AutoScale"] 	= "auto",
@@ -352,7 +355,7 @@ yo["Chat"] = {
 	["fadingTimer"]		= 30,
 	["wisperSound"]		= "Wisper",
 	["wisperInCombat"]	= true,
-	["chatFont"]		= "Interface\\Addons\\yoFrame\\Media\\qFont.ttf",
+	["chatFont"]		= media .. "fonts\\qFont.ttf",
 	["wim"]				= false,
 	["winHeight"]		= 250,
 	["wimWidth"]		= 350,

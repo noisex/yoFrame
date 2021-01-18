@@ -73,6 +73,7 @@ infoText.spellSchool = {
 }
 
 function infoText:reset( infos)
+	--dprint("RESET")
 	infos.combatTime, infos.amountTotal, infos.newFight = 0, 0, false
 	wipe( infos.spellInfo)
 	wipe( infos.spellDamage)
@@ -90,6 +91,7 @@ function infoText:start( infos)
 end
 
 function infoText:stop( infos)
+	--dprint( "STOPED")
 	infos.inCombat = false
 	if infos.timerDPS then infos.timerDPS:Cancel() end
 end

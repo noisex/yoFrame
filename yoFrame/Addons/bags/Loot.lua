@@ -74,7 +74,7 @@ local media = {
 	["backdrop1"] = texture,
 	["backdrop"] =  texture,
 	["checked"] = "Interface\\AddOns\\Aurora\\CheckButtonHilight",
-	["glow"] = "Interface\\AddOns\\yoFrame\\Root\\Media\\glowTex",
+	["glow"] = yo.Media.texglow
 }
 
 local CreateBD = function(f, a)

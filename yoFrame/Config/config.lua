@@ -31,13 +31,9 @@ if yo_AllData[myRealm] 			== nil then yo_AllData[myRealm] = {} end
 if yo_AllData.talkingHead 		== nil then yo_AllData.talkingHead = {} end
 if yo_AllData[myRealm][myName] 	== nil then yo_AllData[myRealm][myName] = {} end
 
---yo_AllData.charData 			= nil
-
-if yo_AllData.charData 			== nil then yo_AllData.charData = {} end
-if yo_AllData.charData[myRealm] == nil then
-	--yo_AllData.charData[myRealm] = {}
-	yo_AllData.charData[myRealm] 	= CopyTable( yo_AllData[myRealm])
-end
+if yo_AllData.charData 				 == nil then yo_AllData.charData = {} end
+if yo_AllData.charData[myRealm]		 == nil then yo_AllData.charData[myRealm] = CopyTable( yo_AllData[myRealm]) end
+if not yo_AllData.charData[myRealm][myName] then yo_AllData.charData[myRealm][myName] = {} end
 
 n.allData 		 = yo_AllData
 n.allData.myData = yo_AllData.charData[myRealm][myName]

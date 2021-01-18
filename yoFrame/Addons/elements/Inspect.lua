@@ -165,7 +165,7 @@ local function CreateFlyoutText( self)
 		self.UpgradeIcon:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, -7)
 		self.UpgradeIcon.ClearAllPoints 	= n.dummy
 		self.UpgradeIcon.SetPoint 			= n.dummy
-		self.UpgradeIcon:SetTexture("Interface\\AddOns\\yoFrame\\media\\bagUpgradeIcon");
+		self.UpgradeIcon:SetTexture( yo.Media.path .. "icons\\bagUpgradeIcon");
 		self.UpgradeIcon:SetTexCoord(0,1,0,1);
 		self.UpgradeMoved = true
 	end

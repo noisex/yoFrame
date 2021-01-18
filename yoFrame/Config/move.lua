@@ -77,7 +77,7 @@ function n.moveCreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
 	f:RegisterForDrag(nil)
 
 	f.text = f:CreateFontString(nil, "OVERLAY")
-	f.text:SetFont( [=[Interface\AddOns\yoFrame\Media\qFont.ttf]=], 10)
+	f.text:SetFont( n.font, n.fontsize)
 	f.text:SetJustifyH("LEFT")
 	f.text:SetShadowColor(0, 0, 0)
 	f.text:SetShadowOffset(1, -1)

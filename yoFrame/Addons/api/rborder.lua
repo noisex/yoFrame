@@ -85,9 +85,7 @@ function n.CreateBorder(self, size, offset, parent, layer)
 
 	for i = 1, #sections do
 		local x = self:CreateTexture(nil, layer or "ARTWORK")
-		x:SetTexture([[Interface\AddOns\yoFrame\Media\SimpleSquare]])  --.blp
-		--x:SetTexture([[Interface\AddOns\yoFrame\Media\mask2]])  --.blp
-		--x:SetTexture(texglow)
+		x:SetTexture( yo.Media.path .. "borders\\SimpleSquare")
 		t[sections[i]] = x
 	end
 
@@ -161,7 +159,7 @@ borderFrame1:Hide()
 
 borderFrame1.texture = borderFrame1:CreateTexture(nil, "OVERLAY")
 borderFrame1.texture:SetAllPoints()
-borderFrame1.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\bar_dground")
+borderFrame1.texture:SetTexture( yo.Media.path .. "statusbars\\bar_dground")
 
 local borderFrame2 = CreateFrame("Frame", nil, UIParent)
 borderFrame2:SetPoint("CENTER", borderFrame1, "CENTER", 0, 70)
@@ -169,7 +167,7 @@ borderFrame2:SetSize(250, 50)
 borderFrame2:Hide()
 borderFrame2.texture = borderFrame2:CreateTexture(nil, "OVERLAY")
 borderFrame2.texture:SetAllPoints()
-borderFrame2.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidbg")
+borderFrame2.texture:SetTexture( yo.Media.path .. "statusbars\\raidbg")
 
 local borderFrame3 = CreateFrame("Frame", nil, UIParent)
 borderFrame3:SetPoint("CENTER", borderFrame2, "CENTER", 0, 70)
@@ -177,7 +175,7 @@ borderFrame3:SetSize(250, 50)
 borderFrame3:Hide()
 borderFrame3.texture = borderFrame3:CreateTexture(nil, "OVERLAY")
 borderFrame3.texture:SetAllPoints()
-borderFrame3.texture:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\raidbg")
+borderFrame3.texture:SetTexture( yo.Media.path .. "statusbars\\raidbg")
 
 n.CreateBorder(borderFrame1, 16)
 n.CreateBorder(borderFrame2, 12)

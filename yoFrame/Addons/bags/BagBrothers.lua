@@ -111,7 +111,7 @@ function bagBro:CreateteItemIcon( self, buttonSize, noChecked)
 	icon.icon:SetTexCoord(unpack( n.tCoord))
 
 	local hover = icon:CreateTexture(nil, "OVERLAY")--("frame", nil, icon)
-	hover:SetTexture( n.texture) --"Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
+	hover:SetTexture( n.texture)
 	hover:SetVertexColor( 0, 1, 0, 1)
 	hover:SetPoint("TOPLEFT", -0, 0)
 	hover:SetPoint("BOTTOMRIGHT", 0, -0)
@@ -121,7 +121,7 @@ function bagBro:CreateteItemIcon( self, buttonSize, noChecked)
 
 	if not noChecked then
 		local checked = icon:CreateTexture(nil, "BORDER")--("frame", nil, self)
-		checked:SetTexture( "Interface\\AddOns\\yoFrame\\Media\\boder6px.blp")
+		checked:SetTexture( yo.Media.borders)
 		checked:SetVertexColor( 0, 1, 0, 1)
 		checked:SetPoint("TOPLEFT", -5, 5)
 		checked:SetPoint("BOTTOMRIGHT", 5, -5)

@@ -9,6 +9,7 @@ local pairs, GetItemInfo, GetItemIcon, GetItemCount, GameTooltip, unpack, Create
 local tc = CreateFrame("Frame", nil, UIParent)
 n.Addons.torgastClicks = tc
 local size = 40
+local maw = n.Addons.maw
 
 tc.poolIcons = {}
 tc.cellsData = {
@@ -125,7 +126,9 @@ function tc:updateIcons()
 end
 
 function tc:cellsCDUpdate()
-	--print("UPDATE CD")
+	--dprint("UPDATE CD")
+	if not tc.usedIcons then return end
+
 	for name, button in pairs( tc.usedIcons) do
 		local startTime, duration, enable = GetItemCooldown( button.id)
 		if enable == 1 and duration > 0 then
@@ -144,14 +147,6 @@ function tc:cellsDataUpdate()
 	tc:updateIcons()
 end
 
-local function inTorghast()
-	--print("inTorghast")
-	tc:Show()
-	tc:RegisterEvent("BAG_UPDATE")
-	tc:RegisterEvent("BAG_UPDATE_COOLDOWN")
-	tc.inTorghast = true
-end
-
 local function outTorghast()
 	--print("outTorghast")
 	tc:UnregisterEvent("BAG_UPDATE")
@@ -160,13 +155,30 @@ local function outTorghast()
 	tc.inTorghast = false
 end
 
+local function inTorghast()
+
+	--dprint("inTorghast", _G.ScenarioBlocksFrame.MawBuffsBlock:IsVisible())
+
+	if maw.isInMaw() then
+		outTorghast()
+		return
+	end
+
+	--dprint("inMAWTorghast", _G.ScenarioBlocksFrame.MawBuffsBlock:IsVisible())
+
+	tc:Show()
+	tc:RegisterEvent("BAG_UPDATE")
+	tc:RegisterEvent("BAG_UPDATE_COOLDOWN")
+	tc.inTorghast = true
+end
+
 local function onEvent(self, event, ...)
 	--print( event, ...)
 
 	if event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
 
 		--tc:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		tc.inTorghast = _G.ScenarioBlocksFrame.MawBuffsBlock:IsVisible()
+		tc.inTorghast = _G.ScenarioBlocksFrame.MawBuffsBlock.Container:IsVisible()
 
 		if tc.inTorghast then
 			inTorghast()
@@ -193,5 +205,5 @@ tc:SetScript("OnEvent", onEvent)
 
 tc:cellsDataCreate()
 
-_G.ScenarioBlocksFrame.MawBuffsBlock:HookScript("OnShow", inTorghast)
-_G.ScenarioBlocksFrame.MawBuffsBlock:HookScript("OnHide", outTorghast)
+_G.ScenarioBlocksFrame.MawBuffsBlock.Container:HookScript("OnShow", inTorghast)
+_G.ScenarioBlocksFrame.MawBuffsBlock.Container:HookScript("OnHide", outTorghast)

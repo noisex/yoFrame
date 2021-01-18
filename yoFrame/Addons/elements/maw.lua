@@ -135,7 +135,27 @@ local function onEvent( self, event, ...)
 	--print(event, map, id)
 
 	if event == "PLAYER_ENTERING_WORLD"	or event == "ZONE_CHANGED_NEW_AREA" then
+
+		if not maw.shifted then
+			-- утроба круг сдвинуть в угол
+			_G.UIWidgetTopCenterContainerFrame:SetScale(0.75)
+			_G.UIWidgetTopCenterContainerFrame:ClearAllPoints()
+			_G.UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -15)
+
+			_G.UIWidgetTopCenterContainerFrame.SetScale = n.dummy
+			_G.UIWidgetTopCenterContainerFrame.ClearAllPoints = n.dummy
+			_G.UIWidgetTopCenterContainerFrame.SetPoint = n.dummy
+
+			_G.AlertFrame:ClearAllPoints()
+			_G.AlertFrame:SetPoint("TOPLEFT", UIParent, "CENTER", 0, -150)
+			_G.AlertFrame.ClearAllPoints = n.dummy
+			_G.AlertFrame.SetPoint = n.dummy
+			--UIWidgetTopCenterContainerFrame:HookScript("OnShow", function(self, ...) print("...") end)
+			maw.shifted = true
+		end
+
 		checkForMaw( self)
+
 	elseif event == "UPDATE_UI_WIDGET" then
 		maw.updateWiget()
 	end
