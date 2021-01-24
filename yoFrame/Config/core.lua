@@ -12,7 +12,7 @@ n.LIBS.Search 		= _G.LibStub('LibItemSearch-1.2')
 n.LIBS.LSM 			= _G.LibStub:GetLibrary("LibSharedMedia-3.0");
 n.LIBS.LOP 			= _G.LibStub("LibObjectiveProgress-1.0", true);
 n.LIBS.ButtonGlow 	= _G.LibStub("LibCustomGlow-1.0", true)
-
+n.LIBS.Sticky 		= _G.LibStub('LibSimpleSticky-1.0')
 
 n.infoTexts.LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 n.infoTexts.LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
@@ -186,44 +186,41 @@ SLASH_TEST_ACHIEVEMENT1 = "/tach"
 SLASH_TEST_ACHIEVEMENT2 = "/ефср"
 
 
-----------------------------------------------------------------------------------------
---	Grid on screen
-----------------------------------------------------------------------------------------
-local grid
-SlashCmdList.GRIDONSCREEN = function()
-	if grid then
-		grid:Hide()
-		grid = nil
-	else
-		grid = CreateFrame("Frame", nil, UIParent)
-		grid:SetFrameStrata("BACKGROUND")
-		grid:SetAllPoints(UIParent)
-		local width = GetScreenWidth() / 128
-		local height = GetScreenHeight() / 72
-		for i = 0, 128 do
-			local texture = grid:CreateTexture(nil, "BACKGROUND")
-			if i == 64 then
-				texture:SetColorTexture(1, 0, 0, 0.8)
-			else
-				texture:SetColorTexture(0, 0, 0, 0.8)
-			end
-			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", i * width - 1, 0)
-			texture:SetPoint("BOTTOMRIGHT", grid, "BOTTOMLEFT", i * width, 0)
-		end
-		for i = 0, 72 do
-			local texture = grid:CreateTexture(nil, "BACKGROUND")
-			if i == 36 then
-				texture:SetColorTexture(1, 0, 0, 0.8)
-			else
-				texture:SetColorTexture(0, 0, 0, 0.8)
-			end
-			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", 0, -i * height)
-			texture:SetPoint("BOTTOMRIGHT", grid, "TOPRIGHT", 0, -i * height - 1)
-		end
-	end
-end
-SLASH_GRIDONSCREEN1 = "/align"
-SLASH_GRIDONSCREEN2 = "/фдшпт"
+--local grid
+--SlashCmdList.GRIDONSCREEN = function()
+--	if grid then
+--		grid:Hide()
+--		grid = nil
+--	else
+--		grid = CreateFrame("Frame", nil, UIParent)
+--		grid:SetFrameStrata("BACKGROUND")
+--		grid:SetAllPoints(UIParent)
+--		local width = GetScreenWidth() / 128
+--		local height = GetScreenHeight() / 72
+--		for i = 0, 128 do
+--			local texture = grid:CreateTexture(nil, "BACKGROUND")
+--			if i == 64 then
+--				texture:SetColorTexture(1, 0, 0, 0.8)
+--			else
+--				texture:SetColorTexture(0, 0, 0, 0.8)
+--			end
+--			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", i * width - 1, 0)
+--			texture:SetPoint("BOTTOMRIGHT", grid, "BOTTOMLEFT", i * width, 0)
+--		end
+--		for i = 0, 72 do
+--			local texture = grid:CreateTexture(nil, "BACKGROUND")
+--			if i == 36 then
+--				texture:SetColorTexture(1, 0, 0, 0.8)
+--			else
+--				texture:SetColorTexture(0, 0, 0, 0.8)
+--			end
+--			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", 0, -i * height)
+--			texture:SetPoint("BOTTOMRIGHT", grid, "TOPRIGHT", 0, -i * height - 1)
+--		end
+--	end
+--end
+--SLASH_GRIDONSCREEN1 = "/align"
+--SLASH_GRIDONSCREEN2 = "/фдшпт"
 
 --E.ActionBars = E:NewModule('ActionBars','AceHook-3.0','AceEvent-3.0')
 --local AB = E:GetModule('ActionBars')

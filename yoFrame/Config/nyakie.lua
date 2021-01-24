@@ -67,6 +67,15 @@ n.slots = {
 n.conFuncs = {}
 --n.conFuncs.Texture = func -- прописываем в модулях по строке
 
+n.myDev = {
+	["Нойзекс"] 	= true,
+	["Дэмьер"] 		= true,
+	["Ковальска"] 	= true,
+	["Герсона"] 	= true,
+	["Ыож"]			= true,
+	--["Твитти"] 		= true,
+}
+
 n.dummy = function() return end
 n.conFunc = function( var, ...)
 	if n.conFuncs[var] then

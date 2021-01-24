@@ -7,6 +7,7 @@ local cfg = {
   	scale = 1,
   	point = { "TOPRIGHT", UIParent, "TOPRIGHT", 10, 10},
 }
+
 	--onenter/show
 local function Show()
   	GameTimeFrame:SetAlpha( 0.9)
@@ -69,8 +70,15 @@ local function MiniInit()
 	--Minimap
 	local mediapath = "interface\\addons\\yoFrame\\Media\\"
 	--Minimap:SetMaskTexture(mediapath.."mask2")
+
 	Minimap:ClearAllPoints()
-	Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -5)
+	if yo.Addons.minimapMove then
+		Minimap:SetPoint("TOPRIGHT", n.Addons.moveFrames.yoMoveMap, "TOPRIGHT", -5, -5)
+	else
+		Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -5)
+	end
+
+	--Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -5)
 	Minimap:SetSize( yo.Addons.MiniMapSize, yo.Addons.MiniMapSize) --correct the cluster offset
 
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')

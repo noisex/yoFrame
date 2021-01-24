@@ -55,46 +55,6 @@ local tankAlerts = {
 		[8936] 	= { diffID = 1, stack = 1, alertTo = "tanksBads", alertMSG = "taunt huyos" }, -- Нестерпимая боль
 	},
 }
---status = UnitThreatSituation("unit"[, "otherunit"])
---With otherunit specified
---nil = unit is not on otherunit's threat table.
---0 = not tanking, lower threat than tank.
---1 = not tanking, higher threat than tank.
---2 = insecurely tanking, another unit have higher threat but not tanking.
---3 = securely tanking, highest threat
---		r, g, b = GetThreatStatusColor(status)
-
---isTanking, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation("unit", "mob")
---self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", self.onChangeTarget)
---self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", self.onChangeTarget)
---UNIT_THREAT_LIST_UPDATE: unitTarget
-
-	function ta:UnitGUID(unit)
-		local guid = UnitGUID(unit)
-		if guid then
-			return guid
-		end
-	end
-
-function ta:freeTank(targetUnit, sourceUnit)
-	return UnitDetailedThreatSituation(sourceUnit or "player", targetUnit)
-end
-
-function ta:Tanking(targetUnit, sourceUnit)
-	return UnitDetailedThreatSituation(sourceUnit or "player", targetUnit)
-end
-
-function ta:Tank(unit)
-	if unit then
-		return GetPartyAssignment("MAINTANK", unit) or UnitGroupRolesAssigned( unit) == "TANK"
-	else
-		return n.myRole == "TANK"
-	end
-end
-
-function ta:Me( guid)
-	return n.myGUID == guid
-end
 
 local function updateGBTank(...)
 	if n.tankOurHeros then

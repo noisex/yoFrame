@@ -93,8 +93,9 @@ local function raidShared(self, unit)
 					( self:GetParent():GetName():match( "yo_Raid")) and "raid" or
 					( self:GetParent():GetName():match( "yo_Tank")) and "tank" or unit
 
-	self.unitT  = 	self:GetAttribute("unitsuffix") == "target" and true
-	self.unitTT = 	self:GetAttribute("unitsuffix") == "targettarget" and true
+	self.cUnit 	= unit
+	self.unitT  = self:GetAttribute("unitsuffix") == "target" and true
+	self.unitTT = self:GetAttribute("unitsuffix") == "targettarget" and true
 	self.updateOptions = raidShared
 
 	GetColors( self)
@@ -473,14 +474,14 @@ local function raidShared(self, unit)
 
 		self.Debuffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( unpack( n.tCoord))
-			button.timerPos = { "TOP", button, "BOTTOM", 0, -3}
+			button.cd.timerPos = { "CENTER", button, "BOTTOM", 2, 0}
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
-			button.count:ClearAllPoints()
-			button.count:SetPoint( "CENTER", button, "TOPRIGHT", -3, -3)
 			local fn, fs, fd = button.count:GetFont()
+			button.count:ClearAllPoints()
+			button.count:SetPoint( "CENTER", button, "TOPRIGHT", 0, 0)
+			button.count:SetTextColor(0, 1, 0, 1)
 			button.count:SetFont( n.fontpx, fs+2)
-			button.count:SetTextColor(1, 1, 0, 1)
 			button.count:SetShadowOffset( 1, -1)
 			button.count:SetShadowColor( 0, 0, 0, 1)
 			if sizeAuras >= 30 then

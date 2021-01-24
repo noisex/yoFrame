@@ -2,20 +2,64 @@ local addon, ns = ...
 local L, yo, n = unpack( ns)
 
 local _G = _G
---local moveUnlockState
 
-local UIParent, CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
-	= UIParent, CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
+local CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
+	= CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
 
+yo_Position 		= {}
 n.Addons.moveFrames = {}
-local mf = n.Addons.moveFrames
 
-yo_Position = {}
+n.Addons.snapBars 	= {}
+n.Addons.snapBars[#n.Addons.snapBars + 1] = UIParent
+n.Addons.snapBars[#n.Addons.snapBars + 1] = n.infoTexts.LeftDataPanel
+n.Addons.snapBars[#n.Addons.snapBars + 1] = n.infoTexts.RightDataPanel
+
+local mf 		= n.Addons.moveFrames
+local sticky 	= n.LIBS.Sticky
 
 --GLOBALS: yo_Position
+----------------------------------------------------------------------------------------
+--	Grid on screen
+----------------------------------------------------------------------------------------
+n.grid = function( show)
+
+	if show then
+		if not n.gridFrame then
+			n.gridFrame = CreateFrame("Frame", nil, UIParent)
+			n.gridFrame:SetFrameStrata("BACKGROUND")
+			n.gridFrame:SetAllPoints(UIParent)
+			local width = GetScreenWidth() / 128
+			local height = GetScreenHeight() / 72
+			for i = 0, 128 do
+				local texture = n.gridFrame:CreateTexture(nil, "BACKGROUND")
+				if i == 64 then
+					texture:SetColorTexture(1, 0, 0, 0.8)
+				else
+					texture:SetColorTexture(0, 0, 0, 0.8)
+				end
+				texture:SetPoint("TOPLEFT", n.gridFrame, "TOPLEFT", i * width - 1, 0)
+				texture:SetPoint("BOTTOMRIGHT", n.gridFrame, "BOTTOMLEFT", i * width, 0)
+			end
+			for i = 0, 72 do
+				local texture = n.gridFrame:CreateTexture(nil, "BACKGROUND")
+				if i == 36 then
+					texture:SetColorTexture(1, 0, 0, 0.8)
+				else
+					texture:SetColorTexture(0, 0, 0, 0.8)
+				end
+				texture:SetPoint("TOPLEFT", n.gridFrame, "TOPLEFT", 0, -i * height)
+				texture:SetPoint("BOTTOMRIGHT", n.gridFrame, "TOPRIGHT", 0, -i * height - 1)
+			end
+		end
+		n.gridFrame:Show()
+	else
+		if n.gridFrame then
+			n.gridFrame:Hide()
+		end
+	end
+end
 
 n.setAnchPosition = function(anch, realAnch)
-
 	local ap, _, rp, x, y = anch:GetPoint()
 
 	if realAnch then
@@ -27,11 +71,23 @@ n.setAnchPosition = function(anch, realAnch)
 end
 
 local OnDragStart = function(self)
-	self:StartMoving()
+
+	if sticky and not IsShiftKeyDown() then
+		self.stick = true
+		sticky:StartMoving( self, n.Addons.snapBars, self.snapOffset, self.snapOffset, self.snapOffset, self.snapOffset)
+	else
+		self.stick = false
+		self:StartMoving()
+	end
 end
 
 local OnDragStop = function(self)
-	self:StopMovingOrSizing()
+
+	if sticky and self.stick then
+		sticky:StopMoving(self)
+	else
+		self:StopMovingOrSizing()
+	end
 	n.setAnchPosition(self)
 end
 
@@ -46,6 +102,7 @@ local function framemove(f)
 end
 
 function n.moveCreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
+	--print(name, text, width, height, x, y, p1, p2, anchor)
 	local t1 = ( p1 or "CENTER")
 	local t2 = ( p2 or "CENTER")
 	local anchorTo = anchor and anchor or UIParent
@@ -85,12 +142,16 @@ function n.moveCreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
 	f.text:SetPoint("CENTER")
 	f.text:SetText(text)
 
+	f.snapOffset = -3
 	n.Addons.moveFrames[f:GetName()] = f
+	n.Addons.snapBars[#n.Addons.snapBars +1] = f
 end
 
 function n.moveAnchorsUnlock()
 	print("|cff00a2ffyoFrame:|r all frames unlocked")
 	n.moveUnlockState = true
+	n.grid( true)
+
 	for _, f in pairs(n.Addons.moveFrames) do
 		--f = v --_G[v]
 		f.dragtexture:SetAlpha(1)
@@ -103,6 +164,7 @@ end
 function n.moveAnchorsLock()
 	print("|cff00a2ffyoFrame:|r all frames locked")
 	n.moveUnlockState = false
+	n.grid( false)
 	for _, f in pairs(n.Addons.moveFrames) do
 		--f = _G[v]
 		f.dragtexture:SetAlpha(0)
@@ -121,7 +183,6 @@ end
 ns.toggleMove = function ()
 	if InCombatLockdown() then print("No, not in comabt only...") return end
 	--PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
-
 	if not n.moveUnlockState then
 		n.moveAnchorsUnlock()
 		isAligning = true
@@ -159,11 +220,26 @@ n.moveRestoreUI = function(self)
 		end)
 		return
 	end
+
 	for frame_name, SetPoint in pairs( yo_Position) do
-		if _G[frame_name] then
-			_G[frame_name]:ClearAllPoints()
-			_G[frame_name]:SetPoint(unpack(SetPoint))
+		local frame = n.Addons.moveFrames[frame_name]
+
+		if frame then
+			local p1 = SetPoint[1] or "CENTER"
+			local an = SetPoint[2] or UIParent
+			local p2 = SetPoint[3] or "CENTER"
+			local x =  SetPoint[4] or 0
+			local y =  SetPoint[5] or 0
+			--print( "mf = ", frame_name, n.Addons.moveFrames[frame_name], " ]]]", p1, an, p2, x, y)
+
+			frame:ClearAllPoints()
+			frame:SetPoint( p1, an, p2, x, y)
 		end
+		--if _G[frame_name] then
+		--	print(frame_name, _G[frame_name])
+		--	_G[frame_name]:ClearAllPoints()
+		--	_G[frame_name]:SetPoint(unpack(SetPoint))
+		--end
 	end
 end
 
@@ -191,3 +267,10 @@ n.moveCreateAnchor("yoMoveToolTip",		"Move ToolTips", 	150, 100, -5, 230, 	"BOTT
 n.moveCreateAnchor("yoMoveLoot", 		"Move Loot", 		250, 50, 10, -270, 	"TOPLEFT","TOPLEFT")
 
 n.moveCreateAnchor("yoMoveAltPower", 	"Move Power Alt Bar", 250, 70, 0, -150, "CENTER", "TOP")
+
+if yo.Addons.minimapMove then
+	local x = yo.Addons.MiniMapSize + 10
+	n.moveCreateAnchor("yoMoveMap", 		"Move MiniMap",		x, x, -0, -0, 		"TOPRIGHT", "TOPRIGHT")
+	n.moveCreateAnchor("yoMoveBuff", 		"Move Buffs", 		400, 40, -(x+5), 0, "TOPRIGHT", "TOPRIGHT")
+	--n.moveCreateAnchor("yoMoveDebuff", 		"Move Debuff", 		400, 40, -(x+5), -115, "TOPRIGHT", "TOPRIGHT")
+end

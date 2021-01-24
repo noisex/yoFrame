@@ -129,7 +129,11 @@ local function BuffDEbuffDesign(...)
 	if BuffFrame and BuffFrame.moved ~= true then
 		BuffFrame:ClearAllPoints()
 		BuffFrame.ClearAllPoints = n.dummy
-		BuffFrame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -10, 0)
+		if yo.Addons.minimapMove then
+			BuffFrame:SetPoint("TOPRIGHT", n.Addons.moveFrames.yoMoveBuff, "TOPRIGHT", 0, 0)
+		else
+			BuffFrame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -10, 0)
+		end
 		BuffFrame.SetPoint = n.dummy
 		BuffFrame.moved = true
 	end

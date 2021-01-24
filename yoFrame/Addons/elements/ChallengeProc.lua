@@ -34,7 +34,7 @@ local function resolve_npc_progress_value(npc_id, is_teeming)
   	local value = nil
 
   	if npcVals and npcVals[npc_id] then
-  		value = npcVals[npc_id]
+  		value = npcVals[npc_id].count
 		--for val, count in pairs( npcVals[npc_id]) do value = val end
   	end
 

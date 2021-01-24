@@ -65,6 +65,7 @@ DebuffWhiteListTemplate = {
 		[SpellName(270332)] = true,	-- Феромонная бомба
 		[SpellName(217200)] = true,	-- Разрывательный выстрел
 		[SpellName(257284)] = true,	-- Метка
+		[SpellName(212431)] = true,	-- Разрывной выстрел
 	--[SpellName(272790)] = true,	-- Разрывательный выстрел PET
 	},
 	["MAGE"] = {

@@ -2,6 +2,23 @@ local L, yo, n = unpack( select( 2, ...))
 local _, addon = ...
 local oUF = addon.oUF
 
+local _G = _G
+local UIParent = UIParent
+
+local InCombatLockdown, tremove, CreateFrame, Screenshot, unpack, tinsert, GetMerchantItemMaxStack, BuyMerchantItem, GetMerchantItemInfo, select, GetMerchantItemLink, UnitIsAFK, GetItemInfo, IsAltKeyDown
+	= InCombatLockdown, tremove, CreateFrame, Screenshot, unpack, tinsert, GetMerchantItemMaxStack, BuyMerchantItem, GetMerchantItemInfo, select, GetMerchantItemLink, UnitIsAFK, GetItemInfo, IsAltKeyDown
+
+local RepairAllItems, GetAverageItemLevel, PlaySound, GetRepairAllCost, print, GetContainerNumSlots, GetContainerItemLink, GetContainerItemID, GetContainerItemInfo, UseContainerItem, wipe, collectgarbage
+	= RepairAllItems, GetAverageItemLevel, PlaySound, GetRepairAllCost, print, GetContainerNumSlots, GetContainerItemLink, GetContainerItemID, GetContainerItemInfo, UseContainerItem, wipe, collectgarbage
+
+local CanGuildBankRepair, math_rad, format, string_find, formatMoney
+	= CanGuildBankRepair, math.rad, format, string.find, formatMoney
+
+local REPAIR_COST = REPAIR_COST
+local ERR_NOT_IN_COMBAT= ERR_NOT_IN_COMBAT
+local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES
+local STAT_AVERAGE_ITEM_LEVEL = STAT_AVERAGE_ITEM_LEVEL
+local SPELL_FAILED_NOT_ENOUGH_CURRENCY = SPELL_FAILED_NOT_ENOUGH_CURRENCY
 ----------------------------------------------------------------------------------------
 --	Garbage Collect
 ----------------------------------------------------------------------------------------
@@ -23,7 +40,7 @@ end)
 ----------------------------------------------------------------------------------------
 
 local function test_icon()
-	f = CreateFrame( "Button", "yo_test", UIParent) --, "SecureUnitButtonTemplate")
+	local f = CreateFrame( "Button", "yo_test", UIParent) --, "SecureUnitButtonTemplate")
 	f:SetWidth(50)
 	f:SetHeight(50)
 	f:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
@@ -52,27 +69,27 @@ end
 ----------------------------------------------------------------------------------------
 --	Test UnitFrames(by community)
 ----------------------------------------------------------------------------------------
-local moving = false
-SlashCmdList.TEST_YO = function(msg)
-	if InCombatLockdown() then print("|cffffff00"..ERR_NOT_IN_COMBAT.."|r") return end
-	unit = "target"
-	if not moving then
-		for i = 1, MAX_BOSS_FRAMES do
-			_G["yo_Boss"..i].Hide = function() end
-			_G["yo_Boss"..i].unit = unit
-			_G["yo_Boss"..i]:Show()
-			initFrame( _G["yo_Boss"..i], unit)
-		end
-		moving = true
-	else
-		for i = 1, MAX_BOSS_FRAMES do
-			_G["yo_Boss"..i].Hide = nil
-		end
-		moving = false
-	end
-end
-SLASH_TEST_YO1 = "/yotest"
-SLASH_TEST_YO2 = "/нщеуые"
+--local moving = false
+--SlashCmdList.TEST_YO = function(msg)
+--	if InCombatLockdown() then print("|cffffff00"..ERR_NOT_IN_COMBAT.."|r") return end
+--	local unit = "target"
+--	if not moving then
+--		for i = 1, MAX_BOSS_FRAMES do
+--			_G["yo_Boss"..i].Hide = function() end
+--			_G["yo_Boss"..i].unit = unit
+--			_G["yo_Boss"..i]:Show()
+--			initFrame( _G["yo_Boss"..i], unit)
+--		end
+--		moving = true
+--	else
+--		for i = 1, MAX_BOSS_FRAMES do
+--			_G["yo_Boss"..i].Hide = nil
+--		end
+--		moving = false
+--	end
+--end
+--SLASH_TEST_YO1 = "/yotest"
+--SLASH_TEST_YO2 = "/нщеуые"
 
 ---------------------------------------------------------------------------------------------------
 --- Auto Repare and Gray Sell
@@ -95,7 +112,7 @@ local function SellGray()
 					p = Mult1 * Mult2
 				end
 
-				if select(3, GetItemInfo(l)) == 0 and p > 0 then
+				if select(3, GetItemInfo(l)) == 0 and p > 0 or string_find( l, "Карта Крови") then
 					UseContainerItem(b, s)
 					--PickupMerchantItem()
 					c = c + p
@@ -105,7 +122,7 @@ local function SellGray()
 	end
 
 	if c>0 then
-		DEFAULT_CHAT_FRAME:AddMessage(L["JUNKSOLD"] .." " .. formatMoney( c),255,255,0)
+		print(L["JUNKSOLD"] .." " .. formatMoney( c),255,255,0)
 	end
 end
 
@@ -120,23 +137,23 @@ local function OnMerchEvent(self,event)
     	end
 
   		if yo.Addons.AutoRepair then
-			cost, possible = GetRepairAllCost()
+			local cost, possible = GetRepairAllCost()
 			if cost > 0 then
 				if possible then
 					if CanGuildBankRepair() and  yo.Addons.RepairGuild then
 						RepairAllItems( true)
-						PlaySound(SOUNDKIT.ITEM_REPAIR);
+						PlaySound( _G.SOUNDKIT.ITEM_REPAIR);
 						cost, possible = GetRepairAllCost()
 						if possible then
 							RepairAllItems()
 						end
 					else
 						RepairAllItems()
-						PlaySound(SOUNDKIT.ITEM_REPAIR);
+						PlaySound( _G.SOUNDKIT.ITEM_REPAIR);
 					end
-					DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. formatMoney( cost),255,255,0)
+					print( REPAIR_COST .." " .. formatMoney( cost),255,255,0)
 				else
-					DEFAULT_CHAT_FRAME:AddMessage( REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY,255,0,0)
+					print( REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY,255,0,0)
 				end
 			end
 		end
@@ -231,15 +248,15 @@ hooksecurefunc("PaperDollFrame_SetItemLevel", function(self, unit)
 	if unit ~= "player" then return end
 
 	local total, equip = GetAverageItemLevel()
-	if total > 0 then total = string.format("%.1f", total) end
-	if equip > 0 then equip = string.format("%.1f", equip) end
+	if total > 0 then total = format("%.1f", total) end
+	if equip > 0 then equip = format("%.1f", equip) end
 
 	local ilvl = equip
 	if equip ~= total then
 		ilvl = equip.." / "..total
 	end
 
-	CharacterStatsPane.ItemLevelFrame.Value:SetText(ilvl)
+	_G.CharacterStatsPane.ItemLevelFrame.Value:SetText(ilvl)
 
 	self.tooltip = detailColor..STAT_AVERAGE_ITEM_LEVEL.." "..ilvl
 end)
@@ -286,10 +303,10 @@ end
 function f:OnEvent(event)
   if event == "PLAYER_LOGIN" then
     self.model:SetUnit("player")
-    self.model:SetRotation(math.rad(-110))
+    self.model:SetRotation(math_rad(-110))
     self.galaxy:SetDisplayInfo(67918)
     self.galaxy:SetCamDistanceScale(2.2)
-    self.galaxy:SetRotation(math.rad(180))
+    self.galaxy:SetRotation(math_rad(180))
     return
   end
   if UnitIsAFK("player") and yo.Addons.afk then
@@ -376,11 +393,11 @@ f:RegisterEvent("PLAYER_LOGIN")
 --VehicleAnchor:SetPoint(unpack(C.position.vehicle))
 --VehicleAnchor:SetSize(130, 130)
 
-hooksecurefunc(VehicleSeatIndicator, "SetPoint", function(_, _, parent) --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+hooksecurefunc( _G.VehicleSeatIndicator, "SetPoint", function(_, _, parent) --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if parent == "MinimapCluster" or parent == _G["MinimapCluster"] then
-		VehicleSeatIndicator:ClearAllPoints()
-		VehicleSeatIndicator:SetPoint("TOPRIGHT", Minimap, "BOTTOMLEFT", -110, -15)
-		VehicleSeatIndicator:SetFrameStrata("LOW")
+		_G.VehicleSeatIndicator:ClearAllPoints()
+		_G.VehicleSeatIndicator:SetPoint("TOPRIGHT", _G.Minimap, "BOTTOMLEFT", -110, -15)
+		_G.VehicleSeatIndicator:SetFrameStrata("LOW")
 	end
 end)
 

@@ -7,9 +7,208 @@
 	<Script file="Gold.lua"/>
 	<Script file="Guild.lua"/>
 	<Script file="SpecLoot.lua"/>
+	<Script file='sound.lua'/>
 	<Script file="Time.lua"/>
 	<Script file="dps.lua"/>
 	<Script file="heal.lua"/>
 	<Script file="newFriends.lua"/>
 	<Script file="infoLauncher.lua"/>
+
+
+	<Slider name="TPOptionsSliderTemplate" orientation="VERTICAL" inherits="BackdropTemplate" virtual="true" enableMouse="true" EnableMouseWheel="true">
+		<Size>
+			<AbsDimension x="10" y="100"/>
+		</Size>
+		<HitRectInsets>
+			<AbsInset left="-10" right="-10" top="0" bottom="0"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontGreenSmall">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="2" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentLow" inherits="GameFontHighlightSmall" text="LOW">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP">
+							<Offset>
+								<AbsDimension x="0" y="3"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentHigh" inherits="GameFontHighlightSmall" text="HIGH">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Vertical">
+			<Size>
+				<AbsDimension x="32" y="32"/>
+			</Size>
+		</ThumbTexture>
+		<Scripts>
+			<OnValueChanged>
+				TPVolumeSlider_OnValueChanged(self);
+			</OnValueChanged>
+			<OnShow>
+				TPVolumeSlider_OnShow(self);
+			</OnShow>
+			<OnLoad>
+				TPOptionsSliderTemplate_OnLoad(self);
+			</OnLoad>
+			<OnMouseWheel>
+			  	TPUnifiedVolumeControlSlider_OnMouseWheel(self, delta);
+			</OnMouseWheel>
+ 			<OnEnter>
+				TPVolumeSlider_OnEnter(self);
+			</OnEnter>
+			<OnLeave>
+				TPVolumeSlider_OnLeave(self)
+			</OnLeave>
+		</Scripts>
+	</Slider>
+
+		<Frame name="TPVolumeControlFrameTemplate" inherits="BackdropTemplate" virtual="true" hidden="true">
+		<Size>
+			<AbsDimension x="350" y="200" />
+		</Size>
+		<Layers>
+			<Layer>
+				<FontString name="$parentTitle" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-10" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentMasterTitle" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-140" y="-30" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSoundTitle" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-70" y="-30" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentMusicTitle" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-30" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentAmbienceTitle" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="70" y="-30" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentDialogTitle" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="140" y="-30" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<Slider name="TPMasterVolumeControlSlider" inherits="TPOptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="-140" y="-60"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="TPSoundVolumeControlSlider" inherits="TPOptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="-70" y="-60"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="TPMusicVolumeControlSlider" inherits="TPOptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="0" y="-60"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="TPAmbienceVolumeControlSlider" inherits="TPOptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="70" y="-60"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="TPDialogVolumeControlSlider" inherits="TPOptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="140" y="-60"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TPVolumeControlFrame_OnLoad(self);
+			</OnLoad>
+			<OnEnter>
+				TPVolumeControlFrame_OnEnter(self);
+			</OnEnter>
+			<OnLeave>
+				TPVolumeControlFrame_OnLeave(self, 0.5);
+			</OnLeave>
+<!-- 			<OnUpdate>
+				TPVolumeControlFrame_OnUpdate(self, elapsed);
+			</OnUpdate> -->
+		</Scripts>
+	</Frame>
+
+	<Frame parent="UIParent">
+		<Frames>
+			<Frame name="TPVolumeControlFrame" inherits="TPVolumeControlFrameTemplate" frameStrata="FULLSCREEN" toplevel="true" />
+		</Frames>
+	</Frame>
 </Ui>

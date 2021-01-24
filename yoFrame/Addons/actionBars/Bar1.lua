@@ -21,7 +21,9 @@ function ActionBars:CreateBar1()
 	local NumRow = ceil(12 / ButtonsPerRow)
 
 	local ActionBar1 = CreateFrame("Frame", "yoActionBar1", n.PetHider, "SecureHandlerStateTemplate")
-	ActionBar1:SetPoint("TOPLEFT", yoMoveABar1, "TOPLEFT", 0, 0)
+	SecureHandlerSetFrameRef( ActionBar1, 'MainMenuBarArtFrame', _G.MainMenuBarArtFrame)
+
+	ActionBar1:SetPoint("TOPLEFT", n.Addons.moveFrames.yoMoveABar1, "TOPLEFT", 0, 0)
 	ActionBar1:SetFrameStrata("LOW")
 	ActionBar1:SetFrameLevel(10)
 	ActionBar1:SetWidth((Size * ButtonsPerRow) + (Spacing * (ButtonsPerRow + 1)))

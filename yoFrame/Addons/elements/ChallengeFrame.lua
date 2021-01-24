@@ -257,7 +257,7 @@ local function UpdateAffixes( self)
 
     designed = true
 	skinDungens()
-	C_Timer.After( 0.7, CreateLiders) --CreateLiders( self)
+	C_Timer.After( 0.9, CreateLiders) --CreateLiders( self)
 end
 
 local function makeAffix(parent)
@@ -443,18 +443,17 @@ local function OnEvent( self, event, name, sender, ...)
 
 	elseif name == "Blizzard_GarrisonUI" then
 		if yo.Addons.AutoCovenantsMission then
-			local missionComplete 	= _G.CovenantMissionFrame.MissionComplete
 			local butonContinue 	= _G.CovenantMissionFrame.MissionComplete.CompleteFrame.ContinueButton
 			local buttonComplete 	= _G.CovenantMissionFrame.MissionComplete.RewardsScreen.FinalRewardsPanel.ContinueButton
+			local nextButton 		= _G.GarrisonMissionFrame.MissionComplete.NextMissionButton
+			local clickFrame 		= _G.GarrisonMissionFrame.MissionComplete.BonusRewards.ChestModel.ClickFrame
 
-			butonContinue:HookScript("OnShow", function(self, ...)
-				--C_Timer.After( 0.2, function() 	_G.CovenantMissionFrame.MissionComplete:AdvanceStage() end) end)
-				--print( missionComplete.autoCombatResult)
-				C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end)
+			clickFrame:HookScript("OnShow", function(self, ...)
+				GarrisonMissionCompleteChest_OnMouseDown( clickFrame)
+				C_Timer.After( 0.4, function( ) _G.GarrisonMissionFrame:NextMission(); end)
 			end)
 
-			--buttonComplete:HookScript("OnShow", function(self, ...)
-			--	C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end) end)
+			butonContinue:HookScript("OnShow", function(self, ...)	C_Timer.After( 0.2, function( ) buttonComplete:OnClick() end) end)
 		end
 	end
 end
@@ -462,3 +461,4 @@ end
 local logan = CreateFrame("Frame", nil, UIParent)
 logan:RegisterEvent("ADDON_LOADED")
 logan:SetScript("OnEvent", OnEvent)
+

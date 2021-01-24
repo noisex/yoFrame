@@ -2,6 +2,8 @@ local addon, ns = ...
 local L, yo, n = unpack( ns)
 local oUF = ns.oUF
 
+if not yo.Chat.wim then return end
+
 local _G = _G
 local yoEF = n.Addons
 local minAlpha 	= 1

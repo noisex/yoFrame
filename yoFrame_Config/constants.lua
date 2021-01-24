@@ -117,6 +117,7 @@ yo["Addons"] = {
 	["hideHead"]					= true,
 	["hideForAll"]					= false,
 	["hideSound"]					= false,
+	["minimapMove"]					= true,
 }
 
 yo["ActionBar"] = {
@@ -300,6 +301,7 @@ yo["UF"] 	= {
 	["rightAbsorb"]		= true,
 	["hideOldAbsorb"]	= true,
 	["enableSPower"]	= false,
+	["powerHeight"]		= 4,
 }
 
 yo["Raid"] = {

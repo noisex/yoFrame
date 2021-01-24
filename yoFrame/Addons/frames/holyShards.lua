@@ -163,7 +163,7 @@ function n.createShardsBar( f)
 	end
 
 	holyShards:SetWidth( f:GetWidth() / 2)
-	holyShards:SetHeight( 6)
+	holyShards:SetHeight( yo.UF.powerHeight + 2)
 	holyShards:SetFrameLevel(9)
 
 	holyShards:RegisterUnitEvent("UNIT_POWER_UPDATE", f.unit)

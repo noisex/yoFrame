@@ -55,8 +55,6 @@ updateErrors()
 
 SetCVar("alwaysShowActionBars", 1)
 
-SetCVar("floatingCombatTextCombatHealing", 0)
-SetCVar("floatingCombatTextCombatDamage", 0)
 SetCVar("buffDurations",1)
 
 SetCVar("screenshotQuality", 10)
@@ -72,6 +70,11 @@ SetCVar("countdownForCooldowns", 0)
 SetCVar("showTargetOfTarget", 1)
 
 SetCVar("autoLootDefault", 1)
-SetCVar("doNotFlashLowHealthWarning", 1)
 
 SetCVar("SpellQueueWindow", yo.CastBar.BCB.QueueWindow)
+
+if n.myDev[n.myName] then
+	SetCVar("floatingCombatTextCombatHealing", 0)
+	SetCVar("floatingCombatTextCombatDamage", 0)
+	SetCVar("doNotFlashLowHealthWarning", 1)
+end

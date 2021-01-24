@@ -13,6 +13,7 @@
 	<Include file="LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
 
 	<Include file="oUF\oUF.xml"/>
+	<Script file="LibSimpleSticky\LibSimpleSticky.lua"/>
 	<Script file="oUF_DebuffHighlight.lua"/>
 	<Script file="GCD.lua"/>
 	<Script file= "AutoResurrect.lua"/>

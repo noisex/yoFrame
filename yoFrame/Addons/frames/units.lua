@@ -61,7 +61,7 @@ local function unitShared(self, unit)
 	local rtargetPos 		= { "CENTER", self, "TOP", 0, 2}
 	local healthTextPos		= { "TOPRIGHT", self, "TOPRIGHT", 0, -2}
 	local powerPos			= { "BOTTOM", self, "BOTTOM", 0, 4}
-	local powerHeight		= 4
+	local powerHeight		= yo.UF.powerHeight --4
 	local showLeader 		= true
 	local combatPos 		= 6
 	local nameTextSize		= n.fontsize

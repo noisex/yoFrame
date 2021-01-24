@@ -111,6 +111,12 @@ if ns:IsSameLocale("ruRU") then
 	L["EXPEDIT_COMPLETE"] = "А кто-то все еще не закрыл экспедиции недельные..."
 
 	L["MISC_SCROLL"] = "Чары на свиток"
+
+	L["VOLUME_TOOLTIP"] = "Контроль звука";
+
+	L["VOLUME_TOOLTIP_HINT1"] = "ЛКМ чтобы настроить"
+
+
 --[[
 L[""] 	= "
 L["DESC"] 	=

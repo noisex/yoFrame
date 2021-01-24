@@ -590,7 +590,7 @@ local function equipItem( slot, bagID, slotID, clink, iLvl, locLink, locLvl, ite
 	--dprint( "EQuipItem ", bagID, slotID, clink, iLvl, locLink, locLvl, itemEquipLoc)
 
 	--print(clink, locLink, itemEquipLoc, iLvl, locLvl, bagID, slotID, text)
-	if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and ( locitemRarity ~= 7 or locitemRarity ~= 0) then
+	if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and ( locitemRarity ~= 7 or itemRarity ~= 0) then
 		doEquip = true
 		if InCombatLockdown() then
 			print( L["put on"] .. text)

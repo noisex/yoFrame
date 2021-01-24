@@ -18,17 +18,8 @@ function isDruid( self)
 	end
 end
 
-local myDev = {
-	["Нойзекс"] 	= true,
-	["Дэмьер"] 		= true,
-	["Ковальска"] 	= true,
-	["Герсона"] 	= true,
-	["Ыож"]			= true,
-	--["Твитти"] 		= true,
-}
-
 dprint = function(...)
-	if myDev[n.myName] then
+	if n.myDev[n.myName] then
 		print( time(), "|cff33ff99yoDev:|cff999999", ... )
 	end
 end

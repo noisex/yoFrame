@@ -331,6 +331,7 @@ local function InitOptions()
 						set = function(info, r, g, b) Setlers( "Addons#MMCoordColor", strjoin(",", r, g, b)) end,},
 					MMCoordSize 	= {	order = 25,	type = "range", name = function(info) return tr( info[#info]) end,  min = 5, max = 16, step = 1, desc = L["DEFAULT"] .. 8,
 						disabled = function() return not yo.Addons.MiniMapCoord; end,	},
+					minimapMove 	= {	order = 30, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full", },
 				},
 			},
 
@@ -413,6 +414,7 @@ local function InitOptions()
 					debuffHight		= {	order = 50, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					rightAbsorb		= {	order = 55, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
 					hideOldAbsorb	= {	order = 60, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full",},
+					powerHeight		= {	order =	70,	type = "range",  	name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,},
 				},
 			},
 
@@ -934,6 +936,10 @@ local function InitOptions()
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
 				args = {
+					label11 = { order = 988, type = "description", name = "|cff00ff002021.01.20|r"
+						.."\n - [|cffff8000Инфотекст|r] Добавилась настройка звука"
+						.."\n - [|cffff8000Филгер|r] \n\n",
+					},
 					label10 = { order = 989,  type = "description", name = "|cff00ff002021.01.15|r"
 						.."\n - [|cffff8000Торгаст|r] Панелька для прикупленных у местных барыг юзабельных всяких шняжек, что бы не забывал их тыкать и было хорошооооо..."
 						.."\n - [|cffff8000Торгаст|r] Из ДБМа ловко подрезал список опасных кастов торгаст-мобов и немедленно их добавил в сюда, заябись же?"

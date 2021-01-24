@@ -309,6 +309,12 @@ local function updateName( self)
 			--self.Health.shadow:SetBackdropBorderColor( 0.09, 0.09, 0.09, 0.9)
 		end
 
+		if mobID and ( n.npcProgress[mobID] and not n.npcProgress[mobID].stun) then
+			self.stun:Show()
+		else
+			self.stun:Hide()
+		end
+
 		if mobID and n.animainfoNPC[mobID] and ( n.namePlates.CELLS and n.namePlates.CELLS > 0 ) then
 			local spellID 	= n.animainfoNPC[mobID]
             local icon 		= tempSpells[spellID] or select( 3, GetSpellInfo( spellID))
@@ -552,7 +558,7 @@ local function createNP(self, unit)
 	self.level = self.Health:CreateFontString(nil, "OVERLAY")
 	self.level:SetFont( n.font, n.fontsize, "THINOUTLINE")
 	self.level:SetTextColor(1, 1, 1)
-	self.level:SetPoint("LEFT", self.Health, "LEFT", 10, 0)
+	self.level:SetPoint("LEFT", self.Health, "LEFT", 13, 0)
 	tinsert( n.Addons.elements.strings, self.level)
 
 	--if yo.NamePlates.showPercTreat then
@@ -620,6 +626,12 @@ local function createNP(self, unit)
 	self.questIcon:SetPoint("RIGHT", self.Health, "LEFT", -2, 0)
 	self.questIcon:SetSize( 18, 18)
 	self.questIcon:Hide()
+
+	self.stun = self.disIcons:CreateTexture(nil, "BORDER")
+	self.stun:SetPoint("LEFT", self.Health, "LEFT", 2, 0)
+	self.stun:SetTexture( yo.Media.path .. "icons\\icon_red")
+	self.stun:SetSize( nameplateheight * 0.7, nameplateheight * 0.7)
+	self.stun:Hide()
 
 	self.anima = CreateFrame("Button", nil, self.Health)
 	self.anima:SetPoint("BOTTOM", self.Health, "TOP", 0, 15)
