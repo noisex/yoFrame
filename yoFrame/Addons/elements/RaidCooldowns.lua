@@ -8,9 +8,10 @@ if not yo.Addons.RaidCoolDowns then return end
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local filter = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
-local band = bit.band
-local sformat = format
+local filter 	= COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
+local band 		= bit.band
+local sformat 	= format
+local tc 		= n.Addons.torgastClicks
 
 local FormatTime = function(time)
 	if time >= 60 then
@@ -28,6 +29,7 @@ local CreateFS = function(frame, font, fsize, fstyle)
 end
 
 local StopTimer = function(self, bar)
+	if not bar then return end
 
 	bar:SetScript("OnUpdate", nil)
 	self.bars[bar.endTime] = nil
@@ -180,7 +182,9 @@ local OnEvent = function(self, event, ...)
 		if band(sourceFlags, filter) == 0 then return end
 
 		if raid_CD_Spells[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
-			StartTimer( self, strsplit( "-", sourceName), spellId)
+			if not n.Addons.torgastClicks.inTorghast then
+				StartTimer( self, strsplit( "-", sourceName), spellId)
+			end
 		end
 
 	elseif event == "CHALLENGE_MODE_START" then
@@ -196,19 +200,8 @@ local OnEvent = function(self, event, ...)
 		--end
 
 	elseif event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
-
-		--if UnitInRaid("player") and yo_Raid and not yo.Raid.raidTemplate == 3 then
-		--	yo_RaidCD:ClearAllPoints()
-		--	yo_RaidCD:SetPoint("TOPLEFT", yo_Raid, "BOTTOMLEFT", 25, -30)
-
-		--elseif UnitInParty("player") and yo_Party and not yo.Raid.raidTemplate == 3 then
-		--	yo_RaidCD:ClearAllPoints()
-		--	yo_RaidCD:SetPoint("TOPLEFT", yo_Party, "BOTTOMLEFT", 25, -30)
-
-		--else
-			yo_RaidCD:ClearAllPoints()
-			yo_RaidCD:SetPoint("BOTTOM", yoMoveRaidCD)
-		--end
+		yo_RaidCD:ClearAllPoints()
+		yo_RaidCD:SetPoint("BOTTOM", yoMoveRaidCD)
 	end
 end
 
@@ -223,7 +216,7 @@ RaidCDAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 --RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_START")
 RaidCDAnchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-RaidCDAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
+--RaidCDAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
 
 --RaidCDAnchor:RegisterEvent("ENCOUNTER_END")
 --RaidCDAnchor:RegisterEvent("ENCOUNTER_START")

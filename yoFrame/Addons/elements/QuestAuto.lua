@@ -206,10 +206,10 @@ local function OnEvent( self, event, ...)
 			local bestString, bestChoice, bestDelta = "", 1, -9999
 
 			for i=1, GetNumQuestChoices() do
+				local lootType = GetQuestItemInfoLootType( "choice", i)
 				local itemLink = GetQuestItemLink("choice", i)
-				--print(itemLink)
 
-				if not itemLink then
+				if not itemLink or lootType == 1 then
 					print( L["MAKE_CHOICE"])
 					return
 				end
@@ -243,6 +243,7 @@ local function OnEvent( self, event, ...)
 			print( bestString)
 			GetQuestReward( bestChoice)
 		else
+			print ( "GER WAN")
 			GetQuestReward( 1)
 		end
 

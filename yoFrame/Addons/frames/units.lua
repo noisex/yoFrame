@@ -361,7 +361,7 @@ local function unitShared(self, unit)
 ------------------------------------------------------------------------------------------------------
 ---											BEFORE END
 ------------------------------------------------------------------------------------------------------
-	if yo.UF.debuffHight then self.addDebuffHigh( self) end
+	if yo.UF.debuffHight and unit ~= "pet" then self.addDebuffHigh( self) end
 
 	--makeCastBar( self)
 

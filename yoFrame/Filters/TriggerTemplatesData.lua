@@ -4880,6 +4880,7 @@ templates.items = { -- Тринкеты вида [item ID] = spellID
   [181359]=336465,  [180117] = 345539,
 }
 
+
 ------------------------------
 -- Hardcoded race templates
 -------------------------------
@@ -5019,6 +5020,16 @@ end
 
 local function loadSpellsTable()
 	n.allPlayerSpell = {}
+	-- COVENANTS TO CD
+    for i, covenData in pairs( n.templates.covenants) do
+    	for i, spellData in pairs(  covenData.args) do
+    		if spellData.type == "ability" and spellData.class then
+    			local spellID = spellData.spell
+    			raid_CD_Spells[spellID] = GetSpellBaseCooldown( spellID) / 1000
+    		end
+    	end
+    end
+
 	-- COVENANTS
 	local covaData = n.templates.covenants[C_Covenants.GetActiveCovenantID()]
 	if covaData and covaData.args then

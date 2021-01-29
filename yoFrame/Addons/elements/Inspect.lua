@@ -6,8 +6,13 @@ local _G = _G
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, GetTime
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, GetTime
 
-local UIParent, GetItemInfo, GetInventoryItemLink, GetDetailedItemLevelInfo, CreateFrame, GetInventorySlotInfo, GetAverageItemLevel, GetInventoryItemsForSlot, strmatch
-	= UIParent, GetItemInfo, GetInventoryItemLink, GetDetailedItemLevelInfo, CreateFrame, GetInventorySlotInfo, GetAverageItemLevel, GetInventoryItemsForSlot, strmatch
+local UIParent, GetItemInfo, GetInventoryItemLink, GetDetailedItemLevelInfo, CreateFrame, GetInventorySlotInfo, GetAverageItemLevel, GetInventoryItemsForSlot, strmatch, GetInspectSpecialization
+	= UIParent, GetItemInfo, GetInventoryItemLink, GetDetailedItemLevelInfo, CreateFrame, GetInventorySlotInfo, GetAverageItemLevel, GetInventoryItemsForSlot, strmatch, GetInspectSpecialization
+
+local ItemLocation, Item, EquipmentManager_UnpackLocation
+	= ItemLocation, Item, EquipmentManager_UnpackLocation
+
+local RETRIEVING_ITEM_INFO = RETRIEVING_ITEM_INFO
 
 local slotsRight = {
 	["MainHandSlot"] = 1,
@@ -47,8 +52,12 @@ local MATCH_ENCHANT = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')
 --Trinket1Slot бесцветное гнездо
 
 local function CreateButtonsText(frame)
-	for _, slot in pairs(n.slots) do
+	for index, slot in pairs(n.slots) do
 		local button = _G[frame..slot]
+
+		button.slotName  = slot
+		button.slotID 	 = GetInventorySlotInfo( slot)
+
 		button.textLVL = button:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
 		button.textLVL:SetPoint("TOP", button, "TOP", 0, -2)
 		button.textLVL:SetText("")
@@ -56,6 +65,9 @@ local function CreateButtonsText(frame)
 		button.textEnch = button:CreateFontString(nil, "OVERLAY") --, "SystemFont_Outline_Small")
 		button.textEnch:SetFont( n.font, n.fontsize -1, n.fontstyle)
 		button.textEnch:SetText("")
+
+		button.IconBorder:SetTexture( yo.Media.borders)
+		button.IconBorder.SetTexture = n.dummy
 
 		if slotsRight[slot] then 				--- слоты справа
 			button.textEnch:SetJustifyH( "RIGHT")
@@ -69,6 +81,76 @@ local function CreateButtonsText(frame)
 	end
 end
 
+local function updateButtonSlotText( frameslot, unit)
+
+	local button = _G[frameslot]
+	local text 	 = button.textEnch
+	if not text then return end
+
+	button.IconBorder:SetTexture( yo.Media.borders)
+
+	local slot 	 = button.slotName
+	local id 	 = button.slotID
+	local unit 	 = unit or "player"
+	local specID = unit == "player" and n.mySpecNum or GetInspectSpecialization( unit)
+	local enchFound
+
+	local tt = CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate") --n.scanTooltip --
+	tt:SetOwner( UIParent, "ANCHOR_NONE")
+	tt:SetInventoryItem( unit, id)
+	tt:Show()
+
+	text:SetText( "")
+
+	for x = 9, tt:NumLines() do
+		local line = _G['yoFrame_ItemScanningTooltipTextLeft'..x]
+
+		if line then
+			local lineText = line:GetText()
+			if x == 1 and lineText == RETRIEVING_ITEM_INFO then
+				break -- 'tooSoon'
+			else
+				local enchant = strmatch(lineText, MATCH_ENCHANT)
+				if enchant then
+					enchFound = true
+					text:SetText( enchant)
+					text:SetTextColor( line:GetTextColor())
+					break
+				end
+			end
+		end
+	end
+
+	if specID and not enchFound and ( enchSlots[slot] or n.classSpecsCoords[specID].enchSlot == slot) then
+		text:SetText( "No enchant")
+		text:SetTextColor( 1, 0, 0)
+	end
+
+	local text = button.textLVL
+	local level
+
+	if unit ~= "player" then
+		local itemLink = GetInventoryItemLink( unit, id)
+		if itemLink then
+			level = GetDetailedItemLevelInfo( itemLink)
+		end
+	else
+		local item = Item:CreateFromEquipmentSlot( id)
+		level = item:GetCurrentItemLevel()
+	end
+
+	if slot == "ShirtSlot" or slot == "TabardSlot" then
+		text:SetText("")
+
+	elseif level then
+		text:SetText("|cFFFFFF00"..level)
+	else
+		text:SetText("")
+	end
+	tt:Hide()
+	tt:ClearLines()
+end
+
 local function UpdateButtonsText(frame)
 	local unit = "player"
 
@@ -76,80 +158,7 @@ local function UpdateButtonsText(frame)
 	if frame == "Inspect" then unit = _G.InspectFrame.unit end
 
 	for _, slot in pairs(n.slots) do
-		local text = _G[frame..slot].textEnch
-		if not text then return end
-
-		local id = GetInventorySlotInfo(slot)
-		local enchFound
-
-		local tt = CreateFrame("GameTooltip", "yoFrame_ItemScanningTooltip", UIParent, "GameTooltipTemplate") --n.scanTooltip --
-		tt:SetOwner( UIParent, "ANCHOR_NONE")
-		tt:SetInventoryItem( unit, id)
-		tt:Show()
-
-		text:SetText( "")
-
-		for x = 9, tt:NumLines() do
-			local line = _G['yoFrame_ItemScanningTooltipTextLeft'..x]
-
-			if line then
-				local lineText = line:GetText()
-				if x == 1 and lineText == RETRIEVING_ITEM_INFO then
-					break -- 'tooSoon'
-				else
-					local enchant = strmatch(lineText, MATCH_ENCHANT)
-					if enchant then
-						enchFound = true
-						text:SetText( enchant)
-						text:SetTextColor( line:GetTextColor())
-						--print( frame..slot, enchant)
-						break
-					end
-				end
-			end
-		end
-
-		if n.mySpecNum and not enchFound and ( enchSlots[slot] or n.classSpecsCoords[n.mySpecNum].enchSlot == slot) then
-			text:SetText( "No enchant")
-			text:SetTextColor( 1, 0, 0)
-		end
-
-		local text = _G[frame..slot].textLVL
-		local level
-
-		if frame == "Inspect" then
-			local itemLink = GetInventoryItemLink( unit, id)
-			if itemLink then
-				level = GetDetailedItemLevelInfo( itemLink)
-				--print(itemLink, level)
-				--level = _getRealItemLevel( id, "target", itemLink, true)
-			end
-		else
-			local item = Item:CreateFromEquipmentSlot( id)
-			level = item:GetCurrentItemLevel()
-		end
-
-		if slot == "ShirtSlot" or slot == "TabardSlot" then
-			text:SetText("")
-
-		elseif level then
-			--local itemLocation = ItemLocation:CreateFromEquipmentSlot( id)
-			--local item = Item:CreateFromItemLocation( itemLocation)
-			--local itemLocation = ItemLocation:CreateFromEquipmentSlot(self:GetID());
-			--if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink) then
-				--print( "AZERIT", itemLink)
-			--end
-			--if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLocation) then
-				--tprint( item)
-			--end
-			--wearBySlot[id] = ilvl
-
-			text:SetText("|cFFFFFF00"..level)
-		else
-			text:SetText("")
-		end
-		tt:Hide()
-		tt:ClearLines()
+		updateButtonSlotText( frame..slot, unit)
 	end
 end
 
@@ -276,7 +285,7 @@ OnEvent:SetScript("OnEvent", function(self, event)
 		UpdateButtonsText("Character")
 
 	elseif event == "ITEM_CHANGED" then
-		print("ITEM_CHANGED")
+		--print("ITEM_CHANGED")
 		UpdateButtonsText("Character")
 	else
 		UpdateButtonsText("Inspect")
@@ -313,15 +322,20 @@ hooksecurefunc("PaperDollFrame_SetItemLevel", function(self, unit)
 	CharacterStatsPane.ItemLevelFrame.Value:SetText(ilvl)
 end)
 
-hooksecurefunc("BindEnchant", 	 function(self, ...)
-	--print("BIND IT")
-	C_Timer.After(2, function ()
-		UpdateButtonsText("Character")
-	end)
-end)
+--hooksecurefunc("BindEnchant", 	 function(self, ...)
+--	--print("BIND IT")
+--	C_Timer.After(2, function ()
+--		UpdateButtonsText("Character")
+--	end)
+--end)
 
-hooksecurefunc("ReplaceEnchant", function(self, ...)
-	C_Timer.After( 2, function ()
-		UpdateButtonsText("Character")
-	end)
+--hooksecurefunc("ReplaceEnchant", function(self, ...)
+--	C_Timer.After( 2, function ()
+--		UpdateButtonsText("Character")
+--	end)
+--end)
+
+hooksecurefunc( "PaperDollItemSlotButton_Update", function(self, ...)
+	--print( "PAPERDOLL ", self, self:GetName(), ...)
+	updateButtonSlotText( self:GetName())
 end)

@@ -392,7 +392,10 @@ n.moveCreateAnchor("yoMoveExtr", 	"Move Extro Button",  130, 60, 0, 	150, 	"BOTT
 PlayerPowerBarAlt:ClearAllPoints()
 PlayerPowerBarAlt:SetPoint('CENTER', yoMoveAltPower, 'CENTER')
 PlayerPowerBarAlt:SetParent(yoMoveAltPower)
-PlayerPowerBarAlt.ignoreFramePositionManager = true
+PlayerPowerBarAlt:SetScale( 0.75, 0.75)
+PlayerPowerBarAlt.ClearAllPoints = n.dummy
+PlayerPowerBarAlt.SetPoint = n.dummy
+--PlayerPowerBarAlt.ignoreFramePositionManager = true
 
 ActionBars:RegisterEvent("PLAYER_ENTERING_WORLD")
 ActionBars:RegisterEvent("PLAYER_LOGIN")

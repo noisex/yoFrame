@@ -26,7 +26,7 @@ n.blackSpells = {
 	[124273] = true, -- Stagger
 	[117870] = true, -- Touch of The Titans
 	[123981] = true, -- Perdition
-	[15007]  = true, -- Ress Sickness
+	--[15007]  = true, -- Ress Sickness
 	[113942] = true, -- Demonic: Gateway
 	[89140]  = true, -- Demonic Rebirth: Cooldown
 

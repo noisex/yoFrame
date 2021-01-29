@@ -266,7 +266,7 @@ n.moveCreateAnchor("yoMoveRUP", 		"Move Utility Panel", 226, 18, 0, -10, 	"TOP",
 n.moveCreateAnchor("yoMoveToolTip",		"Move ToolTips", 	150, 100, -5, 230, 	"BOTTOMRIGHT", "BOTTOMRIGHT")
 n.moveCreateAnchor("yoMoveLoot", 		"Move Loot", 		250, 50, 10, -270, 	"TOPLEFT","TOPLEFT")
 
-n.moveCreateAnchor("yoMoveAltPower", 	"Move Power Alt Bar", 250, 70, 0, -150, "CENTER", "TOP")
+n.moveCreateAnchor("yoMoveAltPower", 	"Move Power Alt Bar", 180, 36, 0, -100, "CENTER", "TOP")
 
 if yo.Addons.minimapMove then
 	local x = yo.Addons.MiniMapSize + 10

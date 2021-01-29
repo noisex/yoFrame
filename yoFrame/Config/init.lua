@@ -23,6 +23,34 @@ _G[AddOnName] = engine
 
 -- item maska 20569, 20570, 49215, 20392, 34001, 20565
 
+
+local oops = false
+if 	   IsAddOnLoaded("ElvUI") 		then oops = "ElvUI"
+elseif IsAddOnLoaded("ShestakUI") 	then oops = "ShestakUI"
+elseif IsAddOnLoaded("Tukui") 		then oops = "Tukui" end
+
+StaticPopupDialogs["CONFIRM_ADDON"] = {
+  	text = "Извиняюсь, но |cff00ffffyoFrame|r не совместим с таким модом как |cffff0000%s|r. Вам придется сделать свой выбор... отключить |cff00ffffyoFrame|r, удалить и забыть его навсегда.\n Я вам его уже выключил, просто нажмите кнопку для перезагрузки интерфейса игры.\nСпасибо, что скачали.",
+  	button1 = "Ну его нафик",
+  	button2 = "или попробовать?",
+  	OnAccept = function()
+  		DisableAddOn("yoFrame")
+     	ReloadUI()
+  	end,
+  	OnCancel = function (_,reason)
+      --if reason == "timeout" or reason == "clicked" then CT_RA_SendNotReady() else  -- "override" ...? end;
+		DisableAddOn( oops)
+     	ReloadUI()
+  	end,
+  	--OnShow = function (_,reason)  end,
+  	timeout = 0,
+  	whileDead = true,
+  	hideOnEscape = true,
+  	preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+}
+
+if oops then StaticPopup_Show ("CONFIRM_ADDON", oops)  end
+
 ---local qq = "Помните: отыскав свое тело, вы воскреснете без потерь. Если же я воскрешу вас, прочность всех ваших предметов понизится на 25%, а сами вы будете в течение %s испытывать слабость. Вы уверены, что хотите этого?"
 CONFIRM_XP_LOSS_AGAIN = "Shut up and ресай меня скорее!!!"
 

@@ -8,6 +8,7 @@ local pairs, GetItemInfo, GetItemIcon, GetItemCount, GameTooltip, unpack, Create
 
 local tc = CreateFrame("Frame", nil, UIParent)
 n.Addons.torgastClicks = tc
+
 local size = 40
 local maw = n.Addons.maw
 
@@ -148,6 +149,15 @@ function tc:cellsDataUpdate()
 end
 
 local function outTorghast()
+
+	for i = 4, 6 do
+		local module = ObjectiveTrackerFrame.MODULES[i]
+		local collapsed = module.collapsed
+		if collapsed then
+			module:SetCollapsed( false)
+			ObjectiveTracker_Update(0, nil, module);
+		end
+	end
 	--print("outTorghast")
 	tc:UnregisterEvent("BAG_UPDATE")
 	tc:UnregisterEvent("BAG_UPDATE_COOLDOWN")
@@ -156,6 +166,15 @@ local function outTorghast()
 end
 
 local function inTorghast()
+
+	for i = 4, 6 do
+		local module = ObjectiveTrackerFrame.MODULES[i]
+		local collapsed = module.collapsed
+		if not collapsed then
+			module:SetCollapsed( true)
+			ObjectiveTracker_Update(0, nil, module);
+		end
+	end
 
 	--dprint("inTorghast", _G.ScenarioBlocksFrame.MawBuffsBlock:IsVisible())
 

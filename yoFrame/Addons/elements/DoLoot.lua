@@ -194,6 +194,89 @@ local function CreateIcon( index)
 	return button
 end
 
+local function outLoot( frame, link)
+
+	for lootIndex = 1, EJ_GetNumLoot() do
+
+		local temptext = ""
+		local itemInfo = C_EncounterJournal.GetLootInfoByIndex( lootIndex)
+
+		local found, foundH, foundM, foundC, foundV = false, false, false, false, false
+		local stat = GetItemStats( itemInfo.link)
+		for i, data in pairs(stat) do
+			if 		i == "RESISTANCE0_NAME" then
+			elseif	i == "ITEM_MOD_HASTE_RATING_SHORT" 		then foundH = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
+			elseif 	i == "ITEM_MOD_MASTERY_RATING_SHORT"  	then foundM = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
+			elseif 	i == "ITEM_MOD_CRIT_RATING_SHORT"  		then foundC = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
+			elseif 	i == "ITEM_MOD_VERSATILITY"  			then foundV = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
+			elseif  i == "ITEM_MOD_STAMINA_SHORT" 			then  temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
+			elseif 	i == "ITEM_MOD_INTELLECT_SHORT" 		or
+					i == "ITEM_MOD_AGILITY_SHORT" 			or
+					i == "ITEM_MOD_STRENGTH_SHORT" 			then temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
+															 elsetemptext = temptext .. "|cff00ff00+" .. Round( data) .. " " .. ( _G[i] or i).. "\n|r"
+			end
+		end
+
+		if frame.seting.allstat and (( foundH and frame.seting.haste == false) or ( foundM and frame.seting.master == false) or ( foundC and frame.seting.crit ==  false) or ( foundV and frame.seting.versa == false)) then
+			found = false
+		elseif ( foundH and frame.seting.haste) or ( foundM and frame.seting.master) or ( foundC and frame.seting.crit) or ( foundV and frame.seting.versa) then
+			found = true
+		end
+
+		--print(found, itemInfo.link, frame.seting.haste, frame.seting.master, frame.seting.crit, frame.seting.versa, frame.seting.allstat, foundH, foundM, foundC, foundV )
+		if found or filterType == 13 then
+			local lolButton = CreateIcon( frame.indexLol, itemInfo.link, itemInfo.icon)
+			local encounterName, _, _, _, encounterLink = EJ_GetEncounterInfo( itemInfo.encounterID);
+			lolButton.icon:SetTexture( itemInfo.icon)
+			lolButton.nameDungeon:SetText( link) -- .. " |r" .. encounterLink .. " |r" .. )
+			lolButton.linkDungeon.link = link
+			lolButton.nameEncounter:SetText( encounterLink)
+			lolButton.linkEncounter.link = encounterLink
+			lolButton.nameItem:SetText( itemInfo.link)
+			lolButton.bg.link = itemInfo.link
+			lolButton.stats:SetText(temptext, 1, 1, 1, 0)
+			lolButton.onuse:SetText("")
+			lolButton.onEquip:SetText( "")
+			lolButton.equipSet:SetText( "")
+			lolButton.iconBack:Show()
+			lolButton.bg:Show()
+
+			local name, spellID = GetItemSpell( itemInfo.link)
+			if name then
+				--local name, _, icon = GetSpellInfo(spellID)
+				local cooldown = GetSpellBaseCooldown(spellID)
+				local desc = GetSpellDescription(spellID)
+				temptext = "|cff999999" .. ITEM_SPELL_TRIGGER_ONUSE .. " " .. desc .. " Восстановление: " .. SecondsToClock(cooldown/1000)
+				lolButton.onuse:SetText(temptext, 1, 1, 1, 0)
+			end
+
+			local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
+			tt:SetOwner( UIParent, "ANCHOR_NONE")
+			tt:SetHyperlink( itemInfo.link)
+			tt:Show()
+
+			for x = 5, tt:NumLines() do
+				local line = _G['yoFrame_ItemTooltipTextLeft'..x]
+				local lineText = line:GetText()
+				if lineText then
+					local lr, lg, lb = line:GetTextColor()
+					if lineText:match( ITEM_SPELL_TRIGGER_ONEQUIP) then
+						lolButton.onEquip:SetText( format( " %s%s ", hex( lr, lg, lb), lineText))
+
+					elseif lineText:match( "Комплект ") then
+						local itemSetID = select( 16, GetItemInfo( itemInfo.link))
+						lolButton.equipSet:SetText( "|cffffff00" .. GetItemSetInfo( itemSetID) .. "\n|cff999999" .. lineText)
+					end
+				end
+			end
+			tt:Hide()
+
+			lolButton:Show()
+			frame.indexLol = frame.indexLol + 1
+		end
+	end
+end
+
 local function checkDungeLoot( filterType)
 	if not filterType then return end
 
@@ -207,109 +290,48 @@ local function checkDungeLoot( filterType)
 	--EJ_SetDifficulty( DifficultyUtil.ID.PrimaryRaidMythic)
 	EJ_SetDifficulty( 23) -- 1, 2, 23 ( 8	Mythic Keystone	party	isHeroic, isChallengeMode)
 	--statTable = GetItemStatDelta("item1Link", "item2Link" [, returnTable])
-	local indexLol = 1
+	frame.indexLol = 1
 
-	while instanceID do
-		index = index + 1;
-		instanceID, name, _, _, buttonImage, _, _, _, link = EJ_GetInstanceByIndex(index, false);
-		C_EncounterJournal.ResetSlotFilter()
-		C_EncounterJournal.SetSlotFilter( filterType);
-		C_EncounterJournal.SetPreviewMythicPlusLevel( 15)
+	if frame.isRaid then
+		while instanceID do -- RAIDS
+			index = index + 1;
+			instanceID, name, _, _, buttonImage, _, _, _, link = EJ_GetInstanceByIndex(index, true);
+			C_EncounterJournal.ResetSlotFilter()
+			C_EncounterJournal.SetSlotFilter( filterType);
+			--C_EncounterJournal.SetPreviewMythicPlusLevel( 15)
 
-		if instanceID then
-			EJ_SelectInstance( instanceID)
-			if EJ_GetNumLoot() then
-				frame.numLoot = frame.numLoot + EJ_GetNumLoot()
-
-				for lootIndex = 1, EJ_GetNumLoot() do
-					local temptext = ""
-					local itemInfo = C_EncounterJournal.GetLootInfoByIndex( lootIndex)
-
-					local found, foundH, foundM, foundC, foundV = false, false, false, false, false
-					local stat = GetItemStats( itemInfo.link)
-					for i, data in pairs(stat) do
-						if 		i == "RESISTANCE0_NAME" 				then
-						elseif	i == "ITEM_MOD_HASTE_RATING_SHORT" 		then foundH = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
-						elseif 	i == "ITEM_MOD_MASTERY_RATING_SHORT"  	then foundM = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
-						elseif 	i == "ITEM_MOD_CRIT_RATING_SHORT"  		then foundC = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
-						elseif 	i == "ITEM_MOD_VERSATILITY"  			then foundV = true 	temptext = temptext .. "|cff00ff00+" .. data .. " " .. _G[i] .. "\n|r"
-						elseif  i == "ITEM_MOD_STAMINA_SHORT" 			then  				temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
-						elseif 	i == "ITEM_MOD_INTELLECT_SHORT" 		or
-								i == "ITEM_MOD_AGILITY_SHORT" 			or
-								i == "ITEM_MOD_STRENGTH_SHORT" 			then 				temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
-						else																temptext = temptext .. "|cff00ff00+" .. Round( data) .. " " .. ( _G[i] or i).. "\n|r"
-						end
-					end
-
-					if frame.seting.allstat and (( foundH and frame.seting.haste == false) or ( foundM and frame.seting.master == false) or ( foundC and frame.seting.crit ==  false) or ( foundV and frame.seting.versa == false)) then
-						found = false
-					elseif ( foundH and frame.seting.haste) or ( foundM and frame.seting.master) or ( foundC and frame.seting.crit) or ( foundV and frame.seting.versa) then
-						found = true
-					end
-
-					--print(found, itemInfo.link, frame.seting.haste, frame.seting.master, frame.seting.crit, frame.seting.versa, frame.seting.allstat, foundH, foundM, foundC, foundV )
-					if found or filterType == 13 then
-						local lolButton = CreateIcon( indexLol, itemInfo.link, itemInfo.icon)
-						local encounterName, _, _, _, encounterLink = EJ_GetEncounterInfo( itemInfo.encounterID);
-						lolButton.icon:SetTexture( itemInfo.icon)
-						lolButton.nameDungeon:SetText( link) -- .. " |r" .. encounterLink .. " |r" .. )
-						lolButton.linkDungeon.link = link
-						lolButton.nameEncounter:SetText( encounterLink)
-						lolButton.linkEncounter.link = encounterLink
-						lolButton.nameItem:SetText( itemInfo.link)
-						lolButton.bg.link = itemInfo.link
-						lolButton.stats:SetText(temptext, 1, 1, 1, 0)
-						lolButton.onuse:SetText("")
-						lolButton.onEquip:SetText( "")
-						lolButton.equipSet:SetText( "")
-						lolButton.iconBack:Show()
-						lolButton.bg:Show()
-
-						local name, spellID = GetItemSpell( itemInfo.link)
-						if name then
-							--local name, _, icon = GetSpellInfo(spellID)
-							local cooldown = GetSpellBaseCooldown(spellID)
-							local desc = GetSpellDescription(spellID)
-							temptext = "|cff999999" .. ITEM_SPELL_TRIGGER_ONUSE .. " " .. desc .. " Восстановление: " .. SecondsToClock(cooldown/1000)
-							lolButton.onuse:SetText(temptext, 1, 1, 1, 0)
-						end
-
-						local tt = CreateFrame("GameTooltip", "yoFrame_ItemTooltip", UIParent, "GameTooltipTemplate")
-						tt:SetOwner( UIParent, "ANCHOR_NONE")
-						tt:SetHyperlink( itemInfo.link)
-						tt:Show()
-
-						for x = 5, tt:NumLines() do
-							local line = _G['yoFrame_ItemTooltipTextLeft'..x]
-							local lineText = line:GetText()
-							if lineText then
-								local lr, lg, lb = line:GetTextColor()
-								if lineText:match( ITEM_SPELL_TRIGGER_ONEQUIP) then
-									lolButton.onEquip:SetText( format( " %s%s ", hex( lr, lg, lb), lineText))
-
-								elseif lineText:match( "Комплект ") then
-									local itemSetID = select( 16, GetItemInfo( itemInfo.link))
-									lolButton.equipSet:SetText( "|cffffff00" .. GetItemSetInfo( itemSetID) .. "\n|cff999999" .. lineText)
-								end
-							end
-						end
-						tt:Hide()
-
-						lolButton:Show()
-						indexLol = indexLol + 1
-					end
-				end
+			if instanceID then
+				EJ_SelectInstance( instanceID)
+				if EJ_GetNumLoot() then outLoot( frame, link) end
 			end
 			yoEF.duLoot:Show()
 		end
 	end
+
+	if frame.isDungeon then
+		index, instanceID = 0, 0
+		while instanceID do -- DUNGEONS
+			index = index + 1;
+			instanceID, name, _, _, buttonImage, _, _, _, link = EJ_GetInstanceByIndex(index, false);
+			C_EncounterJournal.ResetSlotFilter()
+			C_EncounterJournal.SetSlotFilter( filterType);
+			C_EncounterJournal.SetPreviewMythicPlusLevel( 15)
+
+			if instanceID then
+				EJ_SelectInstance( instanceID)
+				if EJ_GetNumLoot() then outLoot( frame, link) end
+			end
+			yoEF.duLoot:Show()
+		end
+	end
+
 	if frame.firstRun then
 		C_Timer.After( 1.2, function(self, ...)
 			checkDungeLoot( yoEF.duLoot.filterType)
 		end)
 		frame.firstRun = false
 	end
-	afterClearIcons( indexLol)
+	afterClearIcons( frame.indexLol)
 end
 
 local function settingDoIt( self)
@@ -401,7 +423,7 @@ local function createDuLoot( self)
 	local textHeader = headerKeeper:CreateFontString(nil, "OVERLAY")
 	textHeader:SetFont( n.font, 13, "THINOUTLINE")
 	textHeader:SetText("")
-	textHeader:SetPoint("TOP", headerKeeper, "TOP", 0, -2)
+	textHeader:SetPoint("TOPLEFT", headerKeeper, "TOPLEFT", 15, -2)
 
 	local grabber = CreateFrame("Button", nil, headerKeeper)
 	grabber:SetSize( 14, 14)
@@ -427,6 +449,22 @@ local function createDuLoot( self)
 	seting:SetHighlightTexture("Interface\\GossipFrame\\BinderGossipIcon")
 	seting:SetScript("OnClick", settingDoIt)
 
+	local isRaid = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
+	isRaid:SetSize( 20, 20)
+	isRaid:SetPoint("RIGHT", seting, "LEFT", -35, -2)
+	isRaid:SetChecked( self.isRaid)
+	isRaid.Text:SetText( "Raid")
+	isRaid.Text:SetTextColor(0.392, 0.392, 0.392)
+	isRaid:SetScript("OnClick", function() self.isRaid = isRaid:GetChecked() checkDungeLoot( self.filterType) end)
+
+	local isDungeon = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
+	isDungeon:SetSize( 20, 20)
+	isDungeon:SetPoint("RIGHT", isRaid, "LEFT", -35, 0)
+	isDungeon:SetChecked( self.isDungeon)
+	isDungeon.Text:SetText( "5ppl")
+	isDungeon.Text:SetTextColor(0.392, 0.392, 0.392)
+	isDungeon:SetScript("OnClick", function() self.isDungeon = isDungeon:GetChecked() checkDungeLoot( self.filterType) end)
+
 	local scrollFrame = CreateFrame("ScrollFrame", nil, self, "UIPanelScrollFrameTemplate")
 	scrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -25)
 	scrollFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -3, 3)
@@ -444,6 +482,8 @@ local function createDuLoot( self)
 	scrollFrame:SetUserPlaced(true)
 	scrollFrame:SetScript("OnSizeChanged", function(self) scrollChild:SetWidth(self:GetWidth()) end)
 
+	self.checkIsRaid 	= isRaid
+	self.checkIsDungeon = isDungeon
 	self.seting 		= seting
 	self.headerKeeper	= headerKeeper
 	self.scrollFrame 	= scrollFrame
@@ -463,6 +503,8 @@ local function OnEvent( self, event, ...)
 	self.specID 	= id
 	self.specName 	= name
 	self.specIcon 	= icon
+	self.isDungeon	= true
+	self.isRaid		= false
 
 	local lootID = GetLootSpecialization()
 	local lootid, lootname, _, looticon = GetSpecializationInfoByID( lootID)

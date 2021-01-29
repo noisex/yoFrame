@@ -13,6 +13,7 @@ n.LIBS.LSM 			= _G.LibStub:GetLibrary("LibSharedMedia-3.0");
 n.LIBS.LOP 			= _G.LibStub("LibObjectiveProgress-1.0", true);
 n.LIBS.ButtonGlow 	= _G.LibStub("LibCustomGlow-1.0", true)
 n.LIBS.Sticky 		= _G.LibStub('LibSimpleSticky-1.0')
+n.LIBS.AceGUI		= _G.LibStub('AceGUI-3.0')
 
 n.infoTexts.LeftInfoPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 n.infoTexts.LeftDataPanel  = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")

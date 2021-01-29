@@ -27,8 +27,8 @@ local mythicRewards = {
 	{7,200,213},
 	{8,200,216},
 	{9,200,216},
-	{10,204,220},
-	{11,204,220},
+	{10,203,220},
+	{11,203,220},
 	{12,207,223},
 	{13,207,223},
 	{14,207,226},
@@ -257,7 +257,7 @@ local function UpdateAffixes( self)
 
     designed = true
 	skinDungens()
-	C_Timer.After( 0.9, CreateLiders) --CreateLiders( self)
+	C_Timer.After( 1.2, CreateLiders) --CreateLiders( self)
 end
 
 local function makeAffix(parent)
@@ -437,6 +437,27 @@ local function OnEvent( self, event, name, sender, ...)
 	if name == "Blizzard_ChallengesUI" then
 		Blizzard_ChallengesUI( self)
 		_G.ChallengesKeystoneFrame:HookScript("OnShow", SlotKeystone)
+
+--	elseif name == "Blizzard_FlightMap" then
+
+--		hooksecurefunc( FlightMapFrame, "ApplyPinPosition", function (self, pin, normalizedX, normalizedY, insetIndex)
+
+--			print(self, pin:GetName(), pin:GetMap())
+--			if pin.questID then
+--				--local mapID, zoneID = C_TaskQuest.GetQuestZoneID (pin.questID)
+--				--print( GetTime(), mapID, zoneID, normalizedX, normalizedY)
+--			end
+--			--tprint(pin)
+----DungeonEntranceMapInfo
+--			--local mapID = self:GetMap():GetMapID();
+--			--local taxiNodes = C_TaxiMap.GetAllTaxiNodes(mapID);
+--			--for i, taxiNodeData in ipairs(taxiNodes) do
+--			--	print(i, taxiNodes)
+--			--	--self:AddFlightNode(taxiNodeData);
+--			--end
+
+
+--		end)
 
 	elseif name == "Blizzard_WeeklyRewards" then
 		_G.WeeklyRewardsFrame:SetScale(0.8)
