@@ -18,6 +18,7 @@ local requestKeystoneCheck, registered
 local challengeMapID
 local TIME_FOR_3 = 0.6
 local TIME_FOR_2 = 0.8
+local oldParent, oldPosition
 
 local yo_OldKey, yo_OldKey2 = nil, nil
 
@@ -67,6 +68,8 @@ local function OnEvent( self, event, name, sender, ...)
 
 		challengeMapID = C_ChallengeMode.GetActiveChallengeMapID()
 		yo_OldKey = CheckInventoryKeystone()
+
+		ObjectiveTrackerFrame:Show()
 
 	elseif event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_PARTY" then
 		name = strlower( name)
@@ -156,6 +159,14 @@ local function OnEvent( self, event, name, sender, ...)
 				SendChatMessage( "My new key is: " .. newKey, "PARTY")
 			end
 		end)
+
+		if oldPosition and oldParent then
+			--ScenarioBlocksFrame:SetParent( oldParent)
+			--ScenarioBlocksFrame:ClearAllPoints()
+			--ScenarioBlocksFrame:SetPoint( unpack( oldPosition))
+
+			--ObjectiveTrackerFrame:Show()
+		end
 	end
 end
 
@@ -173,38 +184,51 @@ local logan = CreateFrame("Frame", "yo_WeeklyAffixes", UIParent)
 ---			ObjectiveTracker ( Angry KeyStone)
 ----------------------------------------------------------------------------------
 
-local timeFormat = timeFormat
-local timeFormatMS = timeFormatMS
-
 local function GetTimerFrame(block)
+--	local instanceType, difficultyID = select( 2, GetInstanceInfo())
+
+--print( ScenarioBlocksFrame:GetParent())
+
+--	if not moved and IsInInstance() and difficultyID == 8 and yo.Addons.hideObjective then
+--		moved 		= true
+--		oldParent 	= ScenarioBlocksFrame:GetParent()
+--		oldPosition = ScenarioBlocksFrame:GetPoint( 1)
+
+--		print( GetTime(), "SHOW", oldParent)
+
+--		---ScenarioBlocksFrame:SetParent(UIParent)
+--		--ScenarioBlocksFrame:ClearAllPoints()
+--		--ScenarioBlocksFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -20)
+
+--		ObjectiveTrackerFrame:Hide()
+--	end
+
 	if not block.TimerFrame then
 
-		block.TimeLeft:SetFont(n.font, n.fontsize + 2)
+		block.TimeLeft:SetFont(n.font, n.fontsize + 4)
 
 		local TimerFrame = CreateFrame("Frame", nil, block)
 		TimerFrame:SetAllPoints(block)
 
 		TimerFrame.Text2 = TimerFrame:CreateFontString(nil, "OVERLAY")--, "GameFontHighlightLarge")
 		TimerFrame.Text2:SetFont( n.font, n.fontsize +2)
-		TimerFrame.Text2:SetPoint("LEFT", block.TimeLeft, "LEFT", 70, 0)
+		TimerFrame.Text2:SetPoint("LEFT", block.TimeLeft, "LEFT", 55, 0)
 
 		TimerFrame.Text = TimerFrame:CreateFontString(nil, "OVERLAY")--, "GameFontHighlightLarge")
 		TimerFrame.Text:SetFont( n.font, n.fontsize +2)
-		TimerFrame.Text:SetPoint("LEFT", TimerFrame.Text2, "LEFT", 50, 0)
+		TimerFrame.Text:SetPoint("LEFT", TimerFrame.Text2, "LEFT", 55, 0)
 
 		TimerFrame.Bar3 = TimerFrame:CreateTexture(nil, "OVERLAY")
 		TimerFrame.Bar3:SetPoint("TOPLEFT", block.StatusBar, "TOPLEFT", block.StatusBar:GetWidth() * (1 - TIME_FOR_3) - 4, 4)
 		TimerFrame.Bar3:SetSize(2, 14)
 		TimerFrame.Bar3:SetTexture( n.texture)
 		TimerFrame.Bar3:SetVertexColor( 0, 1, 0, 1)
-		--TimerFrame.Bar3:SetTexCoord(0, 0.5, 0, 1)
 
 		TimerFrame.Bar2 = TimerFrame:CreateTexture(nil, "OVERLAY")
 		TimerFrame.Bar2:SetPoint("TOPLEFT", block.StatusBar, "TOPLEFT", block.StatusBar:GetWidth() * (1 - TIME_FOR_2) - 4, 4)
 		TimerFrame.Bar2:SetSize(2, 14)
 		TimerFrame.Bar2:SetTexture( n.texture)
 		TimerFrame.Bar2:SetVertexColor(0, 1, 0, 1)
-		--TimerFrame.Bar2:SetTexCoord(0.5, 1, 0, 1)
 
 		TimerFrame:Show()
 
@@ -243,8 +267,10 @@ local function UpdateTime(block, elapsedTime)
 		TimerFrame.Text2:Hide()
 	end
 
-	if elapsedTime > block.timeLimit then
-		--block.TimeLeft:SetText(GetTimeStringFromSeconds(elapsedTime - block.timeLimit, false, true))
+	if elapsedTime < block.timeLimit then
+		block.TimeLeft:SetText( timeFormat( block.timeLimit - elapsedTime, false, true))
+	else
+		block.TimeLeft:SetText( "-" .. timeFormat( elapsedTime - block.timeLimit, false, true))
 	end
 end
 
@@ -252,7 +278,7 @@ local function ShowBlock(timerID, elapsedTime, timeLimit)
 	local block = ScenarioChallengeModeBlock
 	local level, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo()
 	local dmgPct, healthPct = C_ChallengeMode.GetPowerLevelDamageHealthMod(level)
-	if true then --Addon.Config.showLevelModifier then
+	if false then --Addon.Config.showLevelModifier then
 		block.Level:SetText( format("%s, +%d%%", CHALLENGE_MODE_POWER_LEVEL:format(level), dmgPct) )
 	else
 		block.Level:SetText(CHALLENGE_MODE_POWER_LEVEL:format(level))
@@ -263,14 +289,18 @@ local function ProgressBar_SetValue(self, percent)
 	if self.criteriaIndex then
 		local _, _, _, _, totalQuantity, _, _, quantityString, _, _, _, _, _ = C_Scenario.GetCriteriaInfo(self.criteriaIndex)
 		local currentQuantity = quantityString and tonumber( strsub(quantityString, 1, -2) )
+
 		if currentQuantity and totalQuantity then
-			--	self.Bar.Label:SetFormattedText("%.2f%%", currentQuantity/totalQuantity*100)
-			--	self.Bar.Label:SetFormattedText("%d/%d", currentQuantity, totalQuantity)
-			--	self.Bar.Label:SetFormattedText("%.2f %%- %d/%d", currentQuantity/totalQuantity*100, currentQuantity, totalQuantity)
-			self.Bar.Label:SetFormattedText("%.2f %%(%.2f%%)", currentQuantity/totalQuantity*100, (totalQuantity-currentQuantity)/totalQuantity*100)
-			--	self.Bar.Label:SetFormattedText("%d/%d (%d)", currentQuantity, totalQuantity, totalQuantity - currentQuantity)
-			--	self.Bar.Label:SetFormattedText("%.2f %%(%.2f%%) - %d/%d (%d)", currentQuantity/totalQuantity*100, (totalQuantity-currentQuantity)/totalQuantity*100, currentQuantity, totalQuantity, totalQuantity - currentQuantity)
+			self.Bar.Label:SetFormattedText("|cff00ff00%.2f%% |r( |cffddaa11%.2f%%|r)", currentQuantity/totalQuantity*100, (totalQuantity-currentQuantity)/totalQuantity*100)
 		end
+	end
+
+	if not self.Bar.shadow then
+		self.Bar:SetStatusBarTexture( n.texture)
+		self.Bar.BarFrame:Hide()
+		self.Bar.BarFrame2:Hide()
+		self.Bar.BarFrame3:Hide()
+		CreateStyle( self.Bar, 2, 0, 0)
 	end
 end
 
@@ -280,3 +310,9 @@ hooksecurefunc("ScenarioTrackerProgressBar_SetValue", ProgressBar_SetValue)
 
 --name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
 --name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel = GetLFGDungeonInfo(dungeonID)
+
+--	self.Bar.Label:SetFormattedText("%.2f%%", currentQuantity/totalQuantity*100)
+--	self.Bar.Label:SetFormattedText("%d/%d", currentQuantity, totalQuantity)
+--	self.Bar.Label:SetFormattedText("%.2f %%- %d/%d", currentQuantity/totalQuantity*100, currentQuantity, totalQuantity)
+--	self.Bar.Label:SetFormattedText("%d/%d (%d)", currentQuantity, totalQuantity, totalQuantity - currentQuantity)
+--	self.Bar.Label:SetFormattedText("%.2f %%(%.2f%%) - %d/%d (%d)", currentQuantity/totalQuantity*100, (totalQuantity-currentQuantity)/totalQuantity*100, currentQuantity, totalQuantity, totalQuantity - currentQuantity)

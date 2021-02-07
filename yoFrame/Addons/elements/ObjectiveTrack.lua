@@ -349,16 +349,35 @@ end
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD") ------------------------ COLLAPSE
+
 frame:SetScript("OnEvent", function(self, event)
 	if UIWidgetTopCenterContainerFrame then
 		UIWidgetTopCenterContainerFrame:ClearAllPoints()
 		UIWidgetTopCenterContainerFrame:SetPoint("TOP", UIParent, "TOP", 0, -40)
 	end
 
-	local instanceType = select( 2, GetInstanceInfo())
+	local instanceType, difficultyID = select( 2, GetInstanceInfo())
 
-	if IsInInstance() and instanceType ~= "scenario" and yo.Addons.hideObjective then
+	if IsInInstance() and instanceType ~= "scenario" and difficultyID ~= 8 and yo.Addons.hideObjective then
 		ObjectiveTracker_Collapse()
+
+	elseif IsInInstance() and difficultyID == 8 and yo.Addons.hideObjective then
+		--print(instanceType, IsInInstance(), difficultyID)
+		--ObjectiveTracker_Collapse()
+
+		--ScenarioBlocksFrame:SetParent( UIParent)
+		--ScenarioBlocksFrame:ClearAllPoints()
+		--ScenarioBlocksFrame:SetPoint("TOPRIGHT", UIParent, "BOTTOMRIGHT", 0, -20)
+		--for i = 2, 6 do
+		--	local module = _G.ObjectiveTrackerFrame.MODULES[i]
+		--	local collapsed = module.collapsed
+		--	if not collapsed then
+		--		print(i)
+		--		module:SetCollapsed( true)
+		--		ObjectiveTracker_Update(0, nil, module);
+		--	end
+		--end
+
 	elseif 	instanceType == "scenario" and yo.Addons.hideObjective then
 		QUEST_TRACKER_MODULE.Header.MinimizeButton:Click()
 	elseif ObjectiveTrackerFrame.collapsed and not InCombatLockdown() then

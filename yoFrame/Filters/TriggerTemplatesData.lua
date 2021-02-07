@@ -5090,8 +5090,10 @@ local function loadSpellsTable()
 		for j = 1, 3 do
 			local _, name, _, _, _, spellID = GetTalentInfo( i, j, 1) --, 1, true, "player")
 
-			if not n.allPlayerSpell[spellID] then n.allPlayerSpell[spellID] = {} end
-			n.allPlayerSpell[spellID]["talent"] = true
+			if spellID then
+				if not n.allPlayerSpell[spellID] then n.allPlayerSpell[spellID] = {} end
+				n.allPlayerSpell[spellID]["talent"] = true
+			end
 		end
 	end
 	--SPELLBOOK
