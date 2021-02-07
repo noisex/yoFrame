@@ -6,7 +6,7 @@ L.LOCALE_NAME = "enUS"
 
 
 L["yoFrame"]	= "yoFrame"
-	
+
 L["player"] = "Player"
 L["target"] = "Target"
 L["BCBBoss"] = "Boss1"
@@ -81,7 +81,7 @@ L["instead"] 	= " instead "
 L["put on"] 	= "|cffff0000After combat wear it: |r"
 L["weared"] 	= "|cffff0000Weared: |r"
 L["can change"] 	= "|cffff0000Can change: |r"
-						
+
 L["Money"] 	= "Money"
 L["Skill Points"] 	= "Skill Points"
 L["Expirience"] 	= "Expirience"
@@ -104,7 +104,7 @@ L["completion1"] = "Beat the timer for |cff8787ED%s [%s]|r in |cff00ffff%s|r. Yo
 L["completion2"] = "Beat the timer for +2 |cff8787ED%s [%s]|r in |cff00ffff%s|r. You were %s ahead of the +2 timer, and missed +3 by %s."
 L["completion3"] = "Beat the timer for +3 |cff8787ED%s [%s]|r in |cff00ffff%s|r. You were %s ahead of the +3 timer."
 L["completion0"] = "Timer expired for |cff8787ED[%s] %s|r with |cffff0000%s|r, you were %s over the time limit."
-
+L["deathCount"]  = "|cffff0000Deatch count: %d. Time lost: %s|r"
 
 L["Ovirva4zzz"]		= "Overwatch"
 L["In MobilApps"]	= "In MobilApps"

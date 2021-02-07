@@ -17,4 +17,5 @@ Locale\ruRU.lua
 
 constants.lua
 profiles.lua
+alertOptions.lua
 configui.lua

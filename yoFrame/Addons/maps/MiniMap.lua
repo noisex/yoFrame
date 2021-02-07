@@ -75,7 +75,7 @@ local function MiniInit()
 	if yo.Addons.minimapMove then
 		Minimap:SetPoint("TOPRIGHT", n.Addons.moveFrames.yoMoveMap, "TOPRIGHT", -5, -5)
 	else
-		Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -5)
+		Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -7)
 	end
 
 	--Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -5)

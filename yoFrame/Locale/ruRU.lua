@@ -98,6 +98,7 @@ if ns:IsSameLocale("ruRU") then
 	L["completion3"] = "Закрыли вовремя |cff8787ED%s [%s]|r +3 за |cff00ffff%s|r. Осталось %s от +3 таймера."
 
 	L["completion0"] = "|cff8787ED[%s] %s|r окончили за |cffff0000%s|r, вы отстали на %s от общего лимита времени."
+	L["deathCount"]  = "|cffff0000Смертей случилось: %d. Потеряно времени на них: %s|r"
 
 	L["Ovirva4zzz"]		= "Оверватчз"
 	L["In MobilApps"]	= "В мобильном"

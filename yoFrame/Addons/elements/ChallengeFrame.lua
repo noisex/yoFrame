@@ -257,7 +257,8 @@ local function UpdateAffixes( self)
 
     designed = true
 	skinDungens()
-	C_Timer.After( 1.2, CreateLiders) --CreateLiders( self)
+	C_Timer.After( 1, CreateLiders) --CreateLiders( self)
+	C_Timer.After( 3, CreateLiders) --CreateLiders( self)
 end
 
 local function makeAffix(parent)

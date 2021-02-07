@@ -16,11 +16,20 @@ n.Addons.snapBars[#n.Addons.snapBars + 1] = n.infoTexts.RightDataPanel
 
 local mf 		= n.Addons.moveFrames
 local sticky 	= n.LIBS.Sticky
+local moveArray
+
+if yo.Addons.movePersonal then
+	moveArray = yo_Position
+else
+	if not n.allData.moveArray then n.allData.moveArray = {} end
+	moveArray = n.allData.moveArray
+end
 
 --GLOBALS: yo_Position
 ----------------------------------------------------------------------------------------
 --	Grid on screen
 ----------------------------------------------------------------------------------------
+
 n.grid = function( show)
 
 	if show then
@@ -67,7 +76,7 @@ n.setAnchPosition = function(anch, realAnch)
 	end
 
 	local w, h = anch:GetSize()
-	yo_Position[anch:GetName()] = {ap, "UIParent", rp, x, y, w, h}
+	moveArray[anch:GetName()] = {ap, "UIParent", rp, x, y, w, h}
 end
 
 local OnDragStart = function(self)
@@ -176,7 +185,7 @@ function n.moveAnchorsLock()
 end
 
 function n.moveAnchorsReset()
-	if( yo_Position) then yo_Position = nil end
+	if( moveArray) then moveArray = nil end
 	ReloadUI()
 end
 
@@ -221,7 +230,7 @@ n.moveRestoreUI = function(self)
 		return
 	end
 
-	for frame_name, SetPoint in pairs( yo_Position) do
+	for frame_name, SetPoint in pairs( moveArray) do
 		local frame = n.Addons.moveFrames[frame_name]
 
 		if frame then
@@ -271,6 +280,6 @@ n.moveCreateAnchor("yoMoveAltPower", 	"Move Power Alt Bar", 180, 36, 0, -100, "C
 if yo.Addons.minimapMove then
 	local x = yo.Addons.MiniMapSize + 10
 	n.moveCreateAnchor("yoMoveMap", 		"Move MiniMap",		x, x, -0, -0, 		"TOPRIGHT", "TOPRIGHT")
-	n.moveCreateAnchor("yoMoveBuff", 		"Move Buffs", 		400, 40, -(x+5), 0, "TOPRIGHT", "TOPRIGHT")
+	n.moveCreateAnchor("yoMoveBuff", 		"Move Buffs", 		400, 40, -(x+5), -5, "TOPRIGHT", "TOPRIGHT")
 	--n.moveCreateAnchor("yoMoveDebuff", 		"Move Debuff", 		400, 40, -(x+5), -115, "TOPRIGHT", "TOPRIGHT")
 end

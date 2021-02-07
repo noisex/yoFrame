@@ -64,6 +64,11 @@ end
 --                  Table Print
 -----------------------------------------------------------------------------------------------
 function tprint(t, s, indent)
+    if not t or type( t) ~= "table" then
+        dprint( "This is not a table!")
+        return
+    end
+
 	--print(indent)
 	if not indent then indent = 0 end
 

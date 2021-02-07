@@ -3,7 +3,7 @@ local AddOnName, engine = ...
 local AceAddon, AceAddonMinor = _G.LibStub('AceAddon-3.0')
 local addon = AceAddon:NewAddon( AddOnName, 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 
-local yo = CopyTable( _G.yoFrame_Config[2])
+local yo = _G.yoFrame_Config[2] --CopyTable( _G.yoFrame_Config[2])
 
 engine[1] = {}		-- L, Locales
 engine[2] = yo 		-- Config

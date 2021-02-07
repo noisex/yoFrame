@@ -121,7 +121,7 @@ local function updateButtonSlotText( frameslot, unit)
 		end
 	end
 
-	if specID and not enchFound and ( enchSlots[slot] or n.classSpecsCoords[specID].enchSlot == slot) then
+	if specID and not enchFound and ( enchSlots[slot] or ( n.classSpecsCoords[specID] and n.classSpecsCoords[specID].enchSlot == slot)) then
 		text:SetText( "No enchant")
 		text:SetTextColor( 1, 0, 0)
 	end

@@ -7,6 +7,8 @@ local SetCVar, GetCVar, tostring, GameTooltip, floor, CreateStyle
 local infoText 	= n.infoTexts
 local Stat 		= CreateFrame("Frame", nil, UIParent)
 
+local soundDev 	= {}
+
 local function getVolumeText(volume)
 	return tostring(floor(100 * volume + 0.5)) .. "%"
 end
@@ -30,7 +32,7 @@ end
 function TPUnifiedVolumeControlSlider_OnMouseWheel(self, a1)
 	local tempval = self:GetValue();
 	if a1 == -1 then  self:SetValue(tempval + 0.02); end
-	if a1 == 1 then  self:SetValue(tempval - 0.02); end
+	if a1 == 1  then  self:SetValue(tempval - 0.02); end
 end
 
 function TPOptionsSliderTemplate_OnLoad( self)
@@ -44,7 +46,7 @@ end
 
 function TPVolumeControlFrame_OnEnter( self) if self.timerOUT then self.timerOUT:Cancel() end end
 function TPVolumeSlider_OnLeave(self) GameTooltip:Hide(); self:GetParent().onSlider = false end
-function TPVolumeSlider_OnEnter(self)  self:GetParent().onSlider = true end
+function TPVolumeSlider_OnEnter(self) self:GetParent().onSlider = true end
 
 function TPVolumeControlFrame_OnLeave( self)
 	self.timerOUT = C_Timer.NewTicker( 0.7, function()
@@ -53,6 +55,71 @@ function TPVolumeControlFrame_OnLeave( self)
 			_G.TPVolumeControlFrame.timerOUT:Cancel()
 		end
 	end)
+end
+
+local function getNext( ind, max)
+	return mod( ind + 1, max)
+end
+
+local function buttonOnLeave( self, button, ...)
+	self.onSlider = false
+	button:GetNormalTexture():SetVertexColor( 0, 1, 0, 1)
+	GameTooltip:Hide()
+end
+
+local function buttonOnEnter( self, button)
+	self.onSlider = true
+	button:GetNormalTexture():SetVertexColor( 1, 1, 0, 1)
+	GameTooltip:ClearLines()
+	GameTooltip:SetOwner(button, "ANCHOR_TOPRIGHT", 0, 10)
+	GameTooltip:SetText( BINDING_NAME_VEHICLENEXTSEAT)
+	GameTooltip:AddLine( soundDev[getNext( self.soundCur, self.soundNum)], 1, 1, 1, 1)
+	GameTooltip:Show()
+end
+
+local function buttonOnClick( self, button)
+	---self.soundCur = BlizzardOptionsPanel_GetCVarSafe( self.cvar);
+	---AudioOptionsSoundPanelHardwareDropDown_OnClick()
+	self.soundCur = getNext( self.soundCur, self.soundNum)
+	self.deviceName:SetText( soundDev[self.soundCur])
+
+	BlizzardOptionsPanel_SetCVarSafe( self.cvar, self.soundCur);
+	AudioOptionsFrame_AudioRestart();
+	buttonOnEnter( self, button)
+end
+
+local function createSDButtons( self)
+	self.cvar 		= "Sound_OutputDriverIndex";
+	self.soundNum 	= Sound_GameSystem_GetNumOutputDrivers();
+	self.soundCur 	= BlizzardOptionsPanel_GetCVarSafe( self.cvar);
+
+	for index = 0, self.soundNum -1, 1 do
+		local soundName = Sound_GameSystem_GetOutputDriverNameByIndex(index);
+		local _, _, c  	= string.find( soundName, "%((%D+)%)")
+		soundName 		= c and c or soundName
+
+		soundDev[index] = soundName:sub(1, 35)
+	end
+
+	self.buttonRight = CreateFrame("Button", nil, self)
+	self.buttonRight:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -5)
+	self.buttonRight:SetSize(  20, 20)
+	self.buttonRight:SetNormalTexture( yo.Media.path .. "icons\\ArrowRight")
+	self.buttonRight:GetNormalTexture():SetTexCoord( 0, .72, 0, 1)
+	self.buttonRight:GetNormalTexture():SetVertexColor( 0, 1, 0, 1)
+	self.buttonRight:EnableMouse(true)
+	self.buttonRight.setDirection = 1
+
+	self.deviceName = self:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+	self.deviceName:SetPoint("RIGHT", self.buttonRight, "LEFT", 0, 0)
+
+	self.buttonRight:SetScript(	"OnClick", 	function(this) buttonOnClick( self, this) end)
+	self.buttonRight:SetScript(	"OnEnter", 	function(this) buttonOnEnter( self, this) end)
+	self.buttonRight:SetScript(	"OnLeave", 	function(this) buttonOnLeave( self, this) end)
+end
+
+function TPVolumeControlFrame_OnShow(self)
+	self.deviceName:SetText( soundDev[self.soundCur])
 end
 
 function TPVolumeSlider_OnShow(self)
@@ -83,6 +150,7 @@ function TPVolumeControlFrame_OnLoad(self)
 	_G.TPMusicVolumeControlSlider.var 		= "Sound_MusicVolume"
 	_G.TPAmbienceVolumeControlSlider.var 	= "Sound_AmbienceVolume"
 	_G.TPDialogVolumeControlSlider.var 		= "Sound_DialogVolume"
+	createSDButtons( self)
 	CreateStyle( _G.TPVolumeControlFrame, 3)
 end
 

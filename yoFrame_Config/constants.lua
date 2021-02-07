@@ -88,6 +88,7 @@ yo["Addons"] = {
 	["BlackPanels"] 				= true,
 	["ActionsBars"] 				= true,
 	["RaidCoolDowns"] 				= true,
+	["covenantsCD"]					= true,
 	["RaidFrames"] 					= true,
 	["AutoInvaitFromFriends"] 		= true,
 	["CastWatcher"] 				= false,
@@ -118,6 +119,8 @@ yo["Addons"] = {
 	["hideForAll"]					= false,
 	["hideSound"]					= false,
 	["minimapMove"]					= true,
+	["alertEnable"]					= true,
+	["movePersonal"]				= true,
 }
 
 yo["ActionBar"] = {
@@ -524,3 +527,24 @@ yo["CTA"] = {
 	["hideLast"]= true,
 	["lfdMode"]	= 0,
 }
+
+yo["alerts"] = {
+	--enable 		= true,
+	alertsPool 	= {
+      	['*'] = {
+			spellID		= "",
+			event		= "auraApplaed",
+			destUnit	= "any",
+			alertUnit	= "me",
+			message		= "$target ( $spell)",
+			color		= "red",
+			fromStack 	= false,
+			toStack		= false,
+			raidAlert	= false,
+			sound		= "None",
+			stage 		= false,
+			lowHealth 	= false,
+    	},
+	},
+}
+

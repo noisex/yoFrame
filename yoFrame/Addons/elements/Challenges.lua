@@ -1,14 +1,17 @@
 local L, yo, n = unpack( select( 2, ...))
 
+local _G = _G
 local tonumber, floor, ceil, abs, mod, modf, format, len, sub = tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub
 
-local GetContainerNumSlots, GetContainerItemInfo, date, time, strlower, print, strsub, CreateFrame, timeFormatMS, SendChatMessage
-	= GetContainerNumSlots, GetContainerItemInfo, date, time, strlower, print, strsub, CreateFrame, timeFormatMS, SendChatMessage
+local GetContainerNumSlots, GetContainerItemInfo, date, time, strlower, print, strsub, CreateFrame, timeFormat, SendChatMessage, SecondsToClock, SecondsToTime, dprint
+	= GetContainerNumSlots, GetContainerItemInfo, date, time, strlower, print, strsub, CreateFrame, timeFormat, SendChatMessage, SecondsToClock, SecondsToTime, dprint
 
 local BACKPACK_CONTAINER = BACKPACK_CONTAINER
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local LANDING_PAGE_REPORT = LANDING_PAGE_REPORT
 local CHALLENGE_MODE_POWER_LEVEL = CHALLENGE_MODE_POWER_LEVEL
+local CHALLENGE_MODE_DEATH_COUNT_TITLE = CHALLENGE_MODE_DEATH_COUNT_TITLE
+local CHALLENGE_MODE_DEATH_COUNT_DESCRIPTION = CHALLENGE_MODE_DEATH_COUNT_DESCRIPTION
 
 local requestKeystoneCheck, registered
 
@@ -116,26 +119,30 @@ local function OnEvent( self, event, name, sender, ...)
 		if not challengeMapID then return end
 
 		local mapID, level, time, onTime, keystoneUpgradeLevels = C_ChallengeMode.GetCompletionInfo()
-		local name, _, timeLimit = C_ChallengeMode.GetMapUIInfo(challengeMapID)
+		local name, _, timeLimit 	= C_ChallengeMode.GetMapUIInfo(challengeMapID)
+		local count, timeLost 		= C_ChallengeMode.GetDeathCount();
 
-		timeLimit = timeLimit * 1000
+		time = time / 1000
+		--timeLimit = timeLimit * 1000
 		local timeLimit2 = timeLimit * TIME_FOR_2
 		local timeLimit3 = timeLimit * TIME_FOR_3
 
-		--print(name, level, timeFormatMS(time), timeFormatMS(time - timeLimit), L["completion0"])
-		--"Гробница королей"," 2, "1:05:01.321", "26:01.321"
-		--L["completion0"] = "|cff8787ED[%s] %s|r окончили за |cffff0000%s|r, вы отстали на %s от общего лимита времени."
-		print("|cff00ffff--------------------------------------------------------------------------")
+		--print("|cff00ffff--------------------------------------------------------------------------")
 		print( "|cff00ffff" .. LANDING_PAGE_REPORT)
 		print("|cff00ffff--------------------------------------------------------------------------")
 		if time <= timeLimit3 then
-			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion3"], level, name, timeFormatMS(time), timeFormatMS(timeLimit3 - time)), 255/255, 215/255, 1/255)
+			_G.DEFAULT_CHAT_FRAME:AddMessage( format( L["completion3"], level, name, timeFormat(time), SecondsToTime(timeLimit3 - time)), 255/255, 215/255, 1/255)
 		elseif time <= timeLimit2 then
-			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion2"], level, name, timeFormatMS(time), timeFormatMS(timeLimit2 - time), timeFormatMS(time - timeLimit3)), 199/255, 199/255, 199/255)
+			_G.DEFAULT_CHAT_FRAME:AddMessage( format( L["completion2"], level, name, timeFormat(time), SecondsToTime(timeLimit2 - time), SecondsToTime(time - timeLimit3)), 199/255, 199/255, 199/255)
 		elseif onTime then
-			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion1"], level, name, timeFormatMS(time), timeFormatMS(timeLimit - time), timeFormatMS(time - timeLimit2)), 237/255, 165/255, 95/255)
+			_G.DEFAULT_CHAT_FRAME:AddMessage( format( L["completion1"], level, name, timeFormat(time), SecondsToTime(timeLimit - time), SecondsToTime(time - timeLimit2)), 237/255, 165/255, 95/255)
 		else
-			DEFAULT_CHAT_FRAME:AddMessage( format( L["completion0"], name, level, timeFormatMS(time), timeFormatMS(time - timeLimit)), 255/255, 32/255, 32/255)
+			_G.DEFAULT_CHAT_FRAME:AddMessage( format( L["completion0"], name, level, timeFormat(time), SecondsToTime(time - timeLimit)), 255/255, 32/255, 32/255)
+		end
+
+		if (timeLost and timeLost > 0 and count and count > 0) then
+			_G.DEFAULT_CHAT_FRAME:AddMessage( CHALLENGE_MODE_DEATH_COUNT_TITLE:format( count), 0.9, 0.8, 0.1);
+			_G.DEFAULT_CHAT_FRAME:AddMessage( CHALLENGE_MODE_DEATH_COUNT_DESCRIPTION:format( SecondsToTime( timeLost)), 09, 0.8, 0.1);
 		end
 		print("|cff00ffff--------------------------------------------------------------------------")
 

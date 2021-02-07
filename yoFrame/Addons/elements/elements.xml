@@ -5,9 +5,11 @@
 	<Script file="ChallengeProc.lua"/>
 	<Script file="Cooldown.lua"/>
 	<Script file="CooldownFlash.lua"/>
+	<Script file="covenantCD.lua"/>
 	<Script file="CTA.lua"/>
 	<Script file="DoLoot.lua"/>
 	<Script file="Inspect.lua"/>
+	<Script file="interuptCD.lua"/>
 	<Script file="Fliger.lua"/>
 	<Script file="Experience.lua"/>
 	<Script file="lfgFilter.lua"/>
@@ -18,7 +20,6 @@
 	<Script file="ObjectiveTrack.lua"/>
 	<Script file="Potatos.lua"/>
 	<Script file="QuestAuto.lua"/>
-	<Script file="RaidCooldowns.lua"/>
 	<Script file="RaidUtility.lua"/>
 	<Script file="Reputation.lua"/>
 	<Script file="ScrollText.lua"/>

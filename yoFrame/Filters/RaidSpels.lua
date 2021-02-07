@@ -2,7 +2,7 @@ local L, yo, n = unpack( select( 2, ...))
 
 
 -- в кастопалку кэдешку
-raid_CD_Spells = {
+n.raidInterSpellsCD = {
 	-- Testing
 	--[48438] = 10,
 	--[781] = 20,

@@ -5,19 +5,33 @@ if not yo.Addons.RaidCoolDowns then return end
 ----------------------------------------------------------------------------------------
 --	Raid cooldowns(alRaidCD by Allez)
 ----------------------------------------------------------------------------------------
-local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
-	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
+local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch, band
+	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch, bit.band
+
+local GetSpellInfo, GameTooltip, CreateFrame, CreateStyle, UnitClass, GetTime, UnitInRaid, SendChatMessage, GetNumGroupMembers, CombatLogGetCurrentEventInfo, tinsert, table_sort, RAID_CLASS_COLORS
+	= GetSpellInfo, GameTooltip, CreateFrame, CreateStyle, UnitClass, GetTime, UnitInRaid, SendChatMessage, GetNumGroupMembers, CombatLogGetCurrentEventInfo, tinsert, table.sort, RAID_CLASS_COLORS
 
 local filter 	= COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
-local band 		= bit.band
-local sformat 	= format
-local tc 		= n.Addons.torgastClicks
+local mf 		= n.Addons.moveFrames
+local spellArray= {}
+local barsNum 	= 6
+local barsHalf	= floor( barsNum / 2 + 0.5)
+
+local raidCD 	= CreateFrame("Frame", "yo_RaidCD", UIParent)
+n.Addons.raidCD = raidCD
+
+local function spellPrepare(...)
+	for spellID, value in pairs( n.raidInterSpellsCD) do
+		local spell, _, icon = GetSpellInfo(spellID)
+		spellArray[spellID] = { spell = spell, icon = icon}
+	end
+end
 
 local FormatTime = function(time)
 	if time >= 60 then
-		return sformat("%.2d:%.2d", floor(time / 60), time  %60)
+		return format("%.2d:%.2d", floor(time / 60), time  %60)
 	else
-		return sformat("%.2d", time)
+		return format("%.2d", time)
 	end
 end
 
@@ -26,6 +40,38 @@ local CreateFS = function(frame, font, fsize, fstyle)
 	fstring:SetFont( font or n.font, fsize or n.fontsize -1, "OUTLINE")
 	fstring:SetShadowOffset(1 and 1 or 0, 1 and -1 or 0)
 	return fstring
+end
+
+local function updatePositions( self)
+	local index, barSort = 1, {}
+
+	for k in pairs( self.bars) do tinsert( barSort, k) end
+	table_sort( barSort)
+
+	for i, key in pairs( barSort) do
+		if ( #barSort < barsNum) or (  i <= barsHalf or i >= #barSort -1 ) then
+			local bars = self.bars[key]
+			local bar = raidCD.createBar( self, index)
+			bar.tick 		= 1
+			bar.name 		= bars.name
+			bar.endTime 	= bars.endTime
+			bar.startTime 	= bars.startTime
+			bar.spell 		= bars.spell
+			bar.left:SetText( bars.left)
+			bar.right:SetText( bars.right)
+			bar.icon:SetNormalTexture( bars.icon)
+			bar.icon:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
+			bar:SetStatusBarColor(bars.color.r, bars.color.g, bars.color.b)
+			bar.bg:SetVertexColor(bars.color.r, bars.color.g, bars.color.b, 0.25)
+			bar:EnableMouse(true)
+			bar:SetScript("OnUpdate", raidCD.barUpdate)
+
+			bar:Show()
+			index = index + 1
+		end
+	end
+
+	for i = index, #self.barsFrame do self.barsFrame[i]:Hide() end
 end
 
 local StopTimer = function(self, bar)
@@ -51,18 +97,18 @@ end
 local OnMouseDown = function(self, button)
 	if button == "LeftButton" then
 		if GetNumGroupMembers() > 5 then
-			SendChatMessage(sformat("CD: ".." %s: %s", self.left:GetText(), self.right:GetText()), "RAID")
+			SendChatMessage( format("CD: ".." %s: %s", self.left:GetText(), self.right:GetText()), "RAID")
 		elseif GetNumGroupMembers() > 0 and not UnitInRaid("player") then
-			SendChatMessage(sformat("CD: ".." %s: %s", self.left:GetText(), self.right:GetText()), "PARTY")
+			SendChatMessage( format("CD: ".." %s: %s", self.left:GetText(), self.right:GetText()), "PARTY")
 		else
-			SendChatMessage(sformat("CD: ".." %s: %s", self.left:GetText(), self.right:GetText()), "SAY")
+			SendChatMessage( format("CD: ".." %s: %s", self.left:GetText(), self.right:GetText()), "SAY")
 		end
 	elseif button == "RightButton" then
 		StopTimer( self:GetParent(), self)
 	end
 end
 
-local barUpdate = function(self, elapsed)
+raidCD.barUpdate = function(self, elapsed)
 	self.tick = self.tick + elapsed
 	if self.tick < 0.07 then return end
 	self.tick = 0
@@ -76,14 +122,14 @@ local barUpdate = function(self, elapsed)
 	self.right:SetText(FormatTime(self.endTime - curTime))
 end
 
-local createBar = function( self, index)
+raidCD.createBar = function( self, index)
 
 	if self.barsFrame[index] then return self.barsFrame[index] end
 
 	local bar = CreateFrame("Statusbar", nil, self)
 	bar.index = index
 	bar:SetSize(186 + 28, 20)
-	bar:SetStatusBarTexture( texture)
+	bar:SetStatusBarTexture( n.texture)
 	bar:SetMinMaxValues(0, 100)
 	bar:Hide()
 	CreateStyle(bar, 3)
@@ -100,7 +146,7 @@ local createBar = function( self, index)
 
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
 	bar.bg:SetAllPoints( bar)
-	bar.bg:SetTexture( texture)
+	bar.bg:SetTexture( n.texture)
 
 	bar.left = CreateFS(bar)
 	bar.left:SetPoint("LEFT", 2, 0)
@@ -123,52 +169,20 @@ local createBar = function( self, index)
 	return self.barsFrame[index]
 end
 
-function updatePositions( self)
-	local index, barSort = 1, {}
-
-	for k in pairs( self.bars) do table.insert( barSort, k) end
-	table.sort( barSort)
-
-	for i, key in pairs( barSort) do
-		if ( #barSort < 6) or (  i <= 3 or i >= #barSort -1 ) then
-			local bars = self.bars[key]
-			local bar = createBar( self, index)
-			bar.tick 		= 1
-			bar.name 		= name
-			bar.endTime 	= bars.endTime
-			bar.startTime 	= bars.startTime
-			bar.spell 		= bars.spell
-			bar.left:SetText( bars.left)
-			bar.right:SetText( bars.right)
-			bar.icon:SetNormalTexture( bars.icon)
-			bar.icon:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
-			bar:SetStatusBarColor(bars.color.r, bars.color.g, bars.color.b)
-			bar.bg:SetVertexColor(bars.color.r, bars.color.g, bars.color.b, 0.25)
-			bar:EnableMouse(true)
-			bar:SetScript("OnUpdate", barUpdate)
-
-			bar:Show()
-			index = index + 1
-		end
-	end
-
-	for i = index, #self.barsFrame do self.barsFrame[i]:Hide() end
-end
-
 local StartTimer = function(self, name, spellId)
 
-	local spell, _, icon = GetSpellInfo(spellId)
+	--local spell, _, icon = GetSpellInfo(spellId)
 	local color = RAID_CLASS_COLORS[select(2, UnitClass(name))] or { 0.3, 0.7, 0.3}
-	local endTime = GetTime() + raid_CD_Spells[spellId]
+	local endTime = GetTime() + n.raidInterSpellsCD[spellId]
 
 	self.bars[endTime] = {
-		["spell"] 	= spell,
+		["spell"] 	= spellArray[spellId].spell,
 		["endTime"] = endTime,
 		["startTime"] = GetTime(),
-		["icon"] 	= icon,
+		["icon"] 	= spellArray[spellId].icon,
 		["name"] 	= name,
-		["left"] 	= strsplit("-", name) .. " - " .. spell,
-		["right"] 	= FormatTime(raid_CD_Spells[spellId]),
+		["left"] 	= strsplit("-", name) .. " - " .. spellArray[spellId].spell,
+		["right"] 	= FormatTime(n.raidInterSpellsCD[spellId]),
 		["color"]	= color,
 	}
 
@@ -180,11 +194,9 @@ local OnEvent = function(self, event, ...)
 		local _, eventType, _, _, sourceName, sourceFlags, _, _, _, _, _, spellId = CombatLogGetCurrentEventInfo ()
 
 		if band(sourceFlags, filter) == 0 then return end
-
-		if raid_CD_Spells[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
-			if not n.Addons.torgastClicks.inTorghast then
-				StartTimer( self, strsplit( "-", sourceName), spellId)
-			end
+		--n.raidCoveSpellsCD[spellID]
+		if n.raidInterSpellsCD[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
+			StartTimer( self, strsplit( "-", sourceName), spellId)
 		end
 
 	elseif event == "CHALLENGE_MODE_START" then
@@ -200,25 +212,25 @@ local OnEvent = function(self, event, ...)
 		--end
 
 	elseif event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_ENTERING_WORLD" then
-		yo_RaidCD:ClearAllPoints()
-		yo_RaidCD:SetPoint("BOTTOM", yoMoveRaidCD)
+		self:ClearAllPoints()
+		self:SetPoint("BOTTOM", mf.yoMoveRaidCD)
+		spellPrepare()
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 end
 
-n.moveCreateAnchor("yoMoveRaidCD", "Move RaidCD", 230, 150, 27, 250, "LEFT", "LEFT")
+n.moveCreateAnchor("yoMoveRaidCD", "Move Interupts CD", 230, 150, 27, 370, "LEFT", "LEFT")
 
-local RaidCDAnchor = CreateFrame("Frame", "yo_RaidCD", UIParent)
-RaidCDAnchor:SetPoint("BOTTOM", "yoMoveRaidCD")
-RaidCDAnchor:SetSize(186 + 32, 20)
-RaidCDAnchor.barsFrame = {}
-RaidCDAnchor.bars = {}
-RaidCDAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
---RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_COMPLETED")
-RaidCDAnchor:RegisterEvent("CHALLENGE_MODE_START")
-RaidCDAnchor:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
---RaidCDAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
+raidCD:SetSize(186 + 32, 20)
+raidCD.barsFrame = {}
+raidCD.bars = {}
+raidCD:RegisterEvent("PLAYER_ENTERING_WORLD")
+--raidCD:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+raidCD:RegisterEvent("CHALLENGE_MODE_START")
+raidCD:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+--raidCD:RegisterEvent("GROUP_ROSTER_UPDATE")
 
---RaidCDAnchor:RegisterEvent("ENCOUNTER_END")
---RaidCDAnchor:RegisterEvent("ENCOUNTER_START")
+--raidCD:RegisterEvent("ENCOUNTER_END")
+--raidCD:RegisterEvent("ENCOUNTER_START")
 
-RaidCDAnchor:SetScript("OnEvent", OnEvent)
+raidCD:SetScript("OnEvent", OnEvent)

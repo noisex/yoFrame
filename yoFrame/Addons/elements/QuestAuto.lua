@@ -243,7 +243,6 @@ local function OnEvent( self, event, ...)
 			print( bestString)
 			GetQuestReward( bestChoice)
 		else
-			print ( "GER WAN")
 			GetQuestReward( 1)
 		end
 

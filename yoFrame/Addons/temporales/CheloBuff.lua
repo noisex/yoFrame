@@ -4,16 +4,23 @@ local L, yo, n = unpack( select( 2, ...))
 if not n.myDev[n.myName] then return end
 
 local _G = _G
-local wipe, pairs, print, UnitName, UnitGUID, UnitExists, UnitGroupRolesAssigned, UnitDetailedThreatSituation, CombatLogGetCurrentEventInfo, PlaySoundFile, UnitInRaid, UnitInParty, unpack
-	= wipe, pairs, print, UnitName, UnitGUID, UnitExists, UnitGroupRolesAssigned, UnitDetailedThreatSituation, CombatLogGetCurrentEventInfo, PlaySoundFile, UnitInRaid, UnitInParty, unpack
+local wipe, pairs, print, UnitName, UnitGUID, UnitExists, UnitGroupRolesAssigned, UnitDetailedThreatSituation, CombatLogGetCurrentEventInfo, PlaySoundFile, UnitInRaid, UnitInParty, unpack, strsplit, gsub
+	= wipe, pairs, print, UnitName, UnitGUID, UnitExists, UnitGroupRolesAssigned, UnitDetailedThreatSituation, CombatLogGetCurrentEventInfo, PlaySoundFile, UnitInRaid, UnitInParty, unpack, strsplit, gsub
+
+local UnitIsDeadOrGhost, GetSpellInfo, tonumber, dprint, tremove, tinsert, RaidNotice_AddMessage, ChatTypeInfo
+	= UnitIsDeadOrGhost, GetSpellInfo, tonumber, dprint, tremove, tinsert, RaidNotice_AddMessage, ChatTypeInfo
 
 local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES
 
 local LSM = n.LIBS.LSM
 
+local tc = n.Addons.torgastClicks
 local cb = CreateFrame("Frame", nil, UIParent)
+local alertDB = yo.alerts.alertsPool
+
 n.Addons.cheloBuff = cb
-cb.units = { roles = {}, raid = {}, boses = {}}
+
+cb.units = { roles = { TANK = {}, HEALER = {}, DAMAGER = {}, NONE = {},}, raid = {}, boses = {}}
 
 local markPool = {8, 7, 5, 4, 3, 1, 6, 2}
 local markIndex = 1
@@ -22,37 +29,58 @@ local chatN = "party"
 local chatN = "raid"
 local chatN = "RAID_WARNING"
 
+local bossesBW = {
+	[1810] 		= "Warlord Parjesh",
+	[166644] 	= "Artificer Xy'mox",
+	[166969]	= "The Council of Blood", -- Baroness Frieda
+	--[166970]	= "The Council of Blood", -- Lord Stavros
+	--[166971]	= "The Council of Blood", -- Castellan Niklaus
+	[165805]	= "Sun King's Salvation", -- Shade of Kael'thas,
+	[165759]	= "Sun King's Salvation", -- Kael'thas,
+	[168973]	= "Sun King's Salvation", -- High Torturer Darithos
+	[168112]	= "Stone Legion Generals", -- General Kaal
+	[168113]	= "Stone Legion Generals", -- General Grashaal
+	[164407]	= "Sludgefist",
+	[164406] 	= "Shriekwing",
+	[165521]	= "Lady Inerva Darkvein",
+	[164261] 	= "Hungering Destroyer",
+	[167406] 	= "Sire Denathrius",
+	[165066]	= "Huntsman Altimor", -- Huntsman Altimor
+	--[165067] 	= "Huntsman Altimor",-- Margore
+	--[169457] 	= "Huntsman Altimor",-- Bargast
+	--[169458] 	= "Huntsman Altimor",-- Hecutis
+}
+
 local function unitsCheck()
-	wipe( cb.units.roles)
 	wipe( cb.units.raid)
 	wipe( cb.units.boses)
+	wipe( cb.units.roles.TANK)
+	wipe( cb.units.roles.HEALER)
+	wipe( cb.units.roles.DAMAGER)
 
 	if UnitInRaid("player") then
 		cb.prefix = "raid"
 	elseif UnitInParty("player") then
 		cb.prefix = "party"
 
-		if not cb.units.roles[n.myRole] then cb.units.roles[n.myRole] = {} end
-		cb.units.raid[n.myGUID]				= { unit = "player", name = n.myName}
-		cb.units.roles[n.myRole][n.myGUID] 	= { unit = "player", name = n.myName}
+		cb.units.raid[n.myGUID]				= { unit = "player", name = n.myName, fullName = n.myName, }
+		cb.units.roles[n.myRole][n.myGUID] 	= { unit = "player", name = n.myName, fullName = n.myName, }
 	else
-		--if not cb.units.roles[n.myRole] then cb.units.roles[n.myRole] = {} end
 		cb.prefix = "party"
-		cb.units.raid[n.myGUID]				= { unit = "player", name = n.myName}
+		cb.units.raid[n.myGUID]				= { unit = "player", name = n.myName, fullName = n.myName, }
 	end
 
 	for index = 1, 40 do
 		local unit = cb.prefix .. index
 		if not UnitExists( unit) then break end
 
-		local role = UnitGroupRolesAssigned( unit)
-		local guid = UnitGUID( unit)
-		local name = UnitName( unit)
+		local role 		= UnitGroupRolesAssigned( unit)
+		local guid 		= UnitGUID( unit)
+		local fullName 	= UnitName( unit)
+		local name 		= strsplit( "-", fullName)
 
-		if not cb.units.roles[role] then cb.units.roles[role] = {} end
-
-		cb.units.raid[guid]			= { unit = unit, name = name}
-		cb.units.roles[role][guid] 	= { unit = unit, name = name}
+		cb.units.raid[guid]			= { unit = unit, name = name, fullName = fullName}
+		cb.units.roles[role][guid] 	= { unit = unit, name = name, fullName = fullName}
 	end
 
 	for i = 1, MAX_BOSS_FRAMES do
@@ -60,7 +88,9 @@ local function unitsCheck()
 
 		if UnitExists( boss) then
 			local guid = UnitGUID( boss)
-			cb.units.boses[guid] = { unit = boss, name = UnitName( boss)}
+			local name = UnitName( boss)
+			cb.units.boses[guid] = { unit = boss, name = name, fullName = name}
+			cb.units.raid[guid]	 = { unit = boss, name = name, fullName = name}
 		end
 	end
 end
@@ -91,31 +121,43 @@ local colors = {
 -- sourceUnit
 
 
-
 ------------- AURA EVENTS
+
 cb.auraStack = function( cleuInfo, alertData)
-	if cleuInfo[2] == "SPELL_AURA_APPLIED_DOSE" and cleuInfo[16] >= alertData.stack then return true end
+	local event 	= cleuInfo[2]
+	local stack 	= cleuInfo[16] or 0
+	local fromStack = alertData.fromStack or 1
+	local toStack 	= alertData.toStack
+
+	if event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE" then
+
+		if not toStack and stack == fromStack then return true end
+
+		if stack >= fromStack and stack <= toStack then return true end
+	end
+
 	return false
 end
 
-cb.auraRemovedDose = function( cleuInfo, alertData)
-	local stack = cleuInfo[16]
-	local fromStak = alertData.fromStack
-	local toStack = alertData.toStack
+--cb.auraRemovedDose = function( cleuInfo, alertData)
+--	local event 	= cleuInfo[2]
+--	local stack 	= cleuInfo[16]
+--	local fromStak 	= alertData.fromStack or 0
+--	local toStack 	= alertData.toStack or 100
 
-	if cleuInfo[2] == "SPELL_AURA_REMOVED_DOSE" and ( stack <= fromStack and stack >= toStack ) then return true end
-	return false
-end
+--	if event == "SPELL_AURA_REMOVED_DOSE" and ( stack <= fromStak and stack >= toStack ) then return true end
+--	return false
+--end
+
 ------------- AURA TARGETS
 
 cb.freeTank = function( destGUID, sourceGUID)
 	if not cb.units.boses[sourceGUID] then return end
 	if not cb.units.roles.TANK[destGUID] then return end
 
-	local sourceUnit 	= cb.units.boses[sourceGUID].unit
-	local unitTank 		= cb.units.roles.TANK[destGUID].unit
+	local sourceUnit = cb.units.boses[sourceGUID].unit
+	local unitTank 	 = cb.units.roles.TANK[destGUID].unit
 
-	--print( unitTank, "freeTank = ", not UnitDetailedThreatSituation( unitTank, sourceUnit))
 	return not UnitDetailedThreatSituation( unitTank, sourceUnit), unitTank
 end
 
@@ -123,20 +165,22 @@ cb.currentTank = function( destGUID, sourceGUID)
 	if not cb.units.boses[sourceGUID] then return end
 	if not cb.units.roles.TANK[destGUID] then return end
 
-	local sourceUnit 	= cb.units.boses[sourceGUID].unit
-	local unitTank 		= cb.units.roles.TANK[destGUID].unit
+	local sourceUnit = cb.units.boses[sourceGUID].unit
+	local unitTank 	 = cb.units.roles.TANK[destGUID].unit
 
-	--print( unitTank, "currentTank = ", UnitDetailedThreatSituation( unitTank, sourceUnit))
 	return UnitDetailedThreatSituation( unitTank, sourceUnit), unitTank
 end
 
 cb.me = function( destGUID, sourceGUID)
 	if not cb.units.raid[destGUID] then return end
+
 	return n.myGUID == destGUID, cb.units.raid[destGUID].unit
 end
 
 cb.any = function( destGUID, sourceGUID)
+	--print( "THIS ANY: ", destGUID, sourceGUID, cb.units.raid[destGUID])
 	if not cb.units.raid[destGUID] then return end
+
 	return true, cb.units.raid[destGUID].unit
 end
 
@@ -146,8 +190,8 @@ end
 
 cb.target = {
 	--["auraApplaed"] = cb.auraApplaed,
-	["auraStack"]	= cb.auraStack,
-	["auraRemovedDose"] = cb.auraRemovedDose,
+	["auraStack"]		= cb.auraStack,
+	--["auraRemovedDose"] = cb.auraRemovedDose,
 
 	["me"] 			= cb.me,
 	["currentTank"]	= cb.currentTank,
@@ -159,58 +203,54 @@ cb.target = {
 
 ------------- ALERT TARGETS
 
-cb.toMe = function( alertData, msg)
-	local r, g, b = unpack( alertData.colorRGB)
-	_G.UIErrorsFrame:AddMessage( msg, r, g, b, 2, 5);
+cb.toMe = function( destGUID, sourceGUID)
+	---if not cb.units.raid[n.myGUID] then return end
 
-	print( alertData.colorStr .. ">>> to ME: " , msg)
-	cb.alertTarget = n.myGUID
+	--return n.myName, cb.units.raid[n.myGUID].unit, n.myGUID
+	return n.myName, "player", n.myGUID
 end
 
-cb.toTarget		= function( alertData, msg, destGUID, sourceGUID)
+cb.toTarget	= function( destGUID, sourceGUID)
 	if not cb.units.raid[destGUID] then return end
 
-	local target = cb.units.raid[destGUID].unit
-	cb.alertTarget = destGUID
-	print( alertData.colorStr .. ">>> to target: " , target, msg)
+	return cb.units.raid[destGUID].name, cb.units.raid[destGUID].unit, destGUID
 end
 
-cb.toCurrentTank= function( alertData, msg, destGUID, sourceGUID)
-	if not cb.units.boses[sourceGUID] then return end
-	local sourceUnit 	= cb.units.boses[sourceGUID].unit
-
-	for tankGUID, tankData in pairs( cb.units.roles.TANK) do
-		local unitTank = tankData.unit
-		local isTank = UnitDetailedThreatSituation( unitTank, sourceUnit)
-		if isTank then
-			cb.alertTarget = tankGUID
-			print( alertData.colorStr .. ">>> to currentTank: " , unitTank, sourceUnit, msg)
-		end
-	end
-end
-
-cb.toFreeTank= function( alertData, msg, destGUID, sourceGUID)
+cb.toCurrentTank= function( destGUID, sourceGUID)
 	if not cb.units.boses[sourceGUID] then return end
 	local sourceUnit = cb.units.boses[sourceGUID].unit
 
-
 	for tankGUID, tankData in pairs( cb.units.roles.TANK) do
-		local unitTank = tankData.unit
-		local isTank = UnitDetailedThreatSituation( unitTank, sourceUnit)
-		if not isTank then
-			cb.alertTarget = tankGUID
-			print( alertData.colorStr .. ">>> to freeTank: " , unitTank, sourceUnit, msg)
+		local isTank = UnitDetailedThreatSituation( tankData.unit, sourceUnit)
+
+		if isTank then
+			return tankData.name, tankData.unit, tankGUID
 		end
 	end
 end
 
-cb.anotherTank = function( alertData, msg, destGUID, sourceGUID)
+cb.toFreeTank = function( destGUID, sourceGUID)
+	if not cb.units.boses[sourceGUID] then return end
+	local sourceUnit = cb.units.boses[sourceGUID].unit
+
+	for tankGUID, tankData in pairs( cb.units.roles.TANK) do
+		local isTank = UnitDetailedThreatSituation( tankData.unit, sourceUnit)
+		local isDEad = UnitIsDeadOrGhost( tankData.unit)
+
+		if not isTank and not isDEad then
+			return tankData.name, tankData.unit, tankGUID
+		end
+	end
+end
+
+cb.toAnotherTank = function( destGUID, sourceGUID)
 	if not cb.units.roles.TANK[destGUID] then return end
 
 	for tankGUID, tankData in pairs( cb.units.roles.TANK) do
-		if tankGUID ~= destGUID  then
-			cb.alertTarget = tankGUID
-			print( alertData.colorStr .. ">>> to anotherTank: " , tankData.unit, msg)
+		local isDEad = UnitIsDeadOrGhost( tankData.unit)
+
+		if tankGUID ~= destGUID  and not isDEad then
+			return tankData.name, tankData.unit, tankGUID
 		end
 	end
 end
@@ -223,77 +263,193 @@ cb.alert = {
 	["target"]		= cb.toTarget,
 }
 
-cb.auras = {
+cb.aurasOLD = {
 	--[774] 		= { event = "auraApplaed", stack = 0, target = "currentTank",   alertTarget = "me", 			msg = "REJUVKA", 	mark = false, sound = false, color = "green"},
 	--[8936]  	= { event = "auraApplaed", stack = 0, target = "currentTank", 	alertTarget = "currentTank", 	msg = "REGROS", 	mark = false, sound = true,  color = "green"},
 
-	--[192131]   	= { event = "auraApplaed", stack = 0, target = "currentTank",   alertTarget = "me", 			msg = "192131", 	mark = false, sound = true,  color = "red"},
-	--[192053]   	= { event = "auraApplaed", stack = 0, target = "me",  			alertTarget = "freeTank", 		msg = "ПЕСОК,ТОНУ", mark = false, sound = true,  color = "orange"},
-	--[191977]   	= { event = "auraApplaed", stack = 0, target = "currentTank",   alertTarget = "currentTank",	msg = "TAUNT BOSS!",mark = false, sound = true,  color = "blue"},
+	--[192131]   	= {{ event = "auraApplaed", target = "currentTank",   alertTarget = "me", 			msg = "192131", 	sound = true,  color = "red"},},
+	--[192053]   	= {{ event = "auraApplaed", target = "me",  		  alertTarget = "me", 			msg = "ПЕСОК,ТОНУ", sound = true,  color = "orange"},},
+	--[191977]   	= {{ event = "auraApplaed", target = "currentTank",   alertTarget = "currentTank",	msg = "TAUNT BOSS!",sound = true,  color = "blue"},},
 
 	--[8936]  	= {{ event = "castStart", target = "any", 	alertTarget = "me", 	msg = "REGROS CAST", 	mark = false, sound = true,  color = "red"},},
 	--[338825]  	= {{ event = "auraStack", target = "me", 	alertTarget = "me", 	msg = "ПАЛЕЦ ЗАРЯДИЛ", 	sound = true,  color = "green", stack = 4},},
-
 	[340533]   	= {{ event = "auraApplaed", target = "currentTank",  alertTarget = "freeTank",		msg = "!!!!!!", 		sound = true,  color = "red"},},
 --Лорд Ставрос
 	--[327503]   	= { event = "auraApplaed", target = "currentTank",  alertTarget = "freeTank",		msg = "!!!!!!", 		sound = true,  color = "red"},
-	[327610]   	= {{ event = "auraApplaed", target = "currentTank",  alertTarget = "freeTank",		msg = "!!!!!!", 		sound = true,  color = "red"},},
+	[327610]   	= {{ event = "auraApplaed", target = "currentTank",  alertTarget = "freeTank",		msg = "!!!!!!", color = "red"},},
+	[331637] 	= {{ event = "auraRemoved", target = "any",  		 alertTarget = "target",		msg = "$target, ты чист!", 		color = "green"},},
+	[331636] 	= {{ event = "auraRemoved", target = "any",  		 alertTarget = "target",		msg = "$target, ты чист!", 		color = "green"},},
 -- визгунья 342863
-	[328897]   	= {{ event = "auraApplaed", target = "currentTank",  alertTarget = "freeTank",	msg = "Таунт Визунью", 	sound = true,},},
-	[328897]   	= {{ event = "auraRemoved", target = "any",  		 alertTarget = "target",	msg = "Ты чист!", 		color = "green"},},
-	[328897]   	= {{ event = "auraRemovedDose", target = "currentTank",	 alertTarget = "currentTank",	msg = "Прожмись!", fromStack = 9, toStack = 7,	color = "red"},},
-
-	[330711]	= {{ event = "castStart", target = "any",  alertTarget = "me",		msg = "ПРЯЧЬСЯ Быстро!!!", 	sound = true,  color = "red"},},
-	[345936]	= {{ event = "castStart", target = "any",  alertTarget = "me",		msg = "ПРЯЧЬСЯ ДОЛГО!!!", 	sound = true,  color = "red"},},
+	[328897]   	= {
+		{ event = "auraRemoved", 	target = "any",  		 alertTarget = "target",		msg = "$target, ты чист!", 	color = "green"},
+		{ event = "auraApplaed", 	target = "currentTank",  alertTarget = "freeTank",		msg = "$target, таунт $boss",},
+		{ event = "auraStack",		target = "currentTank",  alertTarget = "currentTank",	msg = "$target, прожмись! $stack стаков", fromStack = 7, toStack = 9},
+	},
+	[330711]	= {{ event = "castStart", target = "any",  alertTarget = "me",	msg = "ПРЯЧЬСЯ фаза! ( #$count)", 	sound = true,  color = "red"},},
+	[345936]	= {{ event = "castStart", target = "any",  alertTarget = "me",	msg = "ПРЯЧЬСЯ переход! ( #$count)", sound = true,  color = "red"},},
 --грязешмяк
 	[331209]   	= {
-		{ event = "auraApplaed", target = "any",   	alertTarget = "target",			msg = "Беги в колону!", 		sound = true,  color = "red"},
-		{ event = "auraApplaed", target = "any",  	alertTarget = "freeTank",		msg = "TAUNT", 			sound = true,  color = "red"},
+		{ event = "auraRemoved", target = "any",    alertTarget = "target",		msg = "$target, ты чист!", 		color = "green"},
+		{ event = "auraApplaed", target = "any",   	alertTarget = "me",			msg = "Отойди от колонны! Скоро дамажить ( 6 сек)", sound = true,  color = "blue"},
+		{ event = "auraApplaed", target = "any",   	alertTarget = "target",		msg = "$target, Беги в колону #$count!", },
+		{ event = "auraApplaed", target = "any",  	alertTarget = "freeTank",	msg = "$target, TAUNT $boss", },
 	},
+	--[331212] 	= {{ event = "castStart",  target = "any",  	alertTarget = "me",	msg = "Отойди от колонны! Скоро дамажить ( 4 сек)", sound = true, color = "blue"},},
 -- изобретатель
 	[325236]   	= {
-		{ event = "auraApplaed", target = "any",  	alertTarget = "target",			msg = "Выноси говно!!!", 	sound = true,  color = "red"},
-		{ event = "auraApplaed", target = "any",  	alertTarget = "freeTank",		msg = "TAUNT!!!",	 	sound = true,  color = "red"},
+		{ event = "auraRemoved", target = "any",    alertTarget = "target",		msg = "$target, ты чист!", 	color = "green"},
+		{ event = "auraApplaed", target = "any",  	alertTarget = "target",		msg = "Выноси говно!", color = "blue"},
+		{ event = "auraApplaed", target = "any",  	alertTarget = "freeTank",	msg = "$target, TAUNT $boss!!!",  color = "red"},
 	},
+	[328437]	= { ---Пространственный разрыв
+		{ event = "castStart", target = "any",  	alertTarget = "me",	msg = "Выносим 1й портал в центр",	sound = true,  color = "orange", stage = 3},},
+	--328448   castSuccs
+	--328468
 	[334971]   	= {{ event = "auraApplaed", target = "currentTank",  alertTarget = "freeTank",		msg = "HUNTERS!!!", 	sound = true},},
---Алчущий разрушитель
-	[338614]   	= {{ event = "auraApplaed", target = "any",  alertTarget = "target",	msg = "LASER!!!", 		sound = true },},
-	[334064]   	= {{ event = "auraApplaed", target = "any",  alertTarget = "target",	msg = "LASER 2", 		sound = true,  color = "blue"},},
+--Алчущий разрушитель 338614
+	[338614]   	= {{ event = "auraApplaed", target = "any",  alertTarget = "me",	msg = "LASER 1",	sound = true },},
+	[334064]   	= {{ event = "auraApplaed", target = "any",  alertTarget = "me",	msg = "LASER 2", 	sound = true,  color = "blue"},},
+	[334266]   	= {{ event = "auraApplaed", target = "any",  alertTarget = "me",	msg = "LASER 3", 	sound = true,  color = "blue"},},
 }
 
-for spellId, spellData in pairs( cb.auras) do
-	local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo( spellId)
+cb.auras = {}
+---alertDB
+function cb:auraTable( spellData, alertName)
+	local spellID 		= tonumber( spellData.spellID)
+	local name, _, icon = GetSpellInfo( spellID)
+
 	if name then
-		for  index, alertData in pairs( spellData) do
-			alertData.name 		= name
-			alertData.icon 		= icon
-			alertData.colorStr 	= alertData.color and colors[alertData.color].colorStr 	or "|cffff0000"
-			alertData.colorRGB	= alertData.color and colors[alertData.color].color 	or {1,0,0,1}
+		if not cb.auras[spellID] then cb.auras[spellID] = {} end
 
-			if not alertData.mark  then alertData.mark  = false end
-			if not alertData.sound then alertData.sound = false end
-			if not alertData.stack then alertData.stack = 0 end
-
-			if alertData.event == "auraApplaed" then
-				alertData.events = { ["SPELL_AURA_APPLIED"] = true, }
-
-			elseif alertData.event == "auraRemoved" then
-				alertData.events = { ["SPELL_AURA_REMOVED"] = true}
-
-			elseif alertData.event == "auraRemovedDose" then
-				alertData.events = { ["SPELL_AURA_REMOVED_DOSE"] = true}
-
-			elseif alertData.event == "auraStack" then
-				alertData.events = { ["SPELL_AURA_APPLIED"] = true, ["SPELL_AURA_APPLIED_DOSE"] = true,}
-
-			elseif alertData.event == "castStart" then
-				alertData.events = { ["SPELL_CAST_START"] = true}
-				alertData.target = "empty"
+		for i,v in pairs( cb.auras[spellID]) do
+			if alertName == v.alertName then
+				tremove( cb.auras[spellID], i)
 			end
 		end
+
+		local option = {
+			spellId 	= spellID,
+			alertName 	= alertName,
+			event 		= spellData.event,
+			target		= spellData.destUnit,
+			alertTarget	= spellData.alertUnit,
+			msg 		= spellData.message,
+			color		= spellData.color,
+			fromStack 	= tonumber( spellData.fromStack),
+			toStack		= tonumber( spellData.toStack),
+			raidAlert	= spellData.raidAlert,
+			sound		= spellData.sound,
+			stage 		= tonumber( spellData.stage),
+			lowHealth 	= spellData.lowHealth,
+			index 		= 0,
+			name 		= name,
+			icon 		= icon,
+			spellMSG	= " |cff00ffff|T".. icon ..":11:11:0:0:44:44:4:40:4:40|t " .. name .. "|r",
+			colorStr 	= spellData.color and colors[spellData.color].colorStr 	or "|cffff0000",
+			colorRGB	= spellData.color and colors[spellData.color].color 	or {1,0,0,1},
+		}
+
+		if not option.stack then option.stack = 0 end
+		if not option.msg   then option.msg = "$spell" end
+
+		if option.event == "auraApplaed" then
+			option.events = { ["SPELL_AURA_APPLIED"] = true, }
+
+		elseif option.event == "auraRemoved" then
+			option.events = { ["SPELL_AURA_REMOVED"] = true,}
+		--elseif option.event == "auraRemovedDose" then
+			--option.events = { ["SPELL_AURA_REMOVED_DOSE"] = true,}
+		--elseif option.event == "auraStack" then
+			--option.events = { ["SPELL_AURA_APPLIED_DOSE"] = true,} --["SPELL_AURA_APPLIED"] = true,
+		elseif option.event == "castStart" then
+			option.events = { ["SPELL_CAST_START"] = true,}
+			option.target = "empty"
+			elseif option.event == "castSuccs" then
+			option.events = { ["SPELL_CAST_SUCCESS"] = true,}
+			option.target = "empty"
+		end
+
+		tinsert( cb.auras[spellID], option)
 	else
-		print( spellId, "ERROR!!!")
+		print( alertName, " - SPELL ERROR:", spellID )
 	end
+end
+
+function cb:spellPrepare( key)
+	if key then
+		local spellData = alertDB[key]
+		cb:auraTable( spellData, key)
+	end
+end
+
+function cb:spellsPrepare( key)
+	for alertName, spellData in pairs( alertDB) do
+		cb:auraTable( spellData, alertName)
+	end
+end
+
+local function msgOut( alertData, cleuInfo, msgName, msgUnit)
+
+	local alertTarget = alertData.alertTarget
+	local stack 	  = cleuInfo[16] or ""
+	local bossName	  = cleuInfo[5] or ""
+	local msg 		  = alertData.msg
+	local alerCount	  = alertData.index
+	--local devStr = ""
+	local devStr = "|cff888888>>> to '" .. alertData.alertTarget .. "' (" .. msgName .. " - ".. msgUnit .. ") :|r"
+
+	msg = gsub( msg, "$stack", 	stack)
+	msg = gsub( msg, "$target", msgName)
+	msg = gsub( msg, "$boss", 	bossName)
+	msg = gsub( msg, "$count", 	alerCount)
+	msg = gsub( msg, "$spell", 	alertData.spellMSG)
+
+	if alertTarget == "me" then
+		local r, g, b = unpack( alertData.colorRGB)
+		_G.UIErrorsFrame:AddMessage( msg, r, g, b, 1.0, 1);
+
+		---print( alertData.colorStr .. ">>> to '" .. alertData.alertTarget .. "': " .. msgName .. " (".. msgUnit .. "), "  .. msg .. alertData.spellMSG)
+
+	elseif alertTarget == "raid" or alertTarget == "party" then
+		-- ананс в рейд/группу
+		RaidNotice_AddMessage( _G.RaidWarningFrame, msg, ChatTypeInfo["RAID_WARNING"], 10);
+
+	else
+		-- ПМ жертве
+	end
+
+	print( devStr .. alertData.colorStr .. msg .. alertData.spellMSG)
+end
+
+local function checkBWBoss( self)
+	for i = 1, MAX_BOSS_FRAMES do
+		local boss = "boss" .. i
+		if UnitExists( boss) then
+			local _, _, _, _, _, mobID = strsplit( "-", UnitGUID( boss))
+			local bossEng = bossesBW[tonumber( mobID)]
+			--dprint(mobID, boss, bossEng )
+			if bossEng and _G.BigWigs then
+				local mod = _G.BigWigs:GetBossModule( bossEng)
+				if mod then
+					dprint("BWBoss found!", mobID, boss, bossEng)
+					self.bossBW = mod
+					self.bossed = true
+				end
+			end
+		end
+	end
+end
+
+local function checkSubEvent(self, alertData, cleuInfo)
+	local subEvent	= cleuInfo[2]
+
+	if not (( alertData.events and alertData.events[subEvent]) or ( self.target[alertData.event] and self.target[alertData.event]( cleuInfo, alertData))) then return false	end
+
+	alertData.stageBW 	 = self.bossed and self.bossBW:GetStage() or 0
+	--dprint( alertData.events[subEvent], "--==>> STAGE =", alertData.stageBW)
+	if alertData.stage and self.bossed and alertData.stage ~= alertData.stageBW then return false end
+
+	return true
 end
 
 local function cheloEvent( self, event, arg1, arg2, arg3, ...)
@@ -301,72 +457,66 @@ local function cheloEvent( self, event, arg1, arg2, arg3, ...)
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local cleuInfo 	= {CombatLogGetCurrentEventInfo()}
 		local spellId 	= cleuInfo[12]
-		local subEvent	= cleuInfo[2]
-		local sourceGUID= cleuInfo[4]
 		local destGUID	= cleuInfo[8]
-
-		cb.eventLog = cleuInfo
+		local sourceGUID= cleuInfo[4]
+		--self.eventLog 	= cleuInfo
 
 		--local ts, subEvent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
 		--		spellId, spellName, spellSchool, extraArg15, extraArg16, extraArg17, extraArg18, extraArg19, extraArg20, extraArg21 = CombatLogGetCurrentEventInfo()
 
-		if not cb.auras[spellId] then return end
+		if not self.auras[spellId] then return end
 
-		for index, alertData in pairs( cb.auras[spellId]) do
-
-			if not alertData.events[subEvent] then return end
-
+		for i, alertData in pairs( self.auras[spellId]) do
 			-- CUSTOM EVENTS
-			if cb.target[alertData.event] and not cb.target[alertData.event]( cleuInfo, alertData) then return end
+			if checkSubEvent(self, alertData, cleuInfo) then
 
-			-- SEEK TARGET
-			local target, unit 	= cb.target[alertData.target]( destGUID, sourceGUID)
+				alertData.index 	 = alertData.index + 1
+				alertData.sourceGUID = sourceGUID
+				alertData.sourceName = cleuInfo[6]
+				alertData.sourceUnit = self.units.boses[sourceGUID] and self.units.boses[sourceGUID].unit or false
 
-			if not target then return end
+				alertData.destGUID 	 = destGUID
+				alertData.destName	 = cleuInfo[9]
+				alertData.destUnit 	 = self.units.raid[destGUID] and self.units.raid[destGUID].unit or false
 
-			local sourceName	= cleuInfo[5]
-			local destName		= cleuInfo[9]
+				-- SEEK TARGET
+				local target, unit = self.target[alertData.target]( destGUID, sourceGUID)
 
-			local spellMSG 		= alertData.msg .. " ( |T".. alertData.icon ..":11:11:0:0:44:44:4:40:4:40|t " .. alertData.name .. ")"
-			local spellCOlor 	= colors[alertData.color] or "|cffffffff"
-			local buffTarget 	= alertData.target
-			local toAlert 	 	= alertData.alertTarget
+				if target and unit then
+					--  DO MESAGE
+					local msgName, msgUnit, msgGUID = self.alert[alertData.alertTarget]( destGUID, sourceGUID)
 
-			if unit then
-				--  DO MESAGE
-				cb.alert[toAlert]( alertData, spellMSG, destGUID, sourceGUID)
+					if msgName then msgOut( alertData, cleuInfo, msgName, msgUnit) end
 
-				local alertGUID	= cb.alertTarget
-				local alertUnit	= cb.units.raid[alertGUID].unit
+					--dprint("-------------------------------------------")
+					--dprint( "Дано : id = ", spellId, " target = ", buffTarget, " toAlert = ", toAlert)
+					--dprint( "Имеем: buff source = ", sourceName, "buff target = ", unit, UnitName(unit))
+					--dprint( "Алерт: target =", alertUnit, UnitName( alertUnit), alertGUID)
 
-				print("-------------------------------------------")
-				print( "Дано : id = ", spellId, " target = ", buffTarget, " toAlert = ", toAlert)
-				print( "Имеем: buff source = ", sourceName, "buff target = ", unit, UnitName(unit))
-				print( "Алерт: target =", alertUnit, UnitName( alertUnit), alertGUID)
-
-				if alertData.sound then
-					PlaySoundFile( LSM:Fetch( "sound", yo.Addons.CastWatchSound))
+					if alertData.sound then PlaySoundFile( LSM:Fetch( "sound", alertData.sound)) end
 				end
 			end
-			--	print(k,v)
-
 		end
 
 	elseif event == "ENCOUNTER_START" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" or event == "PLAYER_ENTERING_WORLD" then
-
-		if UnitInRaid("player") or UnitInParty("player") then
+		if ( UnitInRaid("player") or UnitInParty("player")) and not ( tc and tc.inTorghast) then
+			checkBWBoss( self)
 			unitsCheck()
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			--self:RegisterUnitEvent("UNIT_SPELLCAST_START", "boss1", "boss2")
-			markIndex = 1
+			--markIndex = 1
 		end
 	elseif event == "ENCOUNTER_END" then
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		self.bossBW = false
+		self.bossed = false
 		--self:UnregisterEvent("UNIT_SPELLCAST_START")
 
 	elseif event == "GROUP_ROSTER_UPDATE" then
-		n.myRole = UnitGroupRolesAssigned( "player")
-		unitsCheck()
+		if not ( tc and tc.inTorghast) then
+			n.myRole = UnitGroupRolesAssigned( "player")
+			unitsCheck()
+		end
 	end
 end
 
@@ -380,7 +530,28 @@ cb:RegisterEvent("PLAYER_ENTERING_WORLD")
 cb:RegisterEvent("GROUP_ROSTER_UPDATE")
 cb:SetScript("OnEvent", cheloEvent)
 
+---spellsPrepare()
+cb:spellsPrepare()
+---spellsPrepareNEW()
 
+
+	--------------------------------------------------------------------------------------------------
+		--hooksecurefunc( mod, "ImpalingSpear", function(self, args)
+		--	print("BOOOM")
+		--	if args and type( args) == "table" then
+		--		--tprint(args)
+		--		mod:TargetMessageOld( args.spellId, args.destName, "red", "alarm", "???????????????????????", nil, true)
+		--	end
+		--end)
+
+		--hooksecurefunc( mod, "ThrowSpear", function(self, args)
+		--	print("BOOOM TRA", self, args)
+		--	if args and type( args) == "table" then
+		--		--tprint(args)
+		--		mod:TargetMessageOld( args.spellId, args.destName, "red", "alarm", "!!!!!!!!!!!!!", nil, true)
+		--	end
+
+		--end)
 		----print( "spell found ", spellId, spellMSG, destGUID, sourceGUID)
 
 		--local spellAura 	= cb.auras[spellId]
@@ -608,5 +779,49 @@ cb:SetScript("OnEvent", cheloEvent)
 --	local guid = UnitGUID(unit)
 --	if guid then
 --		return guid
+--	end
+--end
+
+--local function spellsPrepare(...)
+--	for spellId, spellData in pairs( cb.aurasOLD) do
+--		local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo( spellId)
+--		if name then
+--			for  index, alertData in pairs( spellData) do
+--				alertData.index 	= 0
+--				alertData.name 		= name
+--				alertData.icon 		= icon
+--				alertData.spellMSG	= " |cff00ffff|T".. alertData.icon ..":11:11:0:0:44:44:4:40:4:40|t " .. alertData.name .. "|r"
+--				alertData.colorStr 	= alertData.color and colors[alertData.color].colorStr 	or "|cffff0000"
+--				alertData.colorRGB	= alertData.color and colors[alertData.color].color 	or {1,0,0,1}
+
+--				if not alertData.mark  then alertData.mark  = false end
+--				if not alertData.sound then alertData.sound = false end
+--				--if not alertData.stack then alertData.stack = 0 end
+--				if not alertData.msg   then alertData.msg 	= "$spell" end
+
+--				if alertData.event == "auraApplaed" then
+--					alertData.events = { ["SPELL_AURA_APPLIED"] = true, }
+
+--				elseif alertData.event == "auraRemoved" then
+--					alertData.events = { ["SPELL_AURA_REMOVED"] = true,}
+
+--				--elseif alertData.event == "auraRemovedDose" then
+--					--alertData.events = { ["SPELL_AURA_REMOVED_DOSE"] = true,}
+
+--				--elseif alertData.event == "auraStack" then
+--					--alertData.events = { ["SPELL_AURA_APPLIED_DOSE"] = true,} --["SPELL_AURA_APPLIED"] = true,
+
+--				elseif alertData.event == "castStart" then
+--					alertData.events = { ["SPELL_CAST_START"] = true,}
+--					alertData.target = "empty"
+
+--				elseif alertData.event == "castSuccs" then
+--					alertData.events = { ["SPELL_CAST_SUCCESS"] = true,}
+--					alertData.target = "empty"
+--				end
+--			end
+--		else
+--			print( spellId, "ERROR!!!")
+--		end
 --	end
 --end

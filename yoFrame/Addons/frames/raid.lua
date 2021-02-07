@@ -528,18 +528,10 @@ local function raidShared(self, unit)
    		self.Buffs.tankOverlay.anim.fadeout:SetDuration( 1)
 
 
-		--if true then
-		--	self.Buffs.CustomFilter = tankCustomFilter
-		--end
-
 		self.Buffs.PostCreateIcon = function( self, button)
 			button.icon:SetTexCoord( unpack( n.tCoord))
-			--button.icon:ClearAllPoints()
 
-			button.timerPos 	= { "TOP", button, "BOTTOM", 0, -3}
-			button.cd.timerPos 	= { 'TOP', button.cd, 'BOTTOM', 0, -2}
-			--button.cd.timerPos 	= { 'CENTER', button.cd, 'BOTTOM', 0, 2}
-
+			button.cd.timerPos 	= { 'TOP', button.icon, 'BOTTOM', 4, 8}
 			button.cd:SetDrawEdge( false)
 			button.cd:SetDrawSwipe( false)
 

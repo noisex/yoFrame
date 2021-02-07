@@ -132,7 +132,7 @@ local function BuffDEbuffDesign(...)
 		if yo.Addons.minimapMove then
 			BuffFrame:SetPoint("TOPRIGHT", n.Addons.moveFrames.yoMoveBuff, "TOPRIGHT", 0, 0)
 		else
-			BuffFrame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -10, 0)
+			BuffFrame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -10, -1)
 		end
 		BuffFrame.SetPoint = n.dummy
 		BuffFrame.moved = true

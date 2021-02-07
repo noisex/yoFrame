@@ -122,7 +122,7 @@ local function SellGray()
 	end
 
 	if c>0 then
-		print(L["JUNKSOLD"] .." " .. formatMoney( c),255,255,0)
+		print( "|cffffff00" .. L["JUNKSOLD"] .." " .. formatMoney( c) .. "|r")
 	end
 end
 
@@ -151,9 +151,9 @@ local function OnMerchEvent(self,event)
 						RepairAllItems()
 						PlaySound( _G.SOUNDKIT.ITEM_REPAIR);
 					end
-					print( REPAIR_COST .." " .. formatMoney( cost),255,255,0)
+					print( "|cffffff00" .. REPAIR_COST .." " .. formatMoney( cost) .. "|r")
 				else
-					print( REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY,255,0,0)
+					print( "|cffff0000" .. REPAIR_COST .." " .. SPELL_FAILED_NOT_ENOUGH_CURRENCY .."|r")
 				end
 			end
 		end

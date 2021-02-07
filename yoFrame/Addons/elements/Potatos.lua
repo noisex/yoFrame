@@ -10,7 +10,7 @@ local hpInRaid, hpInParty, hpInSolo, howBig = 30, 50, 50, 20
 local SetPosition = function(anch)
 	local ap, _, rp, x, y = anch:GetPoint()
 	local w, h = anch:GetSize()
-	yo_Position["yoMovePotatos"] = {ap, "UIParent", rp, x, y, w, h}
+	--yo_Position["yoMovePotatos"] = {ap, "UIParent", rp, x, y, w, h}
 end
 
 local function DrawDefault( self)

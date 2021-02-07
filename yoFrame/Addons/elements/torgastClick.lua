@@ -3,8 +3,8 @@ local L, yo, n 	= unpack( ns)
 
 local _G = _G
 
-local pairs, GetItemInfo, GetItemIcon, GetItemCount, GameTooltip, unpack, CreateFrame, GetItemCooldown
-	= pairs, GetItemInfo, GetItemIcon, GetItemCount, GameTooltip, unpack, CreateFrame, GetItemCooldown
+local pairs, GetItemInfo, GetItemIcon, GetItemCount, GameTooltip, unpack, CreateFrame, GetItemCooldown, wipe, ObjectiveTracker_Update
+	= pairs, GetItemInfo, GetItemIcon, GetItemCount, GameTooltip, unpack, CreateFrame, GetItemCooldown, wipe, ObjectiveTracker_Update
 
 local tc = CreateFrame("Frame", nil, UIParent)
 n.Addons.torgastClicks = tc
@@ -12,6 +12,7 @@ n.Addons.torgastClicks = tc
 local size = 40
 local maw = n.Addons.maw
 
+tc.usedIcons = {}
 tc.poolIcons = {}
 tc.cellsData = {
 	--["ravenous"] 	= { id = 181468}, -- 170540},
@@ -103,7 +104,8 @@ end
 
 function tc:updateIcons()
 	local index = 0
-	tc.usedIcons = {}
+	wipe( tc.usedIcons) --= {}  ---wipe need
+
 	for _, button in pairs( tc.poolIcons) do button:Hide() end
 
 	for name, item in pairs( tc.cellsData) do
@@ -151,7 +153,7 @@ end
 local function outTorghast()
 
 	for i = 4, 6 do
-		local module = ObjectiveTrackerFrame.MODULES[i]
+		local module = _G.ObjectiveTrackerFrame.MODULES[i]
 		local collapsed = module.collapsed
 		if collapsed then
 			module:SetCollapsed( false)
@@ -168,7 +170,7 @@ end
 local function inTorghast()
 
 	for i = 4, 6 do
-		local module = ObjectiveTrackerFrame.MODULES[i]
+		local module = _G.ObjectiveTrackerFrame.MODULES[i]
 		local collapsed = module.collapsed
 		if not collapsed then
 			module:SetCollapsed( true)

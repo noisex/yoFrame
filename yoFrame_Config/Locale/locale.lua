@@ -2,7 +2,7 @@ local AddOnName, Engine = ...
 local AceAddon, AceAddonMinor = _G.LibStub('AceAddon-3.0')
 local CallbackHandler = _G.LibStub('CallbackHandler-1.0')
 
-local addon = AceAddon:NewAddon( AddOnName, 'AceConsole-3.0', 'AceEvent-3.0', 'AceHook-3.0')
+local addon = AceAddon:NewAddon( AddOnName, 'AceEvent-3.0')
 
 addon.df = {profile = {}, global = {}}; addon.privateVars = {profile = {}} -- Defaults
 addon.options = {type = 'group', args = {}, childGroups = 'ElvUI_HiddenTree'}

@@ -80,7 +80,7 @@
 		</Scripts>
 	</Slider>
 
-		<Frame name="TPVolumeControlFrameTemplate" inherits="BackdropTemplate" virtual="true" hidden="true">
+	<Frame name="TPVolumeControlFrameTemplate" inherits="BackdropTemplate" virtual="true" hidden="true">
 		<Size>
 			<AbsDimension x="350" y="200" />
 		</Size>
@@ -88,9 +88,9 @@
 			<Layer>
 				<FontString name="$parentTitle" inherits="GameFontNormalSmall">
 					<Anchors>
-						<Anchor point="TOP">
+						<Anchor point="TOPLEFT"  relativePoint="TOPLEFT">
 							<Offset>
-								<AbsDimension x="0" y="-10" />
+								<AbsDimension x="5" y="-10" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -144,6 +144,35 @@
 		</Layers>
 
 		<Frames>
+<!-- 			<Button name="$parentbuttonRight" virtual='true' enableMouse="true">
+				<Size x='26' y='26'/>
+				<Anchors>
+          			<Anchor point="TOPRIGHT" relativeKey="$parent" relativePoint="TOPRIGHT" x="-2" y="-2"/>
+        		</Anchors>
+        		<Layers>
+      				<Layer level="OVERLAY">
+        				<Texture file="Interface\AddOns\yoFrame\Media\icons\ArrowRight" setAllPoints="true" parentKey="texture"/>
+        				<FontString name="$parenttextTitle" inherits="GameFontNormalSmall">
+							<Anchors>
+								<Anchor point="RIGHT" relativePoint="RIGHT">
+									<Offset>
+										<AbsDimension x="-5" y="0" />
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+      				</Layer>
+    			</Layers>
+    			<Scripts>
+					<OnShow>
+						print( "ONSHOW", self:GetName());  TPVolumeControlFrameSDRight
+					</OnShow>
+					<OnEnter>
+					</OnEnter>
+					<OnLeave>
+					</OnLeave>
+				</Scripts>
+			</Button> -->
 			<Slider name="TPMasterVolumeControlSlider" inherits="TPOptionsSliderTemplate">
 				<Anchors>
 					<Anchor point="TOP">
@@ -191,6 +220,9 @@
 			</Slider>
 		</Frames>
 		<Scripts>
+			<OnShow>
+				TPVolumeControlFrame_OnShow(self);
+			</OnShow>
 			<OnLoad>
 				TPVolumeControlFrame_OnLoad(self);
 			</OnLoad>
@@ -209,6 +241,7 @@
 	<Frame parent="UIParent">
 		<Frames>
 			<Frame name="TPVolumeControlFrame" inherits="TPVolumeControlFrameTemplate" frameStrata="FULLSCREEN" toplevel="true" />
+
 		</Frames>
 	</Frame>
 </Ui>

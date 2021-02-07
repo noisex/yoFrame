@@ -195,35 +195,35 @@ local function chackRegion( self)
 				if self.sortedChildren then checkDynamic( self) end
 			end)
 
-			if proxyGroup[k] then
-				hooksecurefunc( regFrame, "DeactivateChild", function(self, ...)
-					local sortedChaldren= regFrame.sortedChildren
-					for i = #sortedChaldren + 1, #proxyBars do proxyBars[i]:Hide() end
-					--print("HIDE IT", #sortedChaldren)--, chRegion.timer:GetText(), _G.WeakAuras:IsOptionsOpen())
-				end)
+			--if proxyGroup[k] then
+			--	hooksecurefunc( regFrame, "DeactivateChild", function(self, ...)
+			--		local sortedChaldren= regFrame.sortedChildren
+			--		for i = #sortedChaldren + 1, #proxyBars do proxyBars[i]:Hide() end
+			--		--print("HIDE IT", #sortedChaldren)--, chRegion.timer:GetText(), _G.WeakAuras:IsOptionsOpen())
+			--	end)
 
-				hooksecurefunc( regFrame, "ActivateChild", function(self, ...)
-					local name, arg = ...
-					if arg ~= nil then
-						local sortedChaldren= regFrame.sortedChildren
-						for index, chRegion in pairs( sortedChaldren) do
-							local type 		= chRegion.region.regionType
-							local icon 		= chRegion.region.state.icon
-							local timer 	= chRegion.region.timer:GetText()
-							local duration 	= chRegion.region.state.duration
-							local expiration= chRegion.region.state.expirationTime  - GetTime()
+			--	hooksecurefunc( regFrame, "ActivateChild", function(self, ...)
+			--		local name, arg = ...
+			--		if arg ~= nil then
+			--			local sortedChaldren= regFrame.sortedChildren
+			--			for index, chRegion in pairs( sortedChaldren) do
+			--				local type 		= chRegion.region.regionType
+			--				local icon 		= chRegion.region.state.icon
+			--				local timer 	= chRegion.region.timer:GetText()
+			--				local duration 	= chRegion.region.state.duration
+			--				local expiration= chRegion.region.state.expirationTime  - GetTime()
 
-							local retString 	= format( strAddFormat, index, type, timer, icon, duration, expiration)
+			--				local retString 	= format( strAddFormat, index, type, timer, icon, duration, expiration)
 
-							if IsInGroup(LE_PARTY_CATEGORY_HOME) then
-								C_ChatInfo.SendAddonMessage( addonName, retString, "PARTY")
-						end
-							--C_ChatInfo.SendAddonMessage( addonName, retString, "WHISPER", "Дэмьер")
-						end
-						--updateBars( regFrame)
-					end
-				end)
-			end
+			--				if IsInGroup(LE_PARTY_CATEGORY_HOME) then
+			--					C_ChatInfo.SendAddonMessage( addonName, retString, "PARTY")
+			--			end
+			--				--C_ChatInfo.SendAddonMessage( addonName, retString, "WHISPER", "Дэмьер")
+			--			end
+			--			--updateBars( regFrame)
+			--		end
+			--	end)
+			--end
 		end
 	end
 end
@@ -284,7 +284,7 @@ end
 local logan = CreateFrame("Frame")
 logan:RegisterEvent("PLAYER_ENTERING_WORLD")
 logan:RegisterEvent("ADDON_LOADED")
-logan:RegisterEvent("CHAT_MSG_ADDON")
+--logan:RegisterEvent("CHAT_MSG_ADDON")
 logan:SetScript("OnEvent", registermacro)
 
 C_ChatInfo.RegisterAddonMessagePrefix( addonName)

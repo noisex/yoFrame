@@ -213,18 +213,26 @@ local function outLoot( frame, link)
 			elseif 	i == "ITEM_MOD_INTELLECT_SHORT" 		or
 					i == "ITEM_MOD_AGILITY_SHORT" 			or
 					i == "ITEM_MOD_STRENGTH_SHORT" 			then temptext = temptext .. "|cff999999+" .. data .. " " .. _G[i] .. "\n|r"
-															 elsetemptext = temptext .. "|cff00ff00+" .. Round( data) .. " " .. ( _G[i] or i).. "\n|r"
+															else temptext = temptext .. "|cff00ff00+" .. Round( data) .. " " .. ( _G[i] or i).. "\n|r"
 			end
 		end
 
-		if frame.seting.allstat and (( foundH and frame.seting.haste == false) or ( foundM and frame.seting.master == false) or ( foundC and frame.seting.crit ==  false) or ( foundV and frame.seting.versa == false)) then
+		if 	frame.seting.allstat and
+				((foundH and frame.seting.haste == false) or
+				( foundM and frame.seting.master == false) or
+				( foundC and frame.seting.crit 	==  false) or
+				( foundV and frame.seting.versa == false)) then
 			found = false
-		elseif ( foundH and frame.seting.haste) or ( foundM and frame.seting.master) or ( foundC and frame.seting.crit) or ( foundV and frame.seting.versa) then
+
+		elseif 	( foundH and frame.seting.haste) 	or
+				( foundM and frame.seting.master) 	or
+				( foundC and frame.seting.crit) 	or
+				( foundV and frame.seting.versa) 	then
 			found = true
 		end
 
 		--print(found, itemInfo.link, frame.seting.haste, frame.seting.master, frame.seting.crit, frame.seting.versa, frame.seting.allstat, foundH, foundM, foundC, foundV )
-		if found or filterType == 13 then
+		if found or frame.filterType == 13 then
 			local lolButton = CreateIcon( frame.indexLol, itemInfo.link, itemInfo.icon)
 			local encounterName, _, _, _, encounterLink = EJ_GetEncounterInfo( itemInfo.encounterID);
 			lolButton.icon:SetTexture( itemInfo.icon)
@@ -319,7 +327,7 @@ local function checkDungeLoot( filterType)
 
 			if instanceID then
 				EJ_SelectInstance( instanceID)
-				if EJ_GetNumLoot() then outLoot( frame, link) end
+				if EJ_GetNumLoot() then	outLoot( frame, link) end
 			end
 			yoEF.duLoot:Show()
 		end
