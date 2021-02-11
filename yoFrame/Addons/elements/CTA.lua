@@ -462,7 +462,9 @@ local function CheckLFR( self, ...)
 	UpdateStrings( self)
 	--end
 
-	timer = C_Timer.NewTimer( yo.CTA.timer, function(self) CheckLFR( _G["yo_CTAFrame"]) end)
+	if yo.CTA.timer then
+		timer = C_Timer.NewTimer( yo.CTA.timer, function(self) CheckLFR( _G["yo_CTAFrame"]) end)
+	end
 end
 
 function resetCTAtimer( self)

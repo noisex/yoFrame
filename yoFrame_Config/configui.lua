@@ -412,6 +412,7 @@ local function InitOptions()
 					showAltBags		= {	order = 40, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					countAltBags	= {	order = 42, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not db[info[1]].enable or not db[info[1]].showAltBags end,},
 					showGuilBank	= {	order = 44, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not db[info[1]].enable or not db[info[1]].showAltBags end,},
+					countGuildBank	= {	order = 46, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full", disabled = function( info) return not db[info[1]].enable or not db[info[1]].showAltBags end,},
 					LeftToRight 	= {	order = 50, type = "toggle",name = function(info) return tr( info[#info]) end,width = "full",},
 					ResetConfig 	= {	order = 99, type = "execute", confirm  = true, width = 1,	name = L["ResetBB"], desc = L["RESET_BB_DESC"], func = function() yo_BB = nil yo_BBCount = nil ReloadUI() end, },
 				},

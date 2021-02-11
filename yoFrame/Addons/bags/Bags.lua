@@ -1896,14 +1896,17 @@ function addon:ADDON_LOADED( event, var)
 	end
 end
 
-hooksecurefunc( 'SetItemButtonCount', function( slot)
-	--print( "HOOKSEC", slot, slot:GetName())
-	if slot:GetName() then
-		local slotCount = _G[slot:GetName().."Count"]
-		if slotCount then
-			slotCount:SetTextColor( 1, 215/255, 0)				--- COUNT COLOR
-		end
-	end
+hooksecurefunc( 'SetItemButtonCount', function( slot, slotCount)
+	--_G.HIGHLIGHT_FONT_COLOR.r = 1
+	_G.HIGHLIGHT_FONT_COLOR.g = 215/255
+	_G.HIGHLIGHT_FONT_COLOR.b = 0
+	--print( "HOOKSEC", slot, slotCount, slot:GetName())
+	----if slot:GetName() then
+	--	if slotCount and slotCount > 0 then
+	--		local slotText = _G[slot:GetName().."Count"]
+	--		slotText:SetTextColor( 1, 215/255, 0)				--- COUNT COLOR
+	--	end
+	-----end
 end)
 
 function addon:PLAYER_ENTERING_WORLD()

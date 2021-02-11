@@ -8,8 +8,11 @@ local GetContainerItemInfo, GetItemCount, GetContainerNumSlots, GetNumGuildBankT
 local select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, find, match, floor, ceil, abs, mod, modf, format, len, sub, split, gsub, gmatch
 	= select, unpack, tonumber, pairs, ipairs, strrep, strsplit, max, min, string.find, string.match, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, string.split, string.gsub, string.gmatch
 
-local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
-	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date
+local GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date, PlaySound, EasyMenu, wipe
+	= GameTooltip, setmetatable, getmetatable, CreateFrame, CreateStyle, UIParent, print, GetGuildInfo, IsReagentBankUnlocked, IsInGuild, CreateStyleSmall, type, time, date, PlaySound, EasyMenu, wipe
+
+local BAGSLOT, BANK, REAGENT_BANK, GUILD_BANK
+	= BAGSLOT, BANK, REAGENT_BANK, GUILD_BANK
 
 local yo_Bags = yo_Bags
 -- GLOBALS: yo_BBFrame
@@ -33,13 +36,31 @@ local bankas = {
 	["bags"] = {0, 1, 2, 3, 4},
 	["bank"] = {-1, 5, 6, 7, 8, 9, 10, 11},
 	["regs"] = {-3},
-	["gbank"]= {1}, 	--, 2, 3, 4, 5, 6, 7, 8},
+	--["gbank"]= {1}, 	--, 2, 3, 4, 5, 6, 7, 8},
 }
 
 local bagBro = CreateFrame("Frame", "yo_BBFrame", UIParent)
+n.Addons.bbFrame = bagBro
 
 tinsert( UISpecialFrames, "yo_BBFrame")
 
+
+function bagBro:createTempTable()
+	local tTable = {}
+
+	for bagID, bagData in pairs( self.Player) do
+		tTable[bagID] = {}
+
+		for slotID, slotData in pairs( bagData) do
+			local id, check = strsplit( ":", slotData)
+  			if check then
+  				id = tonumber(id)
+  				tTable[bagID][id] = id
+  			end
+		end
+	end
+	return tTable
+end
 
 function bagBro:tableCopy(t)
 	if not t then return end
@@ -276,6 +297,13 @@ local function CreateBag( self, name, bank, gtab)
 	local bankList = {}
 	local maxStolbs, numContainerRows, holderWidth, rows, stroka, stolb = 0, 0, 0
 
+	local iconPers
+	if not n.allData.charData[n.myRealm][name] or not n.allData.charData[n.myRealm][name].Sex or not n.allData.charData[n.myRealm][name].Race then
+		iconPers = RACE_TEMP
+	else
+		iconPers = format( RACE_PORTRAITS, gender[n.allData.charData[n.myRealm][name].Sex], n.allData.charData[n.myRealm][name].Race)
+	end
+
 	if bank == "gbank" then
 		if not self.Realm[name] then
 			print( ERROR_HEAD .. "Please, refresh ".. GUILD_BANK .."!|r")
@@ -291,7 +319,7 @@ local function CreateBag( self, name, bank, gtab)
 		containerWidth 	= 570
 		maxSlots = 98
 		bankList = { gtab}
-		self.nameColor 	= self.n.myColor
+		self.nameColor 	= self.myColor
 
 		if not self.bag.gtab then
 			self.bag.gtab = CreateFrame("Frame", nil, self.bag)
@@ -321,12 +349,12 @@ local function CreateBag( self, name, bank, gtab)
 		self.bag.text:SetText( date( "%d.%m.%y %H:%M", self.Realm[name][gtab].lgbtime))
 		self.bag.text:SetTextColor( n.myColor.r, n.myColor.g, n.myColor.b)
 
-		local iconPers
-		if not n.allData.charData[n.myRealm][name] or not n.allData.charData[n.myRealm][name].Sex or not n.allData.charData[n.myRealm][name].Race then
-			iconPers = RACE_TEMP
-		else
-			iconPers = format( RACE_PORTRAITS, gender[n.allData.charData[n.myRealm][name].Sex], n.allData.charData[n.myRealm][name].Race)
-		end
+		--local iconPers
+		--if not n.allData.charData[n.myRealm][name] or not n.allData.charData[n.myRealm][name].Sex or not n.allData.charData[n.myRealm][name].Race then
+		--	iconPers = RACE_TEMP
+		--else
+		--	iconPers = format( RACE_PORTRAITS, gender[n.allData.charData[n.myRealm][name].Sex], n.allData.charData[n.myRealm][name].Race)
+		--end
 
 		self.bag.bagButton:SetNormalTexture( iconPers)
 		self.bag.gtab:Show()
@@ -355,7 +383,7 @@ local function CreateBag( self, name, bank, gtab)
 	repeat
 		maxStolbs = floor(containerWidth / (buttonSize + buttonSpacing));
 		holderWidth = ((buttonSize + buttonSpacing) * maxStolbs) - buttonSpacing;
-		rows = math.ceil( maxSlots / maxStolbs)
+		rows = ceil( maxSlots / maxStolbs)
 
 		if rows > numMaxRow then
 			containerWidth = containerWidth + buttonSize + buttonSpacing
@@ -413,7 +441,7 @@ local function CreateBag( self, name, bank, gtab)
 
 					if itemLink and itemRarity and itemIcon then
 
-						local item 	= Item:CreateFromItemLink( itemLink)
+						local item 	= _G.Item:CreateFromItemLink( itemLink)
 						local itemLevel = item:GetCurrentItemLevel()
 
 						local r, g, b = unpack( borderCols)				--0.12, 0.12, 0.12 -- !!! DEFAULT COLOR
@@ -502,7 +530,7 @@ function bagBro:CreateBagIconButton( self, parent)
 	self.bagButton:SetScript("OnClick", function(self, ...)
 		local index = 2
 
-		for name, player in pairs( yo_BB[n.myRealm]) do
+		for name, player in pairs( _G.yo_BB[n.myRealm]) do
 			if not name:match( "*") then
 				local iconPers
 				if not n.allData.charData[n.myRealm][name] or not n.allData.charData[n.myRealm][name].Sex or not n.allData.charData[n.myRealm][name].Race then
@@ -523,8 +551,8 @@ function bagBro:CreateBagIconButton( self, parent)
 			end
 		end
 		--select(10, GetGuildLogoInfo())
-		if GuildFrameTabardEmblem then
-			guildTexCoord = {GuildFrameTabardEmblem:GetTexCoord()}
+		if _G.GuildFrameTabardEmblem then
+			guildTexCoord = { _G.GuildFrameTabardEmblem:GetTexCoord()}
 		end
 
 		if IsInGuild() and guildTexCoord then
@@ -554,7 +582,7 @@ local function SaveBags( self, bag)
 
 			if itemID and count > 0 then
 				--print( link, itemID, GetItemCount( itemID, true))
-				yo_BBCount[n.myRealm][n.myName][itemID] = GetItemCount( itemID, true)
+				self.bbPlayer[itemID] = GetItemCount( itemID, true)
 				if self.tempBags and self.tempBags[bag] then
 					self.tempBags[bag][itemID] = nil
 				end
@@ -598,21 +626,44 @@ local function SaveGuilds( self)
 end
 
 function bagBro:CheckForClean( self)
+	wipe( self.bbPlayer)
 
-	for bagID, val in pairs( self.needUpBag) do
-		for itemID, bag in pairs( self.tempBags[bagID]) do
+	for bagID, bankData in pairs( self.tempBags) do
+
+		for slotID, itemID in pairs( bankData) do
 			local count = GetItemCount( itemID, true)
-			--print(itemID, count)
 			if count > 0 then
-
-				yo_BBCount[n.myRealm][n.myName][itemID] = count
-			else
-				if itemID and yo_BBCount[n.myRealm][n.myName][itemID] then
-					yo_BBCount[n.myRealm][n.myName][itemID] = nil
-				end
+				self.bbPlayer[itemID] = count
 			end
 		end
 		self.needUpBag[bagID] = nil
+	end
+
+	if not yo.Bags.countGuildBank then return end
+
+	local guildName = GetGuildInfo("player")
+	if guildName and self.Realm[guildName.."*"] then
+		local guildStar = guildName.."*"
+		local guildBB 	= self.Realm[guildStar]
+
+		self.bbRealm[guildStar] = {}
+
+		for bagID, bagData in pairs( guildBB) do
+			for itemID, itemData in pairs( bagData) do
+				if type( itemData) == "string" then
+
+					local itemLink, itemCount = strsplit( ";", itemData)
+					local itemID = strsplit( ":", itemData)
+
+					if itemID and itemCount then
+						itemCount = tonumber( itemCount)
+						itemID 	  = tonumber( itemID)
+						---print( itemID, itemCount)
+						self.bbRealm[guildStar][itemID] = self.bbRealm[guildStar][itemID] and self.bbRealm[guildStar][itemID] + itemCount or itemCount
+					end
+				end
+			end
+		end
 	end
 end
 
@@ -622,20 +673,20 @@ local function OnEvent( self, event, change)
 		if not yo.Bags.showAltBags or not yo_Bags then return end
 
 		local firstRun
-		if not yo_BB then yo_BB = {} end
-		if not yo_BB[n.myRealm] then yo_BB[n.myRealm] = {} end
-		if not yo_BB[n.myRealm][n.myName] then yo_BB[n.myRealm][n.myName] = {} firstRun = true end
+		if not _G.yo_BB then _G.yo_BB = {} end
+		if not _G.yo_BB[n.myRealm] then _G.yo_BB[n.myRealm] = {} end
+		if not _G.yo_BB[n.myRealm][n.myName] then _G.yo_BB[n.myRealm][n.myName] = {} firstRun = true end
 
-		if not yo_BBCount then yo_BBCount = {} end
-		if not yo_BBCount[n.myRealm] then yo_BBCount[n.myRealm] = {} end
-		if not yo_BBCount[n.myRealm][n.myName] then yo_BBCount[n.myRealm][n.myName] = {} end
+		if not _G.yo_BBCount then _G.yo_BBCount = {} end
+		if not _G.yo_BBCount[n.myRealm] then _G.yo_BBCount[n.myRealm] = {} end
+		if not _G.yo_BBCount[n.myRealm][n.myName] then _G.yo_BBCount[n.myRealm][n.myName] = {} end
 
 		self.needUpBag 	= {}
-		self.Realm  	= yo_BB[n.myRealm]
-		self.Player 	= yo_BB[n.myRealm][n.myName]
+		self.Realm  	= _G.yo_BB[n.myRealm]
+		self.Player 	= _G.yo_BB[n.myRealm][n.myName]
 		self.myColor 	= n.allData.myData.Color
-		--self.iRealm 	= yo_BBCount[n.myRealm]
-		--self.iPlayer 	= yo_BBCount[n.myRealm][n.myName]
+		self.bbRealm 	= _G.yo_BBCount[n.myRealm]
+		self.bbPlayer 	= _G.yo_BBCount[n.myRealm][n.myName]
 
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent('BAG_UPDATE')
@@ -650,9 +701,12 @@ local function OnEvent( self, event, change)
 			self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
 		end
 
+		self.tempBags = self:createTempTable()
+		self:CheckForClean( self)
+
 		if yo_Bags and yo_Bags.bagFrame then
 			yo_Bags.bagFrame:HookScript("OnShow", function()
-				self.tempBags = {}
+
 				for i, bag in pairs( bankas["bags"]) do
 					self.tempBags[bag] = self:tableCopy( self.Player[bag])
 				end
@@ -700,6 +754,7 @@ local function OnEvent( self, event, change)
 
 	elseif event == "GUILDBANKFRAME_CLOSED" then
 		self.needUpGB = false
+		bagBro:CheckForClean( self)
 
 	elseif event == "GUILDBANKBAGSLOTS_CHANGED" then
 		if self.needUpGB then

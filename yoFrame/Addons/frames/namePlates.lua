@@ -113,7 +113,8 @@ DebuffTypeColor.none = { r = br, g = bg, b = bb}
 
 local function OnLeave( self) GameTooltip:Hide() end
 local function OnEnter( self)
-	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 5)
+	GameTooltip:SetOwner( self, "ANCHOR_CURSOR", 20, 5)
+	--GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 5)
 	GameTooltip:SetHyperlink( "spell:" .. self.id)
 	GameTooltip:Show()
 end

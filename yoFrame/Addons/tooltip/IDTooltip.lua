@@ -4,8 +4,13 @@ if not yo.ToolTip.enable then return end
 
 local _G = _G
 
-local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount, GameTooltip, GetItemGem, ipairs
-	= hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount, GameTooltip, GetItemGem, ipairs
+local hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount, GameTooltip, GetItemGem, ipairs, pairs, GetMouseFocus
+	= hooksecurefunc, select, UnitBuff, UnitDebuff, UnitAura, UnitGUID, tonumber, strfind, GetItemCount, GameTooltip, GetItemGem, ipairs, pairs, GetMouseFocus
+
+local ItemRefTooltip, GetAchievementCriteriaInfo
+	= ItemRefTooltip, GetAchievementCriteriaInfo
+
+local LE_BATTLE_PET_ALLY= LE_BATTLE_PET_ALLY
 
 local cY, cW = "|cffffff00", "|cffffffff"
 
@@ -199,6 +204,22 @@ local function attachItemTooltip(self)
 		oneDate = true
 		end
 		self:AddDoubleLine( n.myName, numTotal .. itemBank, 1, 1, 0, 1, 1, 1)
+
+		--if yo.Bags.countGuildBank then
+		--	local guildName = GetGuildInfo("player")
+		--	if guildName and yo_BBCount[n.myRealm][guildName.."*"] then
+
+		--		--print(guildName, id, yo_BBCount[n.myRealm][guildName.."*"][id])
+		--		if yo_BBCount[n.myRealm][guildName.."*"][id] then
+
+		--			self:AddDoubleLine( "GUILD_BANK", yo_BBCount[n.myRealm][guildName.."*"][id], 1, 1, 0, 1, 1, 1)
+		--		end
+		--		--local guildStar = guildName.."*"
+		--		--local guildBB 	= yo_BBCount[n.myRealm][guildStar]
+		--		--self.bbRealm[guildStar] = {}
+		--		--yo_BBCount[n.myRealm]
+		--	end
+		--end
 	end
 	self:AddLine(" ")
 

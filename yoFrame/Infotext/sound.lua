@@ -89,18 +89,6 @@ local function buttonOnClick( self, button)
 end
 
 local function createSDButtons( self)
-	self.cvar 		= "Sound_OutputDriverIndex";
-	self.soundNum 	= Sound_GameSystem_GetNumOutputDrivers();
-	self.soundCur 	= BlizzardOptionsPanel_GetCVarSafe( self.cvar);
-
-	for index = 0, self.soundNum -1, 1 do
-		local soundName = Sound_GameSystem_GetOutputDriverNameByIndex(index);
-		local _, _, c  	= string.find( soundName, "%((%D+)%)")
-		soundName 		= c and c or soundName
-
-		soundDev[index] = soundName:sub(1, 35)
-	end
-
 	self.buttonRight = CreateFrame("Button", nil, self)
 	self.buttonRight:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -5)
 	self.buttonRight:SetSize(  20, 20)
@@ -119,6 +107,18 @@ local function createSDButtons( self)
 end
 
 function TPVolumeControlFrame_OnShow(self)
+	self.cvar 		= "Sound_OutputDriverIndex";
+	self.soundNum 	= Sound_GameSystem_GetNumOutputDrivers();
+	self.soundCur 	= BlizzardOptionsPanel_GetCVarSafe( self.cvar);
+
+	for index = 0, self.soundNum -1, 1 do
+		local soundName = Sound_GameSystem_GetOutputDriverNameByIndex(index);
+		local _, _, c  	= string.find( soundName, "%((%D+)%)")
+		soundName 		= c and c or soundName
+
+		soundDev[index] = soundName:sub(1, 35)
+	end
+
 	self.deviceName:SetText( soundDev[self.soundCur])
 end
 

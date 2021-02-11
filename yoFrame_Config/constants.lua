@@ -57,6 +57,7 @@ yo["Bags"] = {
 	["showGuilBank"]		= true,
 	["countAltBags"]		= true,
 	["LeftToRight"]			= false,
+	["countGuildBank"]		= true,
 }
 
 yo["Addons"] = {

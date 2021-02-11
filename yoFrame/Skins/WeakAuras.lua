@@ -3,8 +3,8 @@ local L, yo, n = unpack( ns)
 
 local aGlow = n.LIBS.ButtonGlow
 
-local CreateFrame, Round, pairs, CreateNewBorder, CreateVirtualFrame, hooksecurefunc
-	= CreateFrame, Round, pairs, CreateNewBorder, CreateVirtualFrame, hooksecurefunc
+local CreateFrame, Round, pairs, CreateNewBorder, CreateVirtualFrame, hooksecurefunc, UIParent, unpack, CreateStyle, strsplit, formatTime, tonumber, Ambiguate
+	= CreateFrame, Round, pairs, CreateNewBorder, CreateVirtualFrame, hooksecurefunc, UIParent, unpack, CreateStyle, strsplit, formatTime, tonumber, Ambiguate
 
 local proxyGroup = {
 	["---Подземелья Shadowlands"] = true,
@@ -228,7 +228,7 @@ local function chackRegion( self)
 	end
 end
 
-local function updateBarTimer( regFrame, bar, elapled)
+local function updateBarTimer( bar, elapled)
 
 	bar.est = bar.est - elapled
 	bar.bar:SetValue( bar.est)
@@ -257,7 +257,7 @@ local function updateStringBars( self, data)
 		bar.text:SetText( timer)
 		bar:Show()
 
-		bar:SetScript("OnUpdate", function(self, ...) updateBarTimer( regFrame, bar, ...) end)
+		bar:SetScript("OnUpdate", function(self, ...) updateBarTimer( bar, ...) end)
 	end
 end
 
@@ -276,7 +276,7 @@ local function registermacro( self, event, ...)
 		local aName, chatString, unit, sender = ...
 		--print( aName, chatString, unit, sender)
 		if aName == addonName and chatString:find( "+++") and Ambiguate( sender, "none") ~= n.myName then
-			updateStringBars( self, chatString)
+			--updateStringBars( self, chatString)
 		end
 	end
 end

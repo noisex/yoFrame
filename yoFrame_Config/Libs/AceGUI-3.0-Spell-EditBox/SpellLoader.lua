@@ -35,15 +35,17 @@ function SpellLoader:StartLoading()
 	for spellID, types in pairs( n.allPlayerSpell) do  --allPlayerSpell  --spellBooksID
 		local name, rank, icon = GetSpellInfo(spellID)
 
-		spells[spellID] = string.lower(name)
+		if name then
+			spells[spellID] = string.lower(name)
 
-		local sType = ""
-		for k, ss in pairs( types) do
-			sType = sType .. ( typesType[k] or " ")
+			local sType = ""
+			for k, ss in pairs( types) do
+				sType = sType .. ( typesType[k] or " ")
+			end
+
+			spellType[spellID] = sType
+			SpellLoader.spellsLoaded = i
 		end
-
-		spellType[spellID] = sType
-		SpellLoader.spellsLoaded = i
 	end
 
 	if true then return	end
