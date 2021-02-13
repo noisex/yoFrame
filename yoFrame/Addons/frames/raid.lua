@@ -213,11 +213,11 @@ local function raidShared(self, unit)
 		initialAnchor 	= "RIGHT"
 		growthX 		= 'LEFT'
 		sizeAuras 		= self:GetHeight() * 0.7
-		posAuras		= {'TOPRIGHT', self, 'TOPRIGHT', -2, -2}
+		posAuras		= {'RIGHT', self, 'TOPRIGHT', -5, 0} --{'TOPRIGHT', self, 'TOPRIGHT', -2, -2}
 		CustomFilter	= funcWhiteList --funcBlackList
 		frameHeight 	= yo.Raid.heightMT
 		frameWidth 		= yo.Raid.widthMT
-		posAuraTank		= { "LEFT", self, "LEFT", 3, -5}
+		posAuraTank		= { "LEFT", self, "BOTTOMLEFT", 3, 0}
 		growAuraTank  	= "RIGHT"
 		anchTankAura 	= "LEFT"
 		hpBarVertical	= false
@@ -511,7 +511,7 @@ local function raidShared(self, unit)
 		self.Buffs.spacing 			= 3
 		self.Buffs.num 				= 2
 		self.Buffs.disableMouse 	= true
-		self.Buffs.size   			= 16
+		self.Buffs.size   			= 18
 		self.Buffs.initialAnchor 	= anchTankAura
 		self.Buffs['growth-x'] 		= growAuraTank
 		self.Buffs.CustomFilter 	= funcTankList
@@ -828,7 +828,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 			local heightMT = yo.Raid.heightMT
 			local widthMT = yo.Raid.widthMT
-			local offsetMT = -6
+			local offsetMT = -14
 			local showParty = true
 			local template = ""
 

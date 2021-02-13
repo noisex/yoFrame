@@ -1095,7 +1095,9 @@ local function InitOptions()
 	LDS:EnhanceOptions( options.args.profiles, AB.db)
 	N.options = options
 
-	if n.myDev then	AO:alertOptions( options) end
+	if n.myDev[n.myName] then
+		AO:alertOptions( options)
+	end
 
 	return options
 end

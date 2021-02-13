@@ -1,6 +1,5 @@
 local L, yo, n = unpack( select( 2, ...))
 
-if true then return end
 if not n.myDev[n.myName] then return end
 
 local _G = _G
@@ -530,9 +529,7 @@ cb:RegisterEvent("PLAYER_ENTERING_WORLD")
 cb:RegisterEvent("GROUP_ROSTER_UPDATE")
 cb:SetScript("OnEvent", cheloEvent)
 
----spellsPrepare()
 cb:spellsPrepare()
----spellsPrepareNEW()
 
 
 	--------------------------------------------------------------------------------------------------

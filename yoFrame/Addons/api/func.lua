@@ -5,8 +5,8 @@ local tonumber, floor, ceil, abs, mod, modf, format, len, sub, pairs, type, sele
 	= tonumber, math.floor, math.ceil, math.abs, math.fmod, math.modf, string.format, string.len, string.sub, pairs, type, select, unpack, tremove, max
 local texture, texglow = n.texture, n.texglow
 
-local GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
-	= GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize
+local GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize, GetMoney, UnitRace, UnitSex, date, Mixin
+	= GetShapeshiftFormID, CreateFrame, print, time, strsplit, tinsert, BackdropTemplateMixin, GetPhysicalScreenSize, GetMoney, UnitRace, UnitSex, date, Mixin
 
 function isDruid( self)
 	if n.myClass == "DRUID" and GetShapeshiftFormID() ~= 1 then

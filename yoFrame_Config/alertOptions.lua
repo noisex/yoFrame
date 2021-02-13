@@ -6,6 +6,9 @@ local _G 		= _G
 local AO 		= N:GetModule('alertOptions')
 local LSM 		= _G.LibStub("LibSharedMedia-3.0")
 
+
+--if n.myDev[n.myName] then return end
+
 local gmatch , pairs, tonumber, print, GetSpellInfo , format, CopyTable, tremove = string.gmatch, pairs, tonumber, print, GetSpellInfo, format, CopyTable, tremove
 
 local db, cb, alertDB, alertOpt, alertsPool, profiles, copyProf
@@ -49,33 +52,33 @@ local roleValues = {}
 local diffValues = {}
 
 local alertArgs = {
-	label01		= { order = 01, type = "description",  imageWidth = 20, imageHeight = 20, imageCoords = {0.1,0.9,0.1,0.9}, fontSize = "large",
+	label01		= { order = 01,  type = "description",  imageWidth = 20, imageHeight = 20, imageCoords = {0.1,0.9,0.1,0.9}, fontSize = "large",
 						name 	= function(info) local name 		= GetSpellInfo( db.alerts.alertsPool[info[2]].spellID) return name end,
 						image 	= function(info) local _, _, icon  	= GetSpellInfo( db.alerts.alertsPool[info[2]].spellID) return icon end,},
-	spellID		= { order = 10, type = "input",	 name = "spellID", 	width = 1, pattern = "^%d%d+$", usage  = "2-6 didgits please",
+	spellID		= { order = 10,  type = "input",  name = "spellID", 	width = 1, pattern = "^%d%d+$", usage  = "2-6 didgits please",
 						set  = function(info,val) db.alerts.alertsPool[info[2]][info[#info]] = val local name, _, icon  = GetSpellInfo( val)
 							if name then alertsPool[info[2]].args.label01.name( info) alertsPool[info[2]].args.label01.image( info) end end,},
-	event		= {	order = 20, type = "select", name = "Событие", 	width = 1, values = eventValues},
-	destUnit	= {	order = 30, type = "select", name = "С кем приключилось",	width = 1, values = destValues},
-	alertUnit	= {	order = 40, type = "select", name = "Кому алертим",width = 1, values = alertValues},
+	event		= {	order = 20,  type = "select", name = "Событие", 	width = 1, values = eventValues},
+	destUnit	= {	order = 30,  type = "select", name = "С кем приключилось",	width = 1, values = destValues},
+	alertUnit	= {	order = 40,  type = "select", name = "Кому алертим",width = 1, values = alertValues},
 
-	difficult 	= {	order = 44, type = "select", name = "Сложность",	width = 1,	values = diffValues, disabled = true,},
-	myrole 		= {	order = 48, type = "select", name = "Моя роль",	width = 1, 		values = roleValues, disabled = true,},
+	difficult 	= {	order = 44,  type = "select", name = "Сложность",	width = 1,	values = diffValues, disabled = true,},
+	myrole 		= {	order = 48,  type = "select", name = "Моя роль",	width = 1, 		values = roleValues, disabled = true,},
 
-	message		= { order = 50, type = "input",	 name = "Сообщение", 	width = 1.6, },
-	color		= {	order = 60, type = "select", name = "Цвет",	width = 0.75, values = colorValues},
+	message		= { order = 50,  type = "input",  name = "Сообщение", 	width = 1.6, },
+	color		= {	order = 60,  type = "select", name = "Цвет",		width = 0.75, values = colorValues},
 
-	stage		= { order = 70, type = "input",	 name = "Фаза боя", 	width = 0.6, },
-	fromStack 	= { order = 80, type = "input",	 name = "fromStack",width = 0.6, },
-	toStack		= { order = 90, type = "input",	 name = "toStack", 	width = 0.6, },
+	stage		= { order = 70,  type = "input",  name = "Фаза боя", 	width = 0.6, },
+	fromStack 	= { order = 80,  type = "input",  name = "fromStack",	width = 0.6, },
+	toStack		= { order = 90,  type = "input",  name = "toStack", 	width = 0.6, },
 
 	raidAlert	= {	order = 140, type = "toggle", name = "Продублировать в 'Рэйд алерт'", width = "full", disabled = true,},
 	lowHealth	= {	order = 150, type = "toggle", name = "Моргание краями экрана", width = "full", disabled = true,},
 
 	sound		= {	order = 160, type = "select", name = L["CTAsound"], dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"), width = 1.5},
 
-	rename 		= { order = 990,type = "input",	 name = "Сменить фамилию", 	width = "full", get = function(info) return info[2] end, set = function(info, val)  AO:alertRename( val, info[2]) end},
-	delete 		= { order = 999,type = "execute", width = "full",	name = "pleeeease, kill me! ( delete this shit)", func = function( info) AO:alertDel( info[2]) end, },
+	rename 		= { order = 990,type = "input",	  name = "Сменить фамилию", 	width = "full", get = function(info) return info[2] end, set = function(info, val)  AO:alertRename( val, info[2]) end},
+	delete 		= { order = 999,type = "execute", name = "pleeeease, kill me! ( delete this shit)", width = "full",	 func = function( info) AO:alertDel( info[2]) end, },
 }
 
 function AO:alertRename( newKey, key)

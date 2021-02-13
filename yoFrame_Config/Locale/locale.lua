@@ -26,11 +26,11 @@ local L = {
 	end
 }
 
-function addon:NewLocale()
+function Engine:NewLocale()
 	return setmetatable({}, L)
 end
 
-function addon:IsSameLocale(name1, name2, name3)
+function Engine:IsSameLocale(name1, name2, name3)
 	local l = GetLocale()
 	return name1 == l or name2 == l or name3 == l
 end

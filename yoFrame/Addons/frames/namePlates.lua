@@ -222,7 +222,10 @@ local function scanToQuest( self, ...)
 		if line then
 			local lineText = line:GetText()
 
-			p1, p2 = lineText:match(": (%d+)/(%d+)$")
+			p1, p2 = lineText:match("(%d+)/(%d+) ") 	-- eng
+			if p1 and p2 and not (p1 == p2) then showMe = true	break end
+
+			p1, p2 = lineText:match(": (%d+)/(%d+)$") 	-- rus
 			if p1 and p2 and not (p1 == p2) then showMe = true	break end
 
 			p1 = lineText:match ("%. %((%d+%%)%)$")

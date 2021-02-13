@@ -648,6 +648,8 @@ function bagBro:CheckForClean( self)
 
 		self.bbRealm[guildStar] = {}
 
+		local guildData =  self.bbRealm[guildStar]
+
 		for bagID, bagData in pairs( guildBB) do
 			for itemID, itemData in pairs( bagData) do
 				if type( itemData) == "string" then
@@ -659,7 +661,7 @@ function bagBro:CheckForClean( self)
 						itemCount = tonumber( itemCount)
 						itemID 	  = tonumber( itemID)
 						---print( itemID, itemCount)
-						self.bbRealm[guildStar][itemID] = self.bbRealm[guildStar][itemID] and self.bbRealm[guildStar][itemID] + itemCount or itemCount
+						guildData[itemID] = guildData[itemID] and guildData[itemID] + itemCount or itemCount
 					end
 				end
 			end
