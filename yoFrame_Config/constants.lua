@@ -141,6 +141,10 @@ yo["ActionBar"] = {
 	["showBar5"]	= false,
 	["showNewGlow"]	= false,
 	["switchBars"]	= true,
+	["HotKeySize"]	= 10,
+	["HotKeyColor"]	= "0.9,0.9,0.9",
+	["secondHot"]	= true,
+	["HotToolTip"]	= true,
 
 }
 

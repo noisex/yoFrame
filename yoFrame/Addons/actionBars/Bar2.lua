@@ -25,7 +25,7 @@ function ActionBars:CreateBar2()
 	--	return
 	--end
 
-	local ActionBar2 = CreateFrame("Frame", "TukuiActionBar2", n.PetHider, "SecureHandlerStateTemplate")
+	local ActionBar2 = CreateFrame("Frame", "yoActionBar2", n.PetHider, "SecureHandlerStateTemplate")
 	ActionBar2:SetPoint("TOPLEFT", yoMoveABar2, "TOPLEFT", 0, 0)
 	ActionBar2:SetFrameStrata("LOW")
 	ActionBar2:SetFrameLevel(10)

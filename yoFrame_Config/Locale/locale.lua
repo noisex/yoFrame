@@ -22,6 +22,7 @@ local locale = GetLocale()
 
 local L = {
 	__index = function(_, k)
+		print ( "L[\"" ..k  .. "\"] = \"\"")
 		return format("[%s] %s", locale, tostring(k))
 	end
 }

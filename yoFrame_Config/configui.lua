@@ -259,20 +259,6 @@ local function InitOptions()
 					pixelFont 		= {	order = 25, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
 										get = function(info) for k, val in pairs( LSM:List("font")) do if db.Media.fontpx == LSM:Fetch("font", val) then return val end end	end,
 										set = function(info, val) Setlers( "Media#fontpx", LSM:Fetch("font", val))	end, },
-					-- lootbox
-					-- cooldowns
-						--CastWatcher = {
-					--	name = "CastWatcher", type = "group", order = 40, inline = true,
-					--	get = function(info) return db["Addons"][info[#info]] end,
-					--	set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
-					--	args = {
-					--		CastWatcher = {		order = 20, type = "toggle", name = "Cлежение за установкой еды, котлов, таунт танков.",
-					--			desc = "Установка хавки. \nТаунт других хуйов рейда. Пока не работает.",	width   = "full",},
-					--		CastWatchSound = {	order = 22, type = "select", name = "Звук еды, котлов",	dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
-					--		TauntWatchSound = {	order = 26, type = "select", name = "Звук таунта", 	dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
-					--	},
-					--},
-					--cheloBuff={			order =100, type = "toggle", name = "cheloBuff",			 width = "full",	},
 				},
 			},
 
@@ -297,7 +283,7 @@ local function InitOptions()
 			},
 
 			Quests = {
-				order = 27,	name = GARRISON_MISSIONS, type = "group",
+				order = 27,	name = QUESTS_LABEL, type = "group",
 				get = function(info) return db["Addons"][info[#info]] end,
 				set = function(info,val) Setlers( "Addons#" .. info[#info], val) end,
 				--disabled = function( info) if #info > 1 then return not db[info[1]].enable; end end,
@@ -449,7 +435,7 @@ local function InitOptions()
 					--simpeRaid		= {	order = 2,  type = "toggle", name = function(info) return tr( info[#info]) end,},
 					raidTemplate	= {	order = 02, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = "Normal", [2] = "Simple", [3] = "HealBotka",},},
 					classcolor 		= {	order = 10, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = L["HBAR_CC"], [2] = L["HBAR_CHP"], [3] = L["HBAR_DARK"],},},
-					groupingOrder 	= {	order = 15, type = "select", name = function(info) return tr( info[#info]) end,	values = {["ID"] = L["SRT_ID"], ["GROUP"] = L["SRT_GR"], ["TDH"] = L["SRT_TDH"], ["THD"] = L["SRT_THD"], ["LGBT"] = "Пихора эдишн"},},
+					groupingOrder 	= {	order = 15, type = "select", name = function(info) return tr( info[#info]) end,	values = {["ID"] = L["SRT_ID"], ["GROUP"] = L["SRT_GR"], ["TDH"] = L["SRT_TDH"], ["THD"] = L["SRT_THD"], ["LGBT"] = L["SRT_PIHORA"]},},
 					width 			= {	order = 20,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 60, max = 150, step = 1,},
 					height 			= {	order = 25,	type = "range",  name = function(info) return tr( info[#info]) end,	min = 20, max = 80, step = 1,},
 					numgroups 		= {	order = 30,	type = "range",  name = function(info) return tr( info[#info]) end, min = 4, max = 8, step = 1,},
@@ -491,9 +477,7 @@ local function InitOptions()
 				args = {
 
 					enable 			= {	order = 1, 	type = "toggle",	name = L["ABenable"], width = "full", disabled = false,},
-					ShowGrid 		= {	order = 5, 	type = "toggle",	name = function(info) return tr( info[#info]) end, },
-					HideHotKey 		= {	order = 10,	type = "toggle", 	name = function(info) return tr( info[#info]) end,	},
-					HideName 		= {	order = 10,	type = "toggle", 	name = function(info) return tr( info[#info]) end,},
+					ShowGrid 		= {	order = 2, 	type = "toggle",	name = function(info) return tr( info[#info]) end, },
 					CountSize 		= {	order = 5,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 8, max = 16, step = 1,},
 					MicroMenu 		= {	order = 20, type = "toggle", 	name = function(info) return tr( info[#info]) end, },
 					MicroScale 		= {	order = 21,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 0.5, max = 1.5, step = 0.05,},
@@ -505,6 +489,14 @@ local function InitOptions()
 					buttonSpace		= {	order = 32,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 1, max = 10, step = 1,},
 					--hoverTexture	= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
 					showNewGlow		= {	order = 40, type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
+					HideHotKey 		= {	order = 60,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
+					secondHot		= {	order = 61,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full", disabled = function( info) if #info > 1 then return ( not db[info[1]].enable or db.ActionBar.HideHotKey) end end,},
+					HideName 		= {	order = 62,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
+					HotToolTip		= {	order = 63,	type = "toggle", 	name = function(info) return tr( info[#info]) end, width = "full"},
+					HotKeySize		= {	order = 64,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 5, max = 20, step = 1,},
+					HotKeyColor 	={	order = 66, type = "color",		name = function(info) return tr( info[#info]) end,
+						get = function(info, r, g, b)  return strsplit( ",", db[info[1]][info[#info]])	end,
+						set = function(info, r, g, b) Setlers( info[1] .. "#" .. info[#info], strjoin(",", r, g, b)) end,},
 				},
 			},
 
@@ -613,13 +605,12 @@ local function InitOptions()
 					chatFont 		= {	order = 4, type = "select", 	name = function(info) return tr( info[#info]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
 										get = function(info) for k, val in pairs( LSM:List("font")) do if db["Chat"][info[#info]] == LSM:Fetch("font", val) then return val end end	end,
 										set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end, },
-					wim 	= {	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
+					wim 			= {	order = 50, type = "toggle",	name = function(info) return tr( info[#info]) end, width = "full",},
 
-					--fontsize = {order = 4,	type = "range", name = "Размер шрифта чата", desc = "По-умолчанию: 10",	min = 10, max = 16, step = 1,},
-					chatBubble		= {	order = 50, type = "select", 	name = "Чат-бабл (сообщение в облачках):",	values = {["none"] = "Не изменять", ["remove"] = "Убрать рамку", ["skin"] = "Изменить рамку (skin)", ["border"] = "Изменить рамку (border)"},},
-					chatBubbleShadow= {	order = 52, type = "toggle",	name = "Добавить тень у шрифта чат-бабла", 				disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
-					chatBubbleFont	= {	order = 54,	type = "range", 	name = "Размер шрифта", min = 5, max = 15, step = 1, 	disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
-					chatBubbleShift	= {	order = 56,	type = "range", 	name = "Уменьшить размер", min = 0, max = 15, step = 1, disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
+					chatBubble		= {	order = 51, type = "select", 	name = function(info) return tr( info[#info]) end, values = {["none"] = L["chBdontchange"], ["remove"] = L["chBremove"], ["skin"] = L["chBchangeS"], ["border"] = L["chBchangeB"]},},
+					chatBubbleShadow= {	order = 52, type = "toggle",	name = function(info) return tr( info[#info]) end, disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
+					chatBubbleFont	= {	order = 54,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 5, max = 15, step = 1, 	disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
+					chatBubbleShift	= {	order = 56,	type = "range", 	name = function(info) return tr( info[#info]) end, min = 0, max = 15, step = 1, disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
 				},
 			},
 
@@ -642,7 +633,7 @@ local function InitOptions()
 			},
 
 			InfoTexts = {
-				order = 87,	name = "Инфотексты", type = "group",
+				order = 87,	name = L["infoTexts"], type = "group",
 				get = function(info) return db["InfoTexts"][info[#info]] end,
 				set = function(info,val) Setlers( "InfoTexts#" .. info[#info], val) n.infoTexts:infoLauncher() end,
 				disabled = function( info) if #info > 1 then return not db[info[1]].enable; end end,
@@ -689,7 +680,7 @@ local function InitOptions()
 
 							fligerBuffCount	= { order = 06, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 0.5, desc = L["DESC_ST"],},
 							fligerBuffSpell = { order = 07, type = "input", multiline = 7, name = function(info) return tr( info[#info]) end,width = 1.7, desc = L["DESC_BSPELL"],},
-							fligerSpell		= { order = 08, type = 'input', name = "добавить что-то куда-то", 	dialogControl = "Spell_EditBox", width = "full",
+							fligerSpell		= { order = 08, type = 'input', name = function(info) return tr( info[#info]) end, 	dialogControl = "Spell_EditBox", width = "full",
 										set = function(info,val)
 											local fligerBuffSpell = db.fliger.fligerBuffSpell
 											local enka = #fligerBuffSpell >= 1 and "\n" or ""
@@ -765,7 +756,7 @@ local function InitOptions()
 			},
 
 			healBotka = {
-				type = 'group', name = "Хилботка", childGroups = 'tab', order = 95,
+				type = 'group', name = L["healBotka"], childGroups = 'tab', order = 95,
 				set = function(info,val) Setlers( info[1] .. "#" .. info[#info], val) end,
 				get = function(info)  return db[info[1]][info[#info]] end,
 				--dprint( "!!!!!!!!!", db[info[1]][info[#info]], n.spellsBooks[db[info[1]][info[#info]]])
@@ -779,17 +770,17 @@ local function InitOptions()
            				func = function() Setlers( "healBotka#enable", false) Setlers( "healBotka#hEnable", false) Setlers( "Raid#raidTemplate", 1) ReloadUI() end,},
 
 					keneral = {
-						order = 1, type = 'group', name = "Ключ вязать мышь ключдоска",
+						order = 1, type = 'group', name = L["keneral"],
 						disabled = function( info) if info[3] ~= "enable" and info.type ~= "group" then return not db[info[1]].enable; end end,
 						args = {
-							enable 	= { width = "full",	order = 0, type = "toggle",	name = "Забинбить всякое, для кликания этим по рейдфреймам.", desc = L["DESC_HENA"], disabled = false, },
+							enable 	= { width = "full",	order = 0, type = "toggle",	name = L["kEnable"], desc = L["DESC_HENA"], disabled = false, },
 
-							set00	= {	order = 08, type = "description", 	name = "Маус ор клавабатон", width = 1.2,},
-							set01	= {	order = 09, type = "description", 	name = "Спелл фор биндинг",  width = 1,},
+							set00	= {	order = 08, type = "description", 	name = L["healset00"], 	width = 1.2,},
+							set01	= {	order = 09, type = "description", 	name = L["healset01"],  width = 1,},
 
-							targ01	= {	order = 01, type = "keybinding",	name = "Взять в таргет", 	width = 0.8, desc = L["DESC_KEY"],},
-							menu01	= {	order = 02, type = "keybinding",	name = "Показать меню",  	width = 0.8, desc = L["DESC_KEY"],},
-							res01	= {	order = 03, type = "keybinding",	name = "Авто воскресение",  width = 0.8, desc = L["DESC_KEY"],},
+							targ01	= {	order = 01, type = "keybinding",	name = L["healtarg01"], width = 0.8, desc = L["DESC_KEY"],},
+							menu01	= {	order = 02, type = "keybinding",	name = L["healmenu01"], width = 0.8, desc = L["DESC_KEY"],},
+							res01	= {	order = 03, type = "keybinding",	name = L["healres01"],  width = 0.8, desc = L["DESC_KEY"],},
 
 							key1	= {	order = 10, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
 							key2	= {	order = 20, type = "keybinding",	name = "", width = 0.9, desc = L["DESC_KEY"],},
@@ -849,16 +840,16 @@ local function InitOptions()
 						},
 					},
 					heneral = {
-						order = 2, type = 'group', name = "Хотасы",
+						order = 2, type = 'group', name = L["heneral"],
 						disabled = function( info) if info[3] ~= "hEnable" and info.type ~= "group" then return not db[info[1]].hEnable; end end,
 						args = {
 							hEnable= {	order = 1, type = "toggle",name = function(info) return tr( info[#info]) end, width = "full", desc = L["DESC_HENA"],},
 
-							hSpell1	= { order = 10, name = "Иконка №1 ( лево-центр)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
-							hSpell2	= { order = 20, name = "Иконка №2 ( лево-низ)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7},
-							hSpell3 = { order = 30, name = "Иконка №3 ( центр-низ)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
-							hSpell4	= { order = 40, name = "Иконка №4 ( право-низ)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
-							hSpell5	= { order = 50, name = "Иконка №5 ( право-центр)", 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
+							hSpell1	= { order = 10, name = L["hSpell1"], 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
+							hSpell2	= { order = 20, name = L["hSpell2"], 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7},
+							hSpell3 = { order = 30, name = L["hSpell3"], 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
+							hSpell4	= { order = 40, name = L["hSpell4"], 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
+							hSpell5	= { order = 50, name = L["hSpell5"], 	dialogControl = "Spell_EditBox", type = 'input',width = 1.7,},
 
 							hColEna1= {	order = 12, type = "toggle",name = L["hColEnable"],},
 							hColEna2= {	order = 22, type = "toggle",name = L["hColEnable"],},
@@ -909,7 +900,7 @@ local function InitOptions()
 						},
 					},
 				aeneral = {
-						order = 3, type = 'group', name = "Всякое с ...",
+						order = 3, type = 'group', name = L["aenaral"],
 						args = {
 							raidTemplate	= {	order = 02, type = "select", name = function(info) return tr( info[#info]) end,	values = {[1] = "Normal", [2] = "Simple", [3] = "HealBotka",},
 								get = function(info) return db.Raid.raidTemplate end, set = function(info,val) Setlers( "Raid#" .. info[#info], val) end, desc = L["DESC_RTEMPL"],},

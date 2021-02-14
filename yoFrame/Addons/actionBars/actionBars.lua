@@ -8,6 +8,113 @@ local _G = _G
 local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel
 	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel
 
+local kbs = {
+	-- This is the short display version you see on the Button
+	["Alt"] = "A",
+	["Ctrl"] = "C",
+	["Shift"] = "S",
+	["Command"] = "M", -- Blizzard uses 'm' for the command key (META key)
+	["NumPad"] = "N",
+
+	["Backspace"] = "BS",
+	["Button1"] = "B1",
+	["Button2"] = "B2",
+	["Button3"] = "B3",
+	["Button4"] = "B4",
+	["Button5"] = "B5",
+	["Button6"] = "B6",
+	["Button7"] = "B7",
+	["Button8"] = "B8",
+	["Button9"] = "B9",
+	["Button10"] = "B10",
+	["Button11"] = "B11",
+	["Button12"] = "B12",
+	["Button13"] = "B13",
+	["Button14"] = "B14",
+	["Button15"] = "B15",
+	["Button16"] = "B16",
+	["Button17"] = "B17",
+	["Button18"] = "B18",
+	["Button19"] = "B19",
+	["Button20"] = "B20",
+	["Button21"] = "B21",
+	["Button22"] = "B22",
+	["Button23"] = "B23",
+	["Button24"] = "B24",
+	["Button25"] = "B25",
+	["Button26"] = "B26",
+	["Button27"] = "B27",
+	["Button28"] = "B28",
+	["Button29"] = "B29",
+	["Button30"] = "B30",
+	["Button31"] = "B31",
+	["Capslock"] = "Cp",
+	["Clear"] = "Cl",
+	["Delete"] = "Del",
+	["End"] = "En",
+	["Home"] = "HM",
+	["Insert"] = "Ins",
+	["Mouse Wheel Down"] = "WD",
+	["Mouse Wheel Up"] = "WU",
+	["Num Lock"] = "NL",
+	["Page Down"] = "PD",
+	["Page Up"] = "PU",
+	["Scroll Lock"] = "SL",
+	["Spacebar"] = "Sp",
+	["Tab"] = "Tb",
+
+	["Down Arrow"] = "Dn",
+	["Left Arrow"] = "Lf",
+	["Right Arrow"] = "Rt",
+	["Up Arrow"] = "Up",
+}
+
+local function keyShorBind( key)
+	if key then
+		key = key:upper()
+		key = key:gsub(' ', '')
+		key = key:gsub('ALT%-', kbs['Alt'])
+		key = key:gsub('CTRL%-', kbs['Ctrl'])
+		key = key:gsub('SHIFT%-', kbs['Shift'])
+		key = key:gsub('META%-', kbs['Command'])
+		key = key:gsub('NUMPAD', kbs['NumPad'])
+
+		key = key:gsub('PLUS', '%+')
+		key = key:gsub('MINUS', '%-')
+		key = key:gsub('MULTIPLY', '%*')
+		key = key:gsub('DIVIDE', '%/')
+
+		key = key:gsub('BACKSPACE', kbs['Backspace'])
+
+		for i = 1, 31 do
+			key = key:gsub('BUTTON' .. i, kbs['Button' .. i])
+		end
+
+		key = key:gsub('CAPSLOCK', kbs['Capslock'])
+		key = key:gsub('CLEAR', kbs['Clear'])
+		key = key:gsub('DELETE', kbs['Delete'])
+		key = key:gsub('END', kbs['End'])
+		key = key:gsub('HOME', kbs['Home'])
+		key = key:gsub('INSERT', kbs['Insert'])
+		key = key:gsub('MOUSEWHEELDOWN', kbs['Mouse Wheel Down'])
+		key = key:gsub('MOUSEWHEELUP', kbs['Mouse Wheel Up'])
+		key = key:gsub('NUMLOCK', kbs['Num Lock'])
+		key = key:gsub('PAGEDOWN', kbs['Page Down'])
+		key = key:gsub('PAGEUP', kbs['Page Up'])
+		key = key:gsub('SCROLLLOCK', kbs['Scroll Lock'])
+		key = key:gsub('SPACEBAR', kbs['Spacebar'])
+		key = key:gsub('SPACE', kbs['Spacebar'])
+		key = key:gsub('TAB', kbs['Tab'])
+
+		key = key:gsub('DOWNARROW', kbs['Down Arrow'])
+		key = key:gsub('LEFTARROW', kbs['Left Arrow'])
+		key = key:gsub('RIGHTARROW', kbs['Right Arrow'])
+		key = key:gsub('UPARROW', kbs['Up Arrow'])
+
+		return key
+	end
+end
+
 local function buttonsUP( self)
 	if not InCombatLockdown() then
 		--print("Buttons UP!")
@@ -334,13 +441,39 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 		HotKey:ClearAllPoints()
 		HotKey:SetPoint("TOPRIGHT", 0, 0)
-		HotKey:SetFont( n.fontpx, n.fontsize, "OUTLINE")
+		HotKey:SetFont( n.fontpx, yo.ActionBar.HotKeySize, "OUTLINE")
+		local r, g, b = strsplit( ",", yo.ActionBar.HotKeyColor)
+		HotKey:SetTextColor(  r, g, b, 1)
 		HotKey.ClearAllPoints = n.dummy
 		HotKey.SetPoint = n.dummy
+
+		local key1, key2 = GetBindingKey( button.commandName)
+		local skye1	= keyShorBind( key1)
+		local skye2	= keyShorBind( key2)
+		local sName = skye1 and skye1 or ""
+
+		if yo.ActionBar.secondHot then
+			sName 	= skye2 and sName .. " " .. skye2 or sName
+		end
+
+		if yo.ActionBar.HotToolTip then
+			button:HookScript("OnEnter", function(self, ...)
+				local macros = button.Name:GetText()
+				if macros or key1 or key2 then
+					if macros 	then GameTooltip:AddDoubleLine( "Macros:", 	macros, nil, nil, nil, 1, 1, 1)	end
+					if key1		then GameTooltip:AddDoubleLine( "HotKey:", 	key1, 	nil, nil, nil, 1, 1, 1)	end
+					if key2 	then GameTooltip:AddDoubleLine( "HotKey2:", key2,	nil, nil, nil, 1, 1, 1)	end
+					GameTooltip:Show()
+				end
+			end)
+		end
 
 		if yo.ActionBar.HideHotKey then
 			HotKey:SetText("")
 			HotKey:Hide()
+		else
+			HotKey:SetText( sName)
+			HotKey:Show()
 		end
 
  		if yo.ActionBar.HideName then
@@ -358,9 +491,9 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 
 		button.NormalTexture = nil
 	end
-
-
 end
+
+
 
 --local bars = CreateFrame("Frame")
 --bars:RegisterEvent("PLAYER_ENTERING_WORLD")

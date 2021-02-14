@@ -32,7 +32,6 @@ local types = {
 
 local function addLine(tooltip, id, type)
 	if not yo.ToolTip.IDInToolTip then return end
-
 	local found = false
 
 	-- Check if we already added to this tooltip. Happens on the talent frame
