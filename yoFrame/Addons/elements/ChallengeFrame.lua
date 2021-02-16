@@ -419,7 +419,7 @@ local function makeSoulsBitton(...)
 		panel.NewButton = panel.NewButton or CreateFrame("Button", "$parentnewName", panel, "LandingPageRenownButtonTemplate")
 		panel.NewButton:ClearAllPoints()
 		panel.NewButton:SetPoint( "TOPLEFT", panel.SoulbindButton, "BOTTOMLEFT", 0, 0)
-		panel.NewButton.Label:SetText( "Ежеднивничек")
+		panel.NewButton.Label:SetText( "Weekly reward")
 		panel.NewButton.Label:SetTextColor( 0.9, 0.8, 0.2, 1)
 		panel.NewButton.Renown:SetText("")
 

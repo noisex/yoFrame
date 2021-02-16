@@ -117,6 +117,8 @@ if ns:IsSameLocale("ruRU") then
 
 	L["VOLUME_TOOLTIP_HINT1"] = "ЛКМ чтобы настроить"
 
+	L["BB_LOOK"]	= "Посмотри, что у других в сумках!"
+	L["MISC_UI_OUTDATED"] = "Звиняйте, хлопці, но ваш |cff00ffffyoFrame|r безбожно устарел!!! Подумайте об этом на досуге..."
 
 --[[
 L[""] 	= "

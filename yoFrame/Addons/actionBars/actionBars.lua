@@ -5,8 +5,8 @@ if not yo.ActionBar.enable then return end
 local _G = _G
 -- GLOBALS: myButtonBorder
 
-local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel
-	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel
+local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey
+	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey
 
 local kbs = {
 	-- This is the short display version you see on the Button

@@ -25,12 +25,11 @@
 	<Include file="Filters\filters.xml"/>
  	<Include file="Infotext\infotexts.xml"/>
  	<Include file="addons\frames\frames.xml"/>
- 	<Include file="addons\actionBars\actionBars.xml"/>
+	<Include file="addons\actionBars\actionBars.xml"/>
 	<Include file="addons\bags\bags.xml"/>
 	<Include file="addons\chat\chat.xml"/>
 	<Include file="addons\maps\maps.xml"/>
 	<Include file="addons\tooltip\tooltip.xml"/>
 	<Include file="addons\elements\elements.xml"/>
 	<Include file="skins\skins.xml"/>
- -->
  </Ui>

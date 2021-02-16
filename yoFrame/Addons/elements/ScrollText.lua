@@ -147,9 +147,7 @@ local function CombatLogEvent( self, ...)
 	if sourceName == n.myName or sourceName == myPet then
 		local subEvent = select( 2, ...)
 
-		if subEvent == "SPELL_DAMAGE"
-			or subEvent == "SPELL_PERIODIC_DAMAGE"
-			then
+		if subEvent == "SPELL_DAMAGE" or subEvent == "SPELL_PERIODIC_DAMAGE" then
 
 			local spellID = gsub( select( 13, ...), "%s%b()", "")
 

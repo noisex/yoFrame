@@ -3,12 +3,11 @@ local L, yo, n = unpack( ns)
 
 local _G = _G
 
-local CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
-	= CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI
+local CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI, UIParent, GetScreenWidth, GetScreenHeight, IsShiftKeyDown
+	= CreateFrame, unpack, pairs, InCombatLockdown, isAligning, print, PlaySound, ReloadUI, UIParent, GetScreenWidth, GetScreenHeight, IsShiftKeyDown
 
-yo_Position 		= {}
+_G.yo_Position     	= {}
 n.Addons.moveFrames = {}
-
 n.Addons.snapBars 	= {}
 n.Addons.snapBars[#n.Addons.snapBars + 1] = UIParent
 n.Addons.snapBars[#n.Addons.snapBars + 1] = n.infoTexts.LeftDataPanel
@@ -17,13 +16,6 @@ n.Addons.snapBars[#n.Addons.snapBars + 1] = n.infoTexts.RightDataPanel
 local mf 		= n.Addons.moveFrames
 local sticky 	= n.LIBS.Sticky
 local moveArray
-
-if yo.Addons.movePersonal then
-	moveArray = yo_Position
-else
-	if not n.allData.moveArray then n.allData.moveArray = {} end
-	moveArray = n.allData.moveArray
-end
 
 --GLOBALS: yo_Position
 ----------------------------------------------------------------------------------------
@@ -70,11 +62,9 @@ end
 
 n.setAnchPosition = function(anch, realAnch)
 	local ap, _, rp, x, y = anch:GetPoint()
-
 	if realAnch then
 		ap, _, rp, x, y = realAnch:GetPoint()
 	end
-
 	local w, h = anch:GetSize()
 	moveArray[anch:GetName()] = {ap, "UIParent", rp, x, y, w, h}
 end
@@ -132,7 +122,7 @@ function n.moveCreateAnchor(name, text, width, height, x, y, p1, p2, anchor)
 	h:SetAllPoints(f)
 	f.dragtexture = h
 
-	local v = CreateFrame("Frame", nil, h, BackdropTemplateMixin and "BackdropTemplate")
+	local v = CreateFrame("Frame", nil, h, _G.BackdropTemplateMixin and "BackdropTemplate")
 	v:SetPoint("TOPLEFT",0,0)
 	v:SetPoint("BOTTOMRIGHT",0,0)
 	framemove(v)
@@ -255,6 +245,14 @@ end
 local frame = CreateFrame("Frame")
 	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	frame:SetScript("OnEvent", function(self, event)
+
+		if yo.Addons.movePersonal then
+			moveArray = yo_Position
+		else
+			if not n.allData.moveArray then n.allData.moveArray = {} end
+			moveArray = n.allData.moveArray
+		end
+
 		self:UnregisterEvent(event)
 		n.moveRestoreUI(self)
 	end)

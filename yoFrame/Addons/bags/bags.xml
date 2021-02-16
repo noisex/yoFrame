@@ -1,11 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="Bags.lua"/>
-	<Script file="BagBrothers.lua"/>
+ 	<Script file="Bags.lua"/>
+ 	<Script file="BagBrothers.lua"/>
  	<Script file="Loot.lua"/>
 	<Script file="ProfessionTabs.lua"/>
 	<Script file="OneClickDisenchanting.lua"/>
  	<Script file="OneClickEnchantScroll.lua"/>
-	<!--
-	<Script file=""/>
- -->
  </Ui>

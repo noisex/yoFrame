@@ -1,8 +1,6 @@
 local addonName, ns = ...
 local L, yo, n = unpack( ns)
 
-local L_MISC_UI_OUTDATED = "Звиняйте, хлопці, но ваш |cff00ffffyoFrame|r безбожно устарел!!! Подумайте об этом на досуге..."
-
 local tonumber, print, IsInGroup, IsInRaid, UnitGroupRolesAssigned
 	= tonumber, print, IsInGroup, IsInRaid, UnitGroupRolesAssigned
 
@@ -14,7 +12,7 @@ local check = function(self, event, prefix, message, _, sender)
 	if event == "CHAT_MSG_ADDON" then
 		if prefix ~=  addonName or sender == n.myName then return end
 		if tonumber(message) ~= nil and tonumber(message) > tonumber(n.version) then
-			print("|cffff0000"..L_MISC_UI_OUTDATED.."|r")
+			print("|cffff0000"..L.MISC_UI_OUTDATED.."|r")
 			self:UnregisterEvent("CHAT_MSG_ADDON")
 		end
 

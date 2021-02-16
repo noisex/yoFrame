@@ -506,6 +506,8 @@ local menuList = {
 
 function bagBro:CreateBagIconButton( self, parent)
 	local parent = parent and parent or yo_Bags.bagFrame
+	if not parent then return end
+
 	local gicon, guildTexCoord
 
 	self.bagButton = CreateFrame("Button", nil, self)
@@ -523,7 +525,7 @@ function bagBro:CreateBagIconButton( self, parent)
 	self.bagButton:SetScript("OnEnter", function(self, ...)
 		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 15, 5)
 		GameTooltip:AddLine("Big Brother")
-		GameTooltip:AddLine("Посмотри, что у других в сумках!")
+		GameTooltip:AddLine( L["BB_LOOK"])
 		GameTooltip:Show()
 	end)
 	self.bagButton:SetScript("OnLeave", function(self, ...) GameTooltip:Hide() end )
@@ -775,7 +777,6 @@ bagBro:SetScript("OnEvent", OnEvent)
 --113602:0:0:0:0:0:0:0:100:0:5:1:566|h[Throat-Ripper Gauntlets]|h|r
 --itemID:enchant:gem1:gem2:gem3:gem4:suffixID:uniqueID:level:upgradeId:instanceDifficultyID:numBonusIds:bonusId1:bonusid2:..
 --158923:252:8:9:7:12:0
---Hkeystone:158923:252:8:9:7:12:0[Ключ: Святилище Штормов (8)];1
 --[[
 function GuildMicroButton_UpdateTabard(forceUpdate)
 	local tabard = GuildMicroButtonTabard;

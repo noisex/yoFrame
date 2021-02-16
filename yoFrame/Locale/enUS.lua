@@ -116,4 +116,7 @@ L["WeekLeader"] = "Week Leaders"
 
 L["EXPEDIT_COMPLETE"] = "And someone has still not closed the expedition weekly..."
 
+L["BB_LOOK"]	= "See what others have in their bags!"
+L["MISC_UI_OUTDATED"] = "Sorry guys, but your |cff00ffffyoFrame|r is shamelessly outdated!!! Think about it..."
+
 ns[1] = L

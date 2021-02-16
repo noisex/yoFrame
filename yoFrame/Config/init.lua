@@ -26,7 +26,7 @@ _G[AddOnName] = engine
 
 local oops = false
 if 	   IsAddOnLoaded("ElvUI") 		then oops = "ElvUI"
-elseif IsAddOnLoaded("ShestakUI") 	then oops = "ShestakUI"
+elseif IsAddOnLoaded("ShestakUI") then oops = "ShestakUI"
 elseif IsAddOnLoaded("Tukui") 		then oops = "Tukui" end
 
 StaticPopupDialogs["CONFIRM_ADDON"] = {
@@ -71,6 +71,20 @@ _G ["BINDING_NAME_TAR_MARK_7"] 	= "Крест православный"
 _G ["BINDING_NAME_TAR_MARK_8"] 	= "Черепок"
 _G ["BINDING_NAME_TAR_MARK_0"] 	= "Очистителька"
 
+-- text count color
+hooksecurefunc( 'SetItemButtonCount', function( slot, slotCount)
+  --_G.HIGHLIGHT_FONT_COLOR.r = 1
+  --_G.HIGHLIGHT_FONT_COLOR.g = 215/255
+  ---_G.HIGHLIGHT_FONT_COLOR.b = 0
+
+  --print( "HOOKSEC", slot, slotCount, slot:GetName())
+  if slot:GetName() then
+    if slotCount and slotCount > 0 then
+      local slotText = _G[slot:GetName().."Count"]
+      slotText:SetTextColor( 1, 215/255, 0)       --- COUNT COLOR
+    end
+  end
+end)
 
 --_G ["BINDING_NAME_DETAILS_SCROLL_UP"] = Loc ["STRING_KEYBIND_SCROLL_UP"]
 --_G ["BINDING_NAME_DETAILS_SCROLL_DOWN"] = Loc ["STRING_KEYBIND_SCROLL_DOWN"]
