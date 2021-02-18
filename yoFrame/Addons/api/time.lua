@@ -60,8 +60,8 @@ function SecondsToClocks(seconds, noSec, noMin)
   	local mins 	= noMin and 0 or floor(mod(seconds,3600)/60)
   	local secs 	= noSec and 0 or floor(mod(seconds,60))
 
-	mins 	= mins  == 0 and "" or ( format( "%dм", mins) .. " ")
-	secs 	= secs  == 0 and "" or ( format( "%dс", secs))
+	mins 	= mins  == 0 and "" or ( format( "%dm", mins) .. " ")
+	secs 	= secs  == 0 and "" or ( format( "%ds", secs))
 
     return "/" ..mins..secs
   end

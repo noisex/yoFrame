@@ -3,6 +3,8 @@ local L, yo, n 	= unpack( ns)
 local oUF 		= ns.oUF or oUF
 
 local _G = _G
+local UIParent = UIParent
+
 local CreateFrame, SetUpAnimGroup, commav, nums, floor
 	= CreateFrame, SetUpAnimGroup, commav, nums, floor
 
@@ -52,6 +54,19 @@ maw.isInMaw = function()
     return (id ==1543 or id ==1820 or id ==1821 or id ==1822 or id==1823), id
 end
 
+ns.mawMount = function( self, myMount)
+	local inMaw 	= maw.isInMaw()
+	local myMountID	= myMount or 344578
+	local mountYour = C_MountJournal.GetMountFromSpell( 48025)
+	local mountMaw	= C_MountJournal.GetMountFromSpell( myMountID)
+
+	if inMaw then
+		C_MountJournal.SummonByID( mountMaw)
+	else
+		C_MountJournal.SummonByID( mountYour)
+	end
+end
+
 maw.getInfo = function()
     local setID = C_UIWidgetManager.GetTopCenterWidgetSetID()
     local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(setID)
@@ -84,7 +99,7 @@ maw.setInfo = function( info)
 
 	   	if progress >= progressPerTier * totalTiers then
     		maw.bar.tier:SetText( "")
-    		maw.bar.value:SetText( "Тікай хлопец, тобi пiзда!") --"Ты пьян, иди домой!")
+    		maw.bar.value:SetText( L["mawText"])
     	else
     		maw.bar.tier:SetText( tier..'/'..totalTiers)
     		maw.bar.value:SetText( commav( progress) .. "/" .. nums( progressPerTier * totalTiers))
@@ -136,11 +151,17 @@ local function onEvent( self, event, ...)
 
 	if event == "PLAYER_ENTERING_WORLD"	or event == "ZONE_CHANGED_NEW_AREA" then
 
+		local parent, x, y = UIParent, 300, -15
+
+		if yo.Addons.moveWidget then
+			parent, x, y = _G.yoMoveWidget, 0, 0
+		end
+
 		if not maw.shifted then
 			-- утроба круг сдвинуть в угол
 			_G.UIWidgetTopCenterContainerFrame:SetScale(0.75)
 			_G.UIWidgetTopCenterContainerFrame:ClearAllPoints()
-			_G.UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -15)
+			_G.UIWidgetTopCenterContainerFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
 
 			_G.UIWidgetTopCenterContainerFrame.SetScale = n.dummy
 			_G.UIWidgetTopCenterContainerFrame.ClearAllPoints = n.dummy
@@ -164,3 +185,7 @@ end
 maw:RegisterEvent("PLAYER_ENTERING_WORLD")
 maw:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 maw:SetScript("OnEvent", onEvent)
+
+if yo.Addons.moveWidget then
+	n.moveCreateAnchor("yoMoveWidget", "Move Central Widget", 120, 120, 0, -50, "CENTER", "TOP")
+end

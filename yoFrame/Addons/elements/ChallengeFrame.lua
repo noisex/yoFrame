@@ -228,19 +228,14 @@ local function UpdateAffixes( self)
 		end
 	end
 
-	--tprint( affixIds)
-	--if affixIds[4].id == 119 then
-    	if not self.seasonAffix then
-    		local seasonAffix = self:CreateFontString( nil, "ARTWORK") --, "GameFontNormalMed1")
-			seasonAffix:SetFont( n.font, n.fontsize +2, "OUTLINE")
-			seasonAffix:SetTextColor( 0.529, 0.529, 0.929, 1)
-			seasonAffix:SetJustifyH("CENTER")
-			seasonAffix:SetPoint("BOTTOM", self.WeeklyInfo.Child.RunStatus, "TOP", 0, 15)
-
-			self.seasonAffix = seasonAffix
-		end
-		--self.seasonAffix:SetText( "|cffffff00Манящий: |r" .. affixWeeks[scheduleWeek][5])
-    --end
+   	if not self.seasonAffix then
+    	local seasonAffix = self:CreateFontString( nil, "ARTWORK") --, "GameFontNormalMed1")
+		seasonAffix:SetFont( n.font, n.fontsize +2, "OUTLINE")
+		seasonAffix:SetTextColor( 0.529, 0.529, 0.929, 1)
+		seasonAffix:SetJustifyH("CENTER")
+		seasonAffix:SetPoint("BOTTOM", self.WeeklyInfo.Child.RunStatus, "TOP", 0, 15)
+		self.seasonAffix = seasonAffix
+	end
 
     if self.WeeklyInfo.Child.WeeklyChest.ownedKeystoneLevel and self.WeeklyInfo.Child.WeeklyChest.ownedKeystoneLevel > 1 then
 		if not self.weekReward then

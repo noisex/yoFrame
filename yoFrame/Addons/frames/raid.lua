@@ -217,7 +217,7 @@ local function raidShared(self, unit)
 		CustomFilter	= funcWhiteList --funcBlackList
 		frameHeight 	= yo.Raid.heightMT
 		frameWidth 		= yo.Raid.widthMT
-		posAuraTank		= { "LEFT", self, "BOTTOMLEFT", 3, 0}
+		posAuraTank		= { "BOTTOMLEFT", self, "BOTTOMLEFT", 3, 2}
 		growAuraTank  	= "RIGHT"
 		anchTankAura 	= "LEFT"
 		hpBarVertical	= false

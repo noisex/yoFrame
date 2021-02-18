@@ -122,6 +122,7 @@ yo["Addons"] = {
 	["minimapMove"]					= true,
 	["alertEnable"]					= true,
 	["movePersonal"]				= true,
+	["moveWidget"]					= false,
 }
 
 yo["ActionBar"] = {

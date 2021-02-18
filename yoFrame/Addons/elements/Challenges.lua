@@ -99,9 +99,9 @@ local function OnEvent( self, event, name, sender, ...)
 	elseif event == "CHAT_MSG_LOOT" then
 
 		local b --= name:match("Эпохальный ключ")
-		local c = name:match("|Hkeystone:")
-		local y = name:match("^Вы ")
-		local z = name:match("^Ваша ")
+		local c = name:match( "|Hkeystone:")
+		local y = name:match( L.keyYOU)
+		local z = name:match( L.keyYOUR)
 
 	--	--print( name, b, c, y, z, a)
 		if ( z or y) and ( b or c ) then

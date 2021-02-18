@@ -145,7 +145,7 @@ function infoText:checkPets( serial)
 	--	end
 	--end
 
-	self.pets[serial] = true 	---------------------!!!!!!!!!!!!!! временное дело
+	self.pets[serial] = true 	---------------------!!!!!!!!!!!!!!
 	self.petBlacklist[serial] = true
 end
 
@@ -168,7 +168,7 @@ end
 function infoText:onEnter( infos)
 	GameTooltip:SetOwner( infos, "ANCHOR_TOP", 0, 6);
 	GameTooltip:ClearLines()
-	GameTooltip:AddLine( n.myColorStr .. "Царский депс:")
+	GameTooltip:AddLine( n.myColorStr .. L.dpsHeader)
 	local ind = 1
 	local shift = 2.9
 	local stoPerc
@@ -203,9 +203,9 @@ function infoText:onEnter( infos)
 		GameTooltip:AddLine(" ")
 	end
 
-	GameTooltip:AddDoubleLine( "Всего нахлобучил:", format( "%s / %s%s", nums( infos.amountTotal), nums( infos.amountTotal / ( infos.combatTime+0.01)), SecondsToClocks( infos.combatTime)), nil, nil, nil, 0, 1, 1)
+	GameTooltip:AddDoubleLine( L.dpsFooter, format( "%s / %s%s", nums( infos.amountTotal), nums( infos.amountTotal / ( infos.combatTime+0.01)), SecondsToClocks( infos.combatTime)), nil, nil, nil, 0, 1, 1)
 	if not IsShiftKeyDown() then
-		GameTooltip:AddLine("Чуть больше информации если с нажатым Shift", 0.3, 0.3, 0.3)
+		GameTooltip:AddLine( L.dpsInfo, 0.3, 0.3, 0.3)
 	end
 	GameTooltip:Show()
 end

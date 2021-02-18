@@ -151,7 +151,7 @@ function Stat:Disable()
 end
 
 infoText.infos.system 		= Stat
-infoText.infos.system.name 	= "Система (FPS, Net Lag)"
+infoText.infos.system.name 	= "System (FPS, Net Lag)"
 
 infoText.texts.system = "System"
 --Stat.index = 1

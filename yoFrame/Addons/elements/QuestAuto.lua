@@ -4,8 +4,11 @@ if not yo.Addons.AutoQuest then return end
 
 ERR_QUEST_ACCEPTED_S = string.gsub( ERR_QUEST_ACCEPTED_S, "\".s\"%.", "") .. "|cffff00ff\"%s\"|r."
 
-LOOT_ITEM_PUSHED_SELF = "Получено: %s."
-LOOT_ITEM_PUSHED_SELF_MULTIPLE = "Получено: %sx%d."
+if n.myClient == "ruRU" then
+	LOOT_ITEM_PUSHED_SELF = "Получено: %s."
+	LOOT_ITEM_PUSHED_SELF_MULTIPLE = "Получено: %sx%d."
+end
+
 --https://wowwiki.fandom.com/wiki/UI_escape_sequences
 --|Hquest:QuestID:QuestLevel|hLinktext|h
 local strQuestObjectives = "|cffffff00"..QUESTS_COLON.." |r|cff00ffff |Hquest:%s:%d|h%s|h"
@@ -162,10 +165,10 @@ local function OnEvent( self, event, ...)
 				print("|cffff0000"..L["Spend"].." |cff00ff00" .. amount .. " |r" .. '|T'.. texture ..':14|t |c' .. hexColor .. name .. "|cffffff00 "..L["myself"].."|r" .. L["DONT_SHIFT"])
 				--CloseQuest()
 			elseif money > 1 then
-				print("|cffff0000"..L["Pay"]..": |cff00ff00" .. formatMoney( money) .. "|cffffff00"..L["this huckster"].."|r" .. L["DONT_SHIFT"])
+				print("|cffff0000"..L["Pay"]..": |cff00ff00" .. formatMoney( money) .. "|cffffff00"..L["thisHuckster"].."|r" .. L["DONT_SHIFT"])
 				--CloseQuest()
 			elseif iname then
-				print("|cffff0000"..L["Give it to him"].." |cff00ff00" .. numItems .. " |r" .. '|T'.. itexture ..':14|t |c' .. select( 4, GetItemQualityColor( iquality)).. iname .. L["DONT_SHIFT"])
+				print("|cffff0000"..L["GiveItToHim"].." |cff00ff00" .. numItems .. " |r" .. '|T'.. itexture ..':14|t |c' .. select( 4, GetItemQualityColor( iquality)).. iname .. L["DONT_SHIFT"])
 				--CloseQuest()
 			else
 				CompleteQuest()
@@ -236,7 +239,7 @@ local function OnEvent( self, event, ...)
 					if delta > bestDelta then
 						bestDelta = delta
 						bestChoice = i
-						bestString = "|cffff0000"..L["Your choice"]..": |r ".. _G[itemEquipLoc] .. " |c" .. hexColor.. "[".. clvl .. "]|r " .. itemLink .. " ( " .. clvl - slvl .. " "..L["from"].." [" .. slvl.. "])|r"
+						bestString = "|cffff0000"..L["YourChoice"]..": |r ".. _G[itemEquipLoc] .. " |c" .. hexColor.. "[".. clvl .. "]|r " .. itemLink .. " ( " .. clvl - slvl .. " "..L["from"].." [" .. slvl.. "])|r"
 					end
 				end
 			end
@@ -341,7 +344,7 @@ local function OnEvent( self, event, ...)
 				end
 
 				if slvl and slvl < ilvl then
-					bestString = " |cffff0000"..L["Better than"].." [" .. slvl .. "] " .. L["on"] .. ilvl - slvl .. "|r"
+					bestString = " |cffff0000"..L["BetterThan"].." [" .. slvl .. "] " .. L["on"] .. ilvl - slvl .. "|r"
 				end
 
 				print( "|cffffff00"..L["Choice"].." #" .. i ..": |r" .. " [|c" ..hexColor .. ilvl .. "|r] " .. ( _G[itemEquipLoc] or "") .. " " .. itemLink .. bestString)

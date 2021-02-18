@@ -23,7 +23,7 @@ function Stat:specOnClick( button)
 		end
 
 		menuList[numSpec+2] = { text = SELECT_LOOT_SPECIALIZATION, isTitle = true, notCheckable = true }
-		menuList[numSpec+3] = { text = format( "Текущий (%s)", self.specName), checked = function() return GetLootSpecialization() == 0 end, func = function() SetLootSpecialization( 0) end  }
+		menuList[numSpec+3] = { text = format( L.sLootCurrent, self.specName), checked = function() return GetLootSpecialization() == 0 end, func = function() SetLootSpecialization( 0) end  }
 		for index = 1, numSpec do
 			local id, name, _, icon = GetSpecializationInfo(index)
 			if id then
@@ -52,7 +52,7 @@ function Stat:onEnter( )
 	GameTooltip:AddLine( SELECT_LOOT_SPECIALIZATION)
 
 	local spec = GetLootSpecialization()
-	if spec == 0 then tecSpec = "( Текущая)" end
+	if spec == 0 then tecSpec = CHARACTER_UPGRADE_FLOW_CHAR_SPEC_CURRENT end
 	GameTooltip:AddLine( format( ICON_FORMAT, self.specLootIcon, ( self.specLootName or self.specName) .. tecSpec), 1, 1, 1)
 	GameTooltip:AddLine(" ")
 

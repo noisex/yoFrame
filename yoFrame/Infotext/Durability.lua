@@ -128,19 +128,16 @@ function Stat:onEnter( )
 
 	--Avoidence
 	local rightString = targetlv > 1 and strjoin('', ' (', "lvl", ' ', targetlv, ')') or targetlv == -1 and strjoin('', ' (', BOSS, ')') or strjoin('', ' (', "lvl", ' ', playerlv, ')')
-	GameTooltip:AddDoubleLine( format( "ЗАЩИТА: " .. chanceString, avoidance), rightString)
-	--GameTooltip:AddLine(' ')
+	GameTooltip:AddDoubleLine( format( DEFENSE_TOOLTIP .. ": " .. chanceString, avoidance), rightString)
 
-	GameTooltip:AddDoubleLine("Уклонение", format(chanceString, dodge), 1, 1, 1)
-	GameTooltip:AddDoubleLine("Паррирование", format(chanceString, parry), 1, 1, 1)
-	GameTooltip:AddDoubleLine("Блок", format(chanceString, block), 1, 1, 1)
-	GameTooltip:AddDoubleLine("Промах", format(chanceString, basemisschance), 1, 1, 1)
-	--GameTooltip:AddLine(' ')
-	GameTooltip:AddDoubleLine("Защита от удара:", (unhittable > 0 and '+' or '')..format(chanceString, unhittable), 1, 1, 1, (unhittable < 0 and 1 or 0), (unhittable > 0 and 1 or 0), 0)
+	GameTooltip:AddDoubleLine( STAT_DODGE, format(chanceString, dodge), 1, 1, 1)
+	GameTooltip:AddDoubleLine( STAT_PARRY, format(chanceString, parry), 1, 1, 1)
+	GameTooltip:AddDoubleLine( STAT_BLOCK, format(chanceString, block), 1, 1, 1)
+	GameTooltip:AddDoubleLine( MISS, format(chanceString, basemisschance), 1, 1, 1)
+	GameTooltip:AddDoubleLine( L["deffText"], (unhittable > 0 and '+' or '')..format(chanceString, unhittable), 1, 1, 1, (unhittable < 0 and 1 or 0), (unhittable > 0 and 1 or 0), 0)
 	GameTooltip:AddLine(' ')
-	--
 
-	GameTooltip:AddLine("Прочность")
+	GameTooltip:AddLine( DURABILITY)
 	local costTotal = 0
 	for i = 1, 10 do
 		local cost = select(3, n.scanTooltip:SetInventoryItem( "player", localSlots[i][1]))
@@ -156,7 +153,7 @@ function Stat:onEnter( )
 	if costTotal > 0 then
 		GameTooltip:AddLine(" ")
 		local repText = REPAIR_ITEMS
-		if CanGuildBankRepair() and yo.Addons.RepairGuild then repText = "Ремонт за счет гильдии" end
+		if CanGuildBankRepair() and yo.Addons.RepairGuild then repText = L["repGuild"] end
 
 		GameTooltip:AddDoubleLine( repText, formatMoney( costTotal), 1, .75, 0)
 

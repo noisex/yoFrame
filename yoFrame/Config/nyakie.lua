@@ -359,7 +359,7 @@ n.interuptSpells = {
 }
 
 n.dungensTypes = {
-    [0]     = "Нет, спасибо, не надо",
+    [0]     = L["dungThank"],
     [258]   = "Dungeon Classic",
     [259]   = "Dungeon BC ",
     [260]   = "Heroic BC ",

@@ -12,7 +12,7 @@ local check = function(self, event, prefix, message, _, sender)
 	if event == "CHAT_MSG_ADDON" then
 		if prefix ~=  addonName or sender == n.myName then return end
 		if tonumber(message) ~= nil and tonumber(message) > tonumber(n.version) then
-			print("|cffff0000"..L.MISC_UI_OUTDATED.."|r")
+			print("|cffff0000"..L.UI_OUTDATED.."|r")
 			self:UnregisterEvent("CHAT_MSG_ADDON")
 		end
 
@@ -38,23 +38,3 @@ frame:RegisterEvent("CHAT_MSG_ADDON")
 frame:RegisterEvent("GUILD_ROSTER_UPDATE")
 frame:SetScript("OnEvent", check)
 C_ChatInfo.RegisterAddonMessagePrefix( addonName)
-
-----------------------------------------------------------------------------------------
---	Whisper UI version
-----------------------------------------------------------------------------------------
---local whisp = CreateFrame("Frame")
---whisp:RegisterEvent("CHAT_MSG_WHISPER")
---whisp:RegisterEvent("CHAT_MSG_BN_WHISPER")
---whisp:SetScript("OnEvent", function(_, event, text, name, ...)
---	if text:lower():match("ui_version") or text:lower():match("уи_версия") then
---		if event == "CHAT_MSG_WHISPER" then
---			SendChatMessage("ShestakUI "..n.version, "WHISPER", nil, name)
---		elseif event == "CHAT_MSG_BN_WHISPER" then
---			BNSendWhisper(select(11, ...), "ShestakUI "..n.version)
---		end
---	end
---end)
-
---hooksecurefunc("SetItemRef", function(self, ...)
---	print("...")
---end)

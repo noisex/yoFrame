@@ -150,7 +150,7 @@ function Stat:onEnter()
 
 	--if n.myLevel == MAX_PLAYER_LEVEL and not IsQuestFlaggedCompleted( questID) then
 	--	GameTooltip:AddLine( " ")
-	--	GameTooltip:AddLine( L["EXPEDIT_COMPLETE"],1,0,0)
+	--	GameTooltip:AddLine( L["EXPEDITCOMP"],1,0,0)
 	--end
 
 	--FlagActiveBosses()

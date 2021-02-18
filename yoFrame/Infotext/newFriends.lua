@@ -38,8 +38,8 @@ local fList = {
 		[BNET_CLIENT_COD_MW]	= {"Interface\\FriendsFrame\\Battlenet-CallOfDutyMWicon",		"CoD: Modern Warfare"},
 		[BNET_CLIENT_COD_MW2]	= {"Interface\\FriendsFrame\\Battlenet-CallOfDutyMW2icon",		"CoD: Modern Warfare 2"},
 		[BNET_CLIENT_COD_BOCW]	= {"Interface\\FriendsFrame\\Battlenet-CallOfDutyBlackOps4icon","CoD: Black Ops Cold War"},
-		["BSAp"]				= {"Interface\\FriendsFrame\\Battlenet-Battleneticon",			L["In MobilApps"]},
-		[BNET_CLIENT_APP]		= {"Interface\\friendsframe\\battlenet-portrait",				L["In Apps"]},
+		["BSAp"]				= {"Interface\\FriendsFrame\\Battlenet-Battleneticon",			L["InMobilApps"]},
+		[BNET_CLIENT_APP]		= {"Interface\\friendsframe\\battlenet-portrait",				L["InApps"]},
 	}
 }
 
@@ -198,7 +198,7 @@ function Stat:onEnter( arg, fromWIM)
 
 				if IsShiftKeyDown() and clientName ~= "BSAp" then
 					if accData.isDND or accData.isAFK or accData.gameAccountInfo.isGameAFK then
-							GameTooltip:AddDoubleLine( "отсутвствует:", FriendsFrame_GetLastOnline(accData.lastOnlineTime), .8, .8, .8, .8, .8, 0.8) end
+							GameTooltip:AddDoubleLine( FRIENDS_LIST_AWAY .. ":", FriendsFrame_GetLastOnline(accData.lastOnlineTime), .8, .8, .8, .8, .8, 0.8) end
 					if accData.realmStr  then
 							GameTooltip:AddDoubleLine( accData.areaStr, accData.realmStr, 0.6, 0.6, 0.6, 0.8, 0.8, 0.8)
 					elseif #accData.gameAccountInfo.richPresence > 1 and clientName ~= BNET_CLIENT_APP then
@@ -206,7 +206,7 @@ function Stat:onEnter( arg, fromWIM)
 					if #accData.customMessage > 1 then
 							GameTooltip:AddLine( accData.customMessage, _, _, _, true)	end
 					if #accData.note > 1 then
-							GameTooltip:AddDoubleLine( "ноте:", accData.note, _, _, _, 1, 1, 1) end
+							GameTooltip:AddDoubleLine( "note:", accData.note, _, _, _, 1, 1, 1) end
 				end
 				ind = ind + 1
 			end

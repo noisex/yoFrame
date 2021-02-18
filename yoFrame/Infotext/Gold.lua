@@ -142,7 +142,7 @@ function Stat:onEnter()
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
 
 	if Change ~= 0 then
-		GameTooltip:AddLine(L["For the game"])
+		GameTooltip:AddLine(L["ForTheGame"])
 			if Profit > 0 then
 			GameTooltip:AddDoubleLine(L["Received"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
 		end
@@ -159,7 +159,7 @@ function Stat:onEnter()
 		GameTooltip:AddLine' '
 	end
 
-	GameTooltip:AddLine(L["General information"])
+	GameTooltip:AddLine(L["GeneralInfo"])
 
 	local oneDate
 	for k, realm in pairs ( n.allData.charData) do
@@ -211,7 +211,7 @@ function Stat:onEnter()
 			if curTable.currencyTypesID then r, g, b = GetItemQualityColor( curInfo.quality) end
 			if curInfo.maxQuantity > 0 then maxQ = "/" .. commav( curInfo.maxQuantity) .. "" end
 			if curInfo.maxWeeklyQuantity > 0 then
-				maxW = " (" .. curInfo.quantityEarnedThisWeek .. "/" .. curInfo.maxWeeklyQuantity .. " за неделю)"
+				maxW = " (" .. curInfo.quantityEarnedThisWeek .. "/" .. curInfo.maxWeeklyQuantity .. L.perWeekCur
 			end
 
 			if curTable.name and curTable.quantity then

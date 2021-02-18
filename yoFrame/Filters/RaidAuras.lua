@@ -44,6 +44,7 @@ n.blackSpells = {
 
 	[338906] = true, -- цепи тюремщика
 	[340870] = true, -- дамаг по танку на изобретателе
+	[326758] = true, -- пауки
 }
 
 local function SpellName(id)

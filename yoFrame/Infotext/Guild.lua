@@ -152,7 +152,7 @@ end
 
 Stat.ShowGuild = function(self, btn, obj)
 	local menuWIM = {
-		{ text = "Гильдейский шептун", isTitle = true, notCheckable=true},
+		{ text = L.guildPM, isTitle = true, notCheckable=true},
 	}
 
 	GameTooltip:Hide()

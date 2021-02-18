@@ -242,9 +242,9 @@ local function BuildBNTable(total)
 			elseif client == owString then
 				BNTableOW[#BNTableOW + 1] = { 		bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-Overwatchicon", L["Ovirva4zzz"], isGameAFK, isGameBusy }
 			elseif client == bsapString then
-				BNTableBSAp[#BNTableBSAp + 1] = { 	bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\FriendsFrame\\Battlenet-Battleneticon.blp", L["In MobilApps"], isAFK, isDND}
+				BNTableBSAp[#BNTableBSAp + 1] = { 	bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\FriendsFrame\\Battlenet-Battleneticon.blp", L["InMobilApps"], isAFK, isDND}
 			elseif client == appString then
-				BNTableApp[#BNTableApp + 1] = { 	bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\friendsframe\\battlenet-portrait", L["In Apps"], isAFK, isDND }
+				BNTableApp[#BNTableApp + 1] = { 	bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isGameAFK, isGameBusy, noteText, realmName, faction, race, class, zoneName, level, "", "Interface\\friendsframe\\battlenet-portrait", L["InApps"], isAFK, isDND }
 			elseif client == dst2String then
 				BNTableDST[#BNTableDST + 1] = { 	bnetIDAccount, accountName, characterName, bnetIDGameAccount, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level, gameText, "Interface\\FriendsFrame\\Battlenet-Destiny2icon", "Destiny 2", isGameAFK, isGameBusy }
 			else
@@ -414,7 +414,7 @@ Stat.ShowFiends = function(self, btn)
 	local menuCountWhispers = 1
 	local classc, levelc, info
 	local menuWIM = {
-		{ text = "Дружеский шептун", isTitle = true,notCheckable=true},
+		{ text = L.wimFriend, isTitle = true,notCheckable=true},
 	}
 
 	if #friendTable > 0 then

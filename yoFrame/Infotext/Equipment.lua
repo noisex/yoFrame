@@ -8,7 +8,7 @@ local eText  = n.infoTexts.LeftInfoPanel:CreateFontString(nil, "OVERLAY")
 local function TMenu( self)
 	local name = {}
 	local menu = {
-		{ text = "Комплекты", isTitle = true},
+		{ text = L.sets, isTitle = true},
 	}
 
 	for i = 1, C_EquipmentSet.GetNumEquipmentSets() do

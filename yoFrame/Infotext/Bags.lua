@@ -30,7 +30,7 @@ end
 
 function Stat:onEnter()
 	GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 6);
-	GameTooltip:AddDoubleLine(L["Bagzy and banksy"])
+	GameTooltip:AddDoubleLine(L["Bagzy"])
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddDoubleLine( L["TOTAL"],total,0, 0.6, 1, 1, 1, 1)
 	GameTooltip:AddLine(" ")

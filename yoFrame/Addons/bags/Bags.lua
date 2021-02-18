@@ -593,7 +593,7 @@ local function equipItem( slot, bagID, slotID, clink, iLvl, locLink, locLvl, ite
 	if yo.Addons.equipNewItem and yo.Addons.equipNewItemLevel > iLvl and ( locitemRarity ~= 7 or itemRarity ~= 0) then
 		doEquip = true
 		if InCombatLockdown() then
-			print( L["put on"] .. text)
+			print( L["putOn"] .. text)
 
 			slot.clink 	= clink
 			slot.text 	= text
@@ -614,7 +614,7 @@ local function equipItem( slot, bagID, slotID, clink, iLvl, locLink, locLvl, ite
 		C_NewItems_RemoveNewItem(bagID, slotID)
 		--print( bagID, slotID, slot, itemEquipLoc, itemSubType, iLvl, clink)
 	else
-		print( L["can change"] .. text)
+		print( L["canChange"] .. text)
 		C_NewItems_RemoveNewItem(bagID, slotID)
 	end
 end

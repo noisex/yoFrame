@@ -167,7 +167,7 @@ local OnTooltipSetUnit = function(self)
 
 		local guildName, guildRank = GetGuildInfo(unit)
 		if guildName then
-			_G["GameTooltipTextLeft2"]:SetFormattedText("\n|cffffff00Гильдия: |r%s \n|cffffff00%s: |cffffffff%s\n\n", guildName, RANK, guildRank)
+			_G["GameTooltipTextLeft2"]:SetFormattedText("\n|cffffff00" .. GUILD .. ": |r%s \n|cffffff00%s: |cffffffff%s\n\n", guildName, RANK, guildRank)
 			if UnitIsInMyGuild(unit) then
 				_G["GameTooltipTextLeft2"]:SetTextColor(1, 1, 0)
 			else

@@ -252,9 +252,11 @@ local function outLoot( frame, link)
 			local name, spellID = GetItemSpell( itemInfo.link)
 			if name then
 				--local name, _, icon = GetSpellInfo(spellID)
-				local cooldown = GetSpellBaseCooldown(spellID)
-				local desc = GetSpellDescription(spellID)
-				temptext = "|cff999999" .. ITEM_SPELL_TRIGGER_ONUSE .. " " .. desc .. " Восстановление: " .. SecondsToClock(cooldown/1000)
+				local cooldown 	= GetSpellBaseCooldown(spellID)
+				local desc 		= GetSpellDescription(spellID)
+				local spellTime = format( SPELL_RECHARGE_TIME, SecondsToClock(cooldown/1000))
+
+				temptext = "|cff999999" .. ITEM_SPELL_TRIGGER_ONUSE .. " " .. desc .. spellTime
 				lolButton.onuse:SetText(temptext, 1, 1, 1, 0)
 			end
 
@@ -271,7 +273,7 @@ local function outLoot( frame, link)
 					if lineText:match( ITEM_SPELL_TRIGGER_ONEQUIP) then
 						lolButton.onEquip:SetText( format( " %s%s ", hex( lr, lg, lb), lineText))
 
-					elseif lineText:match( "Комплект ") then
+					elseif lineText:match( L.doLootSet) then
 						local itemSetID = select( 16, GetItemInfo( itemInfo.link))
 						lolButton.equipSet:SetText( "|cffffff00" .. GetItemSetInfo( itemSetID) .. "\n|cff999999" .. lineText)
 					end
@@ -358,7 +360,7 @@ local function settingDoIt( self)
 		hasteCheck:SetSize( 20, 20)
 		hasteCheck:SetPoint("TOPLEFT", setting, "TOPLEFT", 10, -10)
 		hasteCheck:SetChecked( self.haste)
-		hasteCheck.Text:SetText( "Скорость")
+		hasteCheck.Text:SetText( STAT_HASTE)
 		hasteCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		hasteCheck:SetScript("OnClick", function() self.haste = hasteCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
@@ -366,7 +368,7 @@ local function settingDoIt( self)
 		critCheck:SetSize( 20, 20)
 		critCheck:SetPoint("TOPLEFT", hasteCheck, "TOPLEFT", 0, -25)
 		critCheck:SetChecked( self.crit)
-		critCheck.Text:SetText( "Критический")
+		critCheck.Text:SetText( STAT_CRITICAL_STRIKE)
 		critCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		critCheck:SetScript("OnClick", function() self.crit = critCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
@@ -374,7 +376,7 @@ local function settingDoIt( self)
 		masterCheck:SetSize( 20, 20)
 		masterCheck:SetPoint("TOPLEFT", critCheck, "TOPLEFT", 0, -25)
 		masterCheck:SetChecked( self.master)
-		masterCheck.Text:SetText( "Искусность")
+		masterCheck.Text:SetText( STAT_MASTERY	)
 		masterCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		masterCheck:SetScript("OnClick", function() self.master = masterCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
@@ -382,7 +384,7 @@ local function settingDoIt( self)
 		versaCheck:SetSize( 20, 20)
 		versaCheck:SetPoint("TOPLEFT", masterCheck, "TOPLEFT", 0, -25)
 		versaCheck:SetChecked( self.versa)
-		versaCheck.Text:SetText( "Универсальность")
+		versaCheck.Text:SetText( STAT_VERSATILITY)
 		versaCheck.Text:SetTextColor(0.392, 0.392, 0.392)
 		versaCheck:SetScript("OnClick", function() self.versa = versaCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 
@@ -390,7 +392,7 @@ local function settingDoIt( self)
 		allCheck:SetSize( 20, 20)
 		allCheck:SetPoint("TOPLEFT", versaCheck, "TOPLEFT", 0, -25)
 		allCheck:SetChecked( self.allstat)
-		allCheck.Text:SetText( "Статы на одной вещи")
+		allCheck.Text:SetText( L["doLootStat"])
 		allCheck.Text:SetTextColor(1, 1, 0.5)
 		allCheck:SetScript("OnClick", function() self.allstat = allCheck:GetChecked() checkDungeLoot( self:GetParent().filterType) end)
 

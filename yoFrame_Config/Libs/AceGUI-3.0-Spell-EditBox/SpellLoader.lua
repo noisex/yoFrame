@@ -14,11 +14,11 @@ local SPELLS_PER_RUN = 500
 local TIMER_THROTTLE = 0.10
 local spells, predictors, spellType = SpellLoader.spellList, SpellLoader.predictors, SpellLoader.spellType
 local typesType = {
-	["buff"] 	= "Бафф ",
-	["debuff"] 	= "Дебафф ",
-	["ability"] = "Умелка ",
-	["totem"] 	= "Тотем ",
-	["talent"]	= "Талант ",
+	["buff"] 	= "Buff ",
+	["debuff"] 	= "DeBuff ",
+	["ability"] = "Spell ",
+	["totem"] 	= "Totem ",
+	["talent"]	= "Talent ",
 }
 
 function SpellLoader:RegisterPredictor(frame)

@@ -457,8 +457,11 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 		end
 
 		if yo.ActionBar.HotToolTip then
-			button:HookScript("OnEnter", function(self, ...)
+
+			hooksecurefunc( _G[name], 'SetTooltip', function( self)
 				local macros = button.Name:GetText()
+				local key1, key2 = GetBindingKey( button.commandName)
+
 				if macros or key1 or key2 then
 					if macros 	then GameTooltip:AddDoubleLine( "Macros:", 	macros, nil, nil, nil, 1, 1, 1)	end
 					if key1		then GameTooltip:AddDoubleLine( "HotKey:", 	key1, 	nil, nil, nil, 1, 1, 1)	end

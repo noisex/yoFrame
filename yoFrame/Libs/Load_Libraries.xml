@@ -8,7 +8,7 @@
 
 	<Script file="LibCooldown.lua"/>
 	<Include file="LibSharedMedia-3.0\lib.xml"/>
-	<Include file="LibObjectiveProgress-1.0\embed.xml"/>
+	<!-- <Include file="LibObjectiveProgress-1.0\embed.xml"/> -->
 	<Include file="LibItemSearch-1.2\LibItemSearch-1.2.xml"/>
 	<Include file="LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
 

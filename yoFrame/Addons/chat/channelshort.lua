@@ -25,8 +25,8 @@ local function Abbreviate(channel)
 end
 
 local function AddMessage(self, message, ...)
-	if not message:find("Вы покинули канал ") then
-		if not message:find("Смена канала: ") then
+	if not message:find( L.chatLeft) then
+		if not message:find( L.chatChange) then
     		message = message:gsub('|Hchannel:(.-)|h%[(.-)%]|h', Abbreviate)
     	end
     end

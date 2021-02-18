@@ -4,8 +4,8 @@ local L, yo, n = unpack( ns)
 if not IsAddOnLoaded("yoFrame_Config") then
 
 	StaticPopupDialogs["NEED_CONFIG"] = {
-  		text = "Теперпь для корректной работы необходимо включить дополнение |cff00ffff\"yoFrame_Config\"|r!",
-  		button1 = "Включить его",
+  		text = L["configVKL"],
+  		button1 = ENABLE,
   		--button2 = "No",
   		OnAccept = function()
      		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);

@@ -254,7 +254,7 @@ frame:SetPoint("TOPRIGHT", WorldMapFrame, "TOPRIGHT", -200, 0)
 
 frame.f = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 frame.f:SetPoint("LEFT", frame, "RIGHT", 0, 0)
-frame.f:SetText( L["Fog of war"])
+frame.f:SetText( L["FogOfWar"])
 frame.f:Show()
 
 -- Handle clicks

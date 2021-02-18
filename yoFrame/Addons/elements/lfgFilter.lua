@@ -18,7 +18,7 @@ local UIDROPDOWNMENU_MENU_LEVEL = UIDROPDOWNMENU_MENU_LEVEL
 local LFGListFrame = _G.LFGListFrame
 local activities = {}
 local rolesInfo = {
-	{ -1, " = пох"}, { 0, " = нет"}, { 1, " = 1"}, { 2, " = 2"}, { 3, " = 3"}, { 4, " = 4"}, { 5, " = 5"}
+	{ -1, L.lfgDIS}, { 0, L.lfgNONE}, { 1, " = 1"}, { 2, " = 2"}, { 3, " = 3"}, { 4, " = 4"}, { 5, " = 5"}
 }
 
 local function makeDropDown( self, title)
@@ -43,7 +43,7 @@ local function makeDropDown( self, title)
 				LFGListSearchPanel_DoSearch( LFGListFrame.SearchPanel)
 			end
 
-			info.text = info.title .. " = пох"
+			info.text = info.title .. L.lfgDIS
 			info.value = -1
 			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL);
 

@@ -385,7 +385,7 @@ local function CreateWIM( self)
 	friends:SetPushedTexture( 	yo.Media.path .. "icons\\Friedns-UI-SquareButton-Down")
 	friends:SetHighlightTexture( "Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 	friends:SetScript("OnMouseDown", function( f, button)
-		self.menuWIM = { { text = "Дружеский шептун", isTitle = true,notCheckable=true}, }
+		self.menuWIM = { { text = L["wimFriend"], isTitle = true,notCheckable=true}, }
 		n.infoTexts.infos.friend:onEnter( nil, "fomWIM")
 		EasyMenu( self.menuWIM, n.menuFrame, f, 25, 50, "MENU", 2)
 	end)
@@ -730,7 +730,7 @@ function wim:ignoreOnClick()
 		local name 	= wim.tabber.tabs[tabID].name
 		if C_FriendList.IsIgnored( name) then
 			C_FriendList.DelIgnore( name)
-			print( "|cffffff00Вы успокоились и больше не игнорите " .. name)
+			print( L["wimIgnore"] .. name)
 		else
 			C_FriendList.AddIgnore( name)
 		end
