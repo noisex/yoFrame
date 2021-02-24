@@ -52,7 +52,7 @@ function Stat:onEnter( )
 	GameTooltip:AddLine( SELECT_LOOT_SPECIALIZATION)
 
 	local spec = GetLootSpecialization()
-	if spec == 0 then tecSpec = CHARACTER_UPGRADE_FLOW_CHAR_SPEC_CURRENT end
+	if spec == 0 then tecSpec = L.curentSpec end
 	GameTooltip:AddLine( format( ICON_FORMAT, self.specLootIcon, ( self.specLootName or self.specName) .. tecSpec), 1, 1, 1)
 	GameTooltip:AddLine(" ")
 

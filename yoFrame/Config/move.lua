@@ -15,6 +15,7 @@ n.Addons.snapBars[#n.Addons.snapBars + 1] = n.infoTexts.RightDataPanel
 
 local mf 		= n.Addons.moveFrames
 local sticky 	= n.LIBS.Sticky
+local uf 		= yo.UF
 local moveArray
 
 --GLOBALS: yo_Position
@@ -234,11 +235,6 @@ n.moveRestoreUI = function(self)
 			frame:ClearAllPoints()
 			frame:SetPoint( p1, an, p2, x, y)
 		end
-		--if _G[frame_name] then
-		--	print(frame_name, _G[frame_name])
-		--	_G[frame_name]:ClearAllPoints()
-		--	_G[frame_name]:SetPoint(unpack(SetPoint))
-		--end
 	end
 end
 
@@ -257,15 +253,11 @@ local frame = CreateFrame("Frame")
 		n.moveRestoreUI(self)
 	end)
 
-n.moveCreateAnchor("yoMoveplayer", 		"Move Player", 		200, 40, 500, 270, 	"BOTTOMLEFT", "BOTTOMLEFT")
-n.moveCreateAnchor("yoMovetarget", 		"Move Target", 		200, 40, -500, 270, "BOTTOMRIGHT", "BOTTOMRIGHT")
-n.moveCreateAnchor("yoMovefocus", 		"Move Focus", 		110, 25, 0, 320, 	"TOPLEFT", "BOTTOMLEFT")
-n.moveCreateAnchor("yoMovefocustarget", "Move FocusTarget", 110, 25, 5, -1000)
-n.moveCreateAnchor("yoMovetargettarget","Move Tar-Tar", 	100, 25, 0, -1000)
-n.moveCreateAnchor("yoMovepet", 		"Move Pet", 		100, 25, 00, -1000)
-n.moveCreateAnchor("yoMoveboss", 		"Move Boss", 		180, 35, -370, -200, "TOPRIGHT", "TOPRIGHT")
+n.moveCreateAnchor("yoMoveplayer", 		"Move Player", 		uf.player.width, uf.player.height, 	500, 270, "BOTTOMLEFT", "BOTTOMLEFT")
+n.moveCreateAnchor("yoMovetarget", 		"Move Target", 		uf.target.width, uf.target.height, -500, 270, "BOTTOMRIGHT","BOTTOMRIGHT")
+n.moveCreateAnchor("yoMovefocus", 		"Move Focus", 		uf.focus.width,  uf.focus.height,     5, 320, "TOPLEFT", 	"BOTTOMLEFT")
+n.moveCreateAnchor("yoMoveboss", 		"Move Boss", 		uf.boss.width,   uf.boss.height,   -370,-200, "TOPRIGHT", 	"TOPRIGHT")
 
---n.moveCreateAnchor("yoMoveLeftPanel", 	"Move Left DataPanel", 440, 175, 3, 3, "BOTTOMLEFT","BOTTOMLEFT")
 n.moveCreateAnchor("yoMoveQuestFrame", 	"Move Quest Frame", 230, 500, -5, -175, "TOPRIGHT", "TOPRIGHT")
 n.moveCreateAnchor("yoMoveExperience", 	"Move Experience", 	7, 173, -452, 4, 	"BOTTOM", "BOTTOMRIGHT")
 n.moveCreateAnchor("yoMovePlayerCastBar","Move Player CastBar", 436, 20, 0, 91, "CENTER", "BOTTOM")
@@ -281,3 +273,8 @@ if yo.Addons.minimapMove then
 	n.moveCreateAnchor("yoMoveBuff", 		"Move Buffs", 		400, 40, -(x+5), -5, "TOPRIGHT", "TOPRIGHT")
 	--n.moveCreateAnchor("yoMoveDebuff", 		"Move Debuff", 		400, 40, -(x+5), -115, "TOPRIGHT", "TOPRIGHT")
 end
+
+--n.moveCreateAnchor("yoMovefocustarget", "Move FocusTarget", 110, 25, 5, -1000)
+--n.moveCreateAnchor("yoMovetargettarget","Move Tar-Tar", 	100, 25, 0, -1000)
+--n.moveCreateAnchor("yoMovepet", 		"Move Pet", 		100, 25, 00, -1000)
+--n.moveCreateAnchor("yoMoveLeftPanel", 	"Move Left DataPanel", 440, 175, 3, 3, "BOTTOMLEFT","BOTTOMLEFT")

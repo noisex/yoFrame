@@ -146,7 +146,7 @@ local function ShowQuestLevelInWatchFrame()
 	if ( not tracker.initialized )then 	return end
 
 	for i = 1, #tracker.MODULES do
-		local xxx =  tracker.MODULES[i].usedBlocks.ObjectiveTrackerBlockTemplate --tracker.MODULES[i].usedBlocks.BonusObjectiveTrackerBlockTemplate --
+		local xxx =  tracker.MODULES[i].usedBlocks.ObjectiveTrackerBlockTemplate or tracker.MODULES[i].usedBlocks.BonusObjectiveTrackerBlockTemplate --tracker.MODULES[i].usedBlocks.BonusObjectiveTrackerBlockTemplate --
 		if xxx then
 			for i, block in pairs(xxx) do
 				if block.id and block.HeaderText and block.HeaderText:GetText() and (not string.find(block.HeaderText:GetText(), "^%[.*%].*")) then
@@ -159,7 +159,6 @@ local function ShowQuestLevelInWatchFrame()
 --if questInfo.questID == 60457 then
 
 --end
-
 					if questInfo and ( questLogIndex ~= 0 and questInfo.title and questInfo.title ~= "" ) then
 						local questTypeIndex = GetQuestLogQuestType(questLogIndex)
 						local tagString = n.questTypesIndex[questTypeIndex] or ""
@@ -171,31 +170,47 @@ local function ShowQuestLevelInWatchFrame()
 						block.HeaderText:SetText( WatchFrameLevelFormat:format( tagString, dailyMod, questInfo.title))
 						block.height = h + block.HeaderText:GetHeight()
 						block:SetHeight(block.height)
-
-						-- Icon Quest Item resize
-						if block.itemButton then
-							designItemButton( block.itemButton, block)
-						end
-						if block.groupFinderButton then
-							block.groupFinderButton.Icon:SetSize( 20, 20)
-							block.groupFinderButton:SetNormalTexture(nil)
-						end
 					end
+				end
+
+				-- Icon Quest Item resize
+				if block.itemButton then
+					designItemButton( block.itemButton, block)
+				end
+				if block.rightButton then
+					designItemButton( block.rightButton, block)
+				end
+				if block.groupFinderButton then
+					block.groupFinderButton.Icon:SetSize( 20, 20)
+					block.groupFinderButton:SetNormalTexture(nil)
 				end
 			end
 		end
 	end
-	local xxx =  tracker.MODULES[4].usedBlocks.BonusObjectiveTrackerBlockTemplate
-	if xxx then
-		for i, block in pairs(xxx) do
-			if block.itemButton then
-				designItemButton( block.itemButton, block)
-			end
-			if block.rightButton then
-				designItemButton( block.rightButton, block)
-			end
-		end
-	end
+
+	--local xxx =  tracker.MODULES[4].usedBlocks.BonusObjectiveTrackerBlockTemplate
+	--if xxx then
+	--	for i, block in pairs(xxx) do
+	--		if block.itemButton then
+	--			designItemButton( block.itemButton, block)
+	--		end
+	--		if block.rightButton then
+	--			designItemButton( block.rightButton, block)
+	--		end
+	--	end
+	--end
+
+	--local xxx =  tracker.MODULES[6].usedBlocks.ObjectiveTrackerBlockTemplate
+	--if xxx then
+	--	for i, block in pairs(xxx) do
+	--		if block.itemButton then
+	--			designItemButton( block.itemButton, block)
+	--		end
+	--		if block.rightButton then
+	--			designItemButton( block.rightButton, block)
+	--		end
+	--	end
+	--end
 end
 
 hooksecurefunc("ObjectiveTracker_Update", ShowQuestLevelInWatchFrame)

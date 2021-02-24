@@ -2,6 +2,19 @@ local L, yo, n = unpack( select( 2, ...))
 --if C.misc.disenchanting ~= true then return end
 
 if not yo.Addons.disenchanting then return end
+
+local _G = _G
+local unpack, IsSpellKnown, tonumber, GetSpellInfo, GetMouseFocus, InCombatLockdown, GetItemInfo, pairs, GameTooltip, IsAltKeyDown, AutoCastShine_AutoCastStop, AutoCastShine_AutoCastStart, GetContainerItemLink, GetItemCount
+	= unpack, IsSpellKnown, tonumber, GetSpellInfo, GetMouseFocus, InCombatLockdown, GetItemInfo, pairs, GameTooltip, IsAltKeyDown, AutoCastShine_AutoCastStop, AutoCastShine_AutoCastStart, GetContainerItemLink, GetItemCount
+
+local match = string.match
+local format = string.format
+
+local ITEM_MIN_SKILL = ITEM_MIN_SKILL
+local ITEM_PROSPECTABLE= ITEM_PROSPECTABLE
+local LE_ITEM_CLASS_ARMOR = LE_ITEM_CLASS_ARMOR
+local LE_ITEM_CLASS_WEAPON = LE_ITEM_CLASS_WEAPON
+
 ----------------------------------------------------------------------------------------
 --	One-click Milling, Prospecting and Disenchanting(Molinari by p3lim)
 ----------------------------------------------------------------------------------------
@@ -20,46 +33,38 @@ end
 
 function button:PLAYER_LOGIN()
 
-	local spells, disenchanter, rogue = {}
+	local spells, disenchanter, rogue, milling = {}
 
-	if IsSpellKnown(51005) then
-		milling = true
-	end
-
-	if IsSpellKnown(31252) then
-		spells[ITEM_PROSPECTABLE] = {GetSpellInfo(31252), 1, 0.33, 0.33}
-	end
-
-	if IsSpellKnown(13262) then
-		disenchanter = true
-	end
-
-	if IsSpellKnown(1804) then
-		rogue = ITEM_MIN_SKILL:gsub("%%s", ( n.myClient == "ruRU" and "Взлом замков" or GetSpellInfo(1809))):gsub("%%d", "%(.*%)")
-	end
+	if IsSpellKnown(51005) then milling = true end
+	if IsSpellKnown(13262) then disenchanter = true end
+	if IsSpellKnown(31252) then spells[ITEM_PROSPECTABLE] = {GetSpellInfo(31252), 1, 0.33, 0.33} end
+	if IsSpellKnown(1804)  then rogue = ITEM_MIN_SKILL:gsub("%%s", ( n.myClient == "ruRU" and "Взлом замков" or GetSpellInfo(1809))):gsub("%%d", "%(.*%)") end
 
 	GameTooltip:HookScript("OnTooltipSetItem", function(self)
 		local item, link = self:GetItem()
-		if item and not InCombatLockdown() and IsAltKeyDown() and not (AuctionFrame and AuctionFrame:IsShown()) then
+		if item and not InCombatLockdown() and IsAltKeyDown() and not ( _G.AuctionFrame and _G.AuctionFrame:IsShown()) then
 			local spell, r, g, b = ScanTooltip(self, spells)
 
-			if not spell and milling and (GetItemCount(tonumber(string.match(link, 'item:(%d+):'))) >= 5) then
+			if not spell and milling and (GetItemCount(tonumber( match(link, 'item:(%d+):'))) >= 5) then
 				spell, r, g, b = GetSpellInfo(51005), 0.5, 1, 0.5
+
 			elseif not spell and disenchanter then
 				local _, _, itemRarity, _, _, _, _, _, _, _, _, class, subClass = GetItemInfo(item)
 				if not (class == LE_ITEM_CLASS_WEAPON or class == LE_ITEM_CLASS_ARMOR or (class == 3 and subClass == 11)) or not (itemRarity and (itemRarity > 1 and (itemRarity < 5 or itemRarity == 6))) then return end
 				spell, r, g, b = GetSpellInfo(13262), 0.5, 0.5, 1
+
 			elseif not spell and rogue then
 				for index = 1, self:NumLines() do
-					if string.match(_G["GameTooltipTextLeft"..index]:GetText() or "", rogue) then
+					if match(_G["GameTooltipTextLeft"..index]:GetText() or "", rogue) then
 						spell, r, g, b = GetSpellInfo(1804), 0, 1, 1
 					end
 				end
 			end
 
 			local bag, slot = GetMouseFocus():GetParent(), GetMouseFocus()
+
 			if spell and GetContainerItemLink(bag:GetID(), slot:GetID()) == link then
-				button:SetAttribute("macrotext", string.format("/cast %s\n/use %s %s", spell, bag:GetID(), slot:GetID()))
+				button:SetAttribute("macrotext", format("/cast %s\n/use %s %s", spell, bag:GetID(), slot:GetID()))
 				button:SetAllPoints(slot)
 				button:Show()
 				AutoCastShine_AutoCastStart(button, r, g, b)

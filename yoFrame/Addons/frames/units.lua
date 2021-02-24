@@ -45,15 +45,17 @@ end
 ------------------------------------------------------------------------------------------------------
 
 local function unitShared(self, unit)
-	local cunit = (unit and unit:find("boss%d")) and "boss" or unit
+	local cunit = ((unit and unit:find("boss%d"))  and "boss")  or
+	 			  ((unit and unit:find("arena%d")) and "arena") or unit
+
 	if cunit == "boss" then self.isboss = true end
 	self.cunit 	= cunit
 
 	GetColors( self)
 	n.importUnitsAPI( self)
 
-	local height 			= _G["yoMove" .. cunit]:GetHeight()
-	local width 			= _G["yoMove" .. cunit]:GetWidth()
+	local height 			= yo.UF[cunit].height 	--_G["yoMove" .. cunit]:GetHeight()
+	local width 			= yo.UF[cunit].width 	--_G["yoMove" .. cunit]:GetWidth()
 	local enablePower 		= true
 	local enablePowerText	= true
 	local nameLeight		= "namelong"
@@ -84,12 +86,13 @@ local function unitShared(self, unit)
 	end
 
 	if unit == "pet" or unit == "focus" or unit == "targettarget" or unit == "focustarget" then
-		powerHeight = 2
+		powerHeight 	= 2
+		namePos			= { "TOPLEFT", self, "TOPLEFT", 2, -1}
+		powerPos		= { "BOTTOM", self, "BOTTOM", 0, 2}
+		healthTextPos	= { "BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 6}
 		enablePowerText	= false
 	end
 
-	--_G["yoMove" .. cunit]:SetHeight( height)
-	--_G["yoMove" .. cunit]:SetWidth( width)
 	self:SetWidth( width)
 	self:SetHeight( height)
 
@@ -434,6 +437,13 @@ logan:SetScript("OnEvent", function(self, event)
 			--yoUF["boss" .. i] = boses[i]
 
 			updateAllElements( yoUF["boss" .. i])
+		end
+
+		for i = 1, 5 do
+			yoUF["arena" .. i] = oUF:Spawn( "arena" .. i, "yo_Arena" .. i)
+			yoUF["arena" .. i]:SetPoint( "CENTER", n.Addons.moveFrames.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
+
+			updateAllElements( yoUF["arena" .. i])
 		end
 
 		updateAllElements( yoUF.player)

@@ -69,13 +69,27 @@ DebuffWhiteListTemplate = {
 	--[SpellName(272790)] = true,	-- Разрывательный выстрел PET
 	},
 	["MAGE"] = {
-		[SpellName(118)] = true,	-- Polymorph
-		[SpellName(31661)] = true,	-- Dragon's Breath
-		[SpellName(122)] = true,	-- Frost Nova
-		[SpellName(44457)] = true,	-- Living Bomb
+		--[SpellName(118)] = true,	-- Polymorph
+		[SpellName(31661)] 	= true,	-- Dragon's Breath
+		[SpellName(122)] 	= true,	-- Frost Nova
+		[SpellName(44457)] 	= true,	-- Living Bomb
 		[SpellName(114923)] = true,	-- Nether Tempest
-		--[SpellName(112948)] = true,	-- Frost Bomb - NOT EXISTS
-		[SpellName(120)] = true,	-- Cone of Cold
+		[SpellName(120)] 	= true,	-- Cone of Cold
+		[SpellName(36032)] 	= true,	-- Arcane Charge
+		[SpellName(33395)] 	= true,	-- Freeze (Pet)
+		[SpellName(198121)] = true,	-- Frostbite
+		[SpellName(228358)] = true,	-- Winter's Chill
+		[SpellName(157997)] = true,	-- Ice Nova
+		[SpellName(31589)] 	= true,	-- Slow
+
+		[SpellName(2120)] 	= true, -- Flamestrike
+		[SpellName(12654)] 	= true, -- Ignite
+		[SpellName(82691)] 	= true, -- Ring of Frost
+		[SpellName(155158)] = true, -- Meteor Burn
+		[SpellName(157981)]	= true, -- Blast Wave
+		[SpellName(205708)]	= true, -- Chilled
+		--[SpellName(217694) 	= true, -- Living Bomb
+		[SpellName(226757)]	= true, -- Conflagration
 	},
 	["MONK"] = {
 		[SpellName(115078)] = true,	-- Paralysis

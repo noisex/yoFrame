@@ -219,7 +219,7 @@ local OnEvent = function(self, event, ...)
 	end
 end
 
-n.moveCreateAnchor("yoMoveRaidCD", "Move Interupts CD", 230, 150, 27, 370, "LEFT", "LEFT")
+n.moveCreateAnchor("yoMoveRaidCD", "Move Interupts CD", 230, 150, 27, 240, "LEFT", "LEFT")
 
 raidCD:SetSize(186 + 32, 20)
 raidCD.barsFrame = {}

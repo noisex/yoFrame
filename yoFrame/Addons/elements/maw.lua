@@ -56,21 +56,29 @@ end
 
 ns.mawMount = function( self, myMount)
 	local inMaw 	= maw.isInMaw()
+	--local inTotgst 	= n.Addons.torgastClicks.inTorghast
 	local myMountID	= myMount or 344578
 	local mountYour = C_MountJournal.GetMountFromSpell( 48025)
 	local mountMaw	= C_MountJournal.GetMountFromSpell( myMountID)
+	--local mountTorg = C_MountJournal.GetMountFromSpell( 174464)
+
+	--print( inTotgst, mountTorg)
 
 	if inMaw then
 		C_MountJournal.SummonByID( mountMaw)
+	--elseif inTotgst then
+		--UseContainerItem( 3, 2)
+		--C_MountJournal.SummonByID( mountTorg)
 	else
 		C_MountJournal.SummonByID( mountYour)
 	end
 end
 
 maw.getInfo = function()
-    local setID = C_UIWidgetManager.GetTopCenterWidgetSetID()
-    local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(setID)
+    local setID 	= C_UIWidgetManager.GetTopCenterWidgetSetID()
+    local widgets 	= C_UIWidgetManager.GetAllWidgetsBySetID(setID)
     local i,widget,info
+
     for i=1,#widgets do
         widget = widgets[i]
         info = C_UIWidgetManager.GetDiscreteProgressStepsVisualizationInfo(widget.widgetID)

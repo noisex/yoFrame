@@ -4,7 +4,7 @@ local L, yo, n = unpack( select( 2, ...))
 ----------------------------------------------------------------------------------------
 --	Enchantment scroll on TradeSkill frame(OneClickEnchantScroll by Sara.Festung)
 ----------------------------------------------------------------------------------------
-local _g = _G
+local _G = _G
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")

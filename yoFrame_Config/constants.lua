@@ -303,7 +303,7 @@ yo["UF"] 	= {
 	["unitFrames"]		= true,
 	["colorUF"]			= 0,
 	["classBackground"]	= true,
-	["simpleUF"]			= false,
+	["simpleUF"]		= false,
 	["showGCD"]			= true,
 	["debuffHight"]		= true,
 	["showShards"]		= true,
@@ -311,6 +311,14 @@ yo["UF"] 	= {
 	["hideOldAbsorb"]	= true,
 	["enableSPower"]	= false,
 	["powerHeight"]		= 4,
+	["player"] 			= {	width = 200, height = 40,},
+	["target"] 			= {	width = 200, height = 40,},
+	["focus"] 			= {	width = 110, height = 25,},
+	["pet"] 			= {	width = 100, height = 25,},
+	["boss"] 			= {	width = 180, height = 35,},
+	["focustarget"]  	= {	width = 110, height = 25,},
+	["targettarget"] 	= { width = 100, height = 25,},
+	["arena"] 			= {	width = 160, height = 35,},
 }
 
 yo["Raid"] = {

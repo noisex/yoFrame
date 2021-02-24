@@ -145,8 +145,8 @@ local function updateBuffs(self)
 			if not name then break end
 
 			if not yo.NamePlates.moreDebuffIcons then nameplateShowPersonal = false end
-			if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( n.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or n.tauntsSpell[name] then --or isStealable then or nameplateShowPersonal
-			--if ((caster == "player" or caster == "pet" or caster == "vehicle") and n.DebuffWhiteList[name] ) or namepmateshowall or n.tauntsSpell[name] then
+
+			if ((caster == "player" or caster == "pet" or caster == "vehicle") and ( n.DebuffWhiteList[name] or nameplateShowPersonal)) or namepmateshowall or n.tauntsSpell[name] then
 				debuffType = blueDebuff and debuffType or nil
 
 				local aIcon = n.createAuraIcon( self.debuffIcons, idebuff)
@@ -159,8 +159,10 @@ local function updateBuffs(self)
 			elseif ( filter == "HELPFUL" and not isPlayer and not n.blackSpells[spellID]) then
 				--true then
 				if dissIcons ~= "none"	or iDisp > 2 then
+
 					if ( dissIcons == "dispell" and badClassTypes[n.myClass][debuffType])
-						or ( dissIcons == "all" and debuffType) then
+						or ( dissIcons == "all" and debuffType)
+						or ( isStealable and n.myClass == "MAGE") then
 
 						local aIcon = n.createAuraIcon( self.disIcons, iDisp)
 						aIcon.unit = unit
@@ -170,6 +172,7 @@ local function updateBuffs(self)
 				end
 
 				if buffIcons ~= "none" or ibuff > 4 then
+
 					if buffIcons == "all"
 						or ( buffIcons == "dispell" and badTypes[debuffType])
 						or ( buffIcons == "buff" and not badTypes[debuffType]) then

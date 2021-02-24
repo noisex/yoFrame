@@ -115,5 +115,6 @@ L.lfgDIS		= " disable"
 L.lfgNONE		= " none"
 L.keyYOU		= "^You "
 L.keyYOUR		= "^Ваша "
+L.curentSpec 	= " ( current)"
 
 ns[1] = L

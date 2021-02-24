@@ -229,7 +229,7 @@ local OnEvent = function(self, event, ...)
 	end
 end
 
-n.moveCreateAnchor("yoMoveCovenCD", "Move Covenanat Party CD", 230, 150, 27, 120, "LEFT", "LEFT")
+n.moveCreateAnchor("yoMoveCovenCD", "Move Covenanat Party CD", 230, 150, 27, 73, "LEFT", "LEFT")
 
 covenCD:RegisterEvent("PLAYER_ENTERING_WORLD")
 covenCD:RegisterEvent("CHALLENGE_MODE_START")
