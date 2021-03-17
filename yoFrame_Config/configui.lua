@@ -592,24 +592,39 @@ local function InitOptions()
 					showHistoryAll 	= {	order = 32, type = "toggle",	name = function(i) return tr(i[#i]) end, width = "full", disabled = function( info) return not db.Chat.showHistory; end,},
 					fadingEnable 	= {	order = 36, type = "toggle",	name = function(i) return tr(i[#i]) end,},
 					fadingTimer 	= {	order = 38,	type = "range", 	name = function(i) return tr(i[#i]) end, min = 5, max = 100, step = 1, disabled = function( info) return not db[info[1]].fadingEnable; end,},
-					wisperSound		= {	order = 40, type = "select", 	name = function(i) return tr(i[#i]) end, dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"),},
-					wisperInCombat	= {	order = 42, type = "toggle",	name = function(i) return tr(i[#i]) end,},
 
-					chatFontsize = {
-						name = function(i) return tr(i[#i]) end,
-						order = 2,	type = "range", desc = L["DEFAULT"] .. 10,	min = 10, max = 16, step = 1,
+					wim 			= {	order = 40, type = "toggle",	name = function(i) return tr(i[#i]) end, width = "full",},
+					combatLog		= {	order = 42, type = "toggle",	name = function(i) return tr(i[#i]) end, width = "full",},
+
+					mySound = {
+						order = 50,	name = " ", type = "group",	inline = true,
+						disabled = function() return not db.Chat.wisperMySound; end,
+						args = {
+							wisperMySound	= {	order = 10, type = "toggle",	name = function(i) return tr(i[#i]) end, width = "full", disabled = false},
+							wisperSound		= {	order = 40, type = "select", 	name = function(i) return tr(i[#i]) end, dialogControl = "LSM30_Sound", values = LSM:HashTable("sound"), width = 1.5, desc = "Default = Wisper"},
+							wisperInCombat	= {	order = 42, type = "toggle",	name = function(i) return tr(i[#i]) end, width = "full",},
+							wisperDelay		= {	order = 44, type = "toggle",	name = function(i) return tr(i[#i]) end, },
+							wisperDelaySec	= {	order = 46,	type = "range", 	name = function(i) return tr(i[#i]) end, min = 5, max = 500, step = 1, disabled = function() return not ( db.Chat.wisperMySound and db.Chat.wisperDelay); end,},
+						},
+					},
+
+					myChatBubble = {
+						order = 60,	name = " ", type = "group",	inline = true,
+						args = {
+							chatBubble		= {	order = 61, type = "select", 	name = function(i) return tr(i[#i]) end, values = {["none"] = L["chBdontchange"], ["remove"] = L["chBremove"], ["skin"] = L["chBchangeS"], ["border"] = L["chBchangeB"]},},
+							chatBubbleShadow= {	order = 62, type = "toggle",	name = function(i) return tr(i[#i]) end, disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
+							chatBubbleFont	= {	order = 64,	type = "range", 	name = function(i) return tr(i[#i]) end, min = 5, max = 15, step = 1, 	disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
+							chatBubbleShift	= {	order = 66,	type = "range", 	name = function(i) return tr(i[#i]) end, min = 0, max = 15, step = 1, disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
+						},
+					},
+
+					chatFontsize 	= { order = 2,	type = "range", name = function(i) return tr(i[#i]) end, desc = L["DEFAULT"] .. 10,	min = 10, max = 16, step = 1,
 						get = function(info) return db["Chat"][info[#info]] end,
 						set = function(info,val) Setlers( "Chat#" .. info[#info], val) end, },
 
 					chatFont 		= {	order = 4, type = "select", 	name = function(i) return tr(i[#i]) end, dialogControl = "LSM30_Font", values = LSM:HashTable("font"),
-										get = function(info) for k, val in pairs( LSM:List("font")) do if db["Chat"][info[#info]] == LSM:Fetch("font", val) then return val end end	end,
-										set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end, },
-					wim 			= {	order = 50, type = "toggle",	name = function(i) return tr(i[#i]) end, width = "full",},
-
-					chatBubble		= {	order = 51, type = "select", 	name = function(i) return tr(i[#i]) end, values = {["none"] = L["chBdontchange"], ["remove"] = L["chBremove"], ["skin"] = L["chBchangeS"], ["border"] = L["chBchangeB"]},},
-					chatBubbleShadow= {	order = 52, type = "toggle",	name = function(i) return tr(i[#i]) end, disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
-					chatBubbleFont	= {	order = 54,	type = "range", 	name = function(i) return tr(i[#i]) end, min = 5, max = 15, step = 1, 	disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
-					chatBubbleShift	= {	order = 56,	type = "range", 	name = function(i) return tr(i[#i]) end, min = 0, max = 15, step = 1, disabled = function( info) if db[info[1]].chatBubble == "none" then return true end end,},
+						get = function(info) for k, val in pairs( LSM:List("font")) do if db["Chat"][info[#info]] == LSM:Fetch("font", val) then return val end end	end,
+						set = function(info, val) Setlers( "Chat#" .. info[#info], LSM:Fetch("font", val))	end, },
 				},
 			},
 
@@ -943,6 +958,12 @@ local function InitOptions()
 			whatsN = {
 				order = 999, name = "Whats нового", type = "group",
 				args = {
+					label15 = { order = 984, type = "description", name = "|cff00ff002021.03.17|r"
+						.."\n - [|cffff8000Хилботка|r] Узнал и сразу принялся исправлять в Хилботке бинды, которые не давали юзать более одного модификатора при настройке хитрых комбинаций клавомышей."
+						.."\n - [|cffff8000Чат|r] Добавил кнопку выпиливания закладки Журнал ( оно вообще кому-то надо?)."
+						.."\n - [|cffff8000Чат|r] Чутка совсем переделал штуку, которая гнустно пикает при получении нового сообщние в ваш ПМ."
+						.."\n - [|cffff8000WIM|r] Добавилась кнопка Open ( вторя сверху, если справа), если натыкать в нее, то окошко ВИМ не будет открываться при получениии малявы, писать ее в общем чате ( вашем, не гильдчат или рейд) и грустно мигать зеленой кнопкой.\n\n"
+					},
 					label14 = { order = 985, type = "description", name = "|cff00ff002021.02.18|r"
 						.."\n - [|cffff8000Общее|r] жалкие попытки перевести это все на буржуинский язык, предполагается, что теперь это все уж точно поломается и вы перестанете этим пользоваться."
 						.."\n - [|cffff8000Общее|r] для теста, если вы задрот или лакер и у вас есть маунт для утробы из коридоров, то можно создать МАКРОС типа: \n\n#showtooltip Скакун Всадника без головы \n/script yoFrame:mawMount( 344578)\n\n это типа, если вы утробе, то будет вызываться 'Корридорный ужас', а если нет, то тот маунт, spellID которого вы указали в скобочках '( 34458)'. В #showtooltip пишете название этого маунта ручками, попозже сделаю наверно настройки для этой беды. Можно скопировать и этот макрос, если вы не против Скакуна от безголового. хехе, глянул как это выглядит в игре и понял, что отседова нельзя скопировать текст... подстава :)"

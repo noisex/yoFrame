@@ -135,6 +135,15 @@ local function StripTextures(object, kill)
 		end
 	end
 end
+
+local AddMessage = function(self, text, ...)
+	if type(text) == "string" then
+		text = text:gsub("|h%[(%d+)%. .-%]|h", "|h[%1]|h")
+		text = text:gsub("|Hplayer:(.-)|h%[(.-)%]|h", Strip)
+	end
+	return origs[self](self, text, ...)
+end
+
 -- Set chat style
 local function SetChatStyle(frame)
 	local id = frame:GetID()
@@ -240,18 +249,35 @@ local function SetChatStyle(frame)
 
 	-- Rename combat log tab
 	if _G[chat] == _G["ChatFrame2"] then
+		--Kill( _G["ChatFrame2"])
 		StripTextures(CombatLogQuickButtonFrame_Custom)
 		CreateBackdrop(CombatLogQuickButtonFrame_Custom)
-		CombatLogQuickButtonFrame_Custom.backdrop:SetPoint("TOPLEFT", 1, -4)
-		CombatLogQuickButtonFrame_Custom.backdrop:SetPoint("BOTTOMRIGHT", 0, 0)
+		CombatLogQuickButtonFrame_Custom.backdrop:SetPoint('BOTTOMLEFT', _G.ChatFrame2, 'TOPLEFT', 0, 0)
+		CombatLogQuickButtonFrame_Custom.backdrop:SetPoint('BOTTOMRIGHT', _G.ChatFrame2, 'TOPRIGHT', 0, 0)
+
+		--CombatLogQuickButtonFrame_Custom.backdrop:SetPoint("TOPLEFT", 1, -4)
+		--CombatLogQuickButtonFrame_Custom.backdrop:SetPoint("BOTTOMRIGHT", 0, 0)
 		CombatLogQuickButtonFrame_CustomAdditionalFilterButton:SetSize(12, 12)
 		CombatLogQuickButtonFrame_CustomAdditionalFilterButton:SetHitRectInsets (0, 0, 0, 0)
 		CombatLogQuickButtonFrame_CustomProgressBar:ClearAllPoints()
 		CombatLogQuickButtonFrame_CustomProgressBar:SetPoint("TOPLEFT", CombatLogQuickButtonFrame_Custom.backdrop, 2, -2)
 		CombatLogQuickButtonFrame_CustomProgressBar:SetPoint("BOTTOMRIGHT", CombatLogQuickButtonFrame_Custom.backdrop, -2, 2)
-		CombatLogQuickButtonFrame_CustomProgressBar:SetStatusBarTexture( texture)
+		CombatLogQuickButtonFrame_CustomProgressBar:SetStatusBarTexture( n.texture)
 		CombatLogQuickButtonFrameButton1:SetPoint("BOTTOM", 0, 0)
 	end
+
+	--if _G[chat] ~= _G["ChatFrame2"] then
+	--	origs[_G[chat]] = _G[chat].AddMessage
+	--	_G[chat].AddMessage = AddMessage
+	--	-- Custom timestamps color
+	--	local color = "|cff0000"
+	--	_G.TIMESTAMP_FORMAT_HHMM = color.."[%I:%M]|r "
+	--	_G.TIMESTAMP_FORMAT_HHMMSS = color.."[%I:%M:%S]|r "
+	--	_G.TIMESTAMP_FORMAT_HHMMSS_24HR = color.."[%H:%M:%S]|r "
+	--	_G.TIMESTAMP_FORMAT_HHMMSS_AMPM = color.."[%I:%M:%S %p]|r "
+	--	_G.TIMESTAMP_FORMAT_HHMM_24HR = color.."[%H:%M]|r "
+	--	_G.TIMESTAMP_FORMAT_HHMM_AMPM = color.."[%I:%M %p]|r "
+	--end
 
 	frame.skinned = true
 end
@@ -321,14 +347,16 @@ local function SetupChatPosAndFont(self)
 			chat:SetPoint("BOTTOMLEFT", n.infoTexts.LeftDataPanel, "BOTTOMLEFT", 3, 20)
 
 			FCF_SavePositionAndDimensions(chat)
+
 		elseif i == 2 then
-			if false then  												---Qulight["chatt"].combatlog ~= true then
+			if yo.Chat.combatLog then
 				FCF_DockFrame(chat)
 				ChatFrame2Tab:EnableMouse(false)
 				ChatFrame2Tab:SetText("")
 				ChatFrame2Tab.SetText = n.dummy
 				ChatFrame2Tab:SetWidth(0.001)
 				ChatFrame2Tab.SetWidth = n.dummy
+				FCF_DockUpdate()
 			end
 		end
 	end
@@ -578,13 +606,24 @@ Fane:RegisterEvent("ADDON_LOADED")
 
 local SoundSys = CreateFrame("Frame")
 SoundSys:RegisterEvent("PLAYER_ENTERING_WORLD")
+
 SoundSys:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
-		self:RegisterEvent("CHAT_MSG_WHISPER")
-		self:RegisterEvent("CHAT_MSG_BN_WHISPER")
+
+		if yo.Chat.wisperMySound then
+			_G.SOUNDKIT.TELL_MESSAGE = 0
+
+			self:RegisterEvent("CHAT_MSG_WHISPER")
+			self:RegisterEvent("CHAT_MSG_BN_WHISPER")
+		end
 	else
 		if InCombatLockdown() and not yo.Chat.wisperInCombat then return end
 
-		PlaySoundFile( LSM:Fetch( "sound", yo.Chat.wisperSound), "Master")
+		if ( not self.tellTimer or (GetTime() > self.tellTimer) ) then
+			PlaySoundFile( LSM:Fetch( "sound", yo.Chat.wisperSound), "Master")
+		end
+
+		self.tellTimer = GetTime() + ( yo.Chat.wisperDelay and yo.Chat.wisperDelaySec or 0)
+
 	end
 end)

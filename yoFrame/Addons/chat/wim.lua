@@ -310,7 +310,9 @@ local function CheckTabForUnit(self, unit, guid, btag, force)
 		self.needShow = true
 	else
 		self.needShow = false
-		self:Show()
+		if yo.Chat.wimOpener then
+			self:Show()
+		end
 	end
 
 	if tabID ~= self.tabber.checked then 	self:startFlash( self.tabber.tabs[tabID].header, 0.75, true) end
@@ -365,9 +367,18 @@ local function CreateWIM( self)
 	figter:SetChecked( yo.Chat.wimFigter)
 	self.buttons.figter = figter
 
+	local opener = CreateFrame("CheckButton", nil, self, "OptionsBaseCheckButtonTemplate")
+	opener:SetSize( 26, 26)
+	opener:SetPoint("TOP", figter, "BOTTOM", 0, 4)
+	opener:SetScript("OnClick", function() Setlers( "Chat#wimOpener", opener:GetChecked()) self.onOpenerEnter( opener) end)
+	opener:SetScript("OnEnter", function() self.onOpenerEnter( opener) end)
+	opener:SetScript("OnLeave", self.tooltipHide)
+	opener:SetChecked( yo.Chat.wimOpener)
+	self.buttons.opener = opener
+
 	local guild = CreateFrame("Button", nil, self)
 	guild:SetSize( 24, 24)
-	guild:SetPoint("TOP", figter, "BOTTOM", 0, -1)
+	guild:SetPoint("TOP", opener, "BOTTOM", 0, -1)
 	guild.text = GUILD_ROSTER
 	guild:SetNormalTexture( 	yo.Media.path .. "icons\\Guild-UI-SquareButton-Up")
 	guild:SetPushedTexture( 	yo.Media.path .. "icons\\Guild-UI-SquareButton-Down")
@@ -600,7 +611,7 @@ local function OnEvent( self, event, ...)
 
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		if not yo.Chat.wimFigter then return end
-		if self.needShow then
+		if self.needShow and yo.Chat.wimOpener then
 			self:Show()
 			self.needShow = false
 		end
@@ -789,6 +800,12 @@ end
 function wim:onFigterEnter()
 	self.text = yo.Chat.wimFigter and "Hider" or "Don`t hider"
 	self.text2 = yo.Chat.wimFigter and "Hide the window in combat and show after" or "Do nothing ( like you all your life)"
+	wim.tooltipShow( self)
+end
+
+function wim:onOpenerEnter()
+	self.text = yo.Chat.wimOpener and "Open" or "Don`t open"
+	self.text2 = yo.Chat.wimOpener and "Open window on new message incoming" or "Do nothing ( like you all your life)"
 	wim.tooltipShow( self)
 end
 

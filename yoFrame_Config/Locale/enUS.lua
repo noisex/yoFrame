@@ -333,6 +333,7 @@ L.chatBubble		= "ChatBubbls:"
 L.chatBubbleShadow	= "Add shadow to chatBubble"
 L.chatBubbleFont	= "Fontsize"
 L.chatBubbleShift	= "Reduce size"
+L.combatLog 		= "Remove '	View Log' tab ( Combat Log)"
 
 L.chBdontchange		= "Dont change"
 L.chBremove			= "Remove border"

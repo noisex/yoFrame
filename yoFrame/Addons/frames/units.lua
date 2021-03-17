@@ -3,11 +3,9 @@ local oUF = ns.oUF or oUF
 --local colors = oUF.colors
 local L, yo, n = ns[1], ns[2], ns[3]
 
-local fontsymbol 	= yo.Media.path .. "fonts\\symbol.ttf"
-local texhl 		= yo.Media.texhl
-
-local _G = _G
-local yoUF = n.Addons.unitFrames
+local _G 	= _G
+local yoUF 	= n.Addons.unitFrames
+local mf 	= n.Addons.moveFrames
 
 local MAX_BOSS_FRAMES= MAX_BOSS_FRAMES
 
@@ -30,7 +28,7 @@ local updateAllElements = function(frame)
 end
 
 function n.updateAllUF(...)
-	for ind, button in pairs( n.Addons.unitFrames) do
+	for ind, button in pairs( yoUF) do
 		if type(button) == "table" then
 			if button.updateOptions then
 				button:updateOptions( button.unit)
@@ -117,6 +115,7 @@ local function unitShared(self, unit)
 		self.Health.healPred  = self:addHealPred()
 		self.Health.Override  = self.updateHealth
 	end
+
 	if unit == "player" then
 		--self.Health.stoper = self.Health.AbsorbBar:CreateTexture(nil, "OVERLAY")
 		--self.Health.stoper:SetSize( 3, self:GetHeight() +5)
@@ -407,21 +406,21 @@ logan:SetScript("OnEvent", function(self, event)
 		oUF:SetActiveStyle("yoFrames")
 
 		yoUF.player = oUF:Spawn("player", "yo_Player")
-		if yo.UF.simpleUF then 	yoUF.player:SetPoint( "TOPRIGHT", n.Addons.moveFrames.yoMoveplayer, "TOPRIGHT", 15, 40)
-		else 					yoUF.player:SetPoint( "CENTER", n.Addons.moveFrames.yoMoveplayer, "CENTER", 0 , 0)
+		if yo.UF.simpleUF then 	yoUF.player:SetPoint( "TOPRIGHT", mf.yoMoveplayer, "TOPRIGHT", 15, 40)
+		else 					yoUF.player:SetPoint( "CENTER", mf.yoMoveplayer, "CENTER", 0 , 0)
 		end
 
 		yoUF.target = oUF:Spawn("target", "yo_Target")
 
-		if yo.UF.simpleUF then 	yoUF.target:SetPoint( "TOPLEFT", n.Addons.moveFrames.yoMovetarget, "TOPLEFT", -15, 40)
-		else					yoUF.target:SetPoint( "CENTER", n.Addons.moveFrames.yoMovetarget, "CENTER", 0 , 0)
+		if yo.UF.simpleUF then 	yoUF.target:SetPoint( "TOPLEFT", mf.yoMovetarget, "TOPLEFT", -15, 40)
+		else					yoUF.target:SetPoint( "CENTER", mf.yoMovetarget, "CENTER", 0 , 0)
 		end
 
 		yoUF.targetTarget = oUF:Spawn("targettarget", "yo_ToT")
 		yoUF.targetTarget:SetPoint( "TOPLEFT", yoUF.target, "TOPRIGHT", 8 , 0)
 
 		yoUF.focus = oUF:Spawn("focus", "yo_Focus")
-		yoUF.focus:SetPoint( "CENTER", n.Addons.moveFrames.yoMovefocus, "CENTER", 0 , 0)
+		yoUF.focus:SetPoint( "CENTER", mf.yoMovefocus, "CENTER", 0 , 0)
 
 		yoUF.focusTarget = oUF:Spawn("focustarget", "yo_FocusTarget")
 		yoUF.focusTarget:SetPoint( "TOPLEFT", yoUF.focus, "TOPRIGHT", 7 , 0)
@@ -433,7 +432,7 @@ logan:SetScript("OnEvent", function(self, event)
 		for i = 1, MAX_BOSS_FRAMES do
 			--boses[i] = "boss"..i.."Frame"
 			yoUF["boss" .. i] = oUF:Spawn( "boss" .. i, "yo_Boss" .. i)
-			yoUF["boss" .. i]:SetPoint( "CENTER", n.Addons.moveFrames.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
+			yoUF["boss" .. i]:SetPoint( "CENTER", mf.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
 			--yoUF["boss" .. i] = boses[i]
 
 			updateAllElements( yoUF["boss" .. i])
@@ -441,7 +440,7 @@ logan:SetScript("OnEvent", function(self, event)
 
 		for i = 1, 5 do
 			yoUF["arena" .. i] = oUF:Spawn( "arena" .. i, "yo_Arena" .. i)
-			yoUF["arena" .. i]:SetPoint( "CENTER", n.Addons.moveFrames.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
+			yoUF["arena" .. i]:SetPoint( "CENTER", mf.yoMoveboss, "CENTER", 0 , -(i -1) * 65)
 
 			updateAllElements( yoUF["arena" .. i])
 		end

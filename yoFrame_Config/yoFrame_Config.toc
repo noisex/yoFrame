@@ -1,8 +1,8 @@
-## Interface: 90002
+## Interface: 90005
+## Version: 9.0501
 ## Title: |cff00ffffyoFrame|cffbbbbbb Config
 ## Notes: In-game configuration for yoFrame
 ## Author: Noisex
-## Version: 7.30
 ## RequiredDeps: yoFrame
 ## SavedVariables: yo_AllData, yoFrameDB
 ## SavedVariablesPerCharacter: yo_PersonalConfig, yo_ChatHistory

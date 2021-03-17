@@ -13,7 +13,8 @@ function n.makeKeyNotWar( button)
 	if ( button and button ~= "") then
 		button = button:lower()
 		if strmatch( button, "-") then
-			modder, button = strsplit( "-", button, 2)
+			--modder, button = strsplit( "-", button, 2)
+			modder, button = string.match( button, "(.*)-(.*)")
 			modName = modder .. "-"
 		end
 	else
@@ -21,6 +22,8 @@ function n.makeKeyNotWar( button)
 	end
 
 	buttonNum = strmatch( button, "%d+")
+
+	--print(button, modder, modName, buttonNum, realbutton)
 
 	return button, modder, modName, buttonNum, realbutton
 end

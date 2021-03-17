@@ -144,6 +144,7 @@ function LFGListUtil_SortSearchResults(results)
 end
 
 local function clearOnClick( setting)
+	if not setting then return end
 
 	setting.filter["Activity"] = -1
 	UIDropDownMenu_Initialize( setting.ddMenu, setting.ddMenu.initialize)

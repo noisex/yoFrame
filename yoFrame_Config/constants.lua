@@ -372,8 +372,11 @@ yo["Chat"] = {
 	["chatBubbleShift"]	= 15,
 	["fadingEnable"]	= true,
 	["fadingTimer"]		= 30,
+	["wisperMySound"]	= true,
 	["wisperSound"]		= "Wisper",
 	["wisperInCombat"]	= true,
+	["wisperDelaySec"]	= 300,
+	["wisperDelay"]		= false,
 	["chatFont"]		= media .. "fonts\\qFont.ttf",
 	["wim"]				= false,
 	["winHeight"]		= 250,
@@ -381,9 +384,11 @@ yo["Chat"] = {
 	["wimHHeight"]		= 300,
 	["wimHWidth"]		= 450,
 	["wimFigter"]		= true,
+	["wimOpener"]		= true,
 	["wimMaxHistory"]	= 200,
 	["wimPrehistoric"]	= 15,
 	["wimLastTab"]		= false,
+	["combatLog"]		= false,
 }
 
 yo["healBotka"] = {
