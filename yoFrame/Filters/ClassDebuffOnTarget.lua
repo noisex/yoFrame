@@ -106,6 +106,7 @@ DebuffWhiteListTemplate = {
 		[SpellName(15487)] = true,	-- Silence
 		[SpellName(589)] = true,	-- Shadow Word: Pain
 		[SpellName(34914)] = true,	-- Vampiric Touch
+		[SpellName(335467)] = true,	-- всепожирающая чума
 	},
 	["ROGUE"] = {
 		[SpellName(6770)] = true,	-- Sap

@@ -406,11 +406,13 @@ hooksecurefunc( "AutoQuestPopupTracker_Update", function(self, ...)
 	--	--print( i, questID, popUpType, self.id, ...)
 		if questID and popUpType then --== "COMPLETE"
 			local block = ObjectiveTrackerFrame.MODULES[6]:GetBlock(questID, "ScrollFrame", "AutoQuestPopUpBlockTemplate");
-			AutoQuestPopUpTracker_OnMouseDown(block)
+			if block then
+				AutoQuestPopUpTracker_OnMouseDown(block)
 
-			--ShowQuestOffer(GetQuestLogIndexByID(questID));
-			--ShowQuestComplete(GetQuestLogIndexByID(questID));
-			AutoQuestPopupTracker_RemovePopUp(questID)
+				--ShowQuestOffer(GetQuestLogIndexByID(questID));
+				--ShowQuestComplete(GetQuestLogIndexByID(questID));
+				AutoQuestPopupTracker_RemovePopUp(questID)
+			end
 		end
 	end
 end)

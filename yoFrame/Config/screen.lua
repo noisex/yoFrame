@@ -17,10 +17,10 @@ local function updateScreenScale(...)
 			SetCVar("useUiScale", 0)
 			StaticPopup_Show("DISABLE_UI")
 
-		elseif getscreenwidth == 1366 and getscreenheight == 768 then
-			SetCVar("useUiScale", 1)
-			SetCVar("uiScale", 0.82)
-			UIParent:SetScale( 0.82)
+		--elseif getscreenwidth == 1366 and getscreenheight == 768 then
+		--	SetCVar("useUiScale", 1)
+		--	SetCVar("uiScale", 0.82)
+		--	UIParent:SetScale( 0.82)
 
 		else
 			SetCVar("useUiScale", 1)
