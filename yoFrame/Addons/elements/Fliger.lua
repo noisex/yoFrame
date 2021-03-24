@@ -74,14 +74,16 @@ local function UpdateAura( self, unit)
 			end
 		end
 
-		if self.pDebuff then
-			if unit == self.pDebuff.unit and not n.blackSpells[spellID] then
+		if self.pDebuff and unit == self.pDebuff.unit then
+			if  not n.blackSpells[spellID] then
 			--if unit == self.pDebuff.unit and n.RaidDebuffList[spellID] then
 				--if not self.pDebuff[fligerPD] then self.pDebuff[fligerPD] = n.createAuraIcon( self.pDebuff, fligerPD) end
 				n.updateAuraIcon( n.createAuraIcon( self.pDebuff, fligerPD), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerPD = fligerPD + 1
 			end
 		end
+
+		if n.alertCasts[spellID] and unit == "player" and expirationTime > GetTime() then Countdown( spellID, expirationTime - GetTime(), n.alertCasts[spellID].text, n.alertCasts[spellID].sec) end
 
 		index = index + 1
 	end
@@ -100,8 +102,8 @@ local function UpdateAura( self, unit)
 			end
 		end
 
-		if self.pBuff then
-			if unit == self.pBuff.unit and n.playerBuffList[name] then
+		if self.pBuff and unit == self.pBuff.unit then
+			if n.playerBuffList[name] then
 				n.updateAuraIcon( n.createAuraIcon( self.pBuff, fligerPB), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerPB = fligerPB + 1
 			end
@@ -113,6 +115,8 @@ local function UpdateAura( self, unit)
 				fligerProc = fligerProc + 1
 			end
 		end
+
+		if n.alertCasts[spellID] and unit == "player" and expirationTime > GetTime() then Countdown( spellID, expirationTime - GetTime(), n.alertCasts[spellID].text, n.alertCasts[spellID].sec) end
 
 		index = index + 1
 	end

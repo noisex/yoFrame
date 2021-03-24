@@ -176,6 +176,12 @@ end
 
 local StartTimer = function(self, name, spellId)
 
+	for k, bar in pairs(self.bars) do
+		if bar.name == name then
+			StopTimer( self, bar)
+		end
+	end
+
 	--local spell, _, icon = GetSpellInfo(spellId)
 	local color   = RAID_CLASS_COLORS[select(2, UnitClass(name))] or { 0.3, 0.7, 0.3}
 	local gt 	  = GetTime()
@@ -212,7 +218,7 @@ local OnEvent = function(self, event, ...)
 
 		if UnitExists("party1")	and not n.Addons.torgastClicks.inTorghast and not UnitInRaid("player") then
 			if not self.reged then
-				for k, bar in pairs(self.bars) do	StopTimer( self, bar)	end
+				for k, bar in pairs(self.bars) do StopTimer( self, bar)	end
 				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 				self.reged = true
 			end

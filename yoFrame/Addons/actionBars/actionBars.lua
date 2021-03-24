@@ -5,8 +5,8 @@ if not yo.ActionBar.enable then return end
 local _G = _G
 -- GLOBALS: myButtonBorder
 
-local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey
-	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey
+local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey, hooksecurefunc
+	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey, hooksecurefunc`
 
 local kbs = {
 	-- This is the short display version you see on the Button
@@ -456,9 +456,11 @@ function ActionButtonDesign( frame, button, buttonWidth, buttonHeight )
 			sName 	= skye2 and sName .. " " .. skye2 or sName
 		end
 
-		if yo.ActionBar.HotToolTip then
+		if yo.ActionBar.HotToolTip and not _G[name].hoocked then
+			_G[name].hoocked = true
 
 			hooksecurefunc( _G[name], 'SetTooltip', function( self)
+				--print(GetTime(), "HOOCKED", name, _G[name].hoocked)
 				local macros = button.Name:GetText()
 				local key1, key2 = GetBindingKey( button.commandName)
 

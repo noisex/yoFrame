@@ -7,6 +7,38 @@ local texture, texglow = n.texture, n.texglow
 local GetCurrentRegion, time, GetQuestResetTime, LASTONLINE_YEARS, LASTONLINE_MONTHS, LASTONLINE_DAYS, LASTONLINE_HOURS, LASTONLINE_MINUTES, INT_SPELL_DURATION_SEC, LESS_THAN_ONE_MINUTE, date
 	= GetCurrentRegion, time, GetQuestResetTime, LASTONLINE_YEARS, LASTONLINE_MONTHS, LASTONLINE_DAYS, LASTONLINE_HOURS, LASTONLINE_MINUTES, INT_SPELL_DURATION_SEC, LESS_THAN_ONE_MINUTE, date
 
+local alertTimers = {}
+
+function Countdown(key, seconds, textOrIcon, startAt)
+
+	if alertTimers[key] then return end
+
+	--print( "START", key, seconds, textOrIcon, startAt)
+
+	local start = startAt or 3
+	--local tbl = {false}
+	local text = type(textOrIcon) == "number" and iconList[textOrIcon] or textOrIcon
+
+	local function printTime()
+		--if not tbl[1] then
+			SendChatMessage( text and format("%s %d", text, start) or start, "SAY")
+			--print( GetTime(), text and format("%s %d", text, start) or start)
+			start = start - 1
+		--end
+	end
+
+	local startOffset = start + 0.2
+
+	for i = 1.2, startOffset do
+		alertTimers[key] = seconds
+		C_Timer.After( seconds-i, printTime)
+	end
+
+	C_Timer.After( seconds, function() alertTimers[key] = nil end)
+
+	--self.sayCountdowns[key] = tbl
+end
+
 function timeLastWeeklyReset()
 	local resetDays = { 2, 4, 3, 4, 4}
 	local region = GetCurrentRegion()
