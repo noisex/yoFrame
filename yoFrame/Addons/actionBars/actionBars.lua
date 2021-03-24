@@ -6,7 +6,7 @@ local _G = _G
 -- GLOBALS: myButtonBorder
 
 local IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey, hooksecurefunc
-	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey, hooksecurefunc`
+	= IsUsableAction, CreateStyle, CreateFrame, UnitCanAttack, InCombatLockdown, unpack, CreatePanel, strsplit, GameTooltip, GetBindingKey, hooksecurefunc
 
 local kbs = {
 	-- This is the short display version you see on the Button
