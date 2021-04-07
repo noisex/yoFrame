@@ -23,17 +23,18 @@ local SPELL_FAILED_NOT_ENOUGH_CURRENCY = SPELL_FAILED_NOT_ENOUGH_CURRENCY
 --	Garbage Collect
 ----------------------------------------------------------------------------------------
 
-local eventcount = 0
-local Garbage = CreateFrame("Frame")
-Garbage:RegisterAllEvents()
-Garbage:SetScript("OnEvent", function(self, event)
-	eventcount = eventcount + 1
+--local eventcount = 0
+--local Garbage = CreateFrame("Frame")
+--Garbage:RegisterAllEvents()
+--Garbage:RegisterEvent("PLAYER_ENTERING_WORLD")
+--Garbage:SetScript("OnEvent", function(self, event)
+	--eventcount = eventcount + 1
 
-	if (InCombatLockdown() and eventcount > 25000) or (not InCombatLockdown() and eventcount > 10000) or event == "PLAYER_ENTERING_WORLD" then
-		collectgarbage("collect")
-		eventcount = 0
-	end
-end)
+	--if (InCombatLockdown() and eventcount > 25000) or (not InCombatLockdown() and eventcount > 10000) or event == "PLAYER_ENTERING_WORLD" then
+		--collectgarbage("collect")
+	--	eventcount = 0
+	---end
+--end)
 
 ----------------------------------------------------------------------------------------
 --	Test Icons

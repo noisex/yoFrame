@@ -756,18 +756,18 @@ logan:SetScript("OnEvent", function(self, event)
 
 		else
 			if yo.Raid.groupingOrder == "THD" then
-				groupBy 	= 'ASSIGNEDROLE'
-				groupingOrder = 'TANK,HEALER,DAMAGER,NONE'
+				groupBy 		= 'ASSIGNEDROLE'
+				groupingOrder 	= 'TANK,HEALER,DAMAGER,NONE'
 			elseif yo.Raid.groupingOrder == "LGBT" then
-				groupBy = 'CLASS'
-				groupingOrder = 'DEATHKNIGHT,DRUID,ROGUE,HUNTER,MONK,MAGE,SHAMAN,WARLOCK,DEMONHUNTER,PALADIN,PRIEST,WARRIOR'
+				groupBy 		= 'CLASS'
+				groupingOrder 	= 'DEATHKNIGHT,DRUID,ROGUE,HUNTER,MONK,MAGE,SHAMAN,WARLOCK,DEMONHUNTER,PALADIN,PRIEST,WARRIOR'
 				--groupingOrder = 'DEMONHUNTER,DEATHKNIGHT,WARRIOR,ROGUE,MONK,PALADIN,DRUID,SHAMAN,HUNTER,PRIEST,MAGE,WARLOCK'
 			elseif yo.Raid.groupingOrder == "TDH" then
-				groupBy = 'ASSIGNEDROLE'
-				groupingOrder = 'TANK,DAMAGER,HEALER,NONE'
+				groupBy 		= 'ASSIGNEDROLE'
+				groupingOrder 	= 'TANK,DAMAGER,HEALER,NONE'
 			else
-				groupBy = "GROUP"
-				groupingOrder = "1,2,3,4,5,6,7,8"
+				groupBy 		= "GROUP"
+				groupingOrder 	= "1,2,3,4,5,6,7,8"
 			end
 
 			local raid = self:SpawnHeader( 'yo_Raid', nil, "custom [@raid6,exists] show;hide", --'raid',

@@ -191,12 +191,15 @@ end
 
 local OnEvent = function(self, event, ...)
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, eventType, _, _, sourceName, sourceFlags, _, _, _, _, _, spellId = CombatLogGetCurrentEventInfo ()
+		local _, eventType, _, _, sourceName, sourceFlags, _, _, destName, _, _, spellId = CombatLogGetCurrentEventInfo ()
 
 		if band(sourceFlags, filter) == 0 then return end
 		--n.raidCoveSpellsCD[spellID]
 		if n.raidInterSpellsCD[spellId] and eventType == "SPELL_CAST_SUCCESS" then --and show[select(2, IsInInstance())] then
 			StartTimer( self, strsplit( "-", sourceName), spellId)
+		--elseif n.alertCasts[spellId] and eventType == "SPELL_AURA_APPLAED" and destName = n.myName then
+			--if n.alertCasts[spellID] and unit == "player" and expirationTime > GetTime() then
+			--Countdown( spellId, expirationTime - GetTime(), n.alertCasts[spellId].text, n.alertCasts[spellId].sec)
 		end
 
 	elseif event == "CHALLENGE_MODE_START" then

@@ -163,7 +163,8 @@ local function ShowQuestLevelInWatchFrame()
 						local questTypeIndex = GetQuestLogQuestType(questLogIndex)
 						local tagString = n.questTypesIndex[questTypeIndex] or ""
 						local dailyMod = ( questInfo.frequency == 1 or questInfo.frequency == 2) and "|cff0080ff*!*|r" or ""
-
+--print(questTypeIndex, questInfo.title)
+--tprint(questInfo)
 						--resizing the block if new line requires more spaces.
 						local h = block.height - block.HeaderText:GetHeight()
 						--block.HeaderText:SetText( WatchFrameLevelFormat:format( questInfo.level, tagString, dailyMod, questInfo.title))

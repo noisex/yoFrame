@@ -255,7 +255,7 @@ local frame = CreateFrame("Frame")
 
 n.moveCreateAnchor("yoMoveplayer", 		"Move Player", 		uf.player.width, uf.player.height, 	500, 270, "BOTTOMLEFT", "BOTTOMLEFT")
 n.moveCreateAnchor("yoMovetarget", 		"Move Target", 		uf.target.width, uf.target.height, -500, 270, "BOTTOMRIGHT","BOTTOMRIGHT")
-n.moveCreateAnchor("yoMovefocus", 		"Move Focus", 		uf.focus.width,  uf.focus.height,     5, 320, "TOPLEFT", 	"BOTTOMLEFT")
+n.moveCreateAnchor("yoMovefocus", 		"Move Focus", 		uf.focus.width,  uf.focus.height,     3, 300, "TOPLEFT", 	"BOTTOMLEFT")
 n.moveCreateAnchor("yoMoveboss", 		"Move Boss", 		uf.boss.width,   uf.boss.height,   -370,-200, "TOPRIGHT", 	"TOPRIGHT")
 
 n.moveCreateAnchor("yoMoveQuestFrame", 	"Move Quest Frame", 230, 500, -5, -175, "TOPRIGHT", "TOPRIGHT")

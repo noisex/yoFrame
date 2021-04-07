@@ -82,7 +82,7 @@ end
 local StopTimer = function(self, bar)
 	if not bar then return end
 
-	bar:SetScript("OnUpdate", nil)
+	--bar:SetScript("OnUpdate", nil)
 	self.bars[bar.endTime] = nil
 	updatePositions( self)
 

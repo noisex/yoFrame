@@ -10,33 +10,36 @@ local GetCurrentRegion, time, GetQuestResetTime, LASTONLINE_YEARS, LASTONLINE_MO
 local alertTimers = {}
 
 function Countdown(key, seconds, textOrIcon, startAt)
-
+	--print( alertTimers[key], key, seconds, textOrIcon, startAt)
 	if alertTimers[key] then return end
 
 	--print( "START", key, seconds, textOrIcon, startAt)
 
 	local start = startAt or 3
-	--local tbl = {false}
+
+	start = seconds < start and seconds or start
+
 	local text = type(textOrIcon) == "number" and iconList[textOrIcon] or textOrIcon
 
 	local function printTime()
-		--if not tbl[1] then
-			SendChatMessage( text and format("%s %d", text, start) or start, "SAY")
-			--print( GetTime(), text and format("%s %d", text, start) or start)
-			start = start - 1
-		--end
+		SendChatMessage( text and format("%s %d", text, start) or start, "SAY")
+		--print( GetTime(), text and format("%s %d", text, start) or start)
+		start = start - 1
+
+		--alertTimers[key] = nil
 	end
 
 	local startOffset = start + 0.2
 
 	for i = 1.2, startOffset do
-		alertTimers[key] = seconds
-		C_Timer.After( seconds-i, printTime)
+		--print( seconds, i, startOffset, seconds-i)
+		if seconds-i > 0 then
+			alertTimers[key] = seconds
+			C_Timer.After( seconds-i, printTime)
+		end
 	end
 
 	C_Timer.After( seconds, function() alertTimers[key] = nil end)
-
-	--self.sayCountdowns[key] = tbl
 end
 
 function timeLastWeeklyReset()

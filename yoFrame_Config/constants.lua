@@ -313,7 +313,7 @@ yo["UF"] 	= {
 	["powerHeight"]		= 4,
 	["player"] 			= {	width = 200, height = 40,},
 	["target"] 			= {	width = 200, height = 40,},
-	["focus"] 			= {	width = 110, height = 25,},
+	["focus"] 			= {	width = 110, height = 30,},
 	["pet"] 			= {	width = 100, height = 25,},
 	["boss"] 			= {	width = 180, height = 35,},
 	["focustarget"]  	= {	width = 110, height = 25,},
