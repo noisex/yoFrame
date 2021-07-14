@@ -17,7 +17,7 @@ local affCount = 3
 local iSize = 35
 local currentWeek, designed
 
-local mythicRewards = {
+local mythicRewardsOld = {
 --	{"Level","End","Weekly","Azer Weekly"},
 	{2,187,200},
 	{3,190,203},
@@ -35,19 +35,38 @@ local mythicRewards = {
 	{15,210,226},
 }
 
+local mythicRewards = {
+    {2, 	210,	226},
+    {3,		213,	226},
+    {4,		216,	226},
+    {5,		220,	229},
+    {6,		223,	229},
+    {7,		223,	233},
+    {8,		226,	236},
+    {9,		226,	236},
+    {10,	229,	239},
+    {11,	229,	242},
+    {12,	233,	246},
+    {13,	233,	246},
+    {14,	236,	249},
+    {15,	236,	252},
+}
+
 local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
-    [1] = 	{[2]=11,	[3]=3,	[1]=10,	[4]=121},
-    [2] = 	{[2]=7,		[3]=124,[1]=9,	[4]=121},
-    [3] = 	{[2]=123,	[3]=12,	[1]=10,	[4]=121},
-    [4] = 	{[2]=122,	[3]=4,	[1]=9,	[4]=121},
-    [5] = 	{[2]=8,		[3]=14,	[1]=10,	[4]=121},
-    [6] = 	{[2]=6,		[3]=13,	[1]=9,	[4]=121},
-    [7] = 	{[2]=123,	[3]=3,	[1]=10,	[4]=121},
-    [8] = 	{[2]=7,		[3]=4,	[1]=9,	[4]=121},
-    [9] = 	{[2]=122,	[3]=124,[1]=10,	[4]=121},
-    [10] =	{[2]=11,	[3]=13,	[1]=9,	[4]=121},
-    [11] = 	{[2]=8,		[3]=12,	[1]=10,	[4]=121},
-    [12] = 	{[2]=6,		[3]=14,	[1]=9,	[4]=121},
+    [1] = 	{[2]=11,	[3]=124,[1]=10,	[4]=128},
+    [2] = 	{[2]=6,		[3]=3,	[1]=9,	[4]=128},
+    [3] = 	{[2]=122,	[3]=12,	[1]=10,	[4]=128},
+
+    [4] = 	{[2]=122,	[3]=4,	[1]=9,	[4]=128},
+    [5] = 	{[2]=8,		[3]=14,	[1]=10,	[4]=128},
+    [6] = 	{[2]=6,		[3]=13,	[1]=9,	[4]=128},
+    [7] = 	{[2]=123,	[3]=3,	[1]=10,	[4]=128},
+    [8] = 	{[2]=7,		[3]=4,	[1]=9,	[4]=128},
+    [9] = 	{[2]=122,	[3]=124,[1]=10,	[4]=128},
+    [10] =	{[2]=11,	[3]=13,	[1]=9,	[4]=128},
+    [11] = 	{[2]=8,		[3]=12,	[1]=10,	[4]=128},
+
+    [12] = 	{[2]=7,		[3]=13,	[1]=9,	[4]=128},
 }
 
 local function GuildLeadersOnLeave(...)
@@ -158,32 +177,34 @@ end
 local function UpdateAffixes( self)
 	if designed then return end
 
-	if self.WeeklyInfo.Child.WeeklyChest.RunStatus then
-		self.WeeklyInfo.Child.WeeklyChest.RunStatus:SetFont( n.font, n.fontsize + 1, "OUTLINE")
-		self.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
-		self.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint("TOP", self, "TOP", 10, -140)
-		self.WeeklyInfo.Child.WeeklyChest.RunStatus:SetWidth( 250)
-		self.WeeklyInfo.Child.WeeklyChest.RunStatus.ClearAllPoints = n.dummy
+	local child = self.WeeklyInfo.Child
+
+	if child.WeeklyChest.RunStatus then
+		child.WeeklyChest.RunStatus:SetFont( n.font, n.fontsize + 1, "OUTLINE")
+		child.WeeklyChest.RunStatus:ClearAllPoints()
+		child.WeeklyChest.RunStatus:SetPoint("TOP", self, "TOP", 10, -140)
+		child.WeeklyChest.RunStatus:SetWidth( 250)
+		child.WeeklyChest.RunStatus.ClearAllPoints = n.dummy
 	end
 
-	if self.WeeklyInfo.Child.RunStatus then
-		self.WeeklyInfo.Child.RunStatus:SetFont( n.font, n.fontsize + 1, "OUTLINE")
-		self.WeeklyInfo.Child.RunStatus:ClearAllPoints()
-		self.WeeklyInfo.Child.RunStatus:SetPoint("TOP", self, "TOP", 0, -150)
-		self.WeeklyInfo.Child.RunStatus:SetWidth( 200)
-		self.WeeklyInfo.Child.RunStatus.ClearAllPoints = n.dummy
+	if child.RunStatus then
+		child.RunStatus:SetFont( n.font, n.fontsize + 1, "OUTLINE")
+		child.RunStatus:ClearAllPoints()
+		child.RunStatus:SetPoint("TOP", self, "TOP", 0, -150)
+		child.RunStatus:SetWidth( 200)
+		child.RunStatus.ClearAllPoints = n.dummy
 	end
 
-	if self.WeeklyInfo.Child.Description then
-		self.WeeklyInfo.Child.Description:SetFont( n.font, n.fontsize + 1, "OUTLINE")
-		self.WeeklyInfo.Child.Description:ClearAllPoints()
-		self.WeeklyInfo.Child.Description:SetPoint("TOP", self, "TOP", 10, -140)
-		self.WeeklyInfo.Child.Description:SetWidth( 250)
-		self.WeeklyInfo.Child.Description.ClearAllPoints = n.dummy
+	if child.Description then
+		child.Description:SetFont( n.font, n.fontsize + 1, "OUTLINE")
+		child.Description:ClearAllPoints()
+		child.Description:SetPoint("TOP", self, "TOP", 10, -140)
+		child.Description:SetWidth( 250)
+		child.Description.ClearAllPoints = n.dummy
 	end
 
-	if self.WeeklyInfo.Child.WeeklyChest then
-		local weekly = self.WeeklyInfo.Child.WeeklyChest
+	if child.WeeklyChest then
+		local weekly = child.WeeklyChest
 		weekly.RewardButton = CreateFrame( "Button", nil, weekly)
 		weekly.RewardButton:SetAllPoints(weekly)
 		weekly.RewardButton:EnableMouse(true)

@@ -398,7 +398,7 @@ local quest = CreateFrame("Frame")
 quest:RegisterEvent("PLAYER_ENTERING_WORLD")
 quest:SetScript("OnEvent", OnEvent)
 
--- autoclose AutoQuestPopupTracker
+ --autoclose AutoQuestPopupTracker
 hooksecurefunc( "AutoQuestPopupTracker_Update", function(self, ...)
 
 	for i = 1, GetNumAutoQuestPopUps() do
@@ -407,11 +407,11 @@ hooksecurefunc( "AutoQuestPopupTracker_Update", function(self, ...)
 		if questID and popUpType then --== "COMPLETE"
 			local block = ObjectiveTrackerFrame.MODULES[6]:GetBlock(questID, "ScrollFrame", "AutoQuestPopUpBlockTemplate");
 			if block then
-				AutoQuestPopUpTracker_OnMouseDown(block)
-
-				--ShowQuestOffer(GetQuestLogIndexByID(questID));
+				----print( questID, popUpType, block, block.id)
+				ShowQuestOffer( block.id)
+				--AutoQuestPopUpTracker_OnMouseDown( block, "LeftButton", 1)
 				--ShowQuestComplete(GetQuestLogIndexByID(questID));
-				AutoQuestPopupTracker_RemovePopUp(questID)
+				AutoQuestPopupTracker_RemovePopUp( questID)
 			end
 		end
 	end

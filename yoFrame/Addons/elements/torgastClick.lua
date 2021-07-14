@@ -28,6 +28,9 @@ tc.cellsData = {
 	["siphoned"]	= { id = 176409},
 	["frenzy"]		= { id = 176443},
 	["cells150"]	= { id = 184662},
+	["dynorat"]		= { id = 185946},
+	["selfhit"]		= { id = 185947},
+	["tempryvok"]	= { id = 185950},
 }
 
 local CELLS = 170540

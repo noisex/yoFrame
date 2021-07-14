@@ -1,4 +1,4 @@
- local _, ns 	= ...
+local _, ns 	= ...
 local L, yo, n 	= unpack( ns)
 local oUF 		= ns.oUF or oUF
 
@@ -51,6 +51,7 @@ end
 
 maw.isInMaw = function()
     local id = C_Map.GetBestMapForUnit('player')
+    --print( id)  or id == 1961 = kortia
     return (id ==1543 or id ==1820 or id ==1821 or id ==1822 or id==1823), id
 end
 
@@ -122,7 +123,7 @@ maw.setInfo = function( info)
     	maw.bar.progress.Fadeout:Play()
     end
 
-    maw.bar:Show()
+    --maw.bar:Show()
 end
 
 maw.updateWiget = function ()

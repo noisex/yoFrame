@@ -63,11 +63,20 @@ local function UnitColors( f)
 		--print( f.notInterruptible)
 		if f.notInterruptible then
 			cols[1], cols[2], cols[3] = 0.8, 0.15, 0.25
+			if f.sparker then
+				f.sparker:SetVertexColor( 0.8, 0.15, 0.25, 1)
+			end
 		else
 			if yo.General.spellDelay then
 				cols[1], cols[2], cols[3] = 0, 1, 1
+				if f.sparker then
+					f.sparker:SetVertexColor( 0, 1, 1, 1)
+				end
 			else
 				cols[1], cols[2], cols[3] = 0.5, 1, 0
+				if f.sparker then
+					f.sparker:SetVertexColor( 0.5, 1, 0, 1)
+				end
 			end
 		end
 	end
@@ -162,6 +171,7 @@ local function startCast( f, unit, ...)
 		else
 			f.shadow:SetBackdropBorderColor( 0, 0, 0, 1)
 		end
+
 	else
 		f.notInterruptible = false
 		if f.ibg and f.ibg:IsShown() then
@@ -171,6 +181,14 @@ local function startCast( f, unit, ...)
 			f.shadow:SetBackdropBorderColor( 0, 1, 0, 1)
 		else
 			f.shadow:SetBackdropBorderColor( 0, 0, 0, 1)
+		end
+	end
+
+	if f.sparker then
+		if yo.NamePlates.badCasts and n.badMobsCasts[f.spellID] then
+			f.sparker:Show()
+		else
+			f.sparker:Hide()
 		end
 	end
 
@@ -428,7 +446,17 @@ local function CreateCastBar( frame, cfg)
 		CreateStyle( bar.castBar.ibg, 3)
 	end
 
-	if cfgname == "BCB" then bar:SetAlpha( yo.CastBar.BCB.castbarAlpha) end
+	if cfgname == "BCB" then
+		bar:SetAlpha( yo.CastBar.BCB.castbarAlpha)
+
+		bar.castBar.sparker = bar.castBar:CreateTexture(nil, "OVERLAY")
+		bar.castBar.sparker:SetTexture( yo.Media.path .. "icons\\CastSparker")
+		bar.castBar.sparker:SetPoint("BOTTOM", bar.castBar:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, -19)
+		bar.castBar.sparker:SetHeight( 56)
+		bar.castBar.sparker:SetWidth(45)
+		bar.castBar.sparker:Hide()
+	end
+
 	if unit == "target" then
 		bar.castBar:RegisterEvent("PLAYER_TARGET_CHANGED")
 	end
