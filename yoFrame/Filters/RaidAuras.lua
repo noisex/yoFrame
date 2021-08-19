@@ -59,7 +59,99 @@ local function SpellName(id)
 end
 
 n.RaidDebuffList = {
+
 	[160029] = true, -- Воскрешение
+
+-----------------------------------------------------------------
+-- Sanctum of Domination
+-----------------------------------------------------------------
+
+	-- The Tarragrue
+	[347283] = 3,	-- Predator's Howl
+	[347286] = 3,	-- Unshakeable Dread
+	[346986] = 3,	-- Crushed Armor
+	[347991] = 3,	-- Ten of Towers
+	[347269] = 3,	-- Chains of Eternity
+	[346985] = 3,	-- Overpower
+	[347274] = 3,	-- Annihilating Smash
+	-- Eye of the Jailer
+	[350606] = 3,	-- Hopeless Lethargy
+	[355240] = 3,	-- Scorn
+	[355245] = 3,	-- Ire
+	[349979] = 3,	-- Dragging Chains
+	[348074] = 3,	-- Assailing Lance
+	[351827] = 3,	-- Spreading Misery
+	[355143] = 3,	-- Deathlink
+	[350763] = 3,	-- Annihilating Glare
+	-- The Nine
+	[350287] = 3,	-- Song of Dissolution
+	[350542] = 3,	-- Fragments of Destiny
+	[350202] = 3,	-- Unending Strike
+	[350475] = 3,	-- Pierce Soul
+	[350555] = 3,	-- Shard of Destiny
+	[350109] = 3,	-- Brynja's Mournful Dirge
+	[350483] = 3,	-- Link Essence
+	[350039] = 3,	-- Arthura's Crushing Gaze
+	[350184] = 3,	-- Daschla's Mighty Impact
+	[350374] = 3,	-- Wings of Rage
+	-- Remnant of Ner'zhul
+	[350073] = 3,	-- Torment
+	[349890] = 3,	-- Suffering
+	[350469] = 3,	-- Malevolence
+	[354534] = 3,	-- Spite
+	-- Soulrender Dormazain
+	[353429] = 3,	-- Tormented
+	[353023] = 3,	-- Torment
+	[351787] = 3,	-- Agonizing Spike
+	[350647] = 3,	-- Brand of Torment
+	[350422] = 3,	-- Ruinblade
+	[350851] = 3,	-- Vessel of Torment
+	[354231] = 3,	-- Soul Manacles
+	[350927] = 3,	-- Warmonger Shackle
+	-- Painsmith Raznal
+	[356472] = 3,	-- Lingering Flames
+	[355505] = 3,	-- Shadowsteel Chains
+	[348456] = 3,	-- Flameclasp Trap
+	[356870] = 3,	-- Flameclasp Eruption
+	[355568] = 3,	-- Cruciform Axe
+	[355786] = 3,	-- Blackened Armor
+	-- Guardian of the First Ones
+	[352394] = 3,	-- Radiant Energy
+	[350496] = 3,	-- Threat Neutralization
+	[347359] = 3,	-- Suppression Field
+	[355357] = 3,	-- Obliterate
+	[350732] = 3,	-- Sunder
+	[352833] = 3,	-- Disintegration
+	-- Fatescribe Roh-Kalo
+	[354365] = 3,	-- Grim Portent
+	[350568] = 3,	-- Call of Eternity
+	[353435] = 3,	-- Overwhelming Burden
+	[351680] = 3,	-- Invoke Destiny
+	[353432] = 3,	-- Burden of Destiny
+	[353693] = 3,	-- Unstable Accretion
+	[350355] = 3,	-- Fated Conjunction
+	[353931] = 3,	-- Twist Fate
+	-- Kel'Thuzad
+	[346530] = 3,	-- Frozen Destruction
+	[354289] = 3,	-- Sinister Miasma
+	[347292] = 3,	-- Oblivion's Echo
+	[348978] = 3,	-- Soul Exhaustion
+	[355389] = 3,	-- Relentless Haunt
+	[357298] = 3,	-- Frozen Binds
+	[355137] = 3,	-- Shadow Pool
+	[348638] = 3,	-- Return of the Damned
+	[348760] = 3,	-- Frost Blast
+	-- Sylvanas Windrunner
+	[349458] = 3,	-- Domination Chains
+	[347704] = 3,	-- Veil of Darkness
+	[347607] = 3,	-- Banshee's Mark
+	[347670] = 3,	-- Shadow Dagger
+	[351117] = 3,	-- Crushing Dread
+	[351870] = 3,	-- Haunting Wave
+	[351253] = 3,	-- Banshee Wail
+	[351451] = 3,	-- Curse of Lethargy
+	[351091] = 3,	-- Destabilize
+	[348064] = 3,	-- Wailing Arrow
 
 -----------------------------------------------------------------
 -- Castle Nathria
@@ -127,7 +219,7 @@ n.RaidDebuffList = {
 	[329951] = 3, -- Impale
 
 	[328897] = true,
-	[333913] = true,
+	[333913] = true
 }
 -----------------------------------------------------------------
 -- Dungeons
