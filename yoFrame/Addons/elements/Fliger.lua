@@ -103,7 +103,7 @@ local function UpdateAura( self, unit)
 		end
 
 		if self.pBuff and unit == self.pBuff.unit then
-			if n.playerBuffList[name] then
+			if n.playerBuffList[name] and not n.playerBuffListBan[spellID] then
 				n.updateAuraIcon( n.createAuraIcon( self.pBuff, fligerPB), filter, icon, count, nil, duration, expirationTime, spellID, index, name)
 				fligerPB = fligerPB + 1
 			end

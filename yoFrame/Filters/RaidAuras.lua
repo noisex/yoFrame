@@ -47,6 +47,10 @@ n.blackSpells = {
 	[326758] = true, -- пауки
 }
 
+n.playerBuffListBan = {
+	[164273] = true, -- одинокий волк
+}
+
 local function SpellName(id)
 	local name = GetSpellInfo(id)
 	if name then
