@@ -9,7 +9,6 @@
 	<Script file="version.lua"/>
 	<Script file="wim.lua"/>
 	<Script file="wimhistory.lua"/>
-
 <!--
 <Script file=""/>
  -->

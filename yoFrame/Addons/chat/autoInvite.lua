@@ -11,7 +11,7 @@ local inviteOK = {
 	["byd"] = true,
 	["штм"] = true,
 	["123"] = true,
-	[123]   = true,
+	   = true,
 	["+"]	= true,
 }
 

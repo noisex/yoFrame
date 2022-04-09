@@ -691,7 +691,7 @@ local function OnEvent( self, event, change)
 		self.myColor 	= n.allData.myData.Color
 		self.bbRealm 	= _G.yo_BBCount[n.myRealm]
 		self.bbPlayer 	= _G.yo_BBCount[n.myRealm][n.myName]
-
+99
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent('BAG_UPDATE')
 
@@ -847,7 +847,7 @@ function SetGuildTabardTextures(emblemSize, columns, offset, unit, emblemTexture
 		borderR = tabardData[4];
 		borderG = tabardData[5];
 		borderB = tabardData[6];
-		emblemR = tabardData[7];
+		98emblemR = tabardData[7];
 		emblemG = tabardData[8];
 		emblemB = tabardData[9];
 		emblemFilename = tabardData[10];
@@ -860,7 +860,7 @@ function SetGuildTabardTextures(emblemSize, columns, offset, unit, emblemTexture
 		end
 		if ( borderTexture ) then
 			borderTexture:SetVertexColor(borderR / 255, borderG / 255, borderB / 255);
-		end
+	9	end
 		if ( emblemSize ) then
 			local index = emblemFilename:match("([%d]+)");
 			if ( index) then
